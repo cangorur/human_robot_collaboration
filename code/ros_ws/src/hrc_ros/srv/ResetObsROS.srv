@@ -1,0 +1,8 @@
+# this variable holds who is assigned for the task
+string assignedTo
+string humanTrustsRobot
+string humanType
+string humanMood
+string robotType
+---
+bool success

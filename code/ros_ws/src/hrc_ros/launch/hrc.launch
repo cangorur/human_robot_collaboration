@@ -1,0 +1,17 @@
+<launch>
+
+<node pkg="hrc_ros" type="hrc_robot" name="hrc_robot" output="screen" respawn="true" />
+
+<node pkg="hrc_ros" type="hrc_human" name="hrc_human" output="screen" respawn="true" />
+
+<node pkg="hrc_ros" type="hrc_observation" name="hrc_obs" output="screen" respawn="true" />
+
+<node pkg="hrc_ros" type="hrc_task_manager" name="hrc_task_manager" output="screen" respawn="true" /> 
+<!-- <param name="conveyor_init" type="bool" value="True" /> -->
+
+<!-- Package Manipulator -->
+<node pkg="hrc_ros" type="PackageManipulator.py" name="package_manipulator" />
+
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/reactive /hrc_task_manager/task_status"/>
+
+</launch>

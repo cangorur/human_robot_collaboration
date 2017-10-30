@@ -1,0 +1,45 @@
+{
+	"package_pool" : {
+		"location" : {
+			"x" : 6,
+			"y" : -0.3,
+			"z" : 0.0
+		},
+		"amount" : {
+			"light": 19,
+			"heavy": 1
+		}
+	},
+	"human": {
+		"type": {
+			"expertise": "beginner",
+			"mood": "stubborn"
+		},
+		"position":{
+			"x": 7.7,
+			"y": -1.25,
+			"z": 0.0
+		}	
+	},	
+	"robot": {
+		"type": "proactive",
+		"position":{
+			"x": 7.9,
+			"y": -3.04,
+			"z": 0.0
+		}
+	},
+	"task": {
+		"id": "1",
+		"assignment": "human"
+	},
+	"conveyor": {
+		"id": "conveyor",
+		"type": "L",
+		"location":{
+			"x": 5.0,
+			"y": -0.5,
+			"z": 0.0
+		}
+	}
+}

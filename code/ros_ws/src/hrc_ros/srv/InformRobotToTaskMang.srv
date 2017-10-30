@@ -1,0 +1,3 @@
+RobotUpdateMsg robot_update
+---
+bool success

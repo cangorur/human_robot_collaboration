@@ -1,0 +1,380 @@
+rosbagTimestamp,task_id,step_count,who_reports,update_received_time,secs,nsecs,human_expertise,human_mood,human_trust,action_taken_time,secs,nsecs,taken_action,belief_state,real_state,isEstimationCorrect,real_obs_received,obs_with_noise,task_status,who_succeeded,immediate_reward,total_disc_reward
+1.507205429586E+018,1,0,MANAGER,,1507205429,585819344,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720543065872E+018,1,0,HUMAN,,1507205430,657590817,beginner,stubborn,YES,,1507205430,455701444,idle,TaskHuman,TaskHuman,True,'','','','','',''
+1.50720543075559E+018,1,1,ROBOT,,1507205430,753995970,'','','',,1507205430,753918539,idle,TaskHuman,TaskHuman,True,'','','','','',''
+1.50720543302566E+018,1,1,ROBOT,,1507205433,24531220,'','','',,1507205430,753918539,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720543942545E+018,1,1,SENSORS,,1507205439,425345872,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720544070732E+018,1,1,OBSERVATION,,1507205440,705863355,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720544195283E+018,1,1,HUMAN,,1507205441,951555617,beginner,stubborn,YES,,1507205434,78338658,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720544271E+018,1,2,ROBOT,,1507205442,708722660,'','','',,1507205441,950628746,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720544510726E+018,1,2,OBSERVATION,,1507205445,105583231,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720544638235E+018,1,2,HUMAN,,1507205446,380911973,beginner,stubborn,YES,,1507205443,781773578,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720552344998E+018,1,3,ROBOT,,1507205523,448777075,'','','',,1507205446,377706332,idle,GlobalSuccess,TaskHuman,False,'','','','',0,5.88
+1.50720552884705E+018,1,3,OBSERVATION,,1507205526,59963193,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720553010544E+018,1,3,HUMAN,,1507205530,103866733,beginner,stubborn,YES,,1507205524,535080207,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720553844156E+018,2,0,MANAGER,,1507205538,441271269,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720553941247E+018,2,0,HUMAN,,1507205539,411512577,beginner,stubborn,YES,,1507205539,307749958,idle,TaskHuman,Evaluating,False,'','','','','',''
+1.50720554077817E+018,2,1,ROBOT,,1507205540,776775616,'','','',,1507205539,631647376,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720554379459E+018,2,1,OBSERVATION,,1507205543,793259969,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720554505912E+018,2,1,HUMAN,,1507205545,57718189,beginner,stubborn,YES,,1507205541,872280116,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720554594169E+018,2,2,ROBOT,,1507205545,940500699,'','','',,1507205545,54786038,planning for grasping,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720555141076E+018,2,2,SENSORS,,1507205551,410617953,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720555317781E+018,2,2,OBSERVATION,,1507205553,176532317,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720555445547E+018,2,2,HUMAN,,1507205554,454038384,beginner,stubborn,YES,,1507205547,1899620,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.5072055552439E+018,2,3,ROBOT,,1507205555,242752104,'','','',,1507205554,449865290,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.7624
+1.50720555701132E+018,2,3,OBSERVATION,,1507205557,9943559,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720555810771E+018,2,3,HUMAN,,1507205558,106053151,beginner,stubborn,YES,,1507205556,327873646,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720557770588E+018,3,0,MANAGER,,1507205577,705659249,beginner,thinker,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720557884251E+018,3,0,HUMAN,,1507205578,841062732,beginner,thinker,YES,,1507205578,582389050,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720558013851E+018,3,1,ROBOT,,1507205580,136974974,'','','',,1507205578,929455872,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720558239156E+018,3,1,OBSERVATION,,1507205582,390110459,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720558368463E+018,3,1,HUMAN,,1507205583,683064192,beginner,thinker,YES,,1507205581,210818142,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720558526212E+018,3,2,ROBOT,,1507205585,261043030,'','','',,1507205583,679838655,idle,NoFocus,TaskHuman,False,'','','','',0,0
+1.50720558801129E+018,3,2,OBSERVATION,,1507205588,9894255,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720558931182E+018,3,2,HUMAN,,1507205589,310456213,beginner,thinker,YES,,1507205586,325389436,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720558932148E+018,3,3,ROBOT,,1507205589,320138272,'','','',,1507205589,309276399,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,0
+1.50720559151125E+018,3,3,OBSERVATION,,1507205591,509859119,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720559280864E+018,3,3,HUMAN,,1507205592,807212383,beginner,thinker,YES,,1507205590,386364349,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720559333567E+018,3,4,ROBOT,,1507205593,334299585,'','','',,1507205592,805364441,idle,NoFocus,TaskHuman,False,'','','','',0,0
+1.507205595228E+018,3,4,OBSERVATION,,1507205595,226511645,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720559654572E+018,3,4,HUMAN,,1507205596,544294697,beginner,thinker,YES,,1507205594,392686859,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720559830218E+018,3,5,ROBOT,,1507205598,300910380,'','','',,1507205596,540620891,planning for grasping,MayNotBeCapable,NeedsHelp,False,'','','','',0,0
+1.50720560124464E+018,3,5,OBSERVATION,,1507205601,243248290,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720560255699E+018,3,5,HUMAN,,1507205602,555175175,beginner,thinker,YES,,1507205599,371878299,grasp,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720560497454E+018,3,6,ROBOT,,1507205604,972964751,'','','',,1507205602,551212197,grasp,NeedsHelp,NeedsHelp,True,'','','','',0,0
+1.50720561004333E+018,3,6,OBSERVATION,,1507205607,643215643,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720561004341E+018,3,6,SENSORS,,1507205610,43234963,'','','',,0,0,'','','',False,'','',FAIL,'','',''
+1.50720561135589E+018,3,6,HUMAN,,1507205611,354156441,beginner,thinker,YES,,1507205606,49663047,idle,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720561212741E+018,3,7,ROBOT,,1507205612,126156241,'','','',,1507205611,349947394,planning for grasping,MayBeTired,GlobalFail,False,'','','','',-3,-2.65753
+1.50720561584461E+018,3,7,OBSERVATION,,1507205615,843181237,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),FAIL,'','',''
+1.50720561584609E+018,3,7,HUMAN,,1507205615,845055855,beginner,thinker,YES,,1507205613,176516429,looking around,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720562267861E+018,4,0,MANAGER,,1507205622,678316610,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720562376039E+018,4,0,HUMAN,,1507205623,759296285,beginner,stubborn,YES,,1507205623,528511144,idle,TaskHuman,GlobalFail,False,'','','','','',''
+1.50720562784326E+018,4,1,ROBOT,,1507205627,842041336,'','','',,1507205623,880108422,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720563341084E+018,4,1,SENSORS,,1507205633,410639780,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720563491152E+018,4,1,OBSERVATION,,1507205634,909893722,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720563617263E+018,4,1,HUMAN,,1507205636,171155198,beginner,stubborn,YES,,1507205628,900803398,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720563818598E+018,4,2,ROBOT,,1507205638,184866583,'','','',,1507205636,170047694,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720564085892E+018,4,2,OBSERVATION,,1507205640,857507116,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720564211572E+018,4,2,HUMAN,,1507205642,114185683,beginner,stubborn,YES,,1507205639,250458538,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720564866955E+018,5,0,MANAGER,,1507205648,669396285,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720564962875E+018,5,0,HUMAN,,1507205649,627780527,beginner,stubborn,YES,,1507205649,525257326,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720565229073E+018,5,1,ROBOT,,1507205652,289333431,'','','',,1507205649,860018666,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720565841087E+018,5,1,SENSORS,,1507205658,410688458,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720565934506E+018,5,1,OBSERVATION,,1507205659,343598624,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720566056022E+018,5,1,HUMAN,,1507205660,558578804,beginner,stubborn,YES,,1507205653,382221508,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720566242611E+018,5,2,ROBOT,,1507205662,425159995,'','','',,1507205660,557147847,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720566489455E+018,5,2,OBSERVATION,,1507205664,893208458,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720566619386E+018,5,2,HUMAN,,1507205666,192691950,beginner,stubborn,YES,,1507205663,473565349,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720567328083E+018,6,0,MANAGER,,1507205673,280687452,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720567434579E+018,6,0,HUMAN,,1507205674,344860649,beginner,stubborn,YES,,1507205674,165755247,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720567674739E+018,6,1,ROBOT,,1507205676,746164014,'','','',,1507205674,486614349,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720567884504E+018,6,1,OBSERVATION,,1507205678,843581133,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720568016071E+018,6,1,HUMAN,,1507205680,159235264,beginner,stubborn,YES,,1507205677,821434345,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720568210382E+018,6,2,ROBOT,,1507205682,102009832,'','','',,1507205680,158264933,planning for grasping,MayNotBeCapable,MayNotBeCapable,True,'','','','',0,0
+1.50720568504457E+018,6,2,OBSERVATION,,1507205685,43196195,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720568634236E+018,6,2,HUMAN,,1507205686,340814697,beginner,stubborn,YES,,1507205683,172696120,grasp,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720568758868E+018,6,3,ROBOT,,1507205687,587445109,'','','',,1507205686,337614731,grasp,TaskHuman,TaskHuman,True,'','','','',-1,-0.9604
+1.50720569341089E+018,6,3,SENSORS,,1507205693,410733961,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.5072056945952E+018,6,3,OBSERVATION,,1507205694,593370151,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720569585759E+018,6,3,HUMAN,,1507205695,856190498,beginner,stubborn,YES,,1507205688,649519215,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720569684326E+018,6,4,ROBOT,,1507205696,842045270,'','','',,1507205695,852463453,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,4.68675
+1.50720569869454E+018,6,4,OBSERVATION,,1507205698,693141154,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720569998091E+018,6,4,HUMAN,,1507205699,979685449,beginner,stubborn,YES,,1507205697,928200726,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720570995248E+018,7,0,MANAGER,,1507205709,952102100,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720571104656E+018,7,0,HUMAN,,1507205711,45483716,beginner,stubborn,YES,,1507205710,808553349,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720571277144E+018,7,1,ROBOT,,1507205712,770473374,'','','',,1507205711,131634792,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720571841098E+018,7,1,SENSORS,,1507205718,410800405,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720572022824E+018,7,1,OBSERVATION,,1507205720,226842708,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720572146308E+018,7,1,HUMAN,,1507205721,461902663,beginner,stubborn,YES,,1507205713,846339811,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720572196289E+018,7,2,ROBOT,,1507205721,961424879,'','','',,1507205721,460901760,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720572379463E+018,7,2,OBSERVATION,,1507205723,793216719,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720572442045E+018,7,2,HUMAN,,1507205724,418310379,beginner,stubborn,YES,,1507205723,33231818,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720573039299E+018,8,0,MANAGER,,1507205730,392794453,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.5072057313785E+018,8,0,HUMAN,,1507205731,377653169,beginner,stubborn,YES,,1507205731,233497294,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720573293965E+018,8,1,ROBOT,,1507205732,938358664,'','','',,1507205731,598958186,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720573496028E+018,8,1,OBSERVATION,,1507205734,958617705,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720573622999E+018,8,1,HUMAN,,1507205736,228173051,beginner,stubborn,YES,,1507205734,3879071,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720574059394E+018,8,2,ROBOT,,1507205740,592656501,'','','',,1507205736,227075433,planning for grasping,MayNotBeCapable,MayNotBeCapable,True,'','','','',0,0
+1.50720574282791E+018,8,2,OBSERVATION,,1507205742,826560452,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720574411533E+018,8,2,HUMAN,,1507205744,113876129,beginner,stubborn,YES,,1507205741,657743149,idle,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720574513811E+018,8,3,ROBOT,,1507205745,136881628,'','','',,1507205744,112702949,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720575141106E+018,8,3,SENSORS,,1507205751,410955073,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720575234494E+018,8,3,OBSERVATION,,1507205752,343638074,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720575362958E+018,8,3,HUMAN,,1507205753,628156482,beginner,stubborn,YES,,1507205746,220722360,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720575448685E+018,8,4,ROBOT,,1507205754,485564699,'','','',,1507205753,624207762,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.64715
+1.50720575666145E+018,8,4,OBSERVATION,,1507205756,659916188,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720575795164E+018,8,4,HUMAN,,1507205757,950150642,beginner,stubborn,YES,,1507205755,558146844,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720576713692E+018,9,0,MANAGER,,1507205767,136752280,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720576814564E+018,9,0,HUMAN,,1507205768,144749732,beginner,stubborn,YES,,1507205767,991236607,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720577252379E+018,9,1,ROBOT,,1507205772,522419262,'','','',,1507205768,351803231,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720577841081E+018,9,1,SENSORS,,1507205778,410694933,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720577939495E+018,9,1,OBSERVATION,,1507205779,393311153,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720578062606E+018,9,1,HUMAN,,1507205780,624386558,beginner,stubborn,YES,,1507205773,595643912,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720578170855E+018,9,2,ROBOT,,1507205781,706987813,'','','',,1507205780,623291754,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720578406135E+018,9,2,OBSERVATION,,1507205784,59922379,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.5072057853383E+018,9,2,HUMAN,,1507205785,337073601,beginner,stubborn,YES,,1507205782,776108882,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720579150013E+018,10,0,MANAGER,,1507205791,499933502,beginner,thinker,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720579246243E+018,10,0,HUMAN,,1507205792,461479636,beginner,thinker,YES,,1507205792,314481243,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720579652391E+018,10,1,ROBOT,,1507205796,522543883,'','','',,1507205792,685511103,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720579869498E+018,10,1,OBSERVATION,,1507205798,693584028,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720579996245E+018,10,1,HUMAN,,1507205799,960986372,beginner,thinker,YES,,1507205797,587037465,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720580086377E+018,10,2,ROBOT,,1507205800,862340952,'','','',,1507205799,959259377,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720580296133E+018,10,2,OBSERVATION,,1507205802,959906146,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720580420704E+018,10,2,HUMAN,,1507205804,205531535,beginner,thinker,YES,,1507205801,936870816,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720580550402E+018,10,3,ROBOT,,1507205805,502298338,'','','',,1507205804,204303399,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,0
+1.50720580776143E+018,10,3,OBSERVATION,,1507205807,759892897,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720580905794E+018,10,3,HUMAN,,1507205809,56469833,beginner,thinker,YES,,1507205806,556457582,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720581002673E+018,10,4,ROBOT,,1507205810,25271506,'','','',,1507205809,52571641,grasp,NeedsHelp,TaskHuman,False,'','','','',-1,-0.941192
+1.50720581236133E+018,10,4,OBSERVATION,,1507205812,360032379,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720581366313E+018,10,4,HUMAN,,1507205813,661774481,beginner,thinker,YES,,1507205811,83919514,idle,Evaluating,Evaluating,True,'','','','','',''
+1.5072058140954E+018,10,5,ROBOT,,1507205814,94230288,'','','',,1507205813,658703313,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,-0.941192
+1.50720581714475E+018,10,5,OBSERVATION,,1507205817,143408960,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720581844488E+018,10,5,HUMAN,,1507205818,443596794,beginner,thinker,YES,,1507205815,166522519,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720581930649E+018,10,6,ROBOT,,1507205819,304911885,'','','',,1507205818,442062567,grasp,NeedsHelp,TaskHuman,False,'','','','',-1,-1.84511
+1.50720582372682E+018,10,6,OBSERVATION,,1507205821,193806184,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720582502966E+018,10,6,HUMAN,,1507205825,28275748,beginner,thinker,YES,,1507205820,364434704,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720584041046E+018,10,7,SENSORS,,1507205840,410296357,'','','',,0,0,'','','',False,'','',FAIL,'','',''
+1.5072058428802E+018,10,7,ROBOT,,1507205842,879153364,'','','',,1507205825,27270864,idle,MayNotBeCapable,GlobalFail,False,'','','','',-3,-4.50264
+1.50720584509458E+018,10,7,OBSERVATION,,1507205845,93202162,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),FAIL,'','',''
+1.50720584509583E+018,10,7,HUMAN,,1507205845,94819046,beginner,thinker,YES,,1507205843,937123327,idle,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720585130377E+018,11,0,MANAGER,,1507205851,303582509,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720585224538E+018,11,0,HUMAN,,1507205852,244480220,beginner,stubborn,YES,,1507205852,169376655,idle,TaskHuman,GlobalFail,False,'','','','','',''
+1.50720585511483E+018,11,1,ROBOT,,1507205855,113725336,'','','',,1507205852,475898455,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720585761131E+018,11,1,OBSERVATION,,1507205857,609932987,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720585886798E+018,11,1,HUMAN,,1507205858,866385197,beginner,stubborn,YES,,1507205856,189944209,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720586460834E+018,11,2,ROBOT,,1507205864,606989616,'','','',,1507205858,865527322,planning for grasping,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720586722786E+018,11,2,OBSERVATION,,1507205867,226524078,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720586853221E+018,11,2,HUMAN,,1507205868,530623604,beginner,stubborn,YES,,1507205865,666814270,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720587206159E+018,11,3,ROBOT,,1507205872,60510678,'','','',,1507205868,527498687,idle,TaskHuman,NeedsHelp,False,'','','','',0,0
+1.50720587412792E+018,11,3,OBSERVATION,,1507205874,126586583,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720587542724E+018,11,3,HUMAN,,1507205875,426028789,beginner,stubborn,YES,,1507205873,135547693,idle,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720587706437E+018,11,4,ROBOT,,1507205877,63080163,'','','',,1507205875,424901600,planning for grasping,MayNotBeCapable,MayNotBeCapable,True,'','','','',0,0
+1.5072058838099E+018,11,4,SENSORS,,1507205883,809769109,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720588492924E+018,11,4,OBSERVATION,,1507205884,927919783,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720588626215E+018,11,4,HUMAN,,1507205886,260727877,beginner,stubborn,YES,,1507205878,133857206,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720588721366E+018,11,5,ROBOT,,1507205887,212361123,'','','',,1507205886,257158574,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.53421
+1.50720589021134E+018,11,5,OBSERVATION,,1507205890,209866927,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720589150034E+018,11,5,HUMAN,,1507205891,498945226,beginner,stubborn,YES,,1507205888,282739572,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720590046677E+018,12,0,MANAGER,,1507205900,466537771,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720590152823E+018,12,0,HUMAN,,1507205901,527142341,beginner,stubborn,YES,,1507205901,334423554,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720590529833E+018,12,1,ROBOT,,1507205905,297135409,'','','',,1507205901,643502945,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720591141071E+018,12,1,SENSORS,,1507205911,410637807,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720591214499E+018,12,1,OBSERVATION,,1507205912,143636054,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720591339353E+018,12,1,HUMAN,,1507205913,392003818,beginner,stubborn,YES,,1507205906,360531197,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720591433836E+018,12,2,ROBOT,,1507205914,337213625,'','','',,1507205913,390014668,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720591616171E+018,12,2,OBSERVATION,,1507205916,160462223,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720591741639E+018,12,2,HUMAN,,1507205917,415093097,beginner,stubborn,YES,,1507205915,422188789,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720592392085E+018,13,0,MANAGER,,1507205923,919810925,beginner,thinker,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720592501071E+018,13,0,HUMAN,,1507205925,9251415,beginner,thinker,YES,,1507205924,815886059,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720592641032E+018,13,1,ROBOT,,1507205926,409055179,'','','',,1507205925,110202997,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720592916123E+018,13,1,OBSERVATION,,1507205929,159814452,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720593042951E+018,13,1,HUMAN,,1507205930,427930523,beginner,thinker,YES,,1507205927,506327119,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720593173735E+018,13,2,ROBOT,,1507205931,736415729,'','','',,1507205930,426766183,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,0
+1.50720593741094E+018,13,2,SENSORS,,1507205937,410760158,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720593921145E+018,13,2,OBSERVATION,,1507205939,209863347,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720594050376E+018,13,2,HUMAN,,1507205940,501314114,beginner,thinker,YES,,1507205932,824204250,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720594172237E+018,13,3,ROBOT,,1507205941,721262931,'','','',,1507205940,500072688,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.7624
+1.50720594444643E+018,13,3,OBSERVATION,,1507205944,444677926,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720594572707E+018,13,3,HUMAN,,1507205945,725806414,beginner,thinker,YES,,1507205942,774700615,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720596263914E+018,14,0,MANAGER,,1507205962,638916430,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720596361922E+018,14,0,HUMAN,,1507205963,617489496,beginner,stubborn,YES,,1507205963,509877170,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720596686668E+018,14,1,ROBOT,,1507205966,865294670,'','','',,1507205963,830009283,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720597241075E+018,14,1,SENSORS,,1507205972,410632914,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720597409517E+018,14,1,OBSERVATION,,1507205974,93616695,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720597535033E+018,14,1,HUMAN,,1507205975,349037276,beginner,stubborn,YES,,1507205967,981027830,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720597928941E+018,14,2,ROBOT,,1507205979,288310627,'','','',,1507205975,348137378,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720598142875E+018,14,2,OBSERVATION,,1507205981,426848146,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720598197042E+018,14,2,HUMAN,,1507205981,968852540,beginner,stubborn,YES,,1507205980,364587672,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720633001784E+018,15,0,MANAGER,,1507206330,17708432,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.5072063312021E+018,15,0,HUMAN,,1507206331,200892523,beginner,stubborn,YES,,1507206330,863927018,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720633309109E+018,15,1,ROBOT,,1507206333,89941617,'','','',,1507206331,218748828,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720633584465E+018,15,1,OBSERVATION,,1507206335,842547068,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720633711459E+018,15,1,HUMAN,,1507206337,113377693,beginner,stubborn,YES,,1507206334,169724733,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720633813792E+018,15,2,ROBOT,,1507206338,136432002,'','','',,1507206337,112483358,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720634436088E+018,15,2,SENSORS,,1507206344,360684201,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720634504397E+018,15,2,OBSERVATION,,1507206345,42349413,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720634633527E+018,15,2,HUMAN,,1507206346,333586216,beginner,stubborn,YES,,1507206339,200658651,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720634861983E+018,15,3,ROBOT,,1507206348,618537621,'','','',,1507206346,330049519,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.7624
+1.50720635099316E+018,15,3,OBSERVATION,,1507206350,991849249,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720635124484E+018,15,3,HUMAN,,1507206351,243374241,beginner,stubborn,YES,,1507206349,673463891,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720635739019E+018,16,0,MANAGER,,1507206357,388174460,beginner,tired,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720635851209E+018,16,0,HUMAN,,1507206358,510661982,beginner,tired,YES,,1507206358,233758715,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720636087639E+018,16,1,ROBOT,,1507206360,874842783,'','','',,1507206358,592363725,idle,TaskHuman,MayBeTired,False,'','','','',0,0
+1.50720636636099E+018,16,1,SENSORS,,1507206366,360804077,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720636821493E+018,16,1,OBSERVATION,,1507206368,213543074,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720636947692E+018,16,1,HUMAN,,1507206369,475490113,beginner,tired,YES,,1507206361,936574489,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720637008265E+018,16,2,ROBOT,,1507206370,81461583,'','','',,1507206369,473383489,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720637266235E+018,16,2,OBSERVATION,,1507206372,659892395,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720637340456E+018,16,2,HUMAN,,1507206373,402193218,beginner,tired,YES,,1507206371,147060506,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720637969897E+018,17,0,MANAGER,,1507206379,698832242,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720638078307E+018,17,0,HUMAN,,1507206380,781873670,beginner,stubborn,YES,,1507206380,578008738,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720638256416E+018,17,1,ROBOT,,1507206382,562680593,'','','',,1507206380,900085507,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720638481479E+018,17,1,OBSERVATION,,1507206384,813606033,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720638610716E+018,17,1,HUMAN,,1507206386,105915397,beginner,stubborn,YES,,1507206383,632657626,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720639047037E+018,17,2,ROBOT,,1507206390,468954926,'','','',,1507206386,105154497,planning for grasping,MayNotBeCapable,MayNotBeCapable,True,'','','','',0,0
+1.50720639283399E+018,17,2,OBSERVATION,,1507206392,832732928,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720639412378E+018,17,2,HUMAN,,1507206394,122091942,beginner,stubborn,YES,,1507206391,536461469,grasp,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720639923491E+018,17,3,ROBOT,,1507206399,233519854,'','','',,1507206394,121199236,idle,TaskHuman,NeedsHelp,False,'','','','',0,0
+1.50720640199825E+018,17,3,OBSERVATION,,1507206401,996885303,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720640328912E+018,17,3,HUMAN,,1507206403,287756253,beginner,stubborn,YES,,1507206400,294344882,grasp,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720641219685E+018,17,4,SENSORS,,1507206412,196758145,'','','',,0,0,'','','',False,'','',FAIL,'','',''
+1.50720641219686E+018,17,4,ROBOT,,1507206411,845699434,'','','',,1507206403,286802076,planning for grasping,MayNotBeCapable,GlobalFail,False,'','','','',-3,-2.82358
+1.5072064146988E+018,17,4,OBSERVATION,,1507206414,697382539,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),FAIL,'','',''
+1.50720641597389E+018,17,4,HUMAN,,1507206415,972215049,beginner,stubborn,YES,,1507206413,293173955,idle,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720655183824E+018,18,0,MANAGER,,1507206551,838090132,beginner,thinker,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720655277934E+018,18,0,HUMAN,,1507206552,777942840,beginner,thinker,YES,,1507206552,662878415,idle,TaskHuman,GlobalFail,False,'','','','','',''
+1.50720655443646E+018,18,1,ROBOT,,1507206554,435258609,'','','',,1507206553,45525886,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720655702912E+018,18,1,OBSERVATION,,1507206557,27438896,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720655829535E+018,18,1,HUMAN,,1507206558,293724263,beginner,thinker,YES,,1507206555,525486099,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720656240018E+018,18,2,ROBOT,,1507206562,398695949,'','','',,1507206558,290560281,planning for grasping,TaskHuman,MayNotBeCapable,False,'','','','',0,0
+1.50720656446326E+018,18,2,OBSERVATION,,1507206564,461707410,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720656574081E+018,18,2,HUMAN,,1507206565,739662457,beginner,thinker,YES,,1507206563,478567545,idle,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720656767282E+018,18,3,ROBOT,,1507206567,671395073,'','','',,1507206565,738729781,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720656984551E+018,18,3,OBSERVATION,,1507206569,844161916,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720657113123E+018,18,3,HUMAN,,1507206571,129837109,beginner,thinker,YES,,1507206568,737905837,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720657475423E+018,18,4,ROBOT,,1507206574,752995537,'','','',,1507206571,128841754,planning for grasping,MayBeTired,MayNotBeCapable,False,'','','','',0,0
+1.50720657722966E+018,18,4,OBSERVATION,,1507206577,228171639,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720657853266E+018,18,4,HUMAN,,1507206578,531245110,beginner,thinker,YES,,1507206575,821962230,idle,Evaluating,Evaluating,True,'','','','','',''
+1.5072065795618E+018,18,5,ROBOT,,1507206579,560499492,'','','',,1507206578,530167516,planning for grasping,NoFocus,MayNotBeCapable,False,'','','','',0,0
+1.50720658484604E+018,18,5,SENSORS,,1507206584,845912030,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720658741258E+018,18,5,OBSERVATION,,1507206587,411231743,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720658868945E+018,18,5,HUMAN,,1507206588,687989953,beginner,thinker,YES,,1507206580,626933232,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720658995421E+018,18,6,ROBOT,,1507206589,953041196,'','','',,1507206588,684586242,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.42352
+1.50720659219763E+018,18,6,OBSERVATION,,1507206592,194895703,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720680532928E+018,19,0,MANAGER,,1507206805,328927857,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.5072068064218E+018,19,0,HUMAN,,1507206806,420781803,beginner,stubborn,YES,,1507206806,234803790,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720680786957E+018,19,1,ROBOT,,1507206807,868470876,'','','',,1507206806,517667773,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720681080408E+018,19,1,OBSERVATION,,1507206810,802508201,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720681210443E+018,19,1,HUMAN,,1507206812,102517324,beginner,stubborn,YES,,1507206808,935552401,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720681849359E+018,19,2,ROBOT,,1507206818,492140352,'','','',,1507206812,99969138,idle,TaskHuman,GlobalFail,False,'','','','',-3,-2.94
+1.50720682174732E+018,19,2,OBSERVATION,,1507206821,745934649,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720682303491E+018,19,2,HUMAN,,1507206823,33697812,beginner,stubborn,YES,,1507206819,556796521,idle,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720682401571E+018,19,3,ROBOT,,1507206824,14636715,'','','',,1507206823,32972721,planning for grasping,MayNotBeCapable,TaskHuman,False,'','','','',0,-2.94
+1.50720682899801E+018,19,3,OBSERVATION,,1507206828,996408170,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720683028209E+018,19,3,HUMAN,,1507206830,280626554,beginner,stubborn,YES,,1507206825,98463324,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720702763898E+018,20,0,MANAGER,,1507207027,637807876,beginner,tired,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720702980014E+018,20,0,OBSERVATION,,1507207029,798237314,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720703106406E+018,20,0,HUMAN,,1507207031,62900178,beginner,tired,YES,,1507207028,524302067,idle,TaskHuman,Evaluating,False,'','','','','',''
+1.50720703173011E+018,20,1,ROBOT,,1507207031,727823883,'','','',,1507207031,61616248,planning for grasping,TaskHuman,MayBeTired,False,'','','','',0,0
+1.50720703453277E+018,20,1,OBSERVATION,,1507207034,531378072,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720703582561E+018,20,1,HUMAN,,1507207035,824290773,beginner,tired,YES,,1507207032,804658658,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720703634466E+018,20,2,ROBOT,,1507207036,342988891,'','','',,1507207035,821134155,idle,TaskHuman,MayBeTired,False,'','','','',0,0
+1.50720704268242E+018,20,2,SENSORS,,1507207042,682268222,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720704346637E+018,20,2,OBSERVATION,,1507207043,465082751,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720704476701E+018,20,2,HUMAN,,1507207044,765756953,beginner,tired,YES,,1507207037,429278960,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720704541814E+018,20,3,ROBOT,,1507207045,416948430,'','','',,1507207044,764663799,planning for grasping,MayBeTired,GlobalSuccess,False,'','','','',6,5.64715
+1.50720704813365E+018,20,3,OBSERVATION,,1507207048,131606877,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720704940998E+018,20,3,HUMAN,,1507207049,408721528,beginner,tired,YES,,1507207046,536805122,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.5072070572615E+018,21,0,MANAGER,,1507207057,261304462,beginner,tired,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720705823134E+018,21,0,HUMAN,,1507207058,230027329,beginner,tired,YES,,1507207058,127909272,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720705930112E+018,21,1,ROBOT,,1507207059,299371973,'','','',,1507207058,482257984,idle,TaskHuman,MayBeTired,False,'','','','',0,0
+1.50720706271607E+018,21,1,OBSERVATION,,1507207062,714690213,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720706399049E+018,21,1,HUMAN,,1507207063,989158286,beginner,tired,YES,,1507207060,380708144,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720706473018E+018,21,2,ROBOT,,1507207064,728951162,'','','',,1507207063,988236399,planning for grasping,NoFocus,MayBeTired,False,'','','','',0,0
+1.50720707168246E+018,21,2,SENSORS,,1507207071,682331254,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720707331751E+018,21,2,OBSERVATION,,1507207073,316167968,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720707460468E+018,21,2,HUMAN,,1507207074,603323115,beginner,tired,YES,,1507207065,795388580,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720707547254E+018,21,3,ROBOT,,1507207075,471234218,'','','',,1507207074,602369398,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.7624
+1.50720707778268E+018,21,3,OBSERVATION,,1507207077,781329243,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.5072070785004E+018,21,3,HUMAN,,1507207078,499176721,beginner,tired,YES,,1507207076,558194282,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720708470509E+018,22,0,MANAGER,,1507207084,704899406,beginner,distracted,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720708829974E+018,22,0,OBSERVATION,,1507207088,298045767,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720708956262E+018,22,0,HUMAN,,1507207089,561157534,beginner,distracted,YES,,1507207085,537279432,looking around,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.5072070901959E+018,22,1,ROBOT,,1507207090,194576137,'','','',,1507207089,559926028,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720709218292E+018,22,1,OBSERVATION,,1507207092,181590683,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720709346989E+018,22,1,HUMAN,,1507207093,468305985,beginner,distracted,YES,,1507207091,267265637,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720709478777E+018,22,2,ROBOT,,1507207094,786482056,'','','',,1507207093,467336179,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,0
+1.50720710168217E+018,22,2,SENSORS,,1507207101,682067678,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720710349975E+018,22,2,OBSERVATION,,1507207103,498019481,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720710480108E+018,22,2,HUMAN,,1507207104,799083667,beginner,distracted,YES,,1507207095,860446720,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720710545996E+018,22,3,ROBOT,,1507207105,458928545,'','','',,1507207104,798333268,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.64715
+1.50720710741628E+018,22,3,OBSERVATION,,1507207107,414995123,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720710849416E+018,22,3,HUMAN,,1507207108,492709945,beginner,distracted,YES,,1507207106,554727834,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720711473409E+018,23,0,MANAGER,,1507207114,733952653,beginner,distracted,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720711576759E+018,23,0,HUMAN,,1507207115,766245660,beginner,distracted,YES,,1507207115,607335091,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720711718086E+018,23,1,ROBOT,,1507207117,179622944,'','','',,1507207115,940563655,idle,TaskHuman,NoFocus,False,'','','','',0,0
+1.50720712045775E+018,23,1,OBSERVATION,,1507207120,456252551,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720712172209E+018,23,1,HUMAN,,1507207121,720768225,beginner,distracted,YES,,1507207118,285469734,looking around,NoAttention,NoAttention,True,'','','','','',''
+1.50720712258247E+018,23,2,ROBOT,,1507207122,581314129,'','','',,1507207121,717872552,planning for grasping,NoFocus,NeedsToBeReminded,False,'','','','',0,0
+1.50720712553263E+018,23,2,OBSERVATION,,1507207125,531285869,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720712681869E+018,23,2,HUMAN,,1507207126,817389191,beginner,distracted,YES,,1507207123,642417280,looking around,NoAttention,NoAttention,True,'','','','','',''
+1.50720712757763E+018,23,3,ROBOT,,1507207127,575879920,'','','',,1507207126,816546470,planning for grasping,NeedsToBeReminded,TaskHuman,False,'','','','',0,0
+1.50720712956619E+018,23,3,OBSERVATION,,1507207129,564941110,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720713086872E+018,23,3,HUMAN,,1507207130,867308461,beginner,distracted,YES,,1507207128,641452168,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720713088457E+018,23,4,ROBOT,,1507207130,883404798,'','','',,1507207130,866273377,grasp,NeedsToBeReminded,TaskHuman,False,'','','','',-1,-0.941192
+1.50720713318288E+018,23,4,OBSERVATION,,1507207133,181439543,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720713448236E+018,23,4,HUMAN,,1507207134,481145923,beginner,distracted,YES,,1507207131,955031889,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720713496151E+018,23,5,ROBOT,,1507207134,959670418,'','','',,1507207134,480074435,point to remind,NeedsToBeReminded,NoFocus,False,'','','','',0,-0.941192
+1.50720713721615E+018,23,5,OBSERVATION,,1507207137,214729801,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720713853615E+018,23,5,HUMAN,,1507207138,534842888,beginner,distracted,YES,,1507207136,33114450,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720714699817E+018,23,6,SENSORS,,1507207146,998038575,'','','',,0,0,'','','',False,'','',FAIL,'','',''
+1.50720714798598E+018,23,6,ROBOT,,1507207147,984651097,'','','',,1507207138,532327979,planning for grasping,NoFocus,GlobalFail,False,'','','','',-3,-3.65295
+1.50720715161371E+018,23,6,OBSERVATION,,1507207151,611995860,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),FAIL,'','',''
+1.50720715161546E+018,23,6,HUMAN,,1507207151,614299358,beginner,distracted,YES,,1507207149,42786801,looking around,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720715874523E+018,24,0,MANAGER,,1507207158,745075375,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720715971781E+018,24,0,HUMAN,,1507207159,716785379,beginner,stubborn,YES,,1507207159,617717708,idle,TaskHuman,GlobalFail,False,'','','','','',''
+1.5072071613239E+018,24,1,ROBOT,,1507207161,322922061,'','','',,1507207159,931977331,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720716334959E+018,24,1,OBSERVATION,,1507207163,348012841,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720716464022E+018,24,1,HUMAN,,1507207164,638766009,beginner,stubborn,YES,,1507207162,380818611,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720716566002E+018,24,2,ROBOT,,1507207165,658810688,'','','',,1507207164,637739606,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.5072071682163E+018,24,2,OBSERVATION,,1507207168,214713211,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720716947628E+018,24,2,HUMAN,,1507207169,474928370,beginner,stubborn,YES,,1507207166,723086640,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720716956394E+018,24,3,ROBOT,,1507207169,562569185,'','','',,1507207169,473876596,planning for grasping,MayBeTired,TaskHuman,False,'','','','',0,0
+1.50720717243277E+018,24,3,OBSERVATION,,1507207172,431353208,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720717372964E+018,24,3,HUMAN,,1507207173,728271158,beginner,stubborn,YES,,1507207170,623529828,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720717716363E+018,24,4,ROBOT,,1507207177,162506051,'','','',,1507207173,724794183,planning for grasping,NoNeedHelp,NeedsHelp,False,'','','','',0,0
+1.50720717905003E+018,24,4,OBSERVATION,,1507207179,48253544,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720718036004E+018,24,4,HUMAN,,1507207180,358748032,beginner,stubborn,YES,,1507207178,243544807,idle,FailedToGrasp,FailedToGrasp,True,'','','','','',''
+1.50720718320447E+018,24,5,ROBOT,,1507207183,203429618,'','','',,1507207180,356670151,planning for grasping,NeedsHelp,MayNotBeCapable,False,'','','','',0,0
+1.50720718581739E+018,24,5,OBSERVATION,,1507207185,814752147,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720719099815E+018,24,5,HUMAN,,1507207187,136528271,beginner,stubborn,YES,,1507207184,275162283,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720719468199E+018,24,6,SENSORS,,1507207194,681889419,'','','',,0,0,'','','',False,'','',FAIL,'','',''
+1.50720719856397E+018,24,6,ROBOT,,1507207198,562907137,'','','',,1507207187,135440978,grasp,NoNeedHelp,GlobalFail,False,'','','','',-3,-2.71176
+1.50720720074748E+018,24,6,OBSERVATION,,1507207200,746132736,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),FAIL,'','',''
+1.5072072007488E+018,24,6,HUMAN,,1507207200,747750780,beginner,stubborn,YES,,1507207199,629783942,idle,GlobalFail,GlobalFail,True,'','','','','',''
+1.50720720758894E+018,25,0,MANAGER,,1507207207,588725030,beginner,stubborn,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720720858361E+018,25,0,HUMAN,,1507207208,582728103,beginner,stubborn,YES,,1507207208,464073672,idle,TaskHuman,GlobalFail,False,'','','','','',''
+1.50720721028465E+018,25,1,ROBOT,,1507207210,283317022,'','','',,1507207208,815150975,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720721568235E+018,25,1,SENSORS,,1507207215,682184085,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720721703628E+018,25,1,OBSERVATION,,1507207217,34839783,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720721832442E+018,25,1,HUMAN,,1507207218,322963367,beginner,stubborn,YES,,1507207211,358768915,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720721878012E+018,25,2,ROBOT,,1507207218,779081635,'','','',,1507207218,321195730,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.88
+1.50720722102933E+018,25,2,OBSERVATION,,1507207221,27878879,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720722103105E+018,25,2,HUMAN,,1507207221,29811634,beginner,stubborn,YES,,1507207219,833515724,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720722697427E+018,26,0,MANAGER,,1507207226,973076759,beginner,tired,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720722791761E+018,26,0,HUMAN,,1507207227,916541158,beginner,tired,YES,,1507207227,814108785,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720723063617E+018,26,1,ROBOT,,1507207230,635068916,'','','',,1507207228,167262741,idle,TaskHuman,MayBeTired,False,'','','','',0,0
+1.50720723393289E+018,26,1,OBSERVATION,,1507207233,931392594,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720723519235E+018,26,1,HUMAN,,1507207235,190711404,beginner,tired,YES,,1507207231,703006717,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720723586767E+018,26,2,ROBOT,,1507207235,866564567,'','','',,1507207235,189492474,planning for grasping,NoFocus,MayBeTired,False,'','','','',0,0
+1.50720723784952E+018,26,2,OBSERVATION,,1507207237,847963522,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.5072072391294E+018,26,2,HUMAN,,1507207239,127799490,beginner,tired,YES,,1507207236,924846675,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720724162387E+018,26,3,ROBOT,,1507207241,622683128,'','','',,1507207239,126584339,point to remind,NeedsToBeReminded,MayBeTired,False,'','','','',0,0
+1.50720724381692E+018,26,3,OBSERVATION,,1507207243,815169310,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720724506241E+018,26,3,HUMAN,,1507207245,60834615,beginner,tired,YES,,1507207242,688963203,looking around,NoAttention,NoAttention,True,'','','','','',''
+1.50720724547588E+018,26,4,ROBOT,,1507207245,474879572,'','','',,1507207245,57908821,planning for grasping,NoFocus,MayBeTired,False,'','','','',0,0
+1.50720724751623E+018,26,4,OBSERVATION,,1507207247,514768632,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.5072072488236E+018,26,4,HUMAN,,1507207248,821928776,beginner,tired,YES,,1507207246,527106047,looking around,Evaluating,Evaluating,True,'','','','','',''
+1.50720724941784E+018,26,5,ROBOT,,1507207249,416543145,'','','',,1507207248,818501122,planning for grasping,NeedsToBeReminded,MayBeTired,False,'','','','',0,0
+1.50720725929837E+018,26,5,SENSORS,,1507207259,298249976,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720725929855E+018,26,5,OBSERVATION,,1507207257,764668586,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720726054584E+018,26,5,HUMAN,,1507207260,544410219,beginner,tired,YES,,1507207250,488421036,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.5072072612489E+018,26,6,ROBOT,,1507207261,247549225,'','','',,1507207260,541586456,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,5.42352
+1.50720726371633E+018,26,6,OBSERVATION,,1507207263,714837583,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720726501583E+018,26,6,HUMAN,,1507207265,14293964,beginner,tired,YES,,1507207262,308055727,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
+1.50720727149635E+018,27,0,MANAGER,,1507207271,495824526,beginner,thinker,YES,,0,0,'','','',False,'','',START,'','',''
+1.50720727251498E+018,27,0,HUMAN,,1507207272,513821456,beginner,thinker,YES,,1507207272,368491063,idle,TaskHuman,GlobalSuccess,False,'','','','','',''
+1.50720727691647E+018,27,1,ROBOT,,1507207276,915285952,'','','',,1507207272,692134543,idle,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720727921628E+018,27,1,OBSERVATION,,1507207279,215030377,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720728047776E+018,27,1,HUMAN,,1507207280,476276153,beginner,thinker,YES,,1507207277,986723203,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720728129991E+018,27,2,ROBOT,,1507207281,297954459,'','','',,1507207280,475268113,planning for grasping,TaskHuman,TaskHuman,True,'','','','',0,0
+1.50720728311596E+018,27,2,OBSERVATION,,1507207283,114623262,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),ONGOING,'','',''
+1.50720728439077E+018,27,2,HUMAN,,1507207284,389531007,beginner,thinker,YES,,1507207282,360452215,idle,Evaluating,Evaluating,True,'','','','','',''
+1.50720728568163E+018,27,3,ROBOT,,1507207285,680180846,'','','',,1507207284,388613027,grasp,TaskHuman,TaskHuman,True,'','','','',-1,-0.9604
+1.50720729168235E+018,27,3,SENSORS,,1507207291,682183500,'','','',,0,0,'','','',False,'','',SUCCESS,human,'',''
+1.50720729336598E+018,27,3,OBSERVATION,,1507207293,364683536,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720729463534E+018,27,3,HUMAN,,1507207294,634003656,beginner,thinker,YES,,1507207286,741572922,grasp,Evaluating,Evaluating,True,'','','','','',''
+1.50720729518922E+018,27,4,ROBOT,,1507207295,187940409,'','','',,1507207294,631099492,idle,GlobalSuccess,GlobalSuccess,True,'','','','',6,4.68675
+1.50720729725032E+018,27,4,OBSERVATION,,1507207297,248224693,'','','',,0,0,'','','',False,LA (not OV),LA (not OV),SUCCESS,human,'',''
+1.50720729805365E+018,27,4,HUMAN,,1507207298,51790665,beginner,thinker,YES,,1507207296,263294325,idle,GlobalSuccess,GlobalSuccess,True,'','','','','',''
