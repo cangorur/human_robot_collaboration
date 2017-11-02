@@ -8,7 +8,7 @@ Below are the instructions to succesfully install the current HRC simulation on 
 ---
 
 ## Prerequisites
-### MORSE
+- MORSE
 
 Install Morse 1.3 - STABLE.
 
@@ -18,7 +18,7 @@ Overwrite your supervision file (of morse installed) with the file from the repo
 sudo cp ./supervision_services.py <morse_install_path>/lib/python3/dist-packages/morse/services/supervision_services.py
 ```
 
-### ROS
+- ROS
 
 The code is tested with ROS Kinetic on Ubuntu 16.04 machines.
 No special ROS packages are needed apart from those which come with a standard installation of ROS.
@@ -52,28 +52,30 @@ mkdir build
 cd build
 cmake ..
 make
+```
 
 We need to overwrite some morse source libraries
 Warning: Before we start overwriting some of the morse source files, you may want to create their copies!
 ```
 cd code/hrc_morse/src
-// We will replace human.py class with our version:
+# We will replace human.py class with our version:
 sudo cp human.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
-//We will replace pr2.py class with our version:
+# We will replace pr2.py class with our version:
 sudo cp pr2.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
-//We will replace main.py of blender with our version (a bug fix for overlayed objects):
+# We will replace main.py of blender with our version (a bug fix for overlayed objects):
 sudo cp main.py <morse_installation_path>/lib/python3/dist-packages/morse/blender/
-//Add the conveyor belt as a robot to open ros service interfaces to be able to control its operation
+# Add the conveyor belt as a robot to open ros service interfaces to be able to control its operation
 sudo cp conveyor.py <morse_installation_path>/lib/python3/dist-packages/morse/builder/robots/
 sudo cp conveyor_srv.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
 ```
+Now overwriting human and pr2 robot model blends and adding our conveyor belt design:
 ```
 cd code/hrc_morse/data
-//We will replace human.blend with our updated design:
+# We will replace human.blend with our updated design:
 sudo cp human.blend <morse_installation_path>/share/morse/data/robots/
-//We will replace pr2.blend with our updated design
+# We will replace pr2.blend with our updated design
 sudo cp pr2.blend <morse_installation_path>/share/morse/data/robots/
-//Add the conveyor belt blend drawing to the morse project
+# Add the conveyor belt blend drawing to the morse project
 sudo cp conveyor.blend <morse_installation_path>/share/morse/data/robots/
 ```
 
@@ -82,21 +84,23 @@ make surethat your builder script ("hrc_industry.py" in our case) has this line 
 from morse.builder.robots.conveyor import *
 ```
 
-To add more conveyor belts tip to tip (longer band), add these below to your builder script:
+To add more conveyor belts, add these below to your builder script:
+```
+Tip to tip (longer band)
 >conveyor1 = Conveyor()
 >conveyor1.translate(x, y, z)
 >conveyor2 = Conveyor()
 >conveyor2.translate(x, y-1.8, z)
 
-To add L shaped conveyor belts:
+L shaped conveyor belts:
 >conveyor1 = Conveyor()
 >conveyor1.translate(x, y, z)
 >conveyor2 = Conveyor()
 >conveyor2.translate(x + 1.4, y - 0.6, z)
 >conveyor2.rotate(z = pi/2) # if math is not imported, then z = 1.57
+```
 
-
-## RUNNING
+## Running
 ```
 cd code/
 morse import hrc_morse # --> this is to import the folder as a morse project
