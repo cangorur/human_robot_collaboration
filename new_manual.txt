@@ -3,15 +3,22 @@ This note involves steps to succesfully install the current HRC simulation (also
 STEPS to install:
 
 navigate to code/ros_ws/
->catkin_make
+>catkin_make install
+# If it gives an error (probably not able to find msg adn srv headers), this is a bug. Reinvoke catkin_make install. If still an error, navigate to build folder generated already by catkin_make, and invoke "make" inside it to force the compile.
 
-navigate to code/despot_MDP
+navigate to code/despot_MDP_human
 >mkdir build
 >cd build
 >cmake ..
 >make
 
-navigate to code/despot_POMDP
+navigate to code/despot_MDP_robot
+>mkdir build
+>cd build
+>cmake ..
+>make
+
+navigate to code/despot_POMDP_robot
 >mkdir build
 >cd build
 >cmake ..
@@ -36,7 +43,7 @@ We will replace human.blend with our updated design:
 We will replace pr2.blend with our updated design
 >sudo cp pr2.blend /opt/share/morse/data/robots/
 Add the conveyor belt blend drawing to the morse project
->sudo cp band.blend /opt/share/morse/data/robots/
+>sudo cp conveyor.blend /opt/share/morse/data/robots/
 
 make surethat your builder script has this line to import conveyor belt properly:
 >from morse.builder.robots.conveyor import *
@@ -63,3 +70,11 @@ STEPS to run:
 > roscore
 > morse run hrc_morse hrc_scenario.py
 > roslaunch hrc_ros hrc.launch
+
+Models:
+
+The models (human and robot types) can be defined under code/configs/scenario_config.json
+Just replace the type fields under the json file with the ones below:
+human types: expertise: "beginner / expert" || type:mood:"stubborn / thinker / distracted / tired" # Note that in time human is assigned randomly but more likely with distracted and tired types automatically.
+robot type: "proactive / reactive"
+
