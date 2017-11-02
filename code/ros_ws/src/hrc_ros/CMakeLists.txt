@@ -99,16 +99,20 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(hrc_task_manager 
 	src/hrc_task_manager/HRCTaskManager.cpp
 	src/hrc_task_manager/HRCTaskManagerNode.cpp)
+add_dependencies(hrc_task_manager ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(hrc_task_manager ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(hrc_human src/hrc_human.cpp)
+add_dependencies(hrc_human ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(hrc_human ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(hrc_robot src/hrc_robot.cpp)
+add_dependencies(hrc_robot ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(hrc_robot ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(hrc_observation src/hrc_obs.cpp)
+add_dependencies(hrc_observation ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(hrc_observation ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
