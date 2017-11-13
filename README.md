@@ -12,12 +12,6 @@ Below are the instructions to succesfully install the current HRC simulation on 
 
 Install Morse 1.3 - STABLE.
 
-Overwrite your supervision file (of morse installed) with the file from the repository (under the project folder):
- 
-```
-sudo cp ./supervision_services.py <morse_install_path>/lib/python3/dist-packages/morse/services/supervision_services.py
-```
-
 - ROS
 
 The code is tested with ROS Kinetic on Ubuntu 16.04 machines.
@@ -34,6 +28,7 @@ catkin_make install
 ```
 NOTE: If it gives an error (probably not able to find msg adn srv headers), this is a bug. Reinvoke catkin_make install. If still an error, navigate to build folder generated already by catkin_make, and invoke "make" inside it to force the compile.
 
+Now we will compile the DESPOT packages each tailored for different model executions in real-time: MDP for human and robot, POMDP for robot decision-making (autonomous):
 ```
 cd code/despot_MDP_human
 mkdir build
@@ -58,6 +53,8 @@ We need to overwrite some morse source libraries
 Warning: Before we start overwriting some of the morse source files, you may want to create their copies!
 ```
 cd code/hrc_morse/src
+# Overwrite your supervision file (of morse installed) with the file from the repository (under the project folder):
+sudo cp supervision_services.py <morse_install_path>/lib/python3/dist-packages/morse/services/supervision_services.py
 # We will replace human.py class with our version:
 sudo cp human.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
 # We will replace pr2.py class with our version:
