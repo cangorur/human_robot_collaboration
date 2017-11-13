@@ -21,31 +21,34 @@ human_y = scenario_config['conveyor']['location']['y'] - 0.74 # -0.5
 human.translate(human_x, human_y, 0)
 human.rotate(0, 0, -1.57)
 human.add_overlay('ros', 'human_overlay.HumanControlAndMonitor')
-# human.disable_keyboard_control()
-human.use_world_camera()
+human.disable_keyboard_control()
+# human.use_world_camera()
 # Default interface
 human.add_default_interface('ros')
 # human.add_service('socket')
 human.add_service('ros')
 
-
 # Creating a PR2 robot model
 
-robot = LocalizedPR2()
+robot = Morsy()
 robot_x = scenario_config['conveyor']['location']['x'] + 2.7
 robot_y = scenario_config['conveyor']['location']['y'] - 2.54 # -2.3
 robot.translate(robot_x, robot_y, 0.05)
 robot.rotate(0, 0, 1.57)
-robot.add_overlay('ros', 'robot_overlay.RobotControlAndMonitor')
+# robot.add_overlay('ros', 'robot_overlay.RobotControlAndMonitor')
 # Default interface
+# place your component at the correct location
+
+camera = Kinect()
+camera.properties(cam_width=2048, cam_height=2048, capturing=True)
+camera.translate(0, 0, 1.1)
+camera.frequency(25)
+robot.append(camera)
+camera.add_stream('ros')
+
 robot.add_default_interface('ros')
 # Service
 robot.add_service('ros')
-
-create_tray("tray_human", "green", human_x - 0.8, human_y, -90)
-create_tray("tray_robot", "green", robot_x - 0.8, robot_y, 90)
-create_tray("tray_unprocessed", "red", scenario_config['conveyor']['location']['x'] + 4.17,
-            scenario_config['conveyor']['location']['y'] - 1.6, -180) # -1.36
 
 ### Packages added below are to take a scenario picture ###
 

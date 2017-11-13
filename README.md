@@ -79,7 +79,7 @@ sudo cp pr2.blend <morse_installation_path>/share/morse/data/robots/
 sudo cp conveyor.blend <morse_installation_path>/share/morse/data/robots/
 ```
 
-make surethat your builder script ("hrc_industry.py" in our case) has this line to import conveyor belt properly:
+make sure that your builder script ("hrc_scenario.py" in our case) has this line to import conveyor belt properly:
 ```
 from morse.builder.robots.conveyor import *
 ```
@@ -110,6 +110,8 @@ roscore
 morse run hrc_morse hrc_scenario.py
 roslaunch hrc_ros hrc.launch
 ```
+you can optionally call <hrc_scenario_cam_only.py> for a simplified scenario to use for human activity recognition (a dummy robot with Kinect camera on). 
+
 Every process is run by a rosservice call. Run "rosservice list" to see all available interfaces ! You can simply run each by typing "rosservice call /human/walk_away"
 To run the system:
 ```
@@ -117,7 +119,7 @@ rosservice call /hrc_task_manager/new_scenario_request
 ```
 This initiates the conveyor belts and a package. Package stops in between human and the robot and two terminals pops out. One terminal is for selecting human states to guide human actions (see human states from 0 to 10) under code/models/human_models (any model has the same human states). For the other terminal, it is robot's decision-making and it operates automatically, just for monitoring purposes. Once a package is stored/failed and fell into the unprocessed container, a scenario ends and you should manually close the two terminals popped out (this will be fixed in the future). A reinvoke of new scenario request will initiate another scenario. Just mind that as the task numbers increases human gets more tired/distracted/thinker leading him to fail to grasp or not attending.
 
-## Models
+## MDP, POMDP Models
 
 All the predesigned human and robot models can be found under code/models.
 
