@@ -8,6 +8,7 @@ from morse.core.services import service
 import time
 import math
 
+
 PI = math.pi
 
 
@@ -116,37 +117,58 @@ class Human(GraspingRobot):
         self.is_ov = False
         self.is_oir = False
 
+        self.rotate(185)
+        self.walk(3.5)
+        self.rotate(85)
+        self.walk(2)
+        self.stop_animation()
+
+    def walk(self, distance):
+        """ Moves and animates the human. """
+
+        frequency = 60
+        walk_speed = 0.025
+        duration = int(round(frequency * (distance / (frequency * walk_speed))))
+        update_interval = 1 / frequency
+
         human = self.bge_object
+        armature = blenderapi.scene().objects['human.armature']
 
-        N = 10
-        # turn left 180 degree
-        for i in range(10):
-            human.applyRotation([0, 0, math.radians(180) / N], True)
-            time.sleep(0.1)
+        for i in range(duration):
+            human.applyMovement([walk_speed, 0, 0], True)
+            armature['movingForward'] = True
+            armature.update()
+            time.sleep(update_interval)
 
-        time.sleep(0.3)
+    def rotate(self, degrees):
+        """ Rotates and animates the human. """
 
-        N = 20
-        # go ahead 3.5m
-        for i in range(N):
-            human.applyMovement([3.5 / N, 0, 0], True)
-            time.sleep(0.1)
+        frequency = 60
+        duration = int(round(frequency * (abs(degrees) / 180)))
+        rotation_speed = math.radians(180) / frequency # 180°/second
+        if degrees < 0:
+            rotation_speed = -rotation_speed
+        update_interval = 1 / frequency
 
-        time.sleep(0.3)
+        human = self.bge_object
+        armature = blenderapi.scene().objects['human.armature']
 
-        N = 10
-        # turn right 90 degree
-        for i in range(N):
-            human.applyRotation([0, 0, math.radians(90) / N], True)
-            time.sleep(0.1)
+        for i in range(duration):
+            human.applyRotation([0, 0, rotation_speed], True)
+            armature['movingForward'] = True
+            armature.update()
+            time.sleep(update_interval)
 
-        time.sleep(0.3)
-
-        N = 20
-        # go ahead 2m
-        for i in range(N):
-            human.applyMovement([2 / N, 0, 0], True)
-            time.sleep(0.1)
+    def stop_animation(self):
+        """ Stops animating the human after walk or rotation. """
+        
+        time.sleep(.3)
+        armature = blenderapi.scene().objects['human.armature']
+        armature['movingForward'] = False
+        for channel in armature.channels:     
+            channel.rotation_mode = 6
+            channel.joint_rotation = [0.0, 0.0, 0.0]
+        armature.update()
 
     @service
     def walk_back(self):
@@ -156,41 +178,14 @@ class Human(GraspingRobot):
             self.is_wa = False
         else:
             return
-        human = self.bge_object
+        
+        self.rotate(-180)
+        self.walk(2)
+        self.rotate(-85)
+        self.walk(3.5)
+        self.rotate(-5)
+        self.stop_animation()
 
-        N = 10
-        # turn 180 degree
-        for i in range(10):
-            human.applyRotation([0, 0, math.radians(180) / N], True)
-
-            time.sleep(0.1)
-
-        time.sleep(0.3)
-
-        N = 20
-        # go ahead 2m
-        for i in range(N):
-            human.applyMovement([2 / N, 0, 0], True)
-
-            time.sleep(0.1)
-
-        N = 10
-        # turn right 90 degree
-        for i in range(N):
-            human.applyRotation([0, 0, math.radians(-90) / N], True)
-
-            time.sleep(0.1)
-
-        time.sleep(0.3)
-
-        N = 20
-        # go ahead 3.5m
-        for i in range(N):
-            human.applyMovement([3.5 / N, 0, 0], True)
-
-            time.sleep(0.1)
-
-        time.sleep(0.3)
         self.is_ov = True
         self.is_oir = True
 
