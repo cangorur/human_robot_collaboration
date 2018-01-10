@@ -59,6 +59,10 @@ sudo cp supervision_services.py <morse_install_path>/lib/python3/dist-packages/m
 sudo cp human.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
 # We will replace pr2.py class with our version:
 sudo cp pr2.py <morse_installation_path>/lib/python3/dist-packages/morse/robots/
+# We will replace sensors.py class with our version:
+sudo cp sensors.py <morse_installation_path>/lib/python3/dist-packages/morse/builder/
+# We will replace human_posture.py class with our version:
+sudo cp human_posture.py <morse_installation_path>/lib/python3/dist-packages/morse/sensors/
 # We will replace main.py of blender with our version (a bug fix for overlayed objects):
 sudo cp main.py <morse_installation_path>/lib/python3/dist-packages/morse/blender/
 # Add the conveyor belt as a robot to open ros service interfaces to be able to control its operation
