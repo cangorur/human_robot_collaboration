@@ -50,7 +50,9 @@ void HRCTaskManager::initialize(){
 	 */
 	humanReset = nh.serviceClient<std_srvs::Trigger>("/human/reset");
 	robotReset = nh.serviceClient<std_srvs::Trigger>("/robot/reset");
-	conveyorOnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/switch_on_off");
+	conveyorPrinterOnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/printer_part/switch_on_off");
+        conveyorAssembly1OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part1/switch_on_off");
+        conveyorAssembly2OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part2/switch_on_off");
 	moveNewPackage = nh.serviceClient<hrc_ros::MoveNewPackage>("/package_manipulator/move_new_package");
 	
 	humanROSReset = nh.serviceClient<hrc_ros::ResetHumanROS>("/hrc_human/reset");
@@ -162,16 +164,20 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	hrc_ros::MoveNewPackage::Request req_ForPkg;
 	hrc_ros::MoveNewPackage::Response res_ForPkg;
 	req_ForPkg.package_id = "package1";
-	req_ForPkg.x = 5.7;
+	req_ForPkg.x = 5.5;
 	req_ForPkg.y = -2.1;
 	req_ForPkg.z = 0.8;
 	moveNewPackage.call(req_ForPkg, res_ForPkg);
 	// run the conveyor until pkg arrives between the human and the robot
 	std_srvs::Trigger::Request req_conveyor;
 	std_srvs::Trigger::Response res_conveyor;
-	conveyorOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
+	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
+	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
+	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
 	ros::Duration(3.5).sleep(); // sleep for half a second
-	conveyorOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
+	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
+	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
+	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
 	// ===============================
 	
 	// ========== RESET ROS AGENTS (HUMAN, OBSERVATION, ROBOT) =============
@@ -417,9 +423,9 @@ void HRCTaskManager::TaskFinishTimer(const ros::TimerEvent&){
 		std_srvs::Trigger::Request req;
 		std_srvs::Trigger::Response res;
 		
-		conveyorOnOff.call(req, res); // TODO: define a conveyor belt status flag (global)
+		conveyorAssembly2OnOff.call(req, res); // TODO: define a conveyor belt status flag (global)
 		ros::Duration(4).sleep(); // sleep for half a second
-		conveyorOnOff.call(req, res);
+		conveyorAssembly2OnOff.call(req, res);
 		task_time = 0;
 	}
 }

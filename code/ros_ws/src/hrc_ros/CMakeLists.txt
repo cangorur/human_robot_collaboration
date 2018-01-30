@@ -66,6 +66,7 @@ add_service_files(
    ResetObsROS.srv
    ResetRobotROS.srv
    MoveNewPackage.srv
+   SetConveyorSpeed.srv
 )
 
 ## Generate actions in the 'action' folder

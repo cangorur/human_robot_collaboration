@@ -38,23 +38,30 @@ def create_tray(tray_id, color, x, y, orientation):
 def create_conveyor(conveyor_config):
 
     if conveyor_config['type'] == "L":
-        conveyor1 = Conveyor(conveyor_config['id'])
+        conveyor1 = Conveyor(conveyor_config['id'] + '/printer_part')
         conveyor1.translate(conveyor_config['location']['x'], conveyor_config['location']['y'], 0)
-        conveyor2 = Conveyor()
+        conveyor2 = Conveyor(conveyor_config['id'] + '/assembly_part1')
         conveyor2.translate(conveyor_config['location']['x'] + 0.75, conveyor_config['location']['y'] - 1.6, 0) # -1.36
         conveyor2.rotate(z=1.57)
-        conveyor3 = Conveyor()
+        conveyor3 = Conveyor(conveyor_config['id'] + '/assembly_part2')
         conveyor3.translate(conveyor_config['location']['x'] + 0.75 + 1.9, conveyor_config['location']['y'] - 1.6, 0) #-1.36
         conveyor3.rotate(z=1.57)
+        
+        conveyor1.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
+        conveyor1.add_service('socket')  # as all the bands are using the same blend file, they share the global parameters
+        conveyor2.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
+        conveyor2.add_service('socket')  # as all the bands are using the same blend file, they share the global parameters
+        conveyor3.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
+        conveyor3.add_service('socket')  # as all the bands are using the same blend file, they share the global parameters
 
     else:  # tip to tip connection of the belts
-        conveyor1 = Conveyor(conveyor_config['id'])
+        conveyor1 = Conveyor(conveyor_config['id'] + '/printer_part')
         conveyor1.translate(conveyor_config['location']['x'], conveyor_config['location']['y'], 0)
-        conveyor2 = Conveyor()
+        conveyor2 = Conveyor(conveyor_config['id'] + '/assembly_part')
         conveyor2.translate(conveyor_config['location']['x'], conveyor_config['location']['y'] - 1.8, 0)
-
-    conveyor1.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
-    conveyor1.add_service('socket')  # as all the bands are using the same blend file, they share the global parameters
+        conveyor1.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
+        conveyor1.add_service('socket')  # as all the bands are using the same blend file, they share the global parameters
+        conveyor2.add_overlay('ros', 'conveyor_overlay.ConveyorControlOverlay')
 
     
 def create_package_pool(package_config):

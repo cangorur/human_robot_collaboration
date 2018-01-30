@@ -2,11 +2,12 @@ import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 from morse.core.services import service
 from morse.middleware.ros_request_manager import ros_service
-import bpy
-import fnmatch
 from morse.core import blenderapi
+
+import fnmatch
 import GameLogic
 import time
+import bpy
 import bge
 
 from std_srvs.srv import Trigger, TriggerResponse
@@ -16,8 +17,6 @@ class Conveyor(morse.core.robot.Robot):
     """ 
     Class definition for the conveyor robot.
     """
-    bge.logic.globalDict["rotation"]= [0.0]
-    
     _name = 'conveyor robot'
 
     def __init__(self, obj, parent=None):
@@ -45,8 +44,7 @@ class Conveyor(morse.core.robot.Robot):
 
     @service
     def set_speed(self, rotation):
-
-        bge.logic.globalDict["rotation"]= [rotation]
+        self.bge_object["rotation"] = rotation
         if rotation == 0.0:
             self.is_on = False
         else:

@@ -76,7 +76,9 @@ private:
 	ros::ServiceClient humanROSReset;
 	ros::ServiceClient obsROSReset;
 	ros::ServiceClient robotROSReset;
-	ros::ServiceClient conveyorOnOff;
+	ros::ServiceClient conveyorPrinterOnOff;
+	ros::ServiceClient conveyorAssembly1OnOff;
+	ros::ServiceClient conveyorAssembly2OnOff;
 	ros::ServiceClient moveNewPackage;
 	
 	/*
