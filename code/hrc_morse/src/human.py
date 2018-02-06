@@ -31,6 +31,7 @@ class Human(GraspingRobot):
         # these are to feed the human action back to the system (current state)
         self.is_wa = False  # is human walking away
         self.is_gr = False  # is human grasping
+        self.is_sd = False  # is human grasping
 
         self.is_la = False  # is human looking around
         self.is_wr = False  # is human warning the robot
@@ -58,12 +59,16 @@ class Human(GraspingRobot):
         if self.is_wa:
             self.walk_back()
 
+        if self.is_sd:
+            self.stand_up() # TODO: put stand_up action here
+
         self.is_wa = False
         self.is_gr = False
 
         self.is_la = False
         self.is_wr = False
         self.is_ag = False
+        self.is_sd = False
 
         self.is_ov = True
         self.is_oir = True
@@ -95,6 +100,67 @@ class Human(GraspingRobot):
 
         self.is_ov = True
         #self.is_oir = True
+
+    @service
+    def sit_down(self):
+        """ sit human down. """
+
+        if self.is_sd:
+            return
+        else:
+            self.is_sd = True
+
+        if self.is_la:
+            self.look_back()
+
+        if self.is_ag:
+            self.attempt_grasp_back()
+
+        if self.is_wr:
+            self.warn_robot_back()
+
+        self.is_ov = True
+        self.is_oir = True
+
+        armature = blenderapi.scene().objects['human.armature']
+
+        # human.applyMovement([sit_speed, 0, 0], True)
+        armature['sitDown'] = True
+        armature.update()
+        
+        time.sleep(.5)
+        """ Stops animating the human sitting down / standing up. """
+        armature['movingForward'] = False
+        armature.update()
+
+    @service
+    def stand_up(self):
+        """ sit human down. """
+
+        if not self.is_sd:
+            return
+        else:
+            self.is_sd = False
+
+        if self.is_la:
+            self.look_back()
+
+        if self.is_ag:
+            self.attempt_grasp_back()
+
+        if self.is_wr:
+            self.warn_robot_back()
+
+        armature = blenderapi.scene().objects['human.armature']
+
+        # human.applyMovement([sit_speed, 0, 0], True)
+        armature['standUp'] = True
+        armature.update()
+
+        time.sleep(.5)
+        """ Stops animating the human sitting down / standing up. """
+        armature['standUp'] = False
+        armature.update()
 
     @service
     def walk_away(self):

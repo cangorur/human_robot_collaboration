@@ -106,6 +106,24 @@ class HumanControlAndMonitor(MorseOverlay):
         else:
             return TriggerResponse(True, 'human: action(walk away) is not finished')
 
+    @ros_service(type=Trigger, name='sit_down')
+    def sit_down(self):
+        if not self.overlaid_object.is_sd:
+            t1 = threading.Thread(target=self.overlaid_object.sit_down)
+            t1.start()
+            return TriggerResponse(True, 'human: sitting down')
+        else:
+            return TriggerResponse(True, 'human: action(sitting down) is not finished')
+
+    @ros_service(type=Trigger, name='stand_up')
+    def stand_up(self):
+        if self.overlaid_object.is_sd:
+            t1 = threading.Thread(target=self.overlaid_object.stand_up)
+            t1.start()
+            return TriggerResponse(True, 'human: standing up')
+        else:
+            return TriggerResponse(True, 'human: action(standing up) is not finished')
+
     @ros_service(type=Trigger, name='look_around')
     def look_around(self):
         if not self.overlaid_object.is_la:
