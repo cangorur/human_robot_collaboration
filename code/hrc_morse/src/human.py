@@ -130,7 +130,7 @@ class Human(GraspingRobot):
         
         time.sleep(.5)
         """ Stops animating the human sitting down / standing up. """
-        armature['movingForward'] = False
+        armature['sitDown'] = False
         armature.update()
 
     @service
