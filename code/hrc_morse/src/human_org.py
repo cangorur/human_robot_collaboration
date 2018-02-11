@@ -50,7 +50,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back()
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -92,7 +92,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back()
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -113,7 +113,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back()
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -145,7 +145,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back()
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -174,7 +174,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back()
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -193,7 +193,7 @@ class Human(GraspingRobot):
         """ Moves and animates the human. """
 
         frequency = 60
-        walk_speed = 0.05
+        walk_speed = 0.025
         duration = int(round(frequency * (distance / (frequency * walk_speed))))
         update_interval = 1 / frequency
 
@@ -209,13 +209,11 @@ class Human(GraspingRobot):
     def rotate(self, degrees):
         """ Rotates and animates the human. """
 
-        frequency = 10
+        frequency = 60
         duration = int(round(frequency * (abs(degrees) / 180)))
         rotation_speed = math.radians(180) / frequency # 180°/second
-
         if degrees < 0:
             rotation_speed = -rotation_speed
-        
         update_interval = 1 / frequency
 
         human = self.bge_object
@@ -280,7 +278,7 @@ class Human(GraspingRobot):
         if self.is_la:
             return
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         if self.is_wr:
@@ -289,19 +287,10 @@ class Human(GraspingRobot):
         scene = blenderapi.scene()
         target = scene.objects['Look_Empty']
 
-        # look left up, left
+        # look left
         N = 10
         for i in range(N):
-            target.applyMovement([0, -PI / 2 / N, PI / 2 / N], True)
-            # target.applyMovement([0, 0, PI / 9 / N], True)
-            time.sleep(0.1)
-        for i in range(N):
-            target.applyMovement([0, 0, -PI / 2 / N], True)
-            # target.applyMovement([0, 0, -PI / 1.5 / N], True)
-            time.sleep(0.05)
-        time.sleep(1.5)
-        for i in range(N):
-            target.applyMovement([0, PI / N, 0], True)
+            target.applyMovement([0, PI / 2 / N, 0], True)
             time.sleep(0.1)
 
         self.is_la = True
@@ -314,10 +303,10 @@ class Human(GraspingRobot):
         target = scene.objects['Look_Empty']
 
         # look right
-        N = 5
+        N = 10
         for i in range(N):
-            target.applyMovement([0, -PI / 2 / N, 0], True)
-            time.sleep(0.05)
+            target.applyMovement([0, -1 * PI / 2 / N, 0], True)
+            time.sleep(0.1)
 
         self.is_la = False
         self.is_ov = True
@@ -363,7 +352,7 @@ class Human(GraspingRobot):
         if self.is_la:
             self.look_back();
 
-        if self.is_ag or self.is_gr:
+        if self.is_ag:
             self.attempt_grasp_back()
 
         scene = blenderapi.scene()
@@ -418,20 +407,19 @@ class Human(GraspingRobot):
     @service
     def grasp(self):
         ''' grasp object '''
-        
-        if self.is_gr or self.is_ag:
-            self.attempt_grasp_back()
+        self.is_gr = True
+
         if self.is_la:
             self.look_back()
+
         if self.is_wr:
             self.warn_robot_back()
-        self.is_gr = True
 
         scene = blenderapi.scene()
         hand_r = scene.objects['IK_Target_Empty.R']
         hand_l = scene.objects['IK_Target_Empty.L']
         dest = scene.objects['IK_Pose_Empty.R']
-        target = scene.objects['Look_Empty']    
+        target = scene.objects['Target_Empty'] # head
 
         obj = scene.objects['package1']
 
@@ -441,18 +429,17 @@ class Human(GraspingRobot):
         vec2 = obj.localPosition
 
         f_speed = (vec2 - vec1)
-        f_speed_right = [0.6, 0, 0.1]
-        f_speed_left = [0.6, 0, 0]
+        f_speed = [0.6, 0, 0.1]
         # fetch
         N = 5
         for i in range(N):
-            target.applyMovement([0, 0, -PI / 9 / N], True)
+            target.applyMovement([0, 0, PI / 2 / N], True)
             time.sleep(0.1)
 
         N = 5
         for i in range(N):
-            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
-            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+            hand_r.applyMovement([f_speed[0] / N, f_speed[1] / N, f_speed[2] / N], True)
+            hand_l.applyMovement([f_speed[0] / N, f_speed[1] / N, -f_speed[2] / N], True)
 
             time.sleep(0.1)
 
@@ -496,7 +483,8 @@ class Human(GraspingRobot):
 
             obj.worldPosition[2] -= 0.1
             obj.removeParent()
-            self.attempt_grasp_back()
+            hand_r.localPosition = [0, -0.2, 0.82]
+            hand_l.localPosition = [0, 0.2, 0.82]
             time.sleep(0.5)
             self.is_ho = False
 
@@ -508,33 +496,34 @@ class Human(GraspingRobot):
 
             human.worldPosition = [7.7, -1.25, 0]
             human.worldOrientation = [0, 0, -1.57]
+            self.is_gr = False
             return True
 
         else:
-            self.attempt_grasp_back()
+            hand_r.localPosition = [0, -0.2, 0.82]
+            hand_l.localPosition = [0, 0.2, 0.82]
+            self.is_gr = False
             self.is_ho = False
             return False
 
     @service
     def attempt_grasp(self):
         ''' attempt to grasp object '''
-        
-        if self.is_gr or self.is_ag:
-            self.attempt_grasp_back()
-        if self.is_la:
-            self.look_back()
-        if self.is_wr:
-            self.warn_robot_back()
-
         self.is_ag = True
         self.is_gr = True
         self.is_ho = False
+
+        if self.is_la:
+            self.look_back()
+
+        if self.is_wr:
+            self.warn_robot_back()
 
         scene = blenderapi.scene()
         hand_r = scene.objects['IK_Target_Empty.R']
         hand_l = scene.objects['IK_Target_Empty.L']
         dest = scene.objects['IK_Pose_Empty.R']
-        target = scene.objects['Look_Empty']
+        target = scene.objects['Target_Empty']
 
         obj = scene.objects['package1']
 
@@ -549,7 +538,7 @@ class Human(GraspingRobot):
 
         N = 5
         for i in range(N):
-            target.applyMovement([0, 0, -PI / 9 / N], True)
+            target.applyMovement([0, 0, PI / 2 / N], True)
             time.sleep(0.1)
 
         N = 5
@@ -575,13 +564,20 @@ class Human(GraspingRobot):
                     time.sleep(0.1)
 
             obj.worldPosition = [7.7, -2.1, 0.80]
-            self.attempt_grasp_back()
+            hand_r.localPosition = [0, -0.2, 0.82]
+            hand_l.localPosition = [0, 0.2, 0.82]
+
             time.sleep(0.5)
             self.is_ho = False
+            self.is_ag = False
+            self.is_gr = False
             return True
 
         else:
-            self.attempt_grasp_back()
+            hand_r.localPosition = [0, -0.2, 0.82]
+            hand_l.localPosition = [0, 0.2, 0.82]
+            self.is_gr = False
+            self.is_ag = False
             self.is_ho = False
             return False
 
@@ -591,14 +587,9 @@ class Human(GraspingRobot):
         scene = blenderapi.scene()
         hand_r = scene.objects['IK_Target_Empty.R']
         hand_l = scene.objects['IK_Target_Empty.L']
-        target = scene.objects['Look_Empty']    
         # back
         hand_r.localPosition = [0, -0.2, 0.82]
         hand_l.localPosition = [0, 0.2, 0.82]
-        N = 5
-        for i in range(N):
-            target.applyMovement([0, 0, PI / 9 / N], True)
-            time.sleep(0.1)
 
         self.is_ag = False
         self.is_gr = False
