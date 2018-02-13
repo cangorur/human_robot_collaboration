@@ -149,6 +149,7 @@ class HumanControlAndMonitor(MorseOverlay):
         else:
             # TODO: here is also to be threaded. Right now as it is a successful grasp robot waits for it to be finished
             if not self.overlaid_object.is_gr:
+                # success = self.overlaid_object.grasp_animated()
                 success = self.overlaid_object.grasp()
                 return TriggerResponse(True, 'human: grasp object')
             else:

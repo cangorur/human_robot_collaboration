@@ -416,6 +416,37 @@ class Human(GraspingRobot):
         self.is_wr = False
 
     @service
+    def grasp_animated(self):
+        ''' grasp object '''
+
+        if self.is_gr or self.is_ag:
+            self.attempt_grasp_back()
+        if self.is_la:
+            self.look_back()
+        if self.is_wr:
+            self.warn_robot_back()
+        self.is_gr = True
+
+        """ Animating the human bending to grab object """
+
+        frequency = 60
+        grab_speed = 0.05
+        duration = int(round(frequency * (1 / (frequency * grab_speed))))
+        update_interval = 1 / frequency
+
+        human = self.bge_object
+        armature = blenderapi.scene().objects['human.armature']
+
+        for i in range(duration):
+            armature['bendToGrab'] = True
+            armature.update()
+            time.sleep(update_interval)
+
+        time.sleep(.5)
+        armature['bendToGrab'] = False
+        armature.update()
+
+    @service
     def grasp(self):
         ''' grasp object '''
         
