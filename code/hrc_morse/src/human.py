@@ -462,7 +462,8 @@ class Human(GraspingRobot):
         hand_r = scene.objects['IK_Target_Empty.R']
         hand_l = scene.objects['IK_Target_Empty.L']
         dest = scene.objects['IK_Pose_Empty.R']
-        target = scene.objects['Look_Empty']    
+        head = scene.objects['Look_Empty']
+        back = scene.objects['Hips_Empty']
 
         obj = scene.objects['package1']
 
@@ -472,20 +473,23 @@ class Human(GraspingRobot):
         vec2 = obj.localPosition
 
         f_speed = (vec2 - vec1)
-        f_speed_right = [0.6, 0, 0.1]
-        f_speed_left = [0.6, 0, 0]
+        f_speed_right = [0.6, -0.07, -0.1]
+        f_speed_left = [0.6, 0.07, -0.1]
+        f_speed_back = [50 * PI/180, 0, 0]
         # fetch
-        N = 5
-        for i in range(N):
-            target.applyMovement([0, 0, -PI / 9 / N], True)
-            time.sleep(0.1)
 
-        N = 5
+        N = 50
         for i in range(N):
-            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
-            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
-
-            time.sleep(0.1)
+            if i >= 25:
+                hand_r.applyMovement([f_speed_right[0] / N, -f_speed_right[1] / N, f_speed_right[2] / N], True)
+                hand_l.applyMovement([f_speed_left[0] / N, -f_speed_left[1] / N, f_speed_left[2] / N], True)
+                back.applyRotation([f_speed_back[0] / N, f_speed_back[1] / N, f_speed_back[2] / N], True)
+            else:
+                head.applyMovement([0, 0, -PI / 9 / N / 2], True)
+                hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+                hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+                back.applyRotation([f_speed_back[0] / N, f_speed_back[1] / N, f_speed_back[2] / N], True)
+            time.sleep(0.01)
 
         time.sleep(1)
 
@@ -493,7 +497,7 @@ class Human(GraspingRobot):
 
         # back
         dist = self.distance()
-
+        '''
         # TODO: below the distance calculation will be fixed
         if dist < self.MIN_DIST:
             f_speed = [-0.4, 0, -0.1]
@@ -540,12 +544,11 @@ class Human(GraspingRobot):
             human.worldPosition = [7.7, -1.25, 0]
             human.worldOrientation = [0, 0, -1.57]
             return True
-
         else:
             self.attempt_grasp_back()
             self.is_ho = False
             return False
-
+        '''
     @service
     def attempt_grasp(self):
         ''' attempt to grasp object '''
