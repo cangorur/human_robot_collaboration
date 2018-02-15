@@ -44,7 +44,7 @@ class Human(GraspingRobot):
         # Default head configuration is to look down
         scene = blenderapi.scene()
         head = scene.objects['Look_Empty']
-        f_speed_head = [0, 0, -0.1]
+        f_speed_head = [0, 0, -0.3]
         N = 10
         for i in range(N):
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
@@ -489,28 +489,44 @@ class Human(GraspingRobot):
 
         obj = scene.objects['package1']
 
-        ''' fetch hand '''
-        vec1 = hand_r.localPosition
-        # vec2 = dest.localPosition
+        ''' the locations below are not used as they are not providing accurate uptodate info '''
+        init_local_hand_r = hand_r.localPosition
+        init_local_hand_l = hand_l.localPosition
+        init_local_head = head.localPosition
+        init_local_back = back.localPosition
+        # TODO: find sth to get the current rotation of the back
+        # init_local_back_rot = back.localRotation
+
         vec2 = obj.localPosition
 
-        f_speed_head = [0, 0, -1]
-        f_speed_right = [0.90, 0.1, -0.1]
-        f_speed_left = [0.90, -0.1, -0.1]
+        ####### MOTION - 1 #######
+        # bend to grab the object
+        f_speed_head = [0, 0, -0.4]
+        f_speed_right = [0.80, 0.1, -0.1]
+        f_speed_left = [0.80, -0.1, -0.1]
         f_speed_back_rot = [45 * PI/180, 0, 0]
-        f_speed_back_loc = [0, 0, 0.25]
+        f_speed_back_loc = [0, -0.15, 0]
         # fetch
 
-        N = 25
+        N = 50
         for i in range(N):
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
             hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
             hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
-            back.applyRotation([f_speed_back_rot[0] / N, f_speed_back_rot[1] / N, f_speed_back_rot[2] / N], True)
-            back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
-            time.sleep(0.01)
+            back.applyRotation([f_speed_back_rot[0] / (N), f_speed_back_rot[1] / (N), f_speed_back_rot[2] / (N)], True)
+            if i > (N/2):
+                back.applyMovement([f_speed_back_loc[0] / (N / 2), f_speed_back_loc[1] / (N / 2), f_speed_back_loc[2] / (N / 2)], True)
+
+            time.sleep(0.1)
 
         time.sleep(1)
+
+        change_hand_r = f_speed_right
+        change_hand_l = f_speed_left
+        change_head = f_speed_head
+        change_back = f_speed_back_loc
+        change_back_rot = f_speed_back_rot
+        ###########################
 
         self.is_gr = True
 
@@ -519,11 +535,14 @@ class Human(GraspingRobot):
 
         # TODO: below the distance calculation will be fixed
         if dist < self.MIN_DIST:
-            f_speed_head = [0, 0, 0.6]
-            f_speed_right = [-0.40, 0.05, 0.15]
-            f_speed_left = [-0.40, -0.05, 0.15]
+
+            ####### MOTION - 2 #######
+            # straighten up a bit to lift the object
+            f_speed_head = [0, 0, 0.3]
+            f_speed_right = [-0.40, 0.05, 0.1]
+            f_speed_left = [-0.40, -0.05, 0.1]
             f_speed_back_rot = [-35 * PI / 180, 0, 0]
-            f_speed_back_loc = [0, 0, -0.02]
+            f_speed_back_loc = [0, 0.1, 0]
             obj.setParent(hand_r)
             N = 50
             for i in range(N):
@@ -532,39 +551,77 @@ class Human(GraspingRobot):
                 hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
                 back.applyRotation([f_speed_back_rot[0] / N, f_speed_back_rot[1] / N, f_speed_back_rot[2] / N], True)
                 back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
-                obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1], hand_r.worldPosition[2] + 0.1]
+                obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1] + 0.2, hand_r.worldPosition[2] + 0.1]
                 time.sleep(0.01)
 
+            change_hand_r = [x + y for x,y in zip(change_hand_r, f_speed_right)]
+            change_hand_l = [x + y for x,y in zip(change_hand_l, f_speed_left)]
+            change_head = [x + y for x,y in zip(change_head, f_speed_head)]
+            change_back = [x + y for x,y in zip(change_back, f_speed_back_loc)]
+            change_back_rot = [x + y for x,y in zip(change_back_rot, f_speed_back_rot)]
+            ###########################
 
             self.is_ho = True
-            # putting the object into the container
             human = self.bge_object
             '''
             hand_r.localPosition = [0.25, -0.2, 0.8]
             hand_l.localPosition = [0.25, 0.2, 0.8]
             obj.worldPosition = [hand_r.worldPosition[0] - 0.2, hand_r.worldPosition[1] - 0.3, hand_r.worldPosition[2] + 0.3]
             '''
-            N = 10
+            ####### MOTION - 3 #######
             # turn right 90 degree
+            N = 10
             for i in range(N):
                 human.applyRotation([0, 0, math.radians(-90) / N], True)
                 obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1],
                                      hand_r.worldPosition[2] + 0.1]
                 time.sleep(0.1)
 
-            obj.worldPosition[2] -= 0.15
-            obj.worldPosition[1] -= 0.15
+            ####### MOTION - 4 #######
+            # bend a bit down to drop the object
+            f_speed_head = [0, 0, -0.4]
+            f_speed_right = [0.30, 0, -0.15]
+            f_speed_left = [0.30, 0, -0.15]
+            f_speed_back_rot = [30 * PI / 180, 0, 0]
+            f_speed_back_loc = [0, 0, 0.1]
+            # fetch
+
+            N = 25
+            for i in range(N):
+                head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
+                hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+                hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+                back.applyRotation([f_speed_back_rot[0] / N, f_speed_back_rot[1] / N, f_speed_back_rot[2] / N], True)
+                back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
+                time.sleep(0.01)
+
+            change_hand_r = [x + y for x, y in zip(change_hand_r, f_speed_right)]
+            change_hand_l = [x + y for x, y in zip(change_hand_l, f_speed_left)]
+            change_head = [x + y for x, y in zip(change_head, f_speed_head)]
+            change_back = [x + y for x, y in zip(change_back, f_speed_back_loc)]
+            change_back_rot = [x + y for x, y in zip(change_back_rot, f_speed_back_rot)]
+            ###########################
+
+            ####### MOTION - 5 #######
+            # putting the object into the container
+            # obj.worldPosition[2] -= 0.15
+            obj.worldPosition[1] -= 0.25
             time.sleep(0.5)
             obj.removeParent()
             time.sleep(0.5)
-            # standing direct after releasing the object
-            f_speed_head = [0, 0, 0.3]
-            f_speed_right = [-0.50, -0.15, -0.05]
-            f_speed_left = [-0.50, 0.15, -0.05]
-            f_speed_back_rot = [-10 * PI / 180, 0, 0]
-            f_speed_back_loc = [0, 0, -0.23]
-            obj.setParent(hand_r)
-            N = 10
+            ##########################
+
+            ####### MOTION - 6 #######
+            # standing direct after releasing the object. Putting the human back its initial pose and gesture
+
+            f_speed_head = [-1 * i for i in change_head]
+            f_speed_right = [-1 * i for i in change_hand_r]
+            f_speed_left = [-1 * i for i in change_hand_l]
+            f_speed_back_rot = [-1 * i for i in change_back_rot]
+            f_speed_back_loc = [-1 * i for i in change_back]
+            print('PRINT VECTORS FOR MOTION - 6: head, right hand, back location')
+            print (f_speed_head, f_speed_right, f_speed_back_loc)
+            N = 20
             for i in range(N):
                 head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
                 hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
@@ -573,17 +630,19 @@ class Human(GraspingRobot):
                 back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
 
                 time.sleep(0.01)
+
             time.sleep(0.5)
             self.is_ho = False
 
-            N = 5
+            ####### MOTION - 7 #######
             # turn left 90 degree
+            N = 5
             for i in range(N):
                 human.applyRotation([0, 0, math.radians(90) / N], True)
                 time.sleep(0.1)
 
-            human.worldPosition = [7.7, -1.25, 0]
-            human.worldOrientation = [0, 0, -1.57]
+            # human.worldPosition = [7.7, -1.25, 0]
+            # human.worldOrientation = [0, 0, -1.57]
             return True
 
         else:
