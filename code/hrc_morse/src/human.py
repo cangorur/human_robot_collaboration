@@ -677,8 +677,9 @@ class Human(GraspingRobot):
         f_speed_left = [0.80, -0.2, -0.1]
         f_speed_back_rot = [45 * PI / 180, 0, 0]
         f_speed_back_loc = [0, -0.15, 0]
+        print('OLD BACK LOCATION:', back.localPosition)
         # fetch
-
+        actual_back_change = 0.0
         N = 50
         for i in range(N):
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
@@ -736,6 +737,7 @@ class Human(GraspingRobot):
             ###########################
 
             obj.worldPosition = [7.7, -2.1, 0.80]
+
             self.attempt_grasp_back()
             time.sleep(0.5)
             self.is_ho = False
@@ -755,12 +757,14 @@ class Human(GraspingRobot):
         head = scene.objects['Look_Empty']
         back = scene.objects['Hips_Empty']
 
-        print("self.change_back: ", self.change_back)
         f_speed_head = [-1 * i for i in self.change_head]
         f_speed_right = [-1 * i for i in self.change_hand_r]
         f_speed_left = [-1 * i for i in self.change_hand_l]
         f_speed_back_rot = [-1 * i for i in self.change_back_rot]
+
         f_speed_back_loc = [-1 * i for i in self.change_back]
+        # f_speed_back_loc = [y - x for x, y in zip([-0.0438, -0.0000, 0.9175], back.localPosition)]
+
         N = 20
         for i in range(N):
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
@@ -770,6 +774,12 @@ class Human(GraspingRobot):
             back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
             time.sleep(0.01)
 
+        # back location is changing randomly depending on the motion (i dont know why). This is the fixed initial value
+        # init_back_loc: (-0.0438, -0.0000, 0.9175) and as a trick we are going back to that value.
+        # f_speed_back_loc = [y - x for x, y in zip([-0.0274, -0.0000, 0.9094], back.localPosition)]
+        back.localPosition = [-0.0274, -0.0000, 0.9094]
+
+        print('NEW BACK LOCATION:', back.localPosition)
         self.change_hand_r = [0.0, 0.0, 0.0]
         self.change_hand_l = [0.0, 0.0, 0.0]
         self.change_head = [0.0, 0.0, 0.0]
