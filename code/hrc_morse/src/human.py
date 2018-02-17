@@ -7,7 +7,7 @@ from morse.core.services import service
 
 import time
 import math
-
+import random
 
 PI = math.pi
 
@@ -303,28 +303,39 @@ class Human(GraspingRobot):
             self.warn_robot_back()
 
         scene = blenderapi.scene()
+        hand_r = scene.objects['IK_Target_Empty.R']
+        hand_l = scene.objects['IK_Target_Empty.L']
         head = scene.objects['Look_Empty']
+        back = scene.objects['Hips_Empty']
 
-        f_speed_head = [0, -PI / 2, PI / 2]
+        f_speed_right = [-0.50, -0.3, 0.0]
+        f_speed_left = [-0.50, 0.3, 0.0]
+        f_speed_head = [0, -PI / 4, PI / 4]
 
-        N = 10
+        N = 50
         for i in range(N):
+            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-            self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-            time.sleep(0.1)
+            time.sleep(0.01)
+        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
+        self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
+        self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
 
-        f_speed_head = [0, 0, -PI / 2]
-        for i in range(N):
-            head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-            self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-            time.sleep(0.05)
+        time.sleep(1)
 
-        time.sleep(1.5)
-        f_speed_head = [0, PI, 0]
+        N = 50
+        f_speed_right = [0.50, 0.3, 0.0]
+        f_speed_left = [0.50, -0.3, 0.0]
+        f_speed_head = [0, PI, -PI / 4]
         for i in range(N):
+            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-            self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-            time.sleep(0.1)
+            time.sleep(0.01)
+        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
+        self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
+        self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
 
         self.is_la = True
         self.is_ov = False
@@ -333,16 +344,25 @@ class Human(GraspingRobot):
         """ Move the human head to look back. """
 
         scene = blenderapi.scene()
+        hand_r = scene.objects['IK_Target_Empty.R']
+        hand_l = scene.objects['IK_Target_Empty.L']
         head = scene.objects['Look_Empty']
 
+        f_speed_right = [-1 * i for i in self.change_hand_r]
+        f_speed_left = [-1 * i for i in self.change_hand_l]
         f_speed_head = [-1 * i for i in self.change_head]
         # look right
+        print('RIGHT, LEFT:', f_speed_right, f_speed_left)
         N = 5
         for i in range(N):
+            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
             time.sleep(0.05)
 
         self.change_hand_r = [0.0, 0.0, 0.0]
+        self.change_hand_l = [0.0, 0.0, 0.0]
+        self.change_head = [0.0, 0.0, 0.0]
 
         self.is_la = False
         self.is_ov = True
@@ -398,14 +418,17 @@ class Human(GraspingRobot):
         back = scene.objects['Hips_Empty']
 
         # fetch
+        # r1 = random.randint(1,3)
+        # r2 = random.randint(4, 9)
         f_speed_head = [0, 0, 0]
-        f_speed_right = [0.70, 0, 0.50]
-        f_speed_left = [0.70, 0, 0.40]
-        f_speed_back_rot = [10 * PI / 180, 0, 0]
+        f_speed_right = [0.75, -0.15, 0.45] # z = 0.50
+        f_speed_left = [0, -0, 0]
+        # f_speed_left = [0.60, -0, 0.3] # z = 0.40
+        f_speed_back_rot = [5 * PI / 180, 0, 0]
         f_speed_back_loc = [0, 0, 0]
         # fetch
 
-        N = 25
+        N = 15
         for i in range(N):
             head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
             hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
@@ -582,7 +605,7 @@ class Human(GraspingRobot):
 
             ####### MOTION - 3 #######
             # turn right 90 degree
-            N = 30
+            N = 50
             for i in range(N):
                 human.applyRotation([0, 0, math.radians(-90) / N], True)
                 obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1] - 0.1,
@@ -592,13 +615,13 @@ class Human(GraspingRobot):
             ####### MOTION - 4 #######
             # bend a bit down to drop the object
             f_speed_head = [0, 0, -0.1]
-            f_speed_right = [0.40, 0, -0.05]
-            f_speed_left = [0.40, 0, -0.05]
+            f_speed_right = [0.40, 0, -0.1]
+            f_speed_left = [0.40, 0, -0.1]
             f_speed_back_rot = [30 * PI / 180, 0, 0]
-            f_speed_back_loc = [0, -0.1, 0]
+            f_speed_back_loc = [0, -0.05, 0]
             # fetch
 
-            N = 25
+            N = 40
             for i in range(N):
                 head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
                 hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
@@ -619,7 +642,7 @@ class Human(GraspingRobot):
             # putting the object into the container
             # obj.worldPosition[2] -= 0.15
             # obj.worldPosition[1] -= 0.25
-            time.sleep(0.5)
+            # time.sleep(0.5)
             obj.removeParent()
             time.sleep(0.5)
             ##########################
@@ -627,15 +650,15 @@ class Human(GraspingRobot):
             ####### MOTION - 6 #######
             # standing direct after releasing the object. Putting the human back its initial pose and gesture
             self.attempt_grasp_back()
-            time.sleep(0.5)
+            # time.sleep(0.5)
             self.is_ho = False
 
             ####### MOTION - 7 #######
             # turn left 90 degree
-            N = 5
+            N = 20
             for i in range(N):
                 human.applyRotation([0, 0, math.radians(90) / N], True)
-                time.sleep(0.1)
+                time.sleep(0.01)
             human.worldPosition = [7.7, -1.25, 0]
             human.worldOrientation = [0, 0, -1.57]
 
@@ -677,7 +700,6 @@ class Human(GraspingRobot):
         f_speed_left = [0.80, -0.2, -0.1]
         f_speed_back_rot = [45 * PI / 180, 0, 0]
         f_speed_back_loc = [0, -0.15, 0]
-        print('OLD BACK LOCATION:', back.localPosition)
         # fetch
         actual_back_change = 0.0
         N = 50
@@ -691,7 +713,7 @@ class Human(GraspingRobot):
                     [f_speed_back_loc[0] / (N / 2), f_speed_back_loc[1] / (N / 2), f_speed_back_loc[2] / (N / 2)], True)
             time.sleep(0.01)
 
-        time.sleep(1)
+        # time.sleep(1)
 
         self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
         self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
@@ -709,12 +731,12 @@ class Human(GraspingRobot):
             ####### MOTION - 2 #######
             # straighten up a bit to lift the object
             f_speed_head = [0, 0, 0.3]
-            f_speed_right = [-0.40, 0.05, 0.1]
-            f_speed_left = [-0.40, -0.05, 0.1]
-            f_speed_back_rot = [-35 * PI / 180, 0, 0]
-            f_speed_back_loc = [0, 0.15, 0]
+            f_speed_right = [-0.20, 0.05, 0]
+            f_speed_left = [-0.20, -0.05, 0]
+            f_speed_back_rot = [-10 * PI / 180, 0, 0]
+            f_speed_back_loc = [0, 0.1, 0]
             obj.setParent(hand_r)
-            N = 50
+            N = 30
             for i in range(N):
                 head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
                 hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
@@ -722,24 +744,108 @@ class Human(GraspingRobot):
                 back.applyRotation([f_speed_back_rot[0] / N, f_speed_back_rot[1] / N, f_speed_back_rot[2] / N], True)
                 back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
                 if i < 20:
-                    obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1],
+                   obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1],
                                          hand_r.worldPosition[2] + 0.1]
-                    time.sleep(0.01)
-                else:
-                    obj.removeParent()
-                    time.sleep(0.01)
-
+                time.sleep(0.01)
             self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
             self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
             self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
             self.change_back = [x + y for x, y in zip(self.change_back, f_speed_back_loc)]
             self.change_back_rot = [x + y for x, y in zip(self.change_back_rot, f_speed_back_rot)]
+
+            N = 10
+            f_speed_head = [0, 0, -0.3]
+            f_speed_back_loc = [0, -0.1, 0]
+            for i in range(N):
+                head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
+                back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N],
+                                   True)
+                time.sleep(0.01)
+            self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
+            self.change_back = [x + y for x, y in zip(self.change_back, f_speed_back_loc)]
+            ##########################
+
+            ####### MOTION - 3 #######
+            # push hard to lift but no success (but moves up and down)
+            N = 6
+            for k in range(10):
+                for i in range(N):
+                    if i < 3:
+                        hand_r.applyMovement([0, 0, 0.001], True)
+                        hand_l.applyMovement([0, 0, 0.001], True)
+                        back.applyMovement([0, -0.001, 0], True)
+                    else:
+                        hand_r.applyMovement([0, 0, -0.001], True)
+                        hand_l.applyMovement([0, 0, -0.001], True)
+                        back.applyMovement([0, 0.001, 0], True)
+                    time.sleep(0.01)
+            # rest a bit heads down
+            N = 20
+            for i in range(N):
+                head.applyMovement([0, 0, -0.6 / N], True)
+                time.sleep(0.01)
+            time.sleep(1)
+            N = 10
+            for i in range(N):
+                head.applyMovement([0, 0, 0.6 / N], True)
+                time.sleep(0.01)
+            # try again
+            N = 6
+            for k in range(10):
+                for i in range(N):
+                    if i < 3:
+                        hand_r.applyMovement([0, 0, 0.001], True)
+                        hand_l.applyMovement([0, 0, 0.001], True)
+                        back.applyMovement([0, -0.001, 0], True)
+                    else:
+                        hand_r.applyMovement([0, 0, -0.001], True)
+                        hand_l.applyMovement([0, 0, -0.001], True)
+                        back.applyMovement([0, 0.001, 0], True)
+                    time.sleep(0.01)
+            ##########################
+
+            ####### MOTION - 4 #######
+            # gave up, heads down first then miserably pushes the product
+
+            # bend head more down. Showing the disappointment in the failure
+            f_speed_head = [0, 0, -2]
+            N = 20
+            for i in range(N):
+                head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
+                time.sleep(0.01)
+            time.sleep(1)
+            self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
+
+            # push the object forward to where it was
+            f_speed_right = [-1 * i for i in f_speed_right]
+            f_speed_left = [-1 * i for i in f_speed_left]
+            N = 20
+            for i in range(N):
+                hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+                hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+                time.sleep(0.02)
+            self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
+            self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
+            '''
+            N = 20
+            for i in range(N):
+                back.applyMovement([f_speed_back_loc[0] / N, -f_speed_back_loc[1] / N, f_speed_back_loc[2] / N],
+                                   True)
+                time.sleep(0.01)
+
+            N = 30
+            for i in range(N):
+                back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N],
+                                   True)
+                time.sleep(0.01)
+            '''
+            obj.removeParent()
+            time.sleep(0.5)
             ###########################
 
             obj.worldPosition = [7.7, -2.1, 0.80]
 
             self.attempt_grasp_back()
-            time.sleep(0.5)
             self.is_ho = False
             return True
 
@@ -779,7 +885,6 @@ class Human(GraspingRobot):
         # f_speed_back_loc = [y - x for x, y in zip([-0.0274, -0.0000, 0.9094], back.localPosition)]
         back.localPosition = [-0.0274, -0.0000, 0.9094]
 
-        print('NEW BACK LOCATION:', back.localPosition)
         self.change_hand_r = [0.0, 0.0, 0.0]
         self.change_hand_l = [0.0, 0.0, 0.0]
         self.change_head = [0.0, 0.0, 0.0]
