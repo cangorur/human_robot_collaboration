@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 			bool success = true; // TODO: this is not used!
 			if (human_action == "0") {	// grasp or grasp attempt
 				if (task_number_counter > 30){
-					if (rand() % 10 < 8){ // fixed to 80% chance of failure
+					if (rand() % 10 < 7){ // fixed to 80% chance of failure
 						attemptGrasp.call(req, resp);
 						ROS_INFO_STREAM("Current action is human attemping grasping...");
 					} else {
@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 						ROS_INFO_STREAM("Current action is human grasping...");
 					}
 				} else if (task_number_counter > 20 && task_number_counter <= 30){
-					if (rand() % 10 < 4){ // fixed to 40% chance of failure
+					if (rand() % 20 < 12){ // fixed to 60% chance of failure
 						attemptGrasp.call(req, resp);
 						ROS_INFO_STREAM("Current action is human attemping grasping...");
 					} else {

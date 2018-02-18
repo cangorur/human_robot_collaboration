@@ -51,8 +51,8 @@ create_tray("tray_unprocessed", "red", scenario_config['conveyor']['location']['
 
 package1 = PassiveObject('pkgLight.blend', 'pkgLight')
 package1.setgraspable()
-# package1.translate(scenario_config['conveyor']['location']['x'] + 0.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
-package1.translate(scenario_config['conveyor']['location']['x'] + 2.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
+package1.translate(scenario_config['conveyor']['location']['x'] + 0.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
+# package1.translate(scenario_config['conveyor']['location']['x'] + 2.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
 '''
 package = PassiveObject('pkgLight.blend', 'pkgLight')
 package.setgraspable()

@@ -127,7 +127,8 @@ class HumanControlAndMonitor(MorseOverlay):
     @ros_service(type=Trigger, name='look_around')
     def look_around(self):
         if not self.overlaid_object.is_la:
-            self.overlaid_object.look_around()
+            t1 = threading.Thread(target=self.overlaid_object.look_around())
+            t1.start()
             return TriggerResponse(True, 'human: look around')
         else:
             return TriggerResponse(True, 'human: action(look around) is not finished')
