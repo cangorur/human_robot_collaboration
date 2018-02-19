@@ -273,7 +273,7 @@ class PR2(GraspingRobot):
             # self.finger_open()
 
             obj.setParent(wrist_l)
-            obj.worldPosition[0] = wrist_l.worldPosition[0] + 0.25
+            obj.worldPosition[0] = wrist_l.worldPosition[0] + 0.18
             obj.worldPosition[1] = wrist_l.worldPosition[1] + 0.1
             N = 20
             # lift the object up
@@ -312,6 +312,11 @@ class PR2(GraspingRobot):
                     self.reset()
                     self.reset()
                     return True
+                hand_l.applyRotation([0, 0, math.radians(-45) / N], True)
+                hand_r.applyRotation([0, 0, math.radians(45) / N], True)
+                time.sleep(0.1)
+            N = 15
+            for i in range(N):
                 shoulder_l.applyRotation([0, 0, math.radians(20) / N], True) # at 20 degrees (open)
                 upper_arm_l.applyRotation([0, 0, math.radians(20) / N], True)
                 shoulder_r.applyRotation([0, 0, math.radians(-20) / N], True)
@@ -323,6 +328,7 @@ class PR2(GraspingRobot):
             # obj.worldPosition = [7.7 - 0.6, -3.04, 0.80]
 
             # Turning back to the conveyor belt
+            N = 20
             for i in range(N):
                 if self.cancel:
                     self.reset()
@@ -330,8 +336,8 @@ class PR2(GraspingRobot):
                     self.reset()
                     return True
                 pr2.applyRotation([0, 0, math.radians(-90) / N], True)
-                hand_l.applyRotation([0, 0, math.radians(45) / N], True)
-                hand_r.applyRotation([0, 0, math.radians(-45) / N], True)
+                hand_l.applyRotation([0, 0, math.radians(90) / N], True) # 45
+                hand_r.applyRotation([0, 0, math.radians(-90) / N], True) # -45
                 shoulder_l.applyRotation([0, 0, math.radians(-20) / N], True) # at 0 degrees (idle)
                 upper_arm_l.applyRotation([0, 0, math.radians(-20) / N], True)
                 shoulder_r.applyRotation([0, 0, math.radians(20) / N], True)

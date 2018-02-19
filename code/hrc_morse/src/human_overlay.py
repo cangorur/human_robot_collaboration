@@ -86,6 +86,11 @@ class HumanControlAndMonitor(MorseOverlay):
         else:
             return TriggerResponse(True, 'human: action(reset) is not finished')
 
+    @ros_service(type=Trigger, name='attempt_and_cancel')
+    def attempt_and_cancel(self):
+        self.overlaid_object.attempt_and_cancel()
+        return TriggerResponse(True, 'human: cancel actions')
+
     @ros_service(type=Trigger, name='obj_reset')
     def obj_reset(self):
         self.overlaid_object.obj_reset()

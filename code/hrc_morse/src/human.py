@@ -95,6 +95,58 @@ class Human(GraspingRobot):
         human.worldOrientation = [0, 0, -1.57]
 
     @service
+    def attempt_and_cancel(self):
+
+        if self.is_gr or self.is_ag:
+            self.attempt_grasp_back()
+        if self.is_la:
+            self.look_back()
+        if self.is_wr:
+            self.warn_robot_back()
+
+        self.is_ag = True
+        self.is_gr = True
+        self.is_ho = False
+
+        scene = blenderapi.scene()
+        hand_r = scene.objects['IK_Target_Empty.R']
+        hand_l = scene.objects['IK_Target_Empty.L']
+        dest = scene.objects['IK_Pose_Empty.R']
+        head = scene.objects['Look_Empty']
+        back = scene.objects['Hips_Empty']
+
+        ####### MOTION - 1 #######
+        # bend to grab the object
+        f_speed_head = [0, 0, -0.4]
+        f_speed_right = [0.80, 0.2, -0.1]
+        f_speed_left = [0.80, -0.2, -0.1]
+        f_speed_back_rot = [45 * PI / 180, 0, 0]
+        f_speed_back_loc = [0, -0.15, 0]
+        # fetch
+        actual_back_change = 0.0
+        N = 50
+        for i in range(N):
+            head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
+            hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
+            hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+            back.applyRotation([f_speed_back_rot[0] / (N), f_speed_back_rot[1] / (N), f_speed_back_rot[2] / (N)], True)
+            if i >= (N / 2):
+                back.applyMovement(
+                    [f_speed_back_loc[0] / (N / 2), f_speed_back_loc[1] / (N / 2), f_speed_back_loc[2] / (N / 2)], True)
+            time.sleep(0.01)
+
+        self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
+        self.change_hand_l = [x + y for x, y in zip(self.change_hand_l, f_speed_left)]
+        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
+        self.change_back = [x + y for x, y in zip(self.change_back, f_speed_back_loc)]
+        self.change_back_rot = [x + y for x, y in zip(self.change_back_rot, f_speed_back_rot)]
+        ###########################
+
+        time.sleep(1)
+
+        self.attempt_grasp_back()
+
+    @service
     def obj_reset(self):
         ''' ungrasp object '''
         scene = blenderapi.scene()
@@ -615,8 +667,8 @@ class Human(GraspingRobot):
             ####### MOTION - 4 #######
             # bend a bit down to drop the object
             f_speed_head = [0, 0, -0.1]
-            f_speed_right = [0.40, 0, -0.1]
-            f_speed_left = [0.40, 0, -0.1]
+            f_speed_right = [0.40, -0.05, -0.1]
+            f_speed_left = [0.40, 0.05, -0.1]
             f_speed_back_rot = [30 * PI / 180, 0, 0]
             f_speed_back_loc = [0, -0.05, 0]
             # fetch
@@ -624,11 +676,16 @@ class Human(GraspingRobot):
             N = 40
             for i in range(N):
                 head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-                hand_r.applyMovement([f_speed_right[0] / N, f_speed_right[1] / N, f_speed_right[2] / N], True)
-                hand_l.applyMovement([f_speed_left[0] / N, f_speed_left[1] / N, f_speed_left[2] / N], True)
+                hand_r.applyMovement([f_speed_right[0] / N, 0, f_speed_right[2] / N], True)
+                hand_l.applyMovement([f_speed_left[0] / N, 0, f_speed_left[2] / N], True)
                 back.applyRotation([f_speed_back_rot[0] / N, f_speed_back_rot[1] / N, f_speed_back_rot[2] / N], True)
                 back.applyMovement([f_speed_back_loc[0] / N, f_speed_back_loc[1] / N, f_speed_back_loc[2] / N], True)
-                obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1] - 0.1, hand_r.worldPosition[2] - 0.05]
+                obj.worldPosition = [hand_r.worldPosition[0] + 0.1, hand_r.worldPosition[1] - 0.1, hand_r.worldPosition[2] + 0.1]
+                time.sleep(0.01)
+            N = 10
+            for i in range(N):
+                hand_r.applyMovement([0, f_speed_right[1] / N, 0], True)
+                hand_l.applyMovement([0, f_speed_left[1] / N, 0], True)
                 time.sleep(0.01)
 
             self.change_hand_r = [x + y for x, y in zip(self.change_hand_r, f_speed_right)]
@@ -854,7 +911,6 @@ class Human(GraspingRobot):
             self.is_ho = False
             return False
 
-
     @service
     def attempt_grasp_back(self):
         scene = blenderapi.scene()
@@ -867,7 +923,6 @@ class Human(GraspingRobot):
         f_speed_right = [-1 * i for i in self.change_hand_r]
         f_speed_left = [-1 * i for i in self.change_hand_l]
         f_speed_back_rot = [-1 * i for i in self.change_back_rot]
-
         f_speed_back_loc = [-1 * i for i in self.change_back]
         # f_speed_back_loc = [y - x for x, y in zip([-0.0438, -0.0000, 0.9175], back.localPosition)]
 
@@ -883,6 +938,8 @@ class Human(GraspingRobot):
         # back location is changing randomly depending on the motion (i dont know why). This is the fixed initial value
         # init_back_loc: (-0.0438, -0.0000, 0.9175) and as a trick we are going back to that value.
         # f_speed_back_loc = [y - x for x, y in zip([-0.0274, -0.0000, 0.9094], back.localPosition)]
+
+        # MAKING SURE HUMAN RETURNS TO THE INITIAL POSITION
         back.localPosition = [-0.0274, -0.0000, 0.9094]
 
         self.change_hand_r = [0.0, 0.0, 0.0]
