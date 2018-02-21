@@ -107,7 +107,7 @@ private:
 	
 	int step_counter = 0;
 	int task_time = 0; // this is counted by the ros timer event, increased in every second
-	int task_number = 0;
+	int task_number = 20;
 	/*
 	* Several variables
 	double robotBatteries_arr[8] = {100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0}; //for 8 different robots

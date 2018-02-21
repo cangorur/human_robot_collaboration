@@ -315,13 +315,13 @@ class PR2(GraspingRobot):
                 hand_l.applyRotation([0, 0, math.radians(-45) / N], True)
                 hand_r.applyRotation([0, 0, math.radians(45) / N], True)
                 time.sleep(0.1)
-            N = 15
+            N = 20
             for i in range(N):
-                shoulder_l.applyRotation([0, 0, math.radians(20) / N], True) # at 20 degrees (open)
-                upper_arm_l.applyRotation([0, 0, math.radians(20) / N], True)
-                shoulder_r.applyRotation([0, 0, math.radians(-20) / N], True)
-                upper_arm_r.applyRotation([0, 0, math.radians(-20) / N], True)
-                if i == 2:
+                shoulder_l.applyRotation([0, 0, math.radians(15) / N], True) # at 20 degrees (open)
+                upper_arm_l.applyRotation([0, 0, math.radians(15) / N], True)
+                shoulder_r.applyRotation([0, 0, math.radians(-15) / N], True)
+                upper_arm_r.applyRotation([0, 0, math.radians(-15) / N], True)
+                if i == 1:
                     obj.removeParent()
                 time.sleep(0.1)
             time.sleep(0.5)

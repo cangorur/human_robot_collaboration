@@ -118,7 +118,7 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	// ========== PACKAGE GENERATOR ================
 	
 	// =========== HUMAN MOOD ASSIGNMENT =====================
-	/*r = (rand() % 50) + 1; // from 1 to 50
+	r = (rand() % 50) + 1; // from 1 to 50
 	if (task_number != 0){
 		if (task_number <= 10){
 			human_mood = (r <= task_number + 2) ? "thinker" : human_mood; // gradually increasing from 6 % to 25%
@@ -141,32 +141,6 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 			human_mood = (r <= 15) ? "thinker" : human_mood; // fixed to 30%
 			human_mood = (r > 15 && r <= 40) ? "tired" : human_mood; // fixed to 50%
 			human_mood = (r > 40 && r <= 50) ? "distracted" : human_mood; // fixed to 20%
-		}
-	}*/
-	// ==== Human mood assignment for the experiments ====
-	r = (rand() % 50) + 1; // from 1 to 50
-	if (task_number != 0){
-		if (task_number <= 10){
-			human_mood = (r <= task_number + 2) ? "thinker" : human_mood; // gradually increasing from 6 % to 25%
-		} else if (task_number > 10 && task_number <= 15){
-			human_mood = (r <= task_number + 2) ? "thinker" : human_mood; // gradually increasing from 26 % to 30%
-			human_mood = ((r > 15) && (r <= 6 + task_number)) ? "distracted" : human_mood; // gradually increasing from 4 % to 12%
-		} else if (task_number > 15 && task_number <= 20){
-			if (task_number <= 17){
-				human_mood = (r <= task_number) ? "thinker" : human_mood; // gradually increasing from 30 % to 35%
-			} else {
-				human_mood = (r <= 17) ? "thinker" : human_mood; // fixed to 35%
-			}
-			human_mood = ((r > 17) && (r <= 8 + task_number)) ? "distracted" : human_mood; // gradually increasing from 14 % to 22%
-			human_mood = ((r > 40) && (r <= 42)) ? "tired" : human_mood; // fixed to 6%
-		} else if (task_number > 20 && task_number <= 30){
-			human_mood = (r <= 10) ? "distracted" : human_mood; // fixed to 30%
-			human_mood = ((r > 10) && (r <= (10 + task_number))) ? "tired" : human_mood; // gradually increasing from 32 % to 40%
-			human_mood = (r > 46) ? "thinker" : human_mood; // fixed to 12%
-		} else if (task_number > 30 && task_number <= 40){
-			human_mood = (r <= 10) ? "distracted" : human_mood; // fixed to 30%
-			human_mood = (r > 10 && r <= 45) ? "tired" : human_mood; // fixed to 50%
-			human_mood = (r > 45 && r <= 50) ? "thinker" : human_mood; // fixed to 20%
 		}
 	}
 
