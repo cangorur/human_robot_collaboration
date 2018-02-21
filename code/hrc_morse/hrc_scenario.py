@@ -21,7 +21,7 @@ human_y = scenario_config['conveyor']['location']['y'] - 0.74 # -0.5
 human.translate(human_x, human_y, 0)
 human.rotate(0, 0, -1.57)
 human.add_overlay('ros', 'human_overlay.HumanControlAndMonitor')
-# human.disable_keyboard_control()
+human.disable_keyboard_control()
 human.use_world_camera()
 # Default interface
 human.add_default_interface('ros')
@@ -52,6 +52,7 @@ create_tray("tray_unprocessed", "red", scenario_config['conveyor']['location']['
 package1 = PassiveObject('pkgLight.blend', 'pkgLight')
 package1.setgraspable()
 package1.translate(scenario_config['conveyor']['location']['x'] + 0.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
+# package1.translate(scenario_config['conveyor']['location']['x'] + 2.7, scenario_config['conveyor']['location']['y'] - 1.6, 0.8)
 '''
 package = PassiveObject('pkgLight.blend', 'pkgLight')
 package.setgraspable()

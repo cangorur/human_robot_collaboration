@@ -143,6 +143,7 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 			human_mood = (r > 40 && r <= 50) ? "distracted" : human_mood; // fixed to 20%
 		}
 	}
+
 	// ========================================================
 	
 	ROS_INFO("[TASK_MANAGER]: Human type is: %s and %s!", human_expert.c_str(), human_mood.c_str());
@@ -174,10 +175,16 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
 	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
 	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
-	ros::Duration(3.5).sleep(); // sleep for half a second
+	ros::Duration(3).sleep(); // sleep for half a second
 	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
 	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
 	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
+	// assure the package is in between human and the robot
+	req_ForPkg.package_id = "package1";
+	req_ForPkg.x = 7.7;
+	req_ForPkg.y = -2.1;
+	req_ForPkg.z = 0.8;
+	moveNewPackage.call(req_ForPkg, res_ForPkg);
 	// ===============================
 	
 	// ========== RESET ROS AGENTS (HUMAN, OBSERVATION, ROBOT) =============
@@ -419,12 +426,15 @@ bool HRCTaskManager::packageGenerator(){
 //================rostopic callbacks========================
 void HRCTaskManager::TaskFinishTimer(const ros::TimerEvent&){
 	task_time += 1; // increase one in every second
-	if (task_time == 30){ // after 30 seconds the limit has been reached and run the conveyor belt
+	if (task_time == 40){ // after 35 seconds the limit has been reached and run the conveyor belt
 		std_srvs::Trigger::Request req;
 		std_srvs::Trigger::Response res;
-		
+		conveyorPrinterOnOff.call(req, res); // SWITCH ON
+		conveyorAssembly1OnOff.call(req, res); // SWITCH ON
 		conveyorAssembly2OnOff.call(req, res); // TODO: define a conveyor belt status flag (global)
 		ros::Duration(4).sleep(); // sleep for half a second
+		conveyorPrinterOnOff.call(req, res); // SWITCH ON
+		conveyorAssembly1OnOff.call(req, res); // SWITCH ON
 		conveyorAssembly2OnOff.call(req, res);
 		task_time = 0;
 	}

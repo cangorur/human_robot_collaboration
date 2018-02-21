@@ -25,8 +25,8 @@ class RobotControlAndMonitor(MorseOverlay):
     def cancel_action(self):
         if not self.is_ca:
             self.is_ca = True
-            self.overlaid_object.cancel_action()
-
+            t1 = threading.Thread(target=self.overlaid_object.cancel_action())
+            t1.start()
             self.is_obj = False
             self.is_gr = False
             self.is_po = False
@@ -103,7 +103,8 @@ class RobotControlAndMonitor(MorseOverlay):
             if not self.is_pl:
                 self.planning_for_grasping()
             self.is_po = True
-            self.overlaid_object.pointToObj()
+            t1 = threading.Thread(target=self.overlaid_object.pointToObj())
+            t1.start()
             self.is_po = False
             self.is_pl = False
             return TriggerResponse(True, 'robot: point to object')
