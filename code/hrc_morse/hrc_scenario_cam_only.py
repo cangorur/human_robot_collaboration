@@ -21,7 +21,7 @@ human_y = scenario_config['conveyor']['location']['y'] - 0.74 # -0.5
 human.translate(human_x, human_y, 0)
 human.rotate(0, 0, -1.57)
 human.add_overlay('ros', 'human_overlay.HumanControlAndMonitor')
-human.disable_keyboard_control()
+# human.disable_keyboard_control()
 # human.use_world_camera()
 # Default interface
 human.add_default_interface('ros')
