@@ -97,23 +97,29 @@ catkin_package(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 #### add following
-add_executable(hrc_task_manager 
-	src/hrc_task_manager/HRCTaskManager.cpp
-	src/hrc_task_manager/HRCTaskManagerNode.cpp)
-add_dependencies(hrc_task_manager ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(hrc_task_manager ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+add_executable(task_manager 
+	src/task_manager/TaskManager.cpp
+	src/task_manager/TaskManagerNode.cpp)
+add_dependencies(task_manager ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(task_manager ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(hrc_human src/hrc_human.cpp)
-add_dependencies(hrc_human ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(hrc_human ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+add_executable(human_agent 
+  src/human_agent/HumanAgent.cpp
+  src/human_agent/HumanAgentNode.cpp)
+add_dependencies(human_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(human_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(hrc_robot src/hrc_robot.cpp)
-add_dependencies(hrc_robot ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(hrc_robot ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+add_executable(robot_agent 
+  src/robot_agent/RobotAgent.cpp
+  src/robot_agent/RobotAgentNode.cpp)
+add_dependencies(robot_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(robot_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(hrc_observation src/hrc_obs.cpp)
-add_dependencies(hrc_observation ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(hrc_observation ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+add_executable(observation_agent 
+  src/observation_agent/ObservationAgent.cpp
+  src/observation_agent/ObservationAgentNode.cpp)
+add_dependencies(observation_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(observation_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})

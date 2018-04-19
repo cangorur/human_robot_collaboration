@@ -1,4 +1,8 @@
-// created by Qichao Xu in 23.Juli.2017
+/*
+ *  Created on: 19.04.2018
+ *      Author: Orhan Can Görür
+ *      Email: orhan-can.goeruer@dai-labor.de
+ */
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -21,7 +25,7 @@
 #include <hrc_ros/ResetRobotROS.h>
 #include <hrc_ros/MoveNewPackage.h>
 
-#include <hrc_task_manager/HRCTaskManager.h>
+#include <task_manager/TaskManager.h>
 
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
@@ -30,16 +34,16 @@
 using namespace std;
 
 
-HRCTaskManager::HRCTaskManager() {
+TaskManager::TaskManager() {
 	ros::NodeHandle pn("~");
 	initialize();
 }
 
-HRCTaskManager::~HRCTaskManager() {
+TaskManager::~TaskManager() {
 }
 
 
-void HRCTaskManager::initialize(){
+void TaskManager::initialize(){
 	ros::NodeHandle n;
 	ros::NodeHandle nh("~");
 
@@ -51,13 +55,13 @@ void HRCTaskManager::initialize(){
 	humanReset = nh.serviceClient<std_srvs::Trigger>("/human/reset");
 	robotReset = nh.serviceClient<std_srvs::Trigger>("/robot/reset");
 	conveyorPrinterOnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/printer_part/switch_on_off");
-        conveyorAssembly1OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part1/switch_on_off");
-        conveyorAssembly2OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part2/switch_on_off");
+    conveyorAssembly1OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part1/switch_on_off");
+    conveyorAssembly2OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part2/switch_on_off");
 	moveNewPackage = nh.serviceClient<hrc_ros::MoveNewPackage>("/package_manipulator/move_new_package");
 	
-	humanROSReset = nh.serviceClient<hrc_ros::ResetHumanROS>("/hrc_human/reset");
-	obsROSReset = nh.serviceClient<hrc_ros::ResetObsROS>("/hrc_obs/reset");
-	robotROSReset = nh.serviceClient<hrc_ros::ResetRobotROS>("/hrc_robot/reset");
+	humanROSReset = nh.serviceClient<hrc_ros::ResetHumanROS>("/human_agent/reset");
+	obsROSReset = nh.serviceClient<hrc_ros::ResetObsROS>("/observation_agent/reset");
+	robotROSReset = nh.serviceClient<hrc_ros::ResetRobotROS>("/robot_agent/reset");
 	
 	/*
 	 * Initializing advertised ros services 
@@ -67,6 +71,8 @@ void HRCTaskManager::initialize(){
 	ObsUpdateService = nh.advertiseService("observation_update", &HRCTaskManager::ObsUpdater, this);
 	RobotUpdateService = nh.advertiseService("robot_status_update", &HRCTaskManager::RobotStatusUpdater, this);
 	resetTaskService = nh.advertiseService("reset_task", &HRCTaskManager::ResetTask, this);
+	
+	/// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
 	taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("task_status", 1);
 	
 	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &HRCTaskManager::ReceiveTraySensors, this);
@@ -81,10 +87,11 @@ void HRCTaskManager::initialize(){
 	robot1_battery = n.subscribe("/robot_1/battery", 1000, &HRCTaskManager::receiveRobot1Battery, this);
 	robot2_battery = n.subscribe("/robot_2/battery", 1000, &HRCTaskManager::receiveRobot2Battery, this);
 	*/
-	ROS_INFO("HRCTaskManager is created...");
+	ROS_INFO("HRC Task Manager is created !");
 }
+
 //================Advertised Services=======================
-bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
+bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 		hrc_ros::InitiateScenarioResponse &res) {
 	
 	string pkg_path = ros::package::getPath("hrc_ros");
@@ -277,7 +284,7 @@ bool HRCTaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	res.success = true;
 	return true;
 }
-bool HRCTaskManager::ResetTask(std_srvs::TriggerRequest &req,
+bool TaskManager::ResetTask(std_srvs::TriggerRequest &req,
 		std_srvs::TriggerResponse &res) {
 	task_number -= 1;
 	
@@ -289,7 +296,7 @@ bool HRCTaskManager::ResetTask(std_srvs::TriggerRequest &req,
 	return true;
 }
 
-bool HRCTaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res){
+bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res){
 	
 	hrc_ros::TaskState taskState_msg;
 	
@@ -329,7 +336,7 @@ bool HRCTaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &r
 	return res.success;
 }
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
-bool HRCTaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res){
+bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res){
 	
 	hrc_ros::TaskState taskState_msg;
 	
@@ -369,7 +376,7 @@ bool HRCTaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ro
 	return res.success;
 }
 
-bool HRCTaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req, hrc_ros::InformRobotToTaskMangResponse &res){
+bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req, hrc_ros::InformRobotToTaskMangResponse &res){
 	
 	hrc_ros::TaskState taskState_msg;
 	
@@ -404,7 +411,7 @@ bool HRCTaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &r
 	return res.success;
 }
 	
-bool HRCTaskManager::packageGenerator(){
+bool TaskManager::packageGenerator(){
 	//TODO: callout the package generation service: it is initiated by package_generator.py
 	return true;
 }
@@ -424,7 +431,7 @@ bool HRCTaskManager::packageGenerator(){
 }*/
 
 //================rostopic callbacks========================
-void HRCTaskManager::TaskFinishTimer(const ros::TimerEvent&){
+void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
 	task_time += 1; // increase one in every second
 	if (task_time == 40){ // after 35 seconds the limit has been reached and run the conveyor belt
 		std_srvs::Trigger::Request req;
@@ -440,7 +447,7 @@ void HRCTaskManager::TaskFinishTimer(const ros::TimerEvent&){
 	}
 }
 
-void HRCTaskManager::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
+void TaskManager::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 	
 	ros::Time tray_msg_stamp = msg.stamp;
 	string whoSucceeded = "";
