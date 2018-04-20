@@ -8,12 +8,10 @@
 
 #include <stdlib.h> 				// for rand() and RAND_MAX
 #include <string>
-
-using namespace std;
-
+#include <robot_agent/RobotAgent.h>
 
 RobotAgent::RobotAgent() {
-	ros::NodeHandle pn("~");
+	ros::NodeHandle nh("~");
 	initialize();
 }
 
@@ -21,8 +19,7 @@ RobotAgent::~RobotAgent() {
 }
 
 void RobotAgent::initialize() {
-	ros::NodeHandle n;
-	ros::NodeHandle pn("~");
+	ros::NodeHandle nh("~");
 
 	/*
 	 * Initializing ros services
@@ -35,9 +32,10 @@ void RobotAgent::initialize() {
 	cancelAction = nh.serviceClient<std_srvs::Trigger>("/robot/cancel_action");
 	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_grasping");
 
-	reset_scenario = nh.advertiseService("/robot_agent/reset", &resetScenario);
+	reset_scenario = nh.advertiseService("/robot_agent/reset", &RobotAgent::resetScenario, this);
 
 	ROS_INFO("Robot agent is created !");
+	update();
 }
 
 bool RobotAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
@@ -61,8 +59,9 @@ void RobotAgent::update() {
 	ros::NodeHandle n;
 	ros::NodeHandle nh("~");
 	srand (time(NULL));
-//WebSocket (WS)-server at port 8080 using 1 thread
-	
+	//WebSocket (WS)-server at port 8080 using 1 thread
+	server.config.port = port;
+
 	auto& echo=server.endpoint["^/?$"];
 	
 	echo.on_open=[](shared_ptr<WsServer::Connection> connection) {

@@ -93,10 +93,8 @@ catkin_package(
 )
 
 
-#### add following
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-#### add following
 add_executable(task_manager 
 	src/task_manager/TaskManager.cpp
 	src/task_manager/TaskManagerNode.cpp)

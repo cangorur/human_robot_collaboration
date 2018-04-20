@@ -1,12 +1,12 @@
 <launch>
 
-<node pkg="hrc_ros" type="hrc_robot" name="hrc_robot" output="screen" respawn="true" />
+<node pkg="hrc_ros" type="robot_agent" name="robot_agent" output="screen" respawn="true" />
 
-<node pkg="hrc_ros" type="hrc_human" name="hrc_human" output="screen" respawn="true" />
+<node pkg="hrc_ros" type="human_agent" name="human_agent" output="screen" respawn="true" />
 
-<node pkg="hrc_ros" type="hrc_observation" name="hrc_obs" output="screen" respawn="true" />
+<node pkg="hrc_ros" type="observation_agent" name="observation_agent" output="screen" respawn="true" />
 
-<node pkg="hrc_ros" type="hrc_task_manager" name="hrc_task_manager" output="screen" respawn="true" /> 
+<node pkg="hrc_ros" type="task_manager" name="task_manager" output="screen" respawn="true" /> 
 <!-- <param name="conveyor_init" type="bool" value="True" /> -->
 
 <!-- Package Manipulator -->

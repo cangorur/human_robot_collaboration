@@ -14,18 +14,15 @@
 
 using namespace std;
 
-
 ObservationAgent::ObservationAgent() {
-	ros::NodeHandle pn("~");
+	ros::NodeHandle nh("~");
 	initialize();
 }
 
 ObservationAgent::~ObservationAgent() {
 }
 
-
 void ObservationAgent::initialize(){
-	ros::NodeHandle n;
 	ros::NodeHandle nh("~");
 	
 	/*
@@ -44,17 +41,17 @@ void ObservationAgent::initialize(){
 	/*
 	 * ROS Services initialization
 	 */
-	action_server = nh.advertiseService("/observation_agent/inform_human_action", &action_to_obs_Map);
-	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &humanSt_to_robotSt_Map);
-	reset_scenario = nh.advertiseService("/observation_agent/reset", &resetScenario);
+	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
+	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
+	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 	
 	/*
 	 * A ROS topic for a subscription to tray proximity sensors (detecting packages in the trays)
 	 */
-	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &ReceiveTraySensors);
+	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &ObservationAgent::ReceiveTraySensors, this);
 	
 	/// A ROS timer for the duration of a task assigned to the human
-	task_timer = nh.createTimer(ros::Duration(1.0), HumanTaskTimer);
+	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
 
 
 	/// ROS rate to control the loop frequency

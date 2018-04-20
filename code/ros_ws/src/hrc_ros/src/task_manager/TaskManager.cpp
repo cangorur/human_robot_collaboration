@@ -16,26 +16,16 @@
 #define GetCurrentDir getcwd
 #include <iostream>
 
-#include <hrc_ros/TaskState.h>
-#include <hrc_ros/ObsUpdateMsg.h>
-#include <hrc_ros/HumanUpdateMsg.h>
-#include <hrc_ros/RobotUpdateMsg.h>
-#include <hrc_ros/ResetHumanROS.h>
-#include <hrc_ros/ResetObsROS.h>
-#include <hrc_ros/ResetRobotROS.h>
-#include <hrc_ros/MoveNewPackage.h>
-
 #include <task_manager/TaskManager.h>
 
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
 
-
 using namespace std;
 
 
 TaskManager::TaskManager() {
-	ros::NodeHandle pn("~");
+	ros::NodeHandle nh("~");
 	initialize();
 }
 
@@ -44,7 +34,6 @@ TaskManager::~TaskManager() {
 
 
 void TaskManager::initialize(){
-	ros::NodeHandle n;
 	ros::NodeHandle nh("~");
 
 	//here set the parameter of conveyor belt to "init" so it automatically starts
@@ -66,28 +55,28 @@ void TaskManager::initialize(){
 	/*
 	 * Initializing advertised ros services 
 	 */
-	scenarioRequestService = nh.advertiseService("new_scenario_request", &HRCTaskManager::initiateScenario, this);
-	HumanUpdateService = nh.advertiseService("human_status_update", &HRCTaskManager::HumanStatusUpdater,this);
-	ObsUpdateService = nh.advertiseService("observation_update", &HRCTaskManager::ObsUpdater, this);
-	RobotUpdateService = nh.advertiseService("robot_status_update", &HRCTaskManager::RobotStatusUpdater, this);
-	resetTaskService = nh.advertiseService("reset_task", &HRCTaskManager::ResetTask, this);
+	scenarioRequestService = nh.advertiseService("new_scenario_request", &TaskManager::initiateScenario, this);
+	HumanUpdateService = nh.advertiseService("human_status_update", &TaskManager::HumanStatusUpdater,this);
+	ObsUpdateService = nh.advertiseService("observation_update", &TaskManager::ObsUpdater, this);
+	RobotUpdateService = nh.advertiseService("robot_status_update", &TaskManager::RobotStatusUpdater, this);
+	resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
 	
 	/// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
 	taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("task_status", 1);
 	
-	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &HRCTaskManager::ReceiveTraySensors, this);
+	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
 	/*
 	 * Timer initialization 
 	 */
-	taskFinishTimer = nh.createTimer(ros::Duration(1.0), &HRCTaskManager::TaskFinishTimer, this);
+	taskFinishTimer = nh.createTimer(ros::Duration(1.0), &TaskManager::TaskFinishTimer, this);
 	//initialize random seed for rand()
 	srand(time(NULL));
 	/*
 	 * Below are the subscriptions to a ros topic
-	robot1_battery = n.subscribe("/robot_1/battery", 1000, &HRCTaskManager::receiveRobot1Battery, this);
-	robot2_battery = n.subscribe("/robot_2/battery", 1000, &HRCTaskManager::receiveRobot2Battery, this);
+	robot1_battery = n.subscribe("/robot_1/battery", 1000, &TaskManager::receiveRobot1Battery, this);
+	robot2_battery = n.subscribe("/robot_2/battery", 1000, &TaskManager::receiveRobot2Battery, this);
 	*/
-	ROS_INFO("HRC Task Manager is created !");
+	ROS_INFO("Task Manager is created !");
 }
 
 //================Advertised Services=======================
@@ -420,7 +409,7 @@ bool TaskManager::packageGenerator(){
 //TODO: I dont know how to use this below --> I THINK THIS CHECKS REGULARLY THE STATE OF THE TASK. USELESS
 //TODO: I think I would call it when the task is finalized. Then i need one more to initiate the task --> timer
 //TODO: How this function is being called --> who initates?
-/*void HRCTaskManager::taskStateUpdateEvent(const ros::TimerEvent &e) {
+/*void TaskManager::taskStateUpdateEvent(const ros::TimerEvent &e) {
 	hrc_ros::TaskState state;
 	state.stamp = ros::Time::now(); // This is all I need !!!
 	// here put the information of the task status

@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "task_manager");
 	ros::NodeHandle nh;
 	
-	HRCTaskManager hrc_task_manager;
+	TaskManager task_manager;
 	
   	ROS_INFO("Task Manager is ready!");
 	

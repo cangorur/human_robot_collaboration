@@ -7,8 +7,8 @@
  *      Email: orhan-can.goeruer@dai-labor.de
  */
 
-#ifndef HRC_ROS_SRC_TASKMANAGER_H_
-#define HRC_ROS_SRC_TASKMANAGER_H_
+#ifndef HRC_ROS_SRC_TASKMANAGER_H
+#define HRC_ROS_SRC_TASKMANAGER_H
 
 #include <ros/ros.h>
 #include <hrc_ros/InitiateScenario.h>
@@ -16,6 +16,15 @@
 #include <hrc_ros/InformObsToTaskMang.h>
 #include <hrc_ros/InformRobotToTaskMang.h>
 #include <std_srvs/Trigger.h>
+
+#include <hrc_ros/TaskState.h>
+#include <hrc_ros/ObsUpdateMsg.h>
+#include <hrc_ros/HumanUpdateMsg.h>
+#include <hrc_ros/RobotUpdateMsg.h>
+#include <hrc_ros/ResetHumanROS.h>
+#include <hrc_ros/ResetObsROS.h>
+#include <hrc_ros/ResetRobotROS.h>
+#include <hrc_ros/MoveNewPackage.h>
 
 #include <hrc_ros/TraySensor.h>
 
@@ -147,4 +156,4 @@ private:
 
 };
 
-#endif /* HRC_ROS_SRC_TASKMANAGER_H_ */
+#endif /* HRC_ROS_SRC_TASKMANAGER_H */

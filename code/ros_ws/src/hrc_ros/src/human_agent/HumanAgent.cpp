@@ -12,11 +12,8 @@
 
 #include <human_agent/HumanAgent.h>
 
-using namespace std;
-
-
 HumanAgent::HumanAgent() {
-	ros::NodeHandle pn("~");
+	ros::NodeHandle nh("~");
 	initialize();
 }
 
@@ -25,7 +22,6 @@ HumanAgent::~HumanAgent() {
 
 
 void HumanAgent::initialize(){
-	ros::NodeHandle n;
 	ros::NodeHandle nh("~");
 
 	//here set the parameter of conveyor belt to "init" so it automatically starts
@@ -44,7 +40,7 @@ void HumanAgent::initialize(){
 	attemptGrasp = nh.serviceClient<std_srvs::Trigger>("/human/attempt_grasp");
 	grasp = nh.serviceClient<std_srvs::Trigger>("/human/grasp");
 
-	reset_scenario = nh.advertiseService("/human_agent/reset", &resetScenario);
+	reset_scenario = nh.advertiseService("/human_agent/reset", &HumanAgent::resetScenario, this);
 	
 
 	// loop at 2Hz until the node is shut down
@@ -74,6 +70,9 @@ void HumanAgent::update() {
 	srand (time(NULL));
 
 	auto& echo=server.endpoint["^/?$"];
+	/// Setting the config port number. Port is configured under HumanAgent.h
+	server.config.port = port;
+
 	
 	echo.on_open=[](shared_ptr<WsServer::Connection> connection) {
 	//cout << "Server: Opened connection " << (size_t)connection.get() << endl;

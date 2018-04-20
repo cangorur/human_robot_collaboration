@@ -6,8 +6,8 @@
  *      Email: orhan-can.goeruer@dai-labor.de
  */
 
-#ifndef HRC_ROS_SRC_OBSERVATIONAGENT_H_
-#define HRC_ROS_SRC_OBSERVATIONAGENT_H_
+#ifndef HRC_ROS_SRC_OBSERVATIONAGENT_H
+#define HRC_ROS_SRC_OBSERVATIONAGENT_H
 
 #include <ros/ros.h>
 // include <package_name/service_type_name.h>
@@ -19,6 +19,9 @@
 #include <hrc_ros/ResetObsROS.h>
 
 #include "simple_web_socket/client_ws.hpp"
+
+using namespace std;
+typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
 
 
 class ObservationAgent {
@@ -157,11 +160,6 @@ private:
 	/// A ROS timer to track human task !
 	ros::Timer task_timer;
 
-	/*
-	* Simple Web Socket client variables
-	*/
-	typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
-
 	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	bool prevStIsInitSt = true; 
 	bool preventOneLoop = true; 
@@ -198,4 +196,4 @@ private:
 	int task_number_counter = 0;
 };
 
-#endif /* HRC_ROS_SRC_OBSERVATIONAGENT_H_ */
+#endif /* HRC_ROS_SRC_OBSERVATIONAGENT_H */

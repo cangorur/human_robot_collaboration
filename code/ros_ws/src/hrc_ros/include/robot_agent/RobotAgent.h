@@ -6,8 +6,8 @@
  *      Email: orhan-can.goeruer@dai-labor.de
  */
 
-#ifndef HRC_ROS_SRC_ROBOTAGENT_H_
-#define HRC_ROS_SRC_ROBOTAGENT_H_
+#ifndef HRC_ROS_SRC_ROBOTAGENT_H
+#define HRC_ROS_SRC_ROBOTAGENT_H
 
 #include <ros/ros.h>
 // include <package_name/service_type_name.h>
@@ -18,6 +18,8 @@
 
 #include "simple_web_socket/server_ws.hpp"
 
+using namespace std;
+typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
 
 class RobotAgent {
 public:
@@ -73,10 +75,9 @@ private:
 	/*
 	* Simple Web Socket server variables
 	*/
-	typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
 	WsServer server;
 	///WebSocket (WS)-server at port 9090 using 1 thread
-	server.config.port = 8080;
+	int port = 8080;
 
 	/// Flags to control the information communication to observation and task manager agents
 	bool action_info_received = false;
@@ -92,4 +93,4 @@ private:
 
 };
 
-#endif /* HRC_ROS_SRC_ROBOTAGENT_H_ */
+#endif /* HRC_ROS_SRC_ROBOTAGENT_H */
