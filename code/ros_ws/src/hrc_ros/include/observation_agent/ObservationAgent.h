@@ -55,7 +55,7 @@ private:
 	 */
 	void ReceiveTraySensors(const hrc_ros::TraySensor &msg);
 
-	/// ---- Operation based functions. Mostly for reactive robot's rule based decisions --- ///
+	// ---- Operation based functions. Mostly for reactive robot's rule based decisions --- //
 
 	// ************** WEB CLIENTS TO COMMUNICATE WITH DESPOT ******************** //
 	/**
@@ -132,22 +132,30 @@ private:
 	 */
 	ros::ServiceClient ObsUpdater;
 
-	/*
-	 * ROS services opened by MORSE to control human actions
-	 */
+	
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient is_ov; // ACTION: LOOK AROUND
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient is_oir; // SITUATION: IS HUMAN DETECTED?
+	
 	//ros::ServiceClient is_ho  = nh.serviceClient<std_srvs::Trigger>("/human/is_ho");
+	
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient is_a0;  // ACTION: GRASP ATTEMPT 
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient is_a2;  // ACTION: IDLE
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient is_a4;  // ACTION: WARN THE ROBOT
 
-	/*
-	 * Advertised service. See their methods for the functionality of the services
-	 */
+	
+	/// Advertised service. See their methods for the functionality of the services
+	
 	// ros::ServiceServer server = node_handle.advertiseService(service_name, pointer_to_callback_function);
+    /// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer action_server;
+	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer new_state__server;
+	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer reset_scenario;
 	
 	/// ROS subscribers (traySensor_subs) subscribes to the proximity sensors on the trays in the MORSE env.
@@ -162,34 +170,53 @@ private:
 
 	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	bool prevStIsInitSt = true; 
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	bool preventOneLoop = true; 
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	bool humanLoop = false;
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int FailedStCounter = 0;
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int EvaluateStCounter = 0;
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int TiredStCounter = 0;
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int NoAttentionCounter = 0;
-
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int humanidle_counter = 0;
+	/// Flags to control the information communication and variables for task and human-robot states tracking 
 	int humanfail_counter = 0;
-
-	bool ipd_sensor = false;	// inspected product detector sensor
-	bool upd_sensor = false;	// uninspected product detector sensor
-
-	bool humanAttempted = false; // for reactive model to state human attempted to grasp (take action) and track if success occured afterwards. Otherwise take over!
-	int human_task_time = 0; // this counts every second that human spends when the task is assigned to him
+	/// inspected product detector sensor
+	bool ipd_sensor = false;	
+	/// uninspected product detector sensor
+	bool upd_sensor = false;	
+    /// for reactive model to state human attempted to grasp (take action) and track if success occured afterwards. Otherwise take over!
+	bool humanAttempted = false;
+	/// this counts every second that human spends when the task is assigned to him
+	int human_task_time = 0;
+	/// Boolean to hold if human trusts the robot. This is inherently known to observation agent from the human model run by task manager
+	/// In our applications, for now, it is always kept TRUE
 	bool humanTrustsRobot;
 
-	/// Variables that hold the information of human and robot action and states to be processed here and informed to the task manager
-	string humanType; // beginner, expert
-	string humanMood; // for beginner: stubborn, distracted, thinker, tired; for expert: normal, tired
-	string robotType; // either proactive or reactive
+	// Variables that hold the information of human and robot action and states to be processed here and informed to the task manager
+	/// beginner, expert: For now by default it is beginner. Information comes from task manager. This can be modified under configs/scenario_config.json 
+	string humanType;
+	/// for beginner: stubborn, distracted, thinker, tired. Information comes from task manager. This can be modified under configs/scenario_config.json
+	string humanMood;
+	/// either proactive or reactive. Information comes from task manager. This can be modified under configs/scenario_config.json
+	string robotType;
+	/// holds the information of who is asigned with the task
 	string whoIsAssigned;
 	string whoSucceeded = "";
 	string real_robot_state_name = "";
-	string prev_robot_observation_pomdp = ""; // only for proactive model
+	/// To keep track on the prev and current observations. Used to decide human's actual state. only for proactive model
+	string prev_robot_observation_pomdp = "";
 	string prev_observables = "0";
-	string prev_robot_state = ""; // for both reactive and proactive
-	string prev_real_robot_state = ""; // for both reactive and proactive
+	/// Previous robot state for reactive
+	string prev_robot_state = ""; 
+	/// Previous real robot state (the state the robot should have estimated to be in). Only for proactive robot.
+	string prev_real_robot_state = "";
+	/// Previous actual human state
 	string prev_human_state = "";
 
 	/// Task counter: Used to regulate human actions (failing, known as attempting_grasp, more often as more tasks assigned)

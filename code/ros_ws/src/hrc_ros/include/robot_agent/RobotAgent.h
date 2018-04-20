@@ -56,12 +56,14 @@ private:
 	 */
 	ros::ServiceClient callTaskMang_inform;
 
-	/*
-	 * ROS services opened by MORSE to control human actions
-	 */
+	
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient pointToObj;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient grasp;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient cancelAction;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient planForGrasp;
 
 	/*
@@ -81,14 +83,20 @@ private:
 
 	/// Flags to control the information communication to observation and task manager agents
 	bool action_info_received = false;
+	/// Flags to control the information communication to observation and task manager agents
 	bool newstate_info_received = false;
+	/// Flags to control the information communication to observation and task manager agents
 	bool initial_state_received = true;
 
 	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_action_taken = "";
+	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_belief_state = "";
+	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_real_state = "";
+	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_immediate_reward = "";
+	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_total_disc_reward = "";
 
 };

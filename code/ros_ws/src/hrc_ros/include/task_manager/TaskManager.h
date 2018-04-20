@@ -48,7 +48,7 @@ private:
 	
 	//void taskStateUpdateEvent(const ros::TimerEvent &e);
 
-	/// ================Advertised Services=======================
+	// ================Advertised Services=======================
 	/**
 	 * Rosservice is called /task_manager/new_scenario_request
 	 * This service is manually called from the terminal to initiate a new scenario: human, robot and obs agents are reset,
@@ -101,31 +101,40 @@ private:
 	 * implemented as a rostopic to constantly send the sensory info. It is pushed only when the value changes. 
 	 */
 	void ReceiveTraySensors(const hrc_ros::TraySensor &msg);
-	/// =======================================
+	// =======================================
 	
 private:
 	
-	/*
-	 * Below are the client objects for the ros services called
-	*/
+	
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient humanReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient robotReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient humanROSReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient obsROSReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient robotROSReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient conveyorPrinterOnOff;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient conveyorAssembly1OnOff;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient conveyorAssembly2OnOff;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient moveNewPackage;
 	
-	/*
-	 * Below are the service objects for the advertised services
-	 */
-	ros::ServiceServer scenarioRequestService;
 	
+	/// Below are the service objects for the advertised services. See "initiateScenario" above for the functionality
+	ros::ServiceServer scenarioRequestService;
+	/// Below are the service objects for the advertised services. See "HumanStatusUpdater" above for the functionality
 	ros::ServiceServer HumanUpdateService;
+	/// Below are the service objects for the advertised services. See "ObsUpdater" above for the functionality
 	ros::ServiceServer ObsUpdateService;
+	/// Below are the service objects for the advertised services. See "RobotStatusUpdater" above for the functionality
 	ros::ServiceServer RobotUpdateService;
+	/// Below are the service objects for the advertised services. See "ResetTask" above for the functionality
 	ros::ServiceServer resetTaskService;
 	
 	/*
@@ -141,18 +150,21 @@ private:
 	
 	ros::Subscriber traySensor_subs; // SUBSCRIBE: TRAY SENSORS
 	
-	std::string realRobotState = ""; // this holds every iteration the state the robot should estimate correctly (for accuracy check)
+	/// this holds every iteration the state the robot should estimate correctly (for accuracy check)
+	std::string realRobotState = "";
+	/// beginner, expert: For now by default it is beginner. Information comes from task manager. This can be modified under configs/scenario_config.json 
 	std::string human_expert = "";
+	/// for beginner: stubborn, distracted, thinker, tired. Information comes from task manager. This can be modified under configs/scenario_config.json
 	std::string human_mood = "";
+	/// In our applications, for now, it is always kept TRUE
 	std::string human_trust = "";
 	
+	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
 	int step_counter = 0;
-	int task_time = 0; // this is counted by the ros timer event, increased in every second
+	/// The time a task takes. This is counted by the ros timer event, increased in every second
+	int task_time = 0;
+	/// The number (also as ID) of the task assigned.
 	int task_number = 0;
-	/*
-	* Several variables
-	double robotBatteries_arr[8] = {100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0}; //for 8 different robots
-	*/
 
 };
 

@@ -70,14 +70,18 @@ private:
 	 */
 	ros::ServiceClient callTaskMang_inform;
 
-	/*
-	 * ROS services opened by MORSE to control human actions
-	 */
+	
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient stayIdle;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient walkAway;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient lookAround;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient warnRobot;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient attemptGrasp;
+	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient grasp;
 
 	/*
@@ -97,12 +101,16 @@ private:
 
 	/// Flags to control the information communication to observation and task manager agents
 	bool action_info_received = false;
+	/// Flags to control the information communication to observation and task manager agents
 	bool newstate_info_received = false;
+	/// Flags to control the information communication to observation and task manager agents
 	bool initial_state_received = true;
 
 	/// Variables that hold the information of human action and states to be sent to the other agents
 	string human_action_taken = "";
+	/// Variables that hold the information of human action and states to be sent to the other agents
 	string human_belief_state = "";
+	/// Variables that hold the information of human action and states to be sent to the other agents
 	string human_real_state = "";
 
 	/// Task counter: Used to regulate human actions (failing, known as attempting_grasp, more often as more tasks assigned)
