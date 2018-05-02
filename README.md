@@ -154,7 +154,7 @@ The functionality is basically then, you input the next state, the human model s
 ## Brief overview of the system
 
 System Architecture drawing of the new version of the project, also showing the nodes to be updated for the student developments.
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry_ss18/master/doc/system_architecture_v2.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/master/doc/system_architecture_v2.png)
 
 ## References
 In any use of this code, please let the author know and please cite the articles below:
