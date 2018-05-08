@@ -106,13 +106,19 @@ L shaped conveyor belts:
 ```
 
 ## Running
+To run morse scene, do the following in a terminal:
 ```
 cd code/
 morse import hrc_morse # --> this is to import the folder as a morse project
 
 source ros_ws/devel/setup.bash # should source for both the morse and ros terminals
-roscore
-morse run hrc_morse hrc_scenario.py
+morse run hrc_morse hrc_morse/hrc_scenario.py # the last argument is showing the location of hrc_scenario.py
+```
+
+Now if you run `roscore` in another terminal this will start the morse scene (due to the ros services initialized under morse, we need ros master). You can navigate in the morse scene by pressing `F5` (changes camera view from human to world). and with `W,A,S,D` for direction and `ctrl + mouse` for orientation.
+
+Running ROS project:
+```
 roslaunch hrc_ros hrc.launch
 ```
 you can optionally call <hrc_scenario_cam_only.py> for a simplified scenario to use for human activity recognition (a dummy robot with Kinect camera on). 
@@ -133,7 +139,7 @@ rostopic echo /task_manager/task_status
 
 All the predesigned human and robot models can be found under code/models.
 The models are read by the despot packages to generate policies and run them.
-You can create your own models using pomdpx xml file format (refer to www.pomdp ). There are POMDP file formats also easily adjustable, then you need to use appl (www.appl.) to convert them to pomdpx format.
+You can create your own POMDP models by adjusting the existing .pomdpx files under /models folder. For more information on POMDPs and the .pomdpx file please refer to here: http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl/index.php?n=Main.PomdpXDocumentation.
 
 ### Selecting Models
 Which model (human and robot types) to run initially can be selected under code/configs/scenario_config.json
@@ -148,14 +154,14 @@ In this version, the robot model runs automatically, the terminal is for you to 
 The terminal opened by despot_human allows you to control the human actions. This is left as it is for easy testing of the expected robot behaviors. Simply follow the human_model drawing given below to input the next state the human is in (an integer from 0 to 9 each referring to a state as given in the drawing). 
 The functionality is basically then, you input the next state, the human model selects one action in that state (according to the model design), then the robot observes the action and responds, then you will decide on the next state (in response to the robot action). Although here we have the control over the human, the action selection of the human is still unknown to us, selected by the MDP model. Please ask the author for any further questions.
 - Robot Models:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/robot_models.png)
-- Human Model:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/human_model.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry_ss18/raw/master/doc/robot_models.png)
+- Human Models:
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry_ss18/raw/master/doc/human_model.png)
 
 ## Brief overview of the system
 
 System Architecture drawing of the new version of the project, also showing the nodes to be updated for the student developments.
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/system_architecture_v2.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry_ss18/raw/master/doc/system_architecture_v2.png)
 
 ## References
 In any use of this code, please let the author know and please cite the articles below:
