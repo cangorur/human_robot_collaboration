@@ -109,16 +109,20 @@ L shaped conveyor belts:
 To run morse scene, do the following in a terminal:
 ```
 cd code/
-morse import hrc_morse # --> this is to import the folder as a morse project
-
-source ros_ws/devel/setup.bash # should source for both the morse and ros terminals
+morse import -f hrc_morse # --> this is to import the folder as a morse project. You need to do it once.
+```
+We need to source the ros workspace for morse too, because morse entities are using ros services as an interface to outside world.
+```
+source ros_ws/devel/setup.bash # Every time you open a new terminal this is necessary. Or put the command into `.bashrc` file
 morse run hrc_morse hrc_morse/hrc_scenario.py # the last argument is showing the location of hrc_scenario.py
 ```
 
 Now if you run `roscore` in another terminal this will start the morse scene (due to the ros services initialized under morse, we need ros master). You can navigate in the morse scene by pressing `F5` (changes camera view from human to world). and with `W,A,S,D` for direction and `ctrl + mouse` for orientation.
 
 Running ROS project:
+Open a new terminal and
 ```
+source ros_ws/devel/setup.bash
 roslaunch hrc_ros hrc.launch
 ```
 you can optionally call <hrc_scenario_cam_only.py> for a simplified scenario to use for human activity recognition (a dummy robot with Kinect camera on). 
