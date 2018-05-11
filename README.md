@@ -153,8 +153,14 @@ You can create your own POMDP models by adjusting the existing .pomdpx files und
 ### Selecting Models
 Which model (human and robot types) to run initially can be selected under code/configs/scenario_config.json
 Just replace the type fields under the json file with the ones below#
-human types: expertise: "beginner / expert" || type:mood:"stubborn / thinker / distracted / tired" # Note that in time human is assigned randomly but more likely with distracted and tired types automatically.
-robot type: "proactive / reactive" # This will run either POMDP or MDP model respectively.
+human:
+- expertise: "beginner / expert"
+- mood:"stubborn / thinker / distracted / tired" # Note that in time human is assigned randomly but more likely with distracted and tired types automatically.
+robot: 
+- "proactive / reactive" # This will run either POMDP or MDP model respectively.
+
+For more model creation, refer to this shared excel sheet for easily adjust state transition, observation and reward matrices and create your own .pomdpx models:
+- https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit?usp=sharing
 
 ### Controlling Human and Robot Models
 After you successfully run the a scenario, you will notice that two terminal will open automatically. Those are opened by despot_human and despot_robot packages. They simply execute the human and robot policies generated.
