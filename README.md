@@ -12,7 +12,12 @@ For the students, the architecture drawing at the bottom of the page shows the p
 ## Prerequisites
 - MORSE
 
-Install Morse 1.3 - STABLE.
+Install Morse 1.3 - STABLE. Please refer to APP-RAS W3 slides
+
+After the installation, extend `PYTHONPATH` with the MORSE installation path. Just puth the below line to `.bashrc` file.
+```
+export PYTHONPATH=${PYTHONPATH}:/opt/lib/python3/dist-packages
+```
 
 - ROS
 
