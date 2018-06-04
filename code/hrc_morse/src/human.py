@@ -60,58 +60,6 @@ class Human(GraspingRobot):
         logger.info('Component initialized')
 
     @service
-    def look_left(self):
-        ''' look left'''
-        scene = blenderapi.scene()
-        head = scene.objects['Look_Empty']
-        back = scene.objects['Hips_Empty']
-
-        f_speed_head = [0, -PI / 4, 0]
-
-        N = 50
-        head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-
-    @service
-    def look_right(self):
-        ''' look right'''
-        scene = blenderapi.scene()
-        head = scene.objects['Look_Empty']
-        back = scene.objects['Hips_Empty']
-
-        f_speed_head = [0, PI / 4, 0]
-
-        N = 50
-        head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-
-    @service
-    def look_up(self):
-        ''' look up'''
-        scene = blenderapi.scene()
-        head = scene.objects['Look_Empty']
-        back = scene.objects['Hips_Empty']
-
-        f_speed_head = [0, 0, PI / 4]
-
-        N = 50
-        head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-
-    @service
-    def look_down(self):
-        ''' look down'''
-        scene = blenderapi.scene()
-        head = scene.objects['Look_Empty']
-        back = scene.objects['Hips_Empty']
-
-        f_speed_head = [0, 0, -PI / 4]
-
-        N = 50
-        head.applyMovement([f_speed_head[0] / N, f_speed_head[1] / N, f_speed_head[2] / N], True)
-        self.change_head = [x + y for x, y in zip(self.change_head, f_speed_head)]
-
-    @service
     def reset(self):
         ''' ungrasp object '''
 
