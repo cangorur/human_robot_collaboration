@@ -239,7 +239,6 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
 
 		if (terminal) {
-			*out_ << "===================0 THIS IS TERMINAL AMK ==========0" << endl;
 			step_end_t = get_time_second();
 			logi << "[RunStep] Time for step: actual / allocated = "
 				<< (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
