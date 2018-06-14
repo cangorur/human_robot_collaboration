@@ -223,8 +223,10 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 	
 		//== Executing the action here ==//
 		bool terminal = ExecuteAction(sim_type, real_state, previous_action, reward, obs);
-		terminal = false; // TODO: we disabled the termination of the states for continuous testing
-		
+		// terminal = false; // TODO: we disabled the termination of the states for continuous testing
+		// TODO: Since the terminal states are hard to define in a rewarding system automatically, here we manually check
+		// Terminal states are: GlobalSuccess and GlobalFail
+		terminal = (real_state == 8 || real_state == 9) ? true : false;
 		ReportStepReward();
 	
 		end_t = get_time_second();
@@ -232,7 +234,12 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			<< endl;
 		//== Action was executed ==//
 		
+		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
+		// Sending rewards gathered from the new state
+		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
+
 		if (terminal) {
+			*out_ << "===================0 THIS IS TERMINAL AMK ==========0" << endl;
 			step_end_t = get_time_second();
 			logi << "[RunStep] Time for step: actual / allocated = "
 				<< (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
@@ -242,9 +249,6 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			step_++;
 			return true;
 		}
-		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
-		// Sending rewards gathered from the new state
-		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
 		// ########## SIMULATOR ENDS ########### //
 	}
 	// ################# REWARD CALCULATION ENDS ####################//

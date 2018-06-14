@@ -244,13 +244,18 @@ bool Evaluator::RunStep(int step, int round) {
 
 	bool terminal = ExecuteAction(sim_type, new_state, previous_action, reward, obs);
 	// terminal = false; // TODO: we disabled the termination of the states for continuous testing
+	// TODO: Since the terminal states are hard to define in a rewarding system automatically, here we manually check
+	// Terminal states are: GlobalSuccess and GlobalFail
+	terminal = (new_state == 1 || new_state == 2) ? true : false;
 	//== Action was executed ==//
 	ReportStepReward();
 	
 	end_t = get_time_second();
 	logi << "[RunStep] Time spent in ExecuteAction(): " << (end_t - start_t)
 			<< endl;
-
+	
+	Evaluator::webSocketClient(-1, state_->text()); // informing about the new state
+	
 	if (terminal) {
 		step_end_t = get_time_second();
 		logi << "[RunStep] Time for step: actual / allocated = "
@@ -261,8 +266,6 @@ bool Evaluator::RunStep(int step, int round) {
 		step_++;
 		return true;
 	}
-	
-	Evaluator::webSocketClient(-1, state_->text()); // informing about the new state
 	
 	// ########## SIMULATOR ENDS ########### //
 	
@@ -306,10 +309,10 @@ bool Evaluator::RunStep(int step, int round) {
 	}
 	*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
 	*out_ << "- FINAL: Action taken: " << action << " in the state: " << belief_distr[index_first].first << endl;
-	//== send the action and state to human via websocket ==//
+	//== send the action and state to human_agent via websocket ==//
 	Evaluator::webSocketClient(action, belief_distr[index_first].first);
 	//=== SENT === //
-	
+
 	*out_<< endl;
 	step_++;
 	return false;

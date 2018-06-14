@@ -283,8 +283,8 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
         cout << endl << ">>> waiting for the next message from websocket ..." << endl;
 
         // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
-        //if (terminal)
-        //  break;
+        if (terminal)
+          connection->send_close(1000);
 
         double step_end_t = get_time_second();
         logi << "[main] Time for step: actual / allocated = "
@@ -312,6 +312,10 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
                         "Error: " << ec << ", error message: " << ec.message() << endl;
             }
         });
+    };
+
+    echo.on_close = [](shared_ptr<WsServer::Connection> connection, int status, const string & /*reason*/) {
+        cout << "POMDP Server: Closed connection " << connection.get() << " with status code " << status << endl;
     };
 
     server.start();
