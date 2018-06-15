@@ -237,7 +237,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
 		// Sending rewards gathered from the new state
 		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
-
+		
 		if (terminal) {
 			step_end_t = get_time_second();
 			logi << "[RunStep] Time for step: actual / allocated = "

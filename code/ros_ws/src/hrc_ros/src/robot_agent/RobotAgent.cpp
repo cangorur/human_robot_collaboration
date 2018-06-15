@@ -30,7 +30,7 @@ void RobotAgent::initialize() {
 	pointToObj = nh.serviceClient<std_srvs::Trigger>("/robot/point_to_obj");
 	grasp = nh.serviceClient<std_srvs::Trigger>("/robot/grasp");
 	cancelAction = nh.serviceClient<std_srvs::Trigger>("/robot/cancel_action");
-	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_grasping");
+	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_motion");
 
 	reset_scenario = nh.advertiseService("/robot_agent/reset", &RobotAgent::resetScenario, this);
 
