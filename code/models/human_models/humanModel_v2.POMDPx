@@ -173,9 +173,6 @@
 <Entry>
 <Instance>idle Evaluating</Instance>
 <ValueTable>2</ValueTable></Entry>
-<Entry>
-<Instance>warnRobot Evaluating</Instance>
-<ValueTable>-1</ValueTable></Entry>
 
 <Entry>
 <Instance>lookAround NoAttention</Instance>
@@ -207,7 +204,7 @@
 
 <Entry>
 <Instance>warnRobot *</Instance>
-<ValueTable>-2</ValueTable></Entry>
+<ValueTable>-3</ValueTable></Entry>
 <Entry>
 <Instance>warnRobot RobotIsWarned</Instance>
 <ValueTable>1</ValueTable></Entry>
