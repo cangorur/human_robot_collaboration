@@ -136,29 +136,42 @@ Evaluator::~Evaluator() {
 
 
 //==========================================================
-void Evaluator::webSocketClient(int action, string state, double reward, double discounted_reward) {
+void Evaluator::webSocketClient(int action, std::string state) {
 	typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
+	
+	// state = " " means the msg is sent for informing only the action
 
+	std::size_t index = state.find(":") + 1;
+	string str = state.substr(index);
+	string state_str = str.substr(0, str.size()-1);
+
+	// Commented below to send the state name directly
+	/*string state_ID = "";
+	if (state_str == "task_assigned")
+		state_ID = "0";
+	else if (state_str == "success")
+		state_ID = "1";
+	else if (state_str == "failed_to_grasp")
+		state_ID = "2";
+	else if (state_str == "no_attention")
+		state_ID = "3";
+	else if (state_str == "evaluating")
+		state_ID = "4";
+	else if (state_str == "tired")
+		state_ID = "5";
+	else if (state_str == "recovery")
+		state_ID = "6";
+	else
+		state_ID = "7";
+	*/
 	// send action to human actuator
-  WsClient client("localhost:8080");
+  WsClient client("localhost:9090");
   
   client.on_open=[&]() {
-	  std::size_t index = state.find(":") + 1;
-	  string str = state.substr(index);
-	  string state_str = str.substr(0, str.size()-1);
-	  
-	  std::ostringstream strs;
-	  strs << reward;
-	  std::string reward_str = strs.str();
-	  	  
-	  std::ostringstream strss;
-	  strss << discounted_reward;
-	  std::string disc_reward_str = strss.str();
-	  	  
-	  string message = std::to_string(action) + "," + state_str + "," + reward_str + "," + disc_reward_str;
+      string message = std::to_string(action) + "," + state_str;
 
       //*out_ << "Client: Opened connection" << endl;
-      *out_ << ">>> Robot MDP Client: Sending message: \"" << message << "\"" << endl;
+      *out_ << ">>> HUMAN MDP Client: Sending message: \"" << message << "\"" << endl;
 
       auto send_stream=make_shared<WsClient::SendStream>();
       *send_stream << message;
@@ -175,13 +188,13 @@ void Evaluator::webSocketClient(int action, string state, double reward, double 
 //==========================================================
 bool Evaluator::RunInitial() {
 	int action = solver_->Search().action; // initial action selection
-	Evaluator::webSocketClient(action, state_->text(), 0.0, 0.0);
+	Evaluator::webSocketClient(action, state_->text()); // informing about the initial state
 	previous_action = action;
-	*out_ << "Robot Took Action: " << action << "in init state: " << state_->text() << endl;
+	*out_ << "Human Took Action: " << action << " in the initial state:" << state_->text() << endl;
 	return true;
 }
 
-bool Evaluator::RunStep(int step, int round, int real_state, int observed_state) {
+bool Evaluator::RunStep(int step, int round) {
 	if (target_finish_time_ != -1 && get_time_second() > target_finish_time_) {
 		if (!Globals::config.silence && out_)
 			*out_ << "Exit. (Total time "
@@ -196,125 +209,109 @@ bool Evaluator::RunStep(int step, int round, int real_state, int observed_state)
 		exit(1);
 	}
 	
+	//== Setting the next state manually ==//
+	*out_ << "Please enter the next state: "; //[integer from 0 to 6, press any non-int key for autogen]: ";
+	int new_state;
+	int sim_type = 0; //random state generation by default
+	string input = "";
+	getline(cin, input);
+	// This code converts from string to number safely.
+	stringstream myStream(input);
+	if (myStream >> new_state){
+		*out_ << "State is manually entered: " << new_state << endl;
+		sim_type = 2;
+	}
+	else{
+		*out_ << "Assignment failed, random state generation..." << endl;
+	}
+	//== ==//
+	
 	OBS_TYPE obs;
 	double start_t;
 	double end_t;
-	int sim_type = 2;
 	double step_start_t;
 	double step_end_t;
 	double reward;
 	
-	*out_ << "- The real state received: " << real_state << endl;
-	*out_ << "- The observed state: " << observed_state << endl;
+	*out_ << "- The real state received: " << new_state << endl;
 	*out_ << "=== RESULTS ===" << endl;
+
+
+	// ########## SIMULATOR STARTS ########### //
+	// to get the reward, first simulator runs ! The new state only gives the reward of our previous act!
+	//== Executing the action here ==//
+	start_t = get_time_second();
+
+	bool terminal = ExecuteAction(sim_type, new_state, previous_action, reward, obs);
+	// terminal = false; // TODO: we disabled the termination of the states for continuous testing
+	//== Action was executed ==//
+	ReportStepReward();
 	
-	// ################# REWARD CALCULATION STARTS ####################//
-	if (real_state != -1){
-		// ########## SIMULATOR STARTS ########### //
-		// to get the reward, first simulator runs ! The new state only gives the reward of our previous act!
-		start_t = get_time_second();
-	
-		//== Executing the action here ==//
-		bool terminal = ExecuteAction(sim_type, real_state, previous_action, reward, obs);
-		// terminal = false; // TODO: we disabled the termination of the states for continuous testing
-		// TODO: Since the terminal states are hard to define in a rewarding system automatically, here we manually check
-		// Terminal states are: GlobalSuccess and GlobalFail
-		terminal = (real_state == 1 || real_state == 5) ? true : false;		
-		ReportStepReward();
-	
-		end_t = get_time_second();
-		logi << "[RunStep] Time spent in ExecuteAction(): " << (end_t - start_t)
+	end_t = get_time_second();
+	logi << "[RunStep] Time spent in ExecuteAction(): " << (end_t - start_t)
 			<< endl;
-		//== Action was executed ==//
-		
-		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
-		// Sending rewards gathered from the new state
-			
-		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
-		if (terminal) {
-			step_end_t = get_time_second();
-			logi << "[RunStep] Time for step: actual / allocated = "
-				<< (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
-				<< endl;
-			if (!Globals::config.silence && out_)
-				*out_ << endl;
-			step_++;
-			return true;
-		}
-		// ########## SIMULATOR ENDS ########### //
-	}
-	// ################# REWARD CALCULATION ENDS ####################//
-	
-	// ################# BELIEF UPDATE AND ACTION SELECTION STARTS ####################//
-	if (observed_state != -1){
-		// ########## AGENT BELIEF UPDATE STARTS ########## //
-		//== Setting the next state manually ==//
-		
-		//== ==//
-		*out_ << "-----------------------------------Round " << round
-					<< " Step " << step << "-----------------------------------"
-					<< endl;
-		
-		start_t = get_time_second();
-		string state_name = "";
-		if (observed_state == 0)
-			state_name = "TaskHuman";
-		else if (observed_state == 1)
-			state_name = "GlobalSuccess";
-		else if (observed_state == 2)
-			state_name = "HumanNeedsHelp";
-		else if (observed_state == 3)
-			state_name = "WarningReceived";
-		else if (observed_state == 4)
-			state_name = "TaskRobot";
-		else if (observed_state == 5)
-			state_name = "GlobalFail";
-		
-		string text_of_newState = "[state_1:" + state_name + "]";
-		solver_->Update(text_of_newState, previous_action, obs);
-		end_t = get_time_second();
-		logi << "[RunStep] Time spent in Update(): " << (end_t - start_t) << endl;
-		
-		// ########## AGENT BELIEF UPDATE ENDS########## //
-	
-		
-		// ########## AGENT'S ACTION SELECTION STARTS ########## //
-		step_start_t = get_time_second();
-		start_t = get_time_second();
-		int action = solver_->Search().action;
-		previous_action = action; // THIS ACTION WILL BE USED IN THE NEXT STEP TO CALCULATE THE BELIEF WHEN NEW OBS ARRIVES
-		end_t = get_time_second();
-	
-		logi << "[RunStep] Time spent in " << typeid(*solver_).name()
-			<< "::Search(): " << (end_t - start_t) << endl;
-	
-		if (!Globals::config.silence && out_) {
-			*out_ << "- Agent Acts = ";
-			model_->PrintAction(action, *out_);
-		}
-		// ########## AGENT'S ACTION SELECTION ENDS ########## //
-		
-		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
-		
-		vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();	
 
-		int index_first = 0;
-		for (int i = 0; i < belief_distr.size(); i++) {
-			if (belief_distr[i].second >= belief_distr[index_first].second)
-				index_first = i;
-		}
-		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
-		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl;
-		// no rewards yet. The rewarding is done when the new real state received (this action leads to that state)
-		Evaluator::webSocketClient(action, text_of_newState, 0.0, 0.0); // TODO: the text_ofnewState will be replaced by the belief state !!!
-		// ######################################################## //
-	}
-	// ################# BELIEF UPDATE AND ACTION SELECTION ENDS ####################//
-
-	*out_<<endl;	
-	if (observed_state != -1)
+	if (terminal) {
+		step_end_t = get_time_second();
+		logi << "[RunStep] Time for step: actual / allocated = "
+			<< (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
+			<< endl;
+		if (!Globals::config.silence && out_)
+			*out_ << endl;
 		step_++;
+		return true;
+	}
 	
+	Evaluator::webSocketClient(-1, state_->text()); // informing about the new state
+	
+	// ########## SIMULATOR ENDS ########### //
+	
+	// ########## AGENT BELIEF UPDATE STARTS########## //
+	
+	*out_ << "-----------------------------------Round " << round
+				<< " Step " << step << "-----------------------------------"
+				<< endl;
+	string text_of_newState = state_->text(); // this is the actual state the human is in
+	
+	start_t = get_time_second();
+	solver_->Update(text_of_newState, previous_action, obs);
+	end_t = get_time_second();
+	logi << "[RunStep] Time spent in Update(): " << (end_t - start_t) << endl;
+
+	// ########## AGENT BELIEF UPDATE ENDS########## //
+	
+	// ########## AGENT'S ACTION SELECTION STARTS ########## //
+	step_start_t = get_time_second();
+	start_t = get_time_second();
+	int action = solver_->Search().action;
+	previous_action = action; // THIS ACTION WILL BE USED IN THE NEXT STEP TO CALCULATE THE BELIEF WHEN NEW OBS ARRIVES
+	end_t = get_time_second();
+
+	logi << "[RunStep] Time spent in " << typeid(*solver_).name()
+		<< "::Search(): " << (end_t - start_t) << endl;
+
+	if (!Globals::config.silence && out_) {
+		*out_ << "- Agent Acts = ";
+		model_->PrintAction(action, *out_);
+	}
+	// ########## AGENT'S ACTION SELECTION ENDS ########## //
+	// ########## SENDING THE RESULTS TO THE SOCKET ########### //
+
+	vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();	
+
+	int index_first = 0;
+	for (int i = 0; i < belief_distr.size(); i++) {
+		if (belief_distr[i].second >= belief_distr[index_first].second)
+			index_first = i;
+	}
+	*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
+	*out_ << "- FINAL: Action taken: " << action << " in the state: " << belief_distr[index_first].first << endl;
+	//== send the action and state to human via websocket ==//
+	Evaluator::webSocketClient(action, belief_distr[index_first].first);
+	//=== SENT === //
+	
+	*out_<< endl;
+	step_++;
 	return false;
 }
 
@@ -665,7 +662,7 @@ double POMDPEvaluator::EndRound() {
 	return total_undiscounted_reward_;
 }
 
-bool POMDPEvaluator::ExecuteAction(int sim_type, int real_state, int action, double& reward, OBS_TYPE& obs) {
+bool POMDPEvaluator::ExecuteAction(int sim_type, int new_state, int action, double& reward, OBS_TYPE& obs) {
 	bool terminal = true;
 	double random_num = random_.NextDouble();
 
@@ -676,7 +673,7 @@ bool POMDPEvaluator::ExecuteAction(int sim_type, int real_state, int action, dou
 		terminal = model_->Step(*state_, random_num, action, reward, obs);
 	}
 	else{ //manually controlled human model --> uncontrolled environment
-		terminal = model_->StepManual(*state_, random_num, real_state, action, reward, obs);
+		terminal = model_->StepManual(*state_, random_num, new_state, action, reward, obs);
 	}
 
 	reward_ = reward;

@@ -201,131 +201,88 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
                              int start_run) {
   // Run num_runs simulations
   vector<double> round_rewards(num_runs);
-  for (int round = start_run; round < start_run + num_runs; round++) {
-    default_out << endl
-                << "####################################### Round " << round
-                << " #######################################" << endl;
+  typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
 
-    if (search_solver) {
-      if (round == 0) {
-        solver = InitializeSolver(model, "DESPOT", options);
-        default_out << "Solver: " << typeid(*solver).name() << endl;
+  WsServer server;
+  server.config.port=7070;
 
-        simulator->solver(solver);
-      } else if (round == 5) {
-        solver = InitializeSolver(model, "POMCP", options);
-        default_out << "Solver: " << typeid(*solver).name() << endl;
+  auto& echo=server.endpoint["^/?$"];
+  // NOTE: Only one round for every task. The webserver persists so long as new message arrives.
+  // It terminates whent a terminal state has been reached (manual check at line 314)
+  //for (int round = start_run; round < start_run + num_runs; round++) {
+  int round = start_run;
+  default_out << endl
+              << "####################################### Round " << round
+              << " #######################################" << endl;
 
-        simulator->solver(solver);
-      } else if (round == 10) {
-        double sum1 = 0, sum2 = 0;
-        for (int i = 0; i < 5; i++)
-          sum1 += round_rewards[i];
-        for (int i = 5; i < 10; i++)
-          sum2 += round_rewards[i];
-        if (sum1 < sum2)
-          solver = InitializeSolver(model, "POMCP", options);
-        else
-          solver = InitializeSolver(model, "DESPOT", options);
-        default_out << "Solver: " << typeid(*solver).name()
-                    << " DESPOT:" << sum1 << " POMCP:" << sum2 << endl;
-      }
+  if (search_solver) {
+    if (round == 0) {
+      solver = InitializeSolver(model, "DESPOT", options);
+      default_out << "Solver: " << typeid(*solver).name() << endl;
 
       simulator->solver(solver);
+    } else if (round == 5) {
+      solver = InitializeSolver(model, "POMCP", options);
+      default_out << "Solver: " << typeid(*solver).name() << endl;
+
+      simulator->solver(solver);
+    } else if (round == 10) {
+      double sum1 = 0, sum2 = 0;
+      for (int i = 0; i < 5; i++)
+        sum1 += round_rewards[i];
+      for (int i = 5; i < 10; i++)
+        sum2 += round_rewards[i];
+      if (sum1 < sum2)
+        solver = InitializeSolver(model, "POMCP", options);
+      else
+        solver = InitializeSolver(model, "DESPOT", options);
+      default_out << "Solver: " << typeid(*solver).name()
+                  << " DESPOT:" << sum1 << " POMCP:" << sum2 << endl;
     }
-    
-    simulator->InitRound(); // TODO: initializing. This will be changed to get also the initial state from outside (TASK ASSGINMENT
-    simulator->RunInitial(); // make the initial run, robot finding an action for the initial state
-    
-    //==========================================================
-    cout << ">>> waiting for the next message from websocket ..." << endl;
-    
-    int step = 0;
 
-    typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
+    simulator->solver(solver);
+  }
+  
+  simulator->InitRound(); // TODO: initializing. This will be changed to get also the initial state from outside (TASK ASSGINMENT
+  simulator->RunInitial(); // make the initial run, robot finding an action for the initial state
+  
+  //==========================================================
+  cout << ">>> waiting for the next message from websocket ..." << endl;
+  
+  int step = 0;
 
-    WsServer server;
-    server.config.port=7070;
+  echo.on_open=[](shared_ptr<WsServer::Connection> connection) {
+      //cout << "Server: Opened connection " << (size_t)connection.get() << endl;
+  };
 
-    auto& echo=server.endpoint["^/?$"];
+  echo.on_message=[&](shared_ptr<WsServer::Connection> connection, shared_ptr<WsServer::Message> message) {
 
-    echo.on_open=[](shared_ptr<WsServer::Connection> connection) {
-        //cout << "Server: Opened connection " << (size_t)connection.get() << endl;
-    };
+      auto message_str = message->string();
+      cout << ">>> Robot POMDP Server: Message received: \"" << message_str << "\"" << endl;
 
-    echo.on_message=[&](shared_ptr<WsServer::Connection> connection, shared_ptr<WsServer::Message> message) {
+      int new_state = 0;
+      
+      std::size_t index = message_str.find(",");
+      string manual_obs_str = message_str.substr(0, index);
+      string real_state_str = message_str.substr(index+1);
 
-        auto message_str = message->string();
-        cout << ">>> Robot POMDP Server: Message received: \"" << message_str << "\"" << endl;
+      // This code converts from string to number safely.
+      int manual_obs = -1;
+      if (manual_obs_str != "-1"){ // means the information provided is the observed_state only
+      	stringstream obsString(manual_obs_str);
+      	obsString >> manual_obs;
+      }
+      
+      int real_state = -1;
+      if (real_state_str != "-1"){ // means the information provided is the real new state
+      	stringstream stateString(real_state_str);
+      	stateString >> real_state;
+      }
 
-        int new_state = 0;
-        
-        std::size_t index = message_str.find(",");
-        string manual_obs_str = message_str.substr(0, index);
-        string real_state_str = message_str.substr(index+1);
-
-        // This code converts from string to number safely.
-        int manual_obs = -1;
-        if (manual_obs_str != "-1"){ // means the information provided is the observed_state only
-        	stringstream obsString(manual_obs_str);
-        	obsString >> manual_obs;
-        }
-        
-        int real_state = -1;
-        if (real_state_str != "-1"){ // means the information provided is the real new state
-        	stringstream stateString(real_state_str);
-        	stateString >> real_state;
-        }
-
-        double step_start_t = get_time_second();
-        
-        bool terminal = simulator->RunStep(step, round, real_state, manual_obs);
-        cout << endl << ">>> waiting for the next message from websocket ..." << endl;
-
-        // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
-        //if (terminal)
-        //  break;
-
-        double step_end_t = get_time_second();
-        logi << "[main] Time for step: actual / allocated = "
-             << (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
-             << endl;
-        simulator->UpdateTimePerMove(step_end_t - step_start_t);
-        logi << "[main] Time per move set to " << Globals::config.time_per_move
-             << endl;
-        logi << "[main] Plan time ratio set to " << EvalLog::plan_time_ratio
-             << endl;
-        //  default_out << endl;
-        if (manual_obs != -1){ // only observed state updates is a call for a new step
-			step += 1;
-		}
-
-        // send "None" to client
-        auto send_stream=make_shared<WsServer::SendStream>();
-        message_str = "None";
-        *send_stream << message_str;
-        //server.send is an asynchronous function
-        server.send(connection, send_stream, [](const SimpleWeb::error_code& ec){
-            if(ec) {
-                cout << "Server: Error sending message. " <<
-                //See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
-                        "Error: " << ec << ", error message: " << ec.message() << endl;
-            }
-        });
-    };
-
-    server.start();
-    //==========================================================
-
-/*
-    for (int i = 0; i < Globals::config.sim_len; i++) {
       double step_start_t = get_time_second();
-
-      bool terminal = simulator->RunStep(i, round);
-
-      // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
-      if (terminal)
-        break;
+      
+      bool terminal = simulator->RunStep(step, round, real_state, manual_obs);
+      cout << endl << ">>> waiting for the next message from websocket ..." << endl;
 
       double step_end_t = get_time_second();
       logi << "[main] Time for step: actual / allocated = "
@@ -336,15 +293,63 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
            << endl;
       logi << "[main] Plan time ratio set to " << EvalLog::plan_time_ratio
            << endl;
-    //  default_out << endl;
-    }
+      //  default_out << endl;
+      if (manual_obs != -1){ // only observed state updates is a call for a new step
+		     step += 1;
+	    }
+
+      // send "None" to client
+      auto send_stream=make_shared<WsServer::SendStream>();
+      message_str = "None";
+      *send_stream << message_str;
+      //server.send is an asynchronous function
+      server.send(connection, send_stream, [](const SimpleWeb::error_code& ec){
+          if(ec) {
+              cout << "Server: Error sending message. " <<
+              //See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
+                      "Error: " << ec << ", error message: " << ec.message() << endl;
+          }
+      });
+      // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
+     if (terminal)
+        exit(0);
+  };
+
+  echo.on_close = [](shared_ptr<WsServer::Connection> connection, int status, const string & /*reason*/) {
+      cout << "POMDP Server: Closed connection " << connection.get() << " with status code " << status << endl;
+  };
+
+  server.start();
+  //==========================================================
+
+/*
+  for (int i = 0; i < Globals::config.sim_len; i++) {
+    double step_start_t = get_time_second();
+
+    bool terminal = simulator->RunStep(i, round);
+
+    // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
+    if (terminal)
+      break;
+
+    double step_end_t = get_time_second();
+    logi << "[main] Time for step: actual / allocated = "
+         << (step_end_t - step_start_t) << " / " << EvalLog::allocated_time
+         << endl;
+    simulator->UpdateTimePerMove(step_end_t - step_start_t);
+    logi << "[main] Time per move set to " << Globals::config.time_per_move
+         << endl;
+    logi << "[main] Plan time ratio set to " << EvalLog::plan_time_ratio
+         << endl;
+  //  default_out << endl;
+  }
 */
 
-    default_out << "Simulation terminated in " << simulator->step() << " steps"
-                << endl;
-    double round_reward = simulator->EndRound();
-    round_rewards[round] = round_reward;
-  }
+  default_out << "Simulation terminated in " << simulator->step() << " steps"
+              << endl;
+  double round_reward = simulator->EndRound();
+  round_rewards[round] = round_reward;
+  //}
 
   if (simulator_type == "ippc" && num_runs != 30) {
     cout << "Exit without receiving reward." << endl

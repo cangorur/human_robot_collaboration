@@ -17,7 +17,7 @@ class RobotControlAndMonitor(MorseOverlay):
 
         # if current action is executed
         self.is_gr = False  # has grasped
-        self.is_pl = False  # has planned for grasping
+        self.overlaid_object.is_pl = False  # has planned for grasping
         self.is_po = False  # has pointed out
         self.is_ca = False  # has canceled
 
@@ -31,7 +31,7 @@ class RobotControlAndMonitor(MorseOverlay):
             self.is_gr = False
             self.is_po = False
             self.is_ca = False
-            self.is_pl = False
+            self.overlaid_object.is_pl = False
 
             return TriggerResponse(True, 'robot: cancel action')
         else:
@@ -51,7 +51,7 @@ class RobotControlAndMonitor(MorseOverlay):
         self.is_gr = False
         self.is_po = False
         self.is_ca = False
-        self.is_pl = False
+        self.overlaid_object.is_pl = False
         return TriggerResponse(True, 'robot: reset')
 
     # distance
@@ -71,13 +71,13 @@ class RobotControlAndMonitor(MorseOverlay):
         else:
             if not self.is_gr:
                 # if the robot has not planned for the grasp yet
-                if not self.is_pl:
-                    self.planning_for_grasping()
+                if not self.overlaid_object.is_pl:
+                    self.planning_for_motion()
                 self.is_gr = True
                 t1 = threading.Thread(target=self.overlaid_object.grasp)
                 t1.start()
                 self.is_gr = False
-                self.is_pl = False  # after the grasping process there needs to be replanning for the upcoming grasp
+                self.overlaid_object.is_pl = False  # after the grasping process there needs to be replanning for the upcoming grasp
                 #if success:
                 self.is_obj = True
                 return TriggerResponse(True, 'robot: grasp object')
@@ -85,28 +85,28 @@ class RobotControlAndMonitor(MorseOverlay):
                 return TriggerResponse(True, 'robot: action(grasp object) is not finished')
 
     # planning for grasping. Note that every other action taken breaks the plan. So the robot should redo
-    @ros_service(type=Trigger, name='planning_for_grasping')
-    def planning_for_grasping(self):
-        if not self.is_pl:
-            time.sleep(3)  ### SLEEP FOR ROBOT GRASPING ! ###
-            self.is_pl = True
-            return TriggerResponse(True, 'robot: planning for the grasping')
+    @ros_service(type=Trigger, name='planning_for_motion')
+    def planning_for_motion(self):
+        if not self.overlaid_object.is_pl:
+            t1 = threading.Thread(target=self.overlaid_object.planning_for_motion())
+            t1.start()
+            return TriggerResponse(True, 'robot: planning for the motion')
         else:
-            self.is_pl = True
-            return TriggerResponse(True, 'robot: planning for the grasping')
+            self.overlaid_object.is_pl = True
+            return TriggerResponse(True, 'robot: planning for the motion')
 
     # point to object
     @ros_service(type=Trigger, name='point_to_obj')
     def point_to_obj(self):
         if not self.is_po:
             # if the robot has not planned for the move yet
-            if not self.is_pl:
-                self.planning_for_grasping()
+            if not self.overlaid_object.is_pl:
+                self.planning_for_motion()
             self.is_po = True
             t1 = threading.Thread(target=self.overlaid_object.pointToObj())
             t1.start()
             self.is_po = False
-            self.is_pl = False
+            self.overlaid_object.is_pl = False
             return TriggerResponse(True, 'robot: point to object')
         else:
             return TriggerResponse(True, 'robot: action(point to object) is not finished')

@@ -171,7 +171,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
 	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
 	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
-	ros::Duration(3).sleep(); // sleep for half a second
+	ros::Duration(3.5).sleep(); // sleep for half a second
 	conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
 	conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
 	conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
@@ -206,9 +206,10 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	// ==== Planners reset =====
 	//TODO: first close the system console then open it !!
 	//TODO: add the other human types below
-	
 	string mdp_human_shell;
-	if (human_mood == "stubborn" && human_expert == "beginner"){
+	if (human_mood == "new_normal"){ // new_normal is to test the new human model created (v2)
+		mdp_human_shell = "gnome-terminal -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_human_newNormal.sh " + pkg_path + "\"'";
+	}else if (human_mood == "stubborn" && human_expert == "beginner"){
 		mdp_human_shell = "gnome-terminal -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_human_stubborn.sh " + pkg_path + "\"'";
 	}else if (human_mood == "thinker" && human_expert == "beginner"){
 		mdp_human_shell = "gnome-terminal -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_human_thinker.sh " + pkg_path + "\"'";

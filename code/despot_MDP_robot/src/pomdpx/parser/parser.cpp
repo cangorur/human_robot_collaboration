@@ -1094,8 +1094,6 @@ double Parser::GetReward(const vector<int>& prev_state,
 	for (int s = 0; s < curr_state_vars_.size(); s++)
 		curr_state_vars_[s].curr_value = curr_state[s];
 	action_vars_[0].curr_value = action;
-	cout << "curr state: " << curr_state_vars_[0].curr_value
-			<< " && prev state: " << prev_state_vars_[0].curr_value << endl;
 	double reward = 0;
 	for (int r = 0; r < reward_funcs_.size(); r++)
 		reward += reward_funcs_[r].GetValue();

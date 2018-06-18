@@ -88,6 +88,7 @@ class PR2(GraspingRobot):
         self.MIN_DIST = 0.85
         self.cancel = False
         self.is_ho = False
+        self.is_pl = False # has planned already?
         self.is_gr = False # is grasping?
 
         # raise both hands up
@@ -165,6 +166,11 @@ class PR2(GraspingRobot):
         dist_value = math.sqrt(dist[0] * dist[0] + dist[1] * dist[1] + dist[2] * dist[2])
 
         return dist_value
+
+    @service
+    def planning_for_motion(self):
+        time.sleep(4)
+        self.is_pl = True
 
     def finger_open(self):
 
