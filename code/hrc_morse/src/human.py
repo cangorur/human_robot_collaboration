@@ -248,13 +248,19 @@ class Human(GraspingRobot):
         if self.is_wr:
             self.warn_robot_back()
 
+        human = self.bge_object
+        human.worldPosition = [7.7, -1.25, 0]
+        human.worldOrientation = [0, 0, -1.57]
+
         self.is_ov = False
         self.is_oir = False
 
-        self.rotate(185)
-        self.walk(3.5)
-        self.rotate(85)
+        self.rotate(-175)
+        self.walk(1)
+        self.rotate(10)
         self.walk(2)
+        self.rotate(70)
+        self.walk(1)
         self.stop_animation()
 
     def walk(self, distance):
@@ -314,12 +320,18 @@ class Human(GraspingRobot):
             self.is_wa = False
         else:
             return
-        
-        self.rotate(-180)
+
+        self.rotate(175)
+        self.walk(1)
+        self.rotate(-70)
         self.walk(2)
-        self.rotate(-85)
-        self.walk(3.5)
-        self.rotate(-5)
+        self.rotate(-10)
+        self.walk(0.9)
+
+        human = self.bge_object
+        human.worldPosition = [7.7, -1.25, 0]
+        human.worldOrientation = [0, 0, -1.57]
+
         self.stop_animation()
 
         self.is_ov = True
@@ -344,6 +356,9 @@ class Human(GraspingRobot):
     @service
     def look_around(self):
         """ Move the human head to look around. """
+
+        if self.is_wa:
+            self.walk_back()
 
         if self.is_la:
             return
@@ -457,6 +472,9 @@ class Human(GraspingRobot):
         else:
             self.is_wr = True
 
+        if self.is_wa:
+            self.walk_back()
+
         if self.is_la:
             self.look_back()
 
@@ -563,6 +581,8 @@ class Human(GraspingRobot):
     def grasp(self):
         ''' grasp object '''
         
+        if self.is_wa:
+            self.walk_back()
         if self.is_gr or self.is_ag:
             self.attempt_grasp_back()
         if self.is_la:
@@ -729,7 +749,9 @@ class Human(GraspingRobot):
     @service
     def attempt_grasp(self):
         ''' attempt to grasp object '''
-        
+
+        if self.is_wa:
+            self.walk_back()
         if self.is_gr or self.is_ag:
             self.attempt_grasp_back()
         if self.is_la:
