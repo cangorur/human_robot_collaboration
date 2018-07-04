@@ -58,7 +58,7 @@ The message always have the same format, but never informs all those info above 
 **Terminating:**
 In complex systems it is very hard to define a terminal state through the model design directly. For our own use, we have manually defined terminal states according to our model. Once this state is provided as a real state in any iteration, the package terminates. Currently one should manually input in the source code what those terminal states are (still a *TODO*). According to our *proactive_robot_pomdp.pomdpx* model, the terminal states are provided as number "8" or "9" (success and failure) under:
 
-$ cd <path-to-despot-executor>/src/evaluator.cpp  --> [Line 229](https://github.com/cangorur/despot-online-executor/blob/cb5f4d86825a1f67c317cb47c12d9bbb24747636/src/evaluator.cpp#L229) (provide your own terminal states here)
+$ cd <path-to-despot-executor>/src/evaluator.cpp  --> [Line 249](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry_ss18/blob/initial_commit_version/code/despot_MDP_human/src/evaluator.cpp#L249) (provide your own terminal states here)
 
 ## References
 
