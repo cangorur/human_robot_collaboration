@@ -1,150 +1,75 @@
-# DESPOT
-
-## How the simulation/evaluation works: the tracking of the source code:
-First the story: It initialize the model as DSPOMDP model. Runs the evaluator and initialize the model belief. Then in a for loop (under simleTUI) we RunStep(). This will first seearches for an action (agent model searches), then executes this action (simulator executes), then the simulator calculates the new state, and calculates an observation. Finally, the agent (despot.cpp class, and model object under belief.cpp) takes this observation given the previous action it executed and calculates the new belief (the new estimated state).
-Currently, all the belief states estimated are the same with the states calculated by the simulator.?
-* main --> TUI.run(), i.e., SimpleTUI.cpp --> Run()
-* DSPOMDP model = InitializeModel()
-* Evaluator simulator = InitializeEvaluator() , i.e. evaluator.cpp POMDPEvaluator class
-* Solver solver, i.e. solver initialzed under despot.cpp as "despot" class 
-* simpleTUI --> RunEvaluator(model, simulator etc.)
-* simulator --> InitRound(), i.e. evaluator.cpp InitRound --> this calculates initial belief model-->initialBelief() , where model is under pomdpx.cpp
-* simulator --> RunStep(), i.e. evaluator.cpp RunStep()
-* under RunStep() : solver-->Search().action ->This calls Search() function under despot.cpp
-* ExecuteAction() --> under evaluator.cpp POMDPEvaluator class has this function
-* under ExecuteAction() --> model --> Step() , i.e. this model is under pomdpx.cpp and the Step() function is located there.
-* under model-->Step(), parser --> GetNextState() + GetReward() + GetObservation() sequentially. THIS SEQUENCE IS VERY IMPORTANT. all under parser.cpp
-* Then, under evaluator.cpp RunStep() function: the state, action, reward, observation are all printed out
-* finally, solver --> Update(action, obs) . This update function under despot.cpp, which then triggers the model Update() function under belief.cpp: update belief given the action, obs, and current state.
+# despot-online-executor
 
 ## Overview
-Approximate POMDP Planning Online (APPL Online) Toolkit
-
-This software package is a C++ implementation of the DESPOT algorithm<sup>1</sup>.
-
-[1] [**DESPOT: Online POMDP Planning with Regularization**](https://www.jair.org/media/5328/live-5328-9753-jair.ps). *Nan Ye, Adhiraj Somani, David Hsu and Wee Sun Lee*. 
-This implementation extends our [NIPS 2013 paper](http://bigbird.comp.nus.edu.sg/pmwiki/farm/motion/uploads/Site/nips13.pdf) with an improved search algorithm, analysis and more empirical results.
 
 [Copyright &copy; 2014-2017 by National University of Singapore](http://motion.comp.nus.edu.sg/).
 
-## Requirements
+This package is an upgrade to DESPOT<sup>1</sup> package (https://github.com/AdaCompNUS/despot) for our specific use to execute the generated MDP policies in real-time. The package serves as a decision-making tool for any autonomous systems allowing the communication through a websocket. 
 
-Tested Operating Systems:
+In principal:
+* Once executed, the package solves for a given **POMDPX** file specified, then runs the policy step-by-step waiting for input from the environment. 
+* First input is in the format of **State Observation** to the MDP model that leads the model to calculate its belief state and output an **action** decision. 
+* Then, the package expects for a real **State** information to output a **reward** the robot has received. 
+Please note that the model has its own belief update and this real state information is just for the robot to calculate its reward from the last action decision. Inputs and outputs are communicated through the websockets.
 
-<!--| Linux 14.04| OS X (10.1)  | Windows  |
-|:------------- |:-------------:|: -----:|
-|[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)| [![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges) | Not Supported |-->
-
-| Linux       | OS X
-| :-------------: |:-------------:|
-|[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)      | [![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges) 
-
-Tested Compilers: gcc | g++ 4.2.1 or above
-
-Tested Hardware: Intel Core i7 CPU, 2.0 GB RAM
-
-Other Dependencies: (Optional) [CMake (2.8+)](https://cmake.org/install/)
+For further information (including documentation) please refer to the readme file of the original DESPOT repository: https://github.com/AdaCompNUS/despot
 
 ## Installation
 
-Clone and compile:
 ```bash
-$ git clone https://github.com/AdaCompNUS/despot.git
-$ cd despot
-$ make
+$ mkdir build
+$ cd build && cmake .. && make
 ```
 
-## Examples
+## Running
 
-DESPOT can be used to solve a POMDP specified in the **POMDPX** format or a POMDP
-specified in **C++** according to the API. We illustrate this on the [Tiger](http://people.csail.mit.edu/lpk/papers/aij98-pomdp.pdf) problem.
-
-1.To run Tiger specified in [C++](doc/cpp_model_doc), compile and run: 
-```bash
-$ cd despot/examples/cpp_models/tiger
-$ make
-$ ./tiger --runs 2
-```
-
-This command computes and simulates DESPOT's policy for `N = 2` runs and reports the
-performance for the tiger problem specified in C++. See [doc/Usage.txt](doc/Usage.txt) for more options.
-
-2.To run Tiger specified in [POMDPX format](http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl/index.php?n=Main.PomdpXDocumentation.), compile and run:
+To run a model (after installing):
 
 ```bash
-$ cd despot/examples/pomdpx_models
-$ make
-$ ./pomdpx -m ./data/Tiger.pomdpx --runs 2 
+$ cd <path-to-despot-executor>/build/despot/examples/pomdpx_models
+$ ./despot_pomdpx -m <path-to-your-pomdpx-file> --runs 1 
 ```
 
-This command computes and simulates DESPOT's policy for `N = 2` runs and reports the
-performance for the tiger problem specified in POMDPX format. See [doc/Usage.txt](doc/Usage.txt) for 
-more options.
-
-
-## Integration
-
-To install DESPOT libraries and header files for external usage, use the [CMakeLists.txt](CMakeLists.txt) provided:
+There is an example pomdpx files provided with the package. This robot model is used for anticipatory Human-Robot Collaboration in an assembly line task <sup>2</sup>:
 ```bash
-$ cd despot
-$ mkdir build; cd build
-$ cmake ../
-$ make
-$ sudo make install
+$ ./<path-to-despot-executor>/build/examples/pomdpx_models/despot_pomdpx -m <path-to-despot-executor>/examples/pomdpx_models/data/humanModel_v2.POMDPx --runs 1
+```
+The model details can be found under here: https://docs.google.com/spreadsheets/d/1jDDyNXrNnYsDy5L82CDVipNZQwEvev44tx2FqHkm2wE/edit?usp=sharing. The observations and the states are numbered described. Please contact me in case of your model specific questions.
+
+## Configuration and Usage
+
+First of all, as DESPOT follows **POMDPX** file format it is recommended to get familiar with it from here: (http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl/index.php?n=Main.PomdpXDocumentation)
+
+*Once the model is prepared, DESPOT numbers the states, the observations and the actions starting from "0" in the order they are provided in the pomdpx file.*
+
+**Input Channel:**
+The input channel to the package is through a websocket with port number: **7070**. The package starts a server on that port.
+It expects first the observed state then the real state info in separate consecutive messages. Send the messages below to successfully communicate:
+```
+str_msg_Observation = "<state_number>" + "," + "-1";
+str_msg_RealState = "-1" + "," + "<real_state_number>";
 ```
 
-To integrate DESPOT into your project, add this to your `CMakeLists.txt` file:
+**Output Channel:**
+Each time an observed state is provided, the model prints out the belief distribution and generates an action decision. Afterwards it expects for a real state information and calculates and outputs rewards.
 
-```CMake
-find_package(Despot CONFIG REQUIRED)
+The output channel from the package is trough a websocket with port number: **8080**. The package connects to a servier on that part as a client. This is to ensure the synchronization of the package with the other packages and architectures. So, to listen the outputs a servier should be initiated on the port **8080**.
 
-add_executable("YOUR_PROJECT_NAME"
-  <src_files>
-)
-
-target_link_libraries("YOUR_PROJECT_NAME"
-  despot
-)
-
+The output message format:
 ```
-
-## Documentation
-
-Documentation can be found in the "[doc](doc/)" directory. 
-
-For a description of our example domains and more POMDP problems see [the POMDP page](http://www.pomdp.org/examples/).
-
-
-## Package Contents
-
+msg_step_results: "action_decision_number" + "," + "current_belief_state_str" + "," + "immediate_reward" + "," + "immediate_disc_reward";
 ```
-Makefile                  Makefile for compiling the solver library
-README.md                 Overview
-include                   Header files
-src/core                  Core data structures for the solvers
-src/solvers               Solvers, including despot, pomcp and aems
-src/pomdpx                Pomdpx and its parser
-src/util                  Math and logging utilities
-src/ippc                  Interface for International Probabilistic Planning Competition
-license                   Licenses and attributions
-examples/cpp_models       POMDP models implemented in C++
-examples/pomdpx_models    POMDP models implemented in pomdpx
-doc/pomdpx_model_doc      Documentation for POMDPX file format
-doc/cpp_model_doc         Documentation for implementing POMDP models in C++
-doc/Usage.txt             Explanation of command-line options
-doc/nips2013.txt          Instruction to obtain results in [1]
-```
+The message always have the same format, but never informs all those info above in the same message. Once an obs received only the action and belief are provided rest being "-1". Whereas after the real state info is received the action will be "-1" this time prodiving immediate rewards.
 
-## Acknowledgements
+**Terminating:**
+In complex systems it is very hard to define a terminal state through the model design directly. For our own use, we have manually defined terminal states according to our model. Once this state is provided as a real state in any iteration, the package terminates. Currently one should manually input in the source code what those terminal states are (still a *TODO*). According to our *proactive_robot_pomdp.pomdpx* model, the terminal states are provided as number "8" or "9" (success and failure) under:
 
-Pocman implementation and memorypool.h in the package are based on David
-Silver's [POMCP code](http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Applications.html)
+$ cd <path-to-despot-executor>/src/evaluator.cpp  --> [Line 229](https://github.com/cangorur/despot-online-executor/blob/cb5f4d86825a1f67c317cb47c12d9bbb24747636/src/evaluator.cpp#L229) (provide your own terminal states here)
 
-## Bugs and Suggestions
-Please use the issue tracker.
+## References
 
-## Release Notes
-2015/09/28 Initial release.
+[1] Nan Ye, Adhiraj Somani, David Hsu, and Wee Sun Lee. 2017. DESPOT: Online POMDP planning with regularization. Journal of Artificial Intelligence Research 58 (2017), 231–266.
 
-2017/03/07 Public release. Revised documentation.
+[2] O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In HRI ’18: 2018 ACM/IEEE International Conference on Human-Robot Interaction, March 5–8, 2018, Chicago, IL, USA. ACM, New York, NY, USA, 9 pages. https://doi.org/10.1145/3171221.3171256
 
+[Copyright &copy; 2014-2017 by National University of Singapore](http://motion.comp.nus.edu.sg/).
