@@ -46,7 +46,9 @@
 </Entry>	
 </Parameter>	
 </CondProb>	
-</InitialStateBelief><StateTransitionFunction>
+</InitialStateBelief>
+
+<StateTransitionFunction>
  	
 <CondProb>	
 <Var>state_1</Var>	

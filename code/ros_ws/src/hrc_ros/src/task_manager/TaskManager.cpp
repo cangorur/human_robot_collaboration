@@ -37,7 +37,7 @@ void TaskManager::initialize(){
 	ros::NodeHandle nh("~");
 
 	//here set the parameter of conveyor belt to "init" so it automatically starts
-	
+
 	/*
 	 * Initializing ros services to reset human and the robot
 	 */
@@ -47,26 +47,26 @@ void TaskManager::initialize(){
     conveyorAssembly1OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part1/switch_on_off");
     conveyorAssembly2OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part2/switch_on_off");
 	moveNewPackage = nh.serviceClient<hrc_ros::MoveNewPackage>("/package_manipulator/move_new_package");
-	
+
 	humanROSReset = nh.serviceClient<hrc_ros::ResetHumanROS>("/human_agent/reset");
 	obsROSReset = nh.serviceClient<hrc_ros::ResetObsROS>("/observation_agent/reset");
 	robotROSReset = nh.serviceClient<hrc_ros::ResetRobotROS>("/robot_agent/reset");
-	
+
 	/*
-	 * Initializing advertised ros services 
+	 * Initializing advertised ros services
 	 */
 	scenarioRequestService = nh.advertiseService("new_scenario_request", &TaskManager::initiateScenario, this);
 	HumanUpdateService = nh.advertiseService("human_status_update", &TaskManager::HumanStatusUpdater,this);
 	ObsUpdateService = nh.advertiseService("observation_update", &TaskManager::ObsUpdater, this);
 	RobotUpdateService = nh.advertiseService("robot_status_update", &TaskManager::RobotStatusUpdater, this);
 	resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
-	
+
 	/// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
 	taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("task_status", 1);
-	
+
 	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
 	/*
-	 * Timer initialization 
+	 * Timer initialization
 	 */
 	taskFinishTimer = nh.createTimer(ros::Duration(1.0), &TaskManager::TaskFinishTimer, this);
 	//initialize random seed for rand()
@@ -82,7 +82,7 @@ void TaskManager::initialize(){
 //================Advertised Services=======================
 bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 		hrc_ros::InitiateScenarioResponse &res) {
-	
+
 	string pkg_path = ros::package::getPath("hrc_ros");
 	boost::property_tree::ptree config_pt; // json ptree object
 	std::ifstream jsonFile(pkg_path + "/../../../configs/scenario_config.json");
@@ -94,15 +94,15 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 		res.success = false;
 		return false;
 	}
-	
+
 	int r;
 	bool humanTrustsRobot;
 	if (human_expert == "" || (human_expert != config_pt.get<string>("human.type.expertise"))){ // if it is still the same human
 		r = rand() % 3;
-		humanTrustsRobot = (r == 0 || r == 1) ? true : false; 
+		humanTrustsRobot = (r == 0 || r == 1) ? true : false;
 		human_trust = (humanTrustsRobot) ? "YES" : "NO"; // global
 	}
-	
+
 	string task_assigned = config_pt.get<string>("task.assignment");
 	human_expert = config_pt.get<string>("human.type.expertise"); // global
 	human_mood = config_pt.get<string>("human.type.mood"); // global
@@ -112,7 +112,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	// Calling the right function (rosservice) to respond to the request
 	//int package_amounts = config_pt.get<int>("package_pool.amount.light");
 	// ========== PACKAGE GENERATOR ================
-	
+
 	// =========== HUMAN MOOD ASSIGNMENT =====================
 	r = (rand() % 50) + 1; // from 1 to 50
 	if (task_number != 0){
@@ -141,12 +141,12 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	}
 
 	// ========================================================
-	
+
 	ROS_INFO("[TASK_MANAGER]: Human type is: %s and %s!", human_expert.c_str(), human_mood.c_str());
 	ROS_INFO("[TASK_MANAGER]: Robot type is: %s!", robot_type.c_str());
 	ROS_INFO("[TASK_MANAGER]: Task is assigned to: %s", task_assigned.c_str());
 	ROS_INFO("[TASK_MANAGER]: Does HUMAN TRUST ROBOT?: %s", human_trust.c_str());
-	
+
 	// ========== RESET HUMAN AND ROBOT=============
 	// We reset the human and robot locations and planners
 	std_srvs::Trigger::Request req1;
@@ -154,7 +154,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	humanReset.call(req1, res1);
 	robotReset.call(req1, res1);
 	// =============================================
-	
+
 	// ==== Moving a New Package ====
 	// TODO: fix here so that it always goes to the beginning of the conveyor belt
 	// TODO: add conveyor run and stop when the package arrives between the human and the robot
@@ -182,7 +182,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	req_ForPkg.z = 0.8;
 	moveNewPackage.call(req_ForPkg, res_ForPkg);
 	// ===============================
-	
+
 	// ========== RESET ROS AGENTS (HUMAN, OBSERVATION, ROBOT) =============
 	hrc_ros::ResetHumanROS::Request req_human;
 	hrc_ros::ResetHumanROS::Response res_human;
@@ -202,7 +202,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	obsROSReset.call(req_obs, res_obs);
 	//robotROSReset.call(req_robot, res_robot);
 	// =====================================================================
-	
+
 	// ==== Planners reset =====
 	//TODO: first close the system console then open it !!
 	//TODO: add the other human types below
@@ -225,7 +225,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	cout << "MDP Human shell script path" << mdp_human_shell << endl;
 	system(c_mdp_human_shell);
 
-	
+
 	string robot_shell;
 	if (robot_type == "proactive"){
 		robot_shell = "gnome-terminal -e 'sh -c \"" + pkg_path + "/model_scripts/POMDP_robot_proactive.sh " + pkg_path + "\"'";
@@ -240,13 +240,13 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	system(c_robot_shell);
 	cout << "Robot shell script path: " << robot_shell << endl;
 	// ==== Planners reset =====
-	
+
 	// =======================
 	step_counter = 0;
 	task_time = 0;
 	task_number += 1;
 	ROS_INFO("[TASK MANAGER] Task is initiated!");
-	
+
 	// ======= Informing about the init ===========
 	hrc_ros::TaskState taskState_msg;
 	taskState_msg.task_id = task_number;
@@ -260,66 +260,66 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 	// ============================================
 	//TODO: there will be a scenario global object holding the max. number of packages to be generated, may be the last task info.
 	//TODO: here there needs to be a global object that holds both the state and info. State is sth updated every iteration
-	//that, is whenever the human makes a decision then the robot makes a decision, the trays detect a package etc. Every State 
-	//object is renewed and recorded under task_info whenever a package falls into any conveyor. These updates will be done through 
+	//that, is whenever the human makes a decision then the robot makes a decision, the trays detect a package etc. Every State
+	//object is renewed and recorded under task_info whenever a package falls into any conveyor. These updates will be done through
 	//callbacks by calling the taskStateUpdateEvent below under the callbacks. This intiate service only sets those variables.
 	//TODO:Package generator will trigger the package manipulator whenever a tray reads a value. The generator will in the mean time
-	//count how much package has been generated until reaching the final value. The generator will first remove 
+	//count how much package has been generated until reaching the final value. The generator will first remove
 	//that package from the tray then generate a new one at the beginning of the conveyor. The first triggers will be done here.
 	//TODO: Initiate the conveyor belt --> /conveyor/switch_on_off
 
 	//hrc_ros::TaskState state;
 	//hrc_ros::TaskInfo task_info;
-			
+
 	res.success = true;
 	return true;
 }
 bool TaskManager::ResetTask(std_srvs::TriggerRequest &req,
 		std_srvs::TriggerResponse &res) {
 	task_number -= 1;
-	
+
 	hrc_ros::InitiateScenario::Request req_init;
 	hrc_ros::InitiateScenario::Response res_init;
 	initiateScenario(req_init, res_init);
-	
+
 	res.success = true;
 	return true;
 }
 
 bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res){
-	
+
 	hrc_ros::TaskState taskState_msg;
-	
+
 	taskState_msg.task_id = task_number;
 	taskState_msg.step_count = step_counter;
 	taskState_msg.who_reports = "HUMAN";
 	taskState_msg.human_expertise = human_expert;
 	taskState_msg.human_mood = human_mood;
 	taskState_msg.human_trust = human_trust;
-		
-	
+
+
 	// TODO: update below for the new taskState msg format
-	
+
 	taskState_msg.update_received_time = req.human_update.stamp_human_update;
 	taskState_msg.action_taken_time = req.human_update.action_taken_time;
 	taskState_msg.taken_action = req.human_update.human_action_taken;
-	taskState_msg.belief_state = req.human_update.human_belief_state; 
+	taskState_msg.belief_state = req.human_update.human_belief_state;
 	taskState_msg.real_state = req.human_update.human_real_state;
 	if (req.human_update.human_belief_state == req.human_update.human_real_state)
 			taskState_msg.isEstimationCorrect = true;
 	else
 		taskState_msg.isEstimationCorrect = false;
-	
+
 	// INformation below are for observation and robot status updates. Otherwise leave empty
 	/*taskState_msg.obs_received = "NONE";
 	taskState_msg.task_status = "ONGOING";
 	taskState_msg.who_succeeded = "NONE";
-	
+
 	taskState_msg.immediate_reward = 0.0;
 	taskState_msg.total_disc_reward = 0.0;*/
-	
+
 	taskStatusPublisher.publish(taskState_msg);
-	
+
 	step_counter += 1;
 	res.task_number = task_number; // informing human about the ID (task number of the current task)
 	res.success = true;
@@ -327,80 +327,107 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
 }
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
 bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res){
-	
-	hrc_ros::TaskState taskState_msg;
-	
-	taskState_msg.task_id = task_number;
-	taskState_msg.step_count = step_counter;
-	taskState_msg.who_reports = "OBSERVATION";
-	
-	taskState_msg.update_received_time = req.obs_update.stamp_obs_update;
-	std::vector<uint8_t> real_obs_msg = req.obs_update.real_obs_received;
-	string real_observation_array = "LA (not OV): " + to_string(real_obs_msg[0]) + " || OIR (Det.): " + to_string(real_obs_msg[1]) + 
-			" || GRASP: " + to_string(real_obs_msg[2]) + " || IPD: " + to_string(real_obs_msg[3]) + " || WARN: " + to_string(real_obs_msg[4]) +
-			" || IDLE: " + to_string(real_obs_msg[5]) + " || UPD: " + to_string(real_obs_msg[6]);
-	ROS_INFO("[TASK_MANAGER]: Real Observables: %s", real_observation_array.c_str());
-	taskState_msg.real_obs_received = real_observation_array;
-	
-	std::vector<uint8_t> noisy_obs_msg = req.obs_update.obs_with_noise;
-	string observation_with_noise_array = "LA (not OV): " + to_string(noisy_obs_msg[0]) + " || OIR (Det.): " + to_string(noisy_obs_msg[1]) + 
-			" || GRASP: " + to_string(noisy_obs_msg[2]) + " || IPD: " + to_string(noisy_obs_msg[3]) + " || WARN: " + to_string(noisy_obs_msg[4]) +
-			" || IDLE: " + to_string(noisy_obs_msg[5]) + " || UPD: " + to_string(noisy_obs_msg[6]);
-	ROS_INFO("[TASK_MANAGER]: Noisy Observables: %s", observation_with_noise_array.c_str());	
-	taskState_msg.obs_with_noise = observation_with_noise_array;
-	
-	if (real_obs_msg[3]){
-		//TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
-		taskState_msg.task_status = "SUCCESS";
-		taskState_msg.who_succeeded = req.obs_update.who_succeeded;
-	}else if (real_obs_msg[6]){
-		//TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
-		taskState_msg.task_status = "FAIL";
-	}else if (not(real_obs_msg[6] || real_obs_msg[3])){
-		taskState_msg.task_status = "ONGOING";
-	}
-	
-	taskStatusPublisher.publish(taskState_msg);
 
-	res.success = true;
-	return res.success;
+	hrc_ros::TaskState taskState_msg;
+
+    taskState_msg.task_id = task_number;
+    taskState_msg.step_count = step_counter;
+    taskState_msg.who_reports = "OBSERVATION";
+
+    taskState_msg.update_received_time = req.obs_update.stamp_obs_update;
+    std::vector<uint8_t> real_obs_msg = req.obs_update.real_obs_received;
+
+    // Observation array =                     [LA = Is human Looking Around?,
+    //                                          H.DET = Is human detected?,
+    //                                          GRASP = Has human graspped?,
+    //                                          SUCCESS = Has task reached to success?,
+    //                                          WARN = Has human warned?,
+    //                                          IDLE = Is human idling?,
+    //                                          FAIL = Has the task failed?]
+
+
+    string real_observation_array = "LA: " + to_string(real_obs_msg[0]) + " || H.DET: " + to_string(real_obs_msg[1]) +
+            " || GRASP: " + to_string(real_obs_msg[2]) + " || SUCCESS: " + to_string(real_obs_msg[3]) + " || WARN: " + to_string(real_obs_msg[4]) +
+            " || IDLE: " + to_string(real_obs_msg[5]) + " || FAIL: " + to_string(real_obs_msg[6]);
+    ROS_INFO("[TASK_MANAGER]: Real Observables: %s", real_observation_array.c_str());
+    taskState_msg.real_obs_received = real_observation_array;
+
+    std::vector<uint8_t> noisy_obs_msg = req.obs_update.obs_with_noise;
+    string observation_with_noise_array = "LA: " + to_string(noisy_obs_msg[0]) + " || H.DET: " + to_string(noisy_obs_msg[1]) +
+            " || GRASP: " + to_string(noisy_obs_msg[2]) + " || SUCCESS: " + to_string(noisy_obs_msg[3]) + " || WARN: " + to_string(noisy_obs_msg[4]) +
+            " || IDLE: " + to_string(noisy_obs_msg[5]) + " || FAIL: " + to_string(noisy_obs_msg[6]);
+    ROS_INFO("[TASK_MANAGER]: Noisy Observables: %s", observation_with_noise_array.c_str());
+    taskState_msg.obs_with_noise = observation_with_noise_array;
+
+    // Human observables are the observation vector only related to the human actions and situation:
+    // human_obs as vector<bool> =                  [Human Detected?,
+    //                                               Human is Looking around?,
+    //                                               Human has graspped successfully?, // if this and the next one both are false then human didnt grasp
+    //                                               Human has failed in grasping?,
+    //                                               Human is warning?,
+    //                                               Human is staying idle?]
+    bool human_grasp_success = false;
+    if (real_obs_msg[2] && !real_obs_msg[7]) // real_obs_msg[7] holds the grasp failed info
+        human_grasp_success = true;
+    std::vector<uint8_t> human_obs;
+    human_obs.push_back(real_obs_msg[1]); human_obs.push_back(real_obs_msg[0]); human_obs.push_back(human_grasp_success);
+    human_obs.push_back(real_obs_msg[7]); human_obs.push_back(real_obs_msg[4]); human_obs.push_back(real_obs_msg[5]);
+    taskState_msg.human_observables = human_obs;
+
+    if (real_obs_msg[3]){
+        //TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
+        //this is done after receiving traysensor data directly by calling own service
+        taskState_msg.task_status = "SUCCESS";
+        taskState_msg.who_succeeded = req.obs_update.who_succeeded;
+    }else if (real_obs_msg[6]){
+        //TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
+        //this is done after receiving traysensor data directly by calling own service
+        taskState_msg.task_status = "FAIL";
+    }else if (not(real_obs_msg[6] || real_obs_msg[3])){
+        taskState_msg.task_status = "ONGOING";
+    }
+
+    taskStatusPublisher.publish(taskState_msg);
+
+    res.success = true;
+    return res.success;
 }
 
 bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req, hrc_ros::InformRobotToTaskMangResponse &res){
-	
+
 	hrc_ros::TaskState taskState_msg;
-	
-	taskState_msg.task_id = task_number;	
+
+	taskState_msg.task_id = task_number;
 	taskState_msg.step_count = step_counter;
 	taskState_msg.who_reports = "ROBOT";
-	
+
 	taskState_msg.update_received_time = req.robot_update.stamp_robot_update;
 	taskState_msg.action_taken_time = req.robot_update.action_taken_time;
 	taskState_msg.taken_action = req.robot_update.robot_action_taken;
-	taskState_msg.belief_state = req.robot_update.robot_belief_state; 
+	taskState_msg.belief_state = req.robot_update.robot_belief_state;
 	taskState_msg.real_state = req.robot_update.robot_real_state;
-	
+
 	if (req.robot_update.robot_belief_state == req.robot_update.robot_real_state)
 		taskState_msg.isEstimationCorrect = true;
 	else
 		taskState_msg.isEstimationCorrect = false;
-	
+
 	// INformation below are for observation and robot status updates. Otherwise leave empty
 	/*taskState_msg.obs_received = "NONE";
 	taskState_msg.task_status = "ONGOING";
 	taskState_msg.who_succeeded = "NONE";
 	*/
-	
+
 	taskState_msg.immediate_reward = req.robot_update.immediate_reward;
 	taskState_msg.total_disc_reward = req.robot_update.total_disc_reward;
-	
+
 	taskStatusPublisher.publish(taskState_msg);
-	
-	
+
+
 	res.success = true;
 	return res.success;
 }
-	
+
 bool TaskManager::packageGenerator(){
 	//TODO: callout the package generation service: it is initiated by package_generator.py
 	return true;
@@ -438,11 +465,11 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
 }
 
 void TaskManager::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
-	
+
 	ros::Time tray_msg_stamp = msg.stamp;
 	string whoSucceeded = "";
 	string taskStatus = "ONGOING";
-	
+
 	if (msg.tray_id == "tray_unprocessed"){
 		if (msg.occupied)
 			taskStatus = "FAIL";
@@ -467,21 +494,21 @@ void TaskManager::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 			whoSucceeded = "";
 		}
 	}
-	
+
 	if (msg.occupied){
-		
+
 		hrc_ros::TaskState taskState_msg;
-		
+
 		taskState_msg.task_id = task_number;
 		taskState_msg.step_count = step_counter;
 		taskState_msg.who_reports = "SENSORS";
 		taskState_msg.update_received_time = ros::Time::now();
-		
+
 		taskState_msg.task_status = taskStatus;
 		taskState_msg.who_succeeded = whoSucceeded;
-			
+
 		taskStatusPublisher.publish(taskState_msg);
-		
+
 		/*hrc_ros::InitiateScenario::Request req;
 		hrc_ros::InitiateScenario::Response res;
 		initiateScenario(req, res);

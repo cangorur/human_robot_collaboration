@@ -13,9 +13,10 @@ def save_human_data(dir, raw):
         wr.writerow(raw[0])
 
         for row_index in range(len(raw)):
-            if raw[row_index][col_reporter] == "HUMAN":
+            if raw[row_index][col_reporter] == '"HUMAN"':
                 wr.writerow(raw[row_index])
     file.close()
+    print 'INFO: human information is saved separately under the folder provided'
 
 
 def append_human_states(dir):
@@ -47,12 +48,13 @@ def append_human_states(dir):
                         and task_id == human_updates[row_index + 1][col_taskID]:
                     new_row = human_updates[row_index]
                     new_row[col_secs] = str(seconds + 1)
-                    if human_updates[row_index][col_states] == "TaskHuman":
+                    if human_updates[row_index][col_states] == '"TaskHuman"':
                         new_row[col_states] = human_updates[row_index + 1][col_states]
                     wr.writerow(new_row)
                     seconds += 1
         new_file.close()
     file.close()
+    print 'INFO: human information has been appended'
 
 
 def human_state_distr(dir):
@@ -80,7 +82,7 @@ def human_state_distr(dir):
                          "TaskRobot"]
             wr.writerow(first_row)
             new_row = [None] * 15  # initiate a row
-            task_id = 1
+            task_id = int(human_updates[1][col_taskID])
             s0_ctr = 0  # every count is one second
             s1_ctr = 0
             s2_ctr = 0
@@ -98,27 +100,27 @@ def human_state_distr(dir):
                 if row_index == 0:  # skip the first row which has titles only
                     continue
                 human_state = human_updates[row_index][col_state]
-                if human_state == "TaskHuman":
+                if human_state == '"TaskHuman"':
                     s0_ctr += 1
-                elif human_state == "GlobalSuccess":
+                elif human_state == '"GlobalSuccess"':
                     s1_ctr += 1
-                elif human_state == "GlobalFail":
+                elif human_state == '"GlobalFail"':
                     s2_ctr += 1
-                elif human_state == "FailedToGrasp":
+                elif human_state == '"FailedToGrasp"':
                     s3_ctr += 1
-                elif human_state == "NoAttention":
+                elif human_state == '"NoAttention"':
                     s4_ctr += 1
-                elif human_state == "Evaluating":
+                elif human_state == '"Evaluating"':
                     s5_ctr += 1
-                elif human_state == "Tired":
+                elif human_state == '"Tired"':
                     s6_ctr += 1
-                elif human_state == "Recovery":
+                elif human_state == '"Recovery"':
                     s7_ctr += 1
-                elif human_state == "WarningTheRobot":
+                elif human_state == '"WarningTheRobot"':
                     s8_ctr += 1
-                elif human_state == "RobotIsWarned":
+                elif human_state == '"RobotIsWarned"':
                     s9_ctr += 1
-                elif human_state == "TaskRobot":
+                elif human_state == '"TaskRobot"':
                     s10_ctr += 1
 
                 if row_index+1 == len(human_updates) or int(human_updates[row_index+1][col_taskID]) != task_id:
@@ -157,6 +159,7 @@ def human_state_distr(dir):
 
         new_file.close()
     file.close()
+    print 'INFO: human state distribution has been provided'
 
 if __name__ == '__main__':
     work_book = open(sys.argv[1] + '/raw_data.csv', "rb")
@@ -169,3 +172,5 @@ if __name__ == '__main__':
         append_human_states(sys.argv[1])
     if sys.argv[2] == "state_distribution":
         human_state_distr(sys.argv[1])
+
+    work_book.close()

@@ -12,7 +12,7 @@ import math
 
 
 class PR2(GraspingRobot):
-    """ 
+    """
     The MORSE model of the Willow Garage's PR2 robot.
 
     The PR2 uses the :doc:`armature_actuator <../actuators/armature>`
@@ -54,7 +54,7 @@ class PR2(GraspingRobot):
     _name = 'PR2 robot'
 
     def __init__(self, obj, parent=None):
-        """ 
+        """
         Constructor method.
         Receives the reference to the Blender object.
         """
@@ -84,7 +84,7 @@ class PR2(GraspingRobot):
         self.TORSO_BASE_HEIGHT = (0.739675 + 0.051)
         self.TORSO_LOWER = 0.0  # lower limit on the torso z-translantion
         self.TORSO_UPPER = 0.31  # upper limit on the torso z-translation
-        
+
         self.MIN_DIST = 0.85
         self.cancel = False
         self.is_ho = False
@@ -99,7 +99,7 @@ class PR2(GraspingRobot):
 
         hand_r = scene.objects['r_elbow_flex_joint']
         hand_r.worldOrientation = [math.radians(90), math.radians(-90), math.radians(-90)]
-        
+
         head = scene.objects['head_tilt_joint']
         head.worldOrientation = [0, 0, math.radians(90)]
 
@@ -192,7 +192,7 @@ class PR2(GraspingRobot):
             finger_r.applyRotation( [0, 0, -0.5 / N], True )
             finger_rl.applyRotation([0, 0, 0.5 / N], True)
             finger_rr.applyRotation([0, 0, -0.5 / N], True)
-                
+
             time.sleep(0.1)
 
     def finger_close(self):
@@ -215,7 +215,7 @@ class PR2(GraspingRobot):
             finger_r.applyRotation( [0, 0, 0.5 / N], True )
             finger_rl.applyRotation([0, 0, -0.5 / N], True)
             finger_rr.applyRotation([0, 0, 0.5 / N], True)
-                
+
             time.sleep(0.1)
 
     @service
@@ -240,9 +240,10 @@ class PR2(GraspingRobot):
 
         obj = scene.objects['package1']
 
+        # approach to the object with both arms
+        self.is_gr = True
         N = 20
 
-        # approach to the object with both arms
         for i in range(N):
 
             if self.cancel:
@@ -353,6 +354,8 @@ class PR2(GraspingRobot):
             #self.finger_close()
             head.worldOrientation = [0, 0, math.radians(90)]
             self.is_ho = False
+            self.is_gr = False # since it is threaded this variable is not important much. But is_ho still valid as it comes from pr2.py
+            self.is_pl = False  # after the grasping process there needs to be replanning for the upcoming grasp
             return True
         else:
             self.reset()
@@ -424,7 +427,7 @@ class PR2(GraspingRobot):
             return "New torso z position: " + str(self.torso.localPosition[2])
         else:
             return "Not a valid height, value has to be between 0.0 and 0.31!"
-            
+
     @service
     def get_torso(self):
         """

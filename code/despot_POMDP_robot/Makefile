@@ -47,12 +47,6 @@ RM = /usr/bin/cmake -E remove -f
 # Escaping for special characters.
 EQUALS = =
 
-# The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/qichao/gitlab/emphatic-hrc-boxing/code/despot
-
-# The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/qichao/gitlab/emphatic-hrc-boxing/code/despot
-
 #=============================================================================
 # Targets provided globally by CMake.
 

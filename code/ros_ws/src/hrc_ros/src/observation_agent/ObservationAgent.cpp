@@ -24,19 +24,21 @@ ObservationAgent::~ObservationAgent() {
 
 void ObservationAgent::initialize(){
 	ros::NodeHandle nh("~");
-	
+
 	/*
 	 * Initializing ros services
 	 */
-	ObsUpdater = nh.serviceClient<hrc_ros::InformObsToTaskMang>("/hrc_task_manager/observation_update");  // Client for the task manager service for the status update
-	
+	ObsUpdater = nh.serviceClient<hrc_ros::InformObsToTaskMang>("/task_manager/observation_update");  // Client for the task manager service for the status update
+
 	/// ROS services by MORSE to call for the human actions
 	is_ov  = nh.serviceClient<std_srvs::Trigger>("/human/is_ov");  // ACTION: LOOK AROUND
 	is_oir = nh.serviceClient<std_srvs::Trigger>("/human/is_oir"); // SITUATION: IS HUMAN DETECTED?
 	//ros::ServiceClient is_ho  = nh.serviceClient<std_srvs::Trigger>("/human/is_ho");
-	is_a0  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0");  // ACTION: GRASP ATTEMPT 
+	is_a0  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0");  // ACTION: GRASP ATTEMPT
 	is_a2  = nh.serviceClient<std_srvs::Trigger>("/human/is_a2");  // ACTION: IDLE
 	is_a4  = nh.serviceClient<std_srvs::Trigger>("/human/is_a4");  // ACTION: WARN THE ROBOT
+	// This information below for recording human observable history. Processed and saved under TaskManager
+	is_a0_failed  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0_failed");  // ACTION: GRASP ATTEMPTED BUT FAILED
 
 	/*
 	 * ROS Services initialization
@@ -44,19 +46,19 @@ void ObservationAgent::initialize(){
 	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
 	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
-	
+
 	/*
 	 * A ROS topic for a subscription to tray proximity sensors (detecting packages in the trays)
 	 */
 	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &ObservationAgent::ReceiveTraySensors, this);
-	
+
 	/// A ROS timer for the duration of a task assigned to the human
 	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
 
 
 	/// ROS rate to control the loop frequency
 	ros::Rate rate(0.2);
-	
+
 	ROS_INFO("Observation Agent is created !");
 	ros::spin();
 }
@@ -74,20 +76,20 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 		real_robot_state_name = "TaskRobot";
 		whoIsAssigned = "robot";
 	}
-	
-	
+
+
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
 	humanType = req.humanType;
 	humanMood = req.humanMood;
 	robotType = req.robotType;
-	
+
 	prev_real_robot_state = real_robot_state_name;
 	prev_robot_observation_pomdp = "";
 	prev_observables = "0";
-	
+
 	human_task_time = 0; // counting the time spent when a task is assigned to the human
 	humanAttempted = false;
-	
+
 	FailedStCounter = 0;
 	EvaluateStCounter = 0;
 	TiredStCounter = 0;
@@ -109,27 +111,27 @@ void ObservationAgent::HumanTaskTimer(const ros::TimerEvent&){
 
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
 // HUMAN ACTION IS RECEIVED !!!
-bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &req, 
+bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
 		hrc_ros::InformHumanAction::Response &res) {
-	
+
 	//WebSocket (WS)-client at port 7070 using 1 thread
 	WsClient client("localhost:7070");
-	
+
 	client.on_open=[&]() {
-		
+
 		std_srvs::Trigger::Request req1;
 		std_srvs::Trigger::Response resp1;
 		is_ov.call(req1, resp1);
 		bool ov = resp1.success;	// object is visiable
-	
+
 		std_srvs::Trigger::Request req2;
 		std_srvs::Trigger::Response resp2;
 		is_oir.call(req2, resp2);
 		bool oir = resp2.success;	// object is in range
-	
+
 		bool ipd = ipd_sensor;	// inspected product is detected // SITUATION: INSPECTED PRODUCT DETECTED? (SUCCESS)
 		bool upd = upd_sensor;	// uninspected product is detected  // SITUATION: UNINSPECTED PRODUT DETECTED? (FAIL)
-		/*		
+		/*
 		std_srvs::Trigger::Request req3;
 		std_srvs::Trigger::Response resp3;
 		is_ho.call(req3, resp3);
@@ -139,17 +141,22 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		std_srvs::Trigger::Response resp5;
 		is_a0.call(req5, resp5);
 		bool a0 = resp5.success;	// action is attemp grasp
-	
+
+		std_srvs::Trigger::Request req5_1;
+		std_srvs::Trigger::Response resp5_1;
+		is_a0_failed.call(req5_1, resp5_1);
+		bool a0_failed = resp5_1.success;	// attemped to grasp but failed
+
 		std_srvs::Trigger::Request req6;
 		std_srvs::Trigger::Response resp6;
 		is_a2.call(req6, resp6);
 		bool a2 = resp6.success;	// action is staying idle
-	
+
 		std_srvs::Trigger::Request req7;
 		std_srvs::Trigger::Response resp7;
 		is_a4.call(req7, resp7);
 		bool a4 = resp7.success;	// action is warn robot
-			
+
 		// ===== ADDING A NOISE TO THE OBSERVATIONS ========
 		bool ov_noisy = ov;
 		bool oir_noisy = oir;
@@ -158,7 +165,7 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		bool a4_noisy = a4;
 		bool a2_noisy = a2;
 		bool upd_noisy = upd;
-		
+
 		int r = rand() % 10;
 		int m = rand() % 2; // mixed or missed
 		if ((a0 || a4) && r == 0){ // if one of this is one then 10% noise
@@ -175,30 +182,30 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 			a2_noisy = not a2;
 		}
 		// ===================================================
-		
+
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
 		robot_observation_real = MapObservablesToObservations(ov,oir,a0,ipd,a4,a2,upd);
 		robot_observation_noisy = MapObservablesToObservations(ov_noisy,oir_noisy,a0_noisy,ipd_noisy,a4_noisy,a2_noisy,upd_noisy);
-		
+
 		if (robotType == "reactive"){
 			observation = MapObservationsToMDP(robot_observation_noisy); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
 			observation = MapObservationsToPOMDP(robot_observation_noisy); // Get correspending observation for proactive ROBOT wrt observables received
 		}
-		
-		ROS_INFO("OBSERVATION ROS: real_observable: %s, noisy_observable: %s, mapped observation: %s", 
+
+		ROS_INFO("OBSERVATION ROS: real_observable: %s, noisy_observable: %s, mapped observation: %s",
 				robot_observation_real.c_str(), robot_observation_noisy.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
 		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
-		
+
 		hrc_ros::ObsUpdateMsg obs_update;
-		
+
 		hrc_ros::InformObsToTaskMang::Request reqForUpdate;
 		hrc_ros::InformObsToTaskMang::Response resForUpdate;
-		
+
 		obs_update.stamp_obs_update = ros::Time::now();
-		
+
 		std::vector<uint8_t> real_obs_received;
 		real_obs_received.push_back(not ov);
 		real_obs_received.push_back(oir);
@@ -207,10 +214,12 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		real_obs_received.push_back(a4);
 		real_obs_received.push_back(a2);
 		real_obs_received.push_back(upd);
+		real_obs_received.push_back(a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
+
 
 		obs_update.real_obs_received = real_obs_received;
 
-		
+
 		std::vector<uint8_t> obs_with_noise;
 		obs_with_noise.push_back(not ov_noisy);
 		obs_with_noise.push_back(oir_noisy);
@@ -219,36 +228,36 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		obs_with_noise.push_back(a4_noisy);
 		obs_with_noise.push_back(a2_noisy);
 		obs_with_noise.push_back(upd_noisy);
-		
+
 		obs_update.obs_with_noise = obs_with_noise;
 		obs_update.who_succeeded = whoSucceeded;
-		
+
 		reqForUpdate.obs_update = obs_update;
 		ObsUpdater.call(reqForUpdate, resForUpdate);
-		
+
 		// ###########################################################################################
-		
+
 		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: OBSERVATION= %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
 	};
-	
+
 	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
 		client.send_close(1000);
 	};
-	
+
 	client.start();
-	
+
 	return true;
 }
 
-bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req, 
+bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
 		hrc_ros::InformHumanState::Response &res) {
-	
+
 	//WebSocket (WS)-client at port 7070 using 1 thread
 	WsClient client("localhost:7070");
-	
+
 	client.on_open=[&]() {
 		string realRbtSt_code = "";
 		if (robotType == "reactive"){
@@ -258,20 +267,20 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 		}
 
 		string message = "-1," + realRbtSt_code;
-				
+
 		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
 	};
-	
+
 	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
 	//cout << "Client: Sending close connection" << endl;
 	client.send_close(1000);
 	};
-	
+
 	client.start();
-	
+
 	return true;
 }
 // ********************************** //
@@ -279,7 +288,7 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 // ********* CALLBACKS *********** //
 void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 	tray_msg_stamp = msg.stamp;
-	
+
 	if (msg.tray_id == "tray_unprocessed"){
 		if (msg.occupied)
 			upd_sensor = true;
@@ -309,7 +318,7 @@ void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 
 // ********* MAIN OPERATIONS: MAPPING OF HUMAN OBSERVATIONS AND STATES TO ROBOT OBSERVATIONS AND STATES FOR DESPOT *********** //
 void ObservationAgent::humanStCounter(string humanState){
-	
+
 	if (humanState == "FailedToGrasp")
 		FailedStCounter++;
 	if (humanState == "Evaluating")
@@ -341,7 +350,7 @@ string ObservationAgent::getRealRbtStPOMDP(string humanState)
 	 * GlobalFail
 	 * TaskRobot
 	 */
-	
+
 	string currRbtSt = "0";
 	humanStCounter(humanState);
 
@@ -400,7 +409,7 @@ string ObservationAgent::getRealRbtStPOMDP(string humanState)
 		if (humanMood == "tired"){
 			real_robot_state_name = "MayBeTired";
 		} else if (NoAttentionCounter == 1){
-			real_robot_state_name = "NoFocus";			
+			real_robot_state_name = "NoFocus";
 		} else if (NoAttentionCounter == 1 && EvaluateStCounter > 1){
 			real_robot_state_name = "NeedsToBeReminded";
 		} else if (NoAttentionCounter >= 2){
@@ -426,9 +435,9 @@ string ObservationAgent::getRealRbtStPOMDP(string humanState)
 		real_robot_state_name = "NoNeedHelp";
 	} else if (humanState == "TaskRobot"){
 		real_robot_state_name = "TaskRobot";
-	} 
+	}
 	prev_real_robot_state = real_robot_state_name;
-	
+
 	//Returning with the state number for the despot planner !!
 	if (real_robot_state_name == "TaskHuman")
 		currRbtSt = "0";
@@ -452,15 +461,15 @@ string ObservationAgent::getRealRbtStPOMDP(string humanState)
 		currRbtSt = "9";
 	else if (real_robot_state_name == "TaskRobot")
 		currRbtSt = "10";
-	
+
 	return currRbtSt;
 }
 
 string ObservationAgent::MapObservationsToPOMDP(string observable){
-		
-		
+
+
 		string robot_observation = "";
-		
+
 		if (observable == "0" || observable == "1") {
 			robot_observation = "0";
 		}
@@ -505,7 +514,7 @@ string ObservationAgent::MapObservationsToPOMDP(string observable){
 		}else{
 			robot_observation = prev_robot_observation_pomdp;
 		}
-		
+
 		prev_robot_observation_pomdp = robot_observation;
 		return robot_observation;
 }
@@ -513,9 +522,9 @@ string ObservationAgent::MapObservationsToPOMDP(string observable){
 //TODO: the observable names of ov and oir update. !OV = Looking Around and OIR = Human is detected
 //TODO: Simplify the observation combinations if the reactive model responds almost better than the proactive one!
 string ObservationAgent::MapObservablesToObservations(bool ov, bool oir, bool a0, bool ipd, bool a4, bool a2, bool upd){
-	string robot_observation = prev_observables;	
+	string robot_observation = prev_observables;
 	if (not ov && not oir && not a0 && not ipd && not a4 && not a2 && not upd) {
-		robot_observation = "0";	
+		robot_observation = "0";
 	}
 	else if (ov && not oir && not a0 && not ipd && not a4 && not a2 && not upd) {
 		robot_observation = "1";
@@ -638,7 +647,7 @@ string ObservationAgent::MapObservablesToObservations(bool ov, bool oir, bool a0
 		robot_observation = "8";
 	}
 	prev_observables = robot_observation;
-	
+
 	return robot_observation;
 }
 
@@ -683,7 +692,7 @@ string ObservationAgent::getRealRbtStMDP(string humanState)
 	} else if (humanState == "RobotIsWarned"){
 		currRbtSt = "3";
 		real_robot_state_name = "TaskHuman";
-	} 
+	}
 	else if (humanState == "TaskRobot"){
 		currRbtSt = "4";
 		real_robot_state_name = "TaskRobot";
@@ -710,7 +719,7 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 		robot_state = "HumanNeedsHelp";
 		humanfail_counter = 0; // TODO: this is not being used anywhere but still here
 	} else {
-		
+
 		if (observation == "0") {
 			if (prev_robot_state == "TaskHuman")
 				robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
@@ -721,7 +730,7 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 		} else if (observation == "6" || observation == "7") { // human attempted to grasp
 			humanAttempted = true;
 			robot_state = "TaskHuman";
-			humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions		
+			humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions
 		} else if (observation == "8" || observation == "9" || observation == "10" || observation == "11") {
 			robot_state = "GlobalSuccess";
 		} else if (observation == "12" || observation == "13" || observation == "14" || observation == "15") {
@@ -752,7 +761,7 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 			robot_state = "GlobalFail";
 		}
 	}
-	
+
 	prev_robot_state = robot_state;
 	if (robot_state == "TaskHuman"){
 		robot_state = "0";
@@ -772,7 +781,7 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 	else if (robot_state == "GlobalFail"){
 		robot_state = "5";
 	}
-	
+
 	return robot_state;
 }
 // ********************************** //

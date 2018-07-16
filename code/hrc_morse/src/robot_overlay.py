@@ -13,7 +13,7 @@ class RobotControlAndMonitor(MorseOverlay):
         MorseOverlay.__init__(self, overlaid_object)
 
         # if is object at hand
-        self.is_obj = False
+        self.is_obj = False # this variable is not being used. Instead overlaid_object.is_ho is used
 
         # if current action is executed
         self.is_gr = False  # has grasped
@@ -25,7 +25,7 @@ class RobotControlAndMonitor(MorseOverlay):
     def cancel_action(self):
         if not self.is_ca:
             self.is_ca = True
-            t1 = threading.Thread(target=self.overlaid_object.cancel_action())
+            t1 = threading.Thread(target=self.overlaid_object.cancel_action)
             t1.start()
             self.is_obj = False
             self.is_gr = False
@@ -66,20 +66,16 @@ class RobotControlAndMonitor(MorseOverlay):
     # grasp
     @ros_service(type=Trigger, name='grasp')
     def grasp(self):
-        if self.is_obj:
+        if self.overlaid_object.is_ho: # it was checking self.is_obj before
             return TriggerResponse(True, 'robot: already had object')
         else:
-            if not self.is_gr:
+            if not self.overlaid_object.is_gr: # if the robot already in the grasp action
                 # if the robot has not planned for the grasp yet
                 if not self.overlaid_object.is_pl:
-                    self.planning_for_motion()
-                self.is_gr = True
+                    self.overlaid_object.planning_for_motion()
                 t1 = threading.Thread(target=self.overlaid_object.grasp)
                 t1.start()
-                self.is_gr = False
-                self.overlaid_object.is_pl = False  # after the grasping process there needs to be replanning for the upcoming grasp
-                #if success:
-                self.is_obj = True
+                # self.is_obj = True
                 return TriggerResponse(True, 'robot: grasp object')
             else:
                 return TriggerResponse(True, 'robot: action(grasp object) is not finished')
@@ -88,7 +84,7 @@ class RobotControlAndMonitor(MorseOverlay):
     @ros_service(type=Trigger, name='planning_for_motion')
     def planning_for_motion(self):
         if not self.overlaid_object.is_pl:
-            t1 = threading.Thread(target=self.overlaid_object.planning_for_motion())
+            t1 = threading.Thread(target=self.overlaid_object.planning_for_motion)
             t1.start()
             return TriggerResponse(True, 'robot: planning for the motion')
         else:
@@ -101,9 +97,9 @@ class RobotControlAndMonitor(MorseOverlay):
         if not self.is_po:
             # if the robot has not planned for the move yet
             if not self.overlaid_object.is_pl:
-                self.planning_for_motion()
+                self.overlaid_object.planning_for_motion()
             self.is_po = True
-            t1 = threading.Thread(target=self.overlaid_object.pointToObj())
+            t1 = threading.Thread(target=self.overlaid_object.pointToObj)
             t1.start()
             self.is_po = False
             self.overlaid_object.is_pl = False

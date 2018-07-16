@@ -6,12 +6,12 @@
 
 <node pkg="hrc_ros" type="observation_agent" name="observation_agent" output="screen" respawn="true" />
 
-<node pkg="hrc_ros" type="task_manager" name="task_manager" output="screen" respawn="true" /> 
+<node pkg="hrc_ros" type="task_manager" name="task_manager" output="screen" respawn="true" />
 <!-- <param name="conveyor_init" type="bool" value="True" /> -->
 
 <!-- Package Manipulator -->
 <node pkg="hrc_ros" type="PackageManipulator.py" name="package_manipulator" />
 
-<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/reactive /hrc_task_manager/task_status"/>
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/>
 
 </launch>

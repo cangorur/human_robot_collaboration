@@ -56,6 +56,15 @@ class HumanControlAndMonitor(MorseOverlay):
         else:
             return TriggerResponse(False, 'human: is_a0 False')
 
+    @ros_service(type=Trigger, name='is_a0_failed')
+    def is_a0_failed(self):
+        # return if the human is attempting to grasp but failed. This is to inform the traning set and record human data
+
+        if self.overlaid_object.is_ag:  # a0: grasp attempted but failed to do so
+            return TriggerResponse(True, 'human: is_a0_failed True')
+        else:
+            return TriggerResponse(False, 'human: is_a0_failed False')
+
     @ros_service(type=Trigger, name='is_a2')
     def is_a2(self):
         # return if the human is staying idle, i.e. no action taken
@@ -85,6 +94,15 @@ class HumanControlAndMonitor(MorseOverlay):
             return TriggerResponse(True, 'human: reset')
         else:
             return TriggerResponse(True, 'human: action(reset) is not finished')
+
+    @ros_service(type=Trigger, name='cancel_action')
+    def cancel_action(self):
+        if not self.overlaid_object.is_cancelled:
+            t1 = threading.Thread(target=self.overlaid_object.cancel_action)
+            t1.start()
+            return TriggerResponse(True, 'human: cancel action')
+        else:
+            return TriggerResponse(True, 'human: action(cancel action) is not finished')
 
     @ros_service(type=Trigger, name='attempt_and_cancel')
     def attempt_and_cancel(self):
@@ -132,8 +150,9 @@ class HumanControlAndMonitor(MorseOverlay):
     @ros_service(type=Trigger, name='look_around')
     def look_around(self):
         if not self.overlaid_object.is_la:
-            t1 = threading.Thread(target=self.overlaid_object.look_around())
-            t1.start()
+            # t1 = threading.Thread(target=self.overlaid_object.look_around)
+            # t1.start()
+            self.overlaid_object.look_around()
             return TriggerResponse(True, 'human: look around')
         else:
             return TriggerResponse(True, 'human: action(look around) is not finished')
@@ -143,6 +162,7 @@ class HumanControlAndMonitor(MorseOverlay):
         if not self.overlaid_object.is_wr:
             t1 = threading.Thread(target=self.overlaid_object.warn_robot)
             t1.start()
+            # self.overlaid_object.warn_robot()
             return TriggerResponse(True, 'human: warn robot')
         else:
             return TriggerResponse(True, 'human: action(warn robot) is not finished')
@@ -155,6 +175,8 @@ class HumanControlAndMonitor(MorseOverlay):
         else:
             # TODO: here is also to be threaded. Right now as it is a successful grasp robot waits for it to be finished
             if not self.overlaid_object.is_gr:
+                # t1 = threading.Thread(target=self.overlaid_object.grasp)
+                # t1.start()
                 # success = self.overlaid_object.grasp_animated()
                 success = self.overlaid_object.grasp()
                 return TriggerResponse(True, 'human: grasp object')
@@ -168,8 +190,9 @@ class HumanControlAndMonitor(MorseOverlay):
             return TriggerResponse(True, 'human: already had object')
         else:
             if not self.overlaid_object.is_ag:
-                t1 = threading.Thread(target=self.overlaid_object.attempt_grasp)
-                t1.start()
+                # t1 = threading.Thread(target=self.overlaid_object.attempt_grasp)
+                # t1.start()
+                success = self.overlaid_object.attempt_grasp()
                 return TriggerResponse(True, 'human: attempt_grasp')
             else:
                 return TriggerResponse(True, 'human: action(attempt_grasp) is not finished')

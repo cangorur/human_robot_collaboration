@@ -18,6 +18,7 @@ bool isEstimationCorrect
 # below is only for observations
 string real_obs_received
 string obs_with_noise
+bool[] human_observables # this is for creating training set for type estimation
 string task_status # success, fail or ongoing
 string who_succeeded # if the task has been succeeded who did then
 

@@ -21,9 +21,10 @@ def save_robot_data(dir, raw):
         wr.writerow(first_row)
 
         for row_index in range(len(raw)):
-            if raw[row_index][col_reporter] == "ROBOT":
+            if raw[row_index][col_reporter] == '"ROBOT"':
                 wr.writerow(raw[row_index])
     file.close()
+    print 'INFO: robot information is saved separately under the folder provided'
 
 
 def get_important_information(dir):
@@ -88,7 +89,7 @@ def get_important_information(dir):
                      "total_disc_reward", "warning_received"]
         wr.writerow(first_row)
         new_row = [None] * 15  # initiate a row
-        task_id = 1
+        task_id = robot_updates[1][col_taskID]
         is_important_state = False
         for row_index in range(len(robot_updates)):
 
@@ -114,12 +115,13 @@ def get_important_information(dir):
             new_row[11] = robot_updates[row_index][col_est]
             new_row[12] = robot_updates[row_index][col_reward]
             new_row[13] = robot_updates[row_index][col_tot_reward]
-            if int(robot_updates[row_index][col_reward]) != 0 and \
-                    robot_updates[row_index][col_real_st] == "WarningReceived":
+            reward_str = robot_updates[row_index][col_reward]
+            reward_str = reward_str.split('"')
+            if reward_str[1] != '0' and \
+                    robot_updates[row_index][col_real_st] == '"WarningReceived"':
                 new_row[14] = "1"
             else:
                 new_row[14] = "0"
-
             step_count = int(human_updates[row_index][col_step])
             for row_human in range(len(human_updates)):
                 if row_human == 0:  # skip the first row which has titles only
@@ -142,7 +144,7 @@ def get_important_information(dir):
     human_file.close()
     status_file.close()
     robot_file.close()
-
+    print 'INFO: robot information has been weeded out of unnessary information'
 
 def get_results(dir):
     with open(dir + '/robot_important_info.csv', 'rb') as robot_file:
@@ -168,7 +170,7 @@ def get_results(dir):
             first_row = ["task_id", "total_disc_reward", "overall_est_accur", "warnings_received"]
             wr.writerow(first_row)
             new_row = [None] * 4  # initiate a row
-            task_id = 1
+            task_id = int(robot_updates[1][col_taskID])
             tot_warnings = 0
             est_true_ct = 0
             tot_step = 0
@@ -176,7 +178,7 @@ def get_results(dir):
             help_est_correct = 0
             for row_index in range(len(robot_updates)):
 
-                if row_index == 0 or row_index == 1:  # skip the first row which has titles only
+                if row_index == 0:  # skip the first row which has titles only
                     continue
 
                 if int(robot_updates[row_index][col_taskID]) == task_id:
@@ -203,6 +205,7 @@ def get_results(dir):
 
         new_file.close()
     robot_file.close()
+    print 'INFO: robots final results has been saved'
 
 if __name__ == '__main__':
     work_book = open(sys.argv[1] + '/raw_data.csv', "rb")
@@ -215,3 +218,5 @@ if __name__ == '__main__':
         get_important_information(sys.argv[1])
     if sys.argv[2] == "robot_results":
         get_results(sys.argv[1])
+
+    work_book.close()

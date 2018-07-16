@@ -31,7 +31,7 @@ class Human(GraspingRobot):
         # these are to feed the human action back to the system (current state)
         self.is_wa = False  # is human walking away
         self.is_gr = False  # is human grasping
-        self.is_sd = False  # is human grasping
+        self.is_sd = False  # is sitting down
 
         self.is_la = False  # is human looking around
         self.is_wr = False  # is human warning the robot
@@ -195,7 +195,7 @@ class Human(GraspingRobot):
         # human.applyMovement([sit_speed, 0, 0], True)
         armature['sitDown'] = True
         armature.update()
-        
+
         time.sleep(.5)
         """ Stops animating the human sitting down / standing up. """
         armature['sitDown'] = False
@@ -289,7 +289,7 @@ class Human(GraspingRobot):
 
         if degrees < 0:
             rotation_speed = -rotation_speed
-        
+
         update_interval = 1 / frequency
 
         human = self.bge_object
@@ -303,11 +303,11 @@ class Human(GraspingRobot):
 
     def stop_animation(self):
         """ Stops animating the human after walk or rotation. """
-        
+
         time.sleep(.3)
         armature = blenderapi.scene().objects['human.armature']
         armature['movingForward'] = False
-        for channel in armature.channels:     
+        for channel in armature.channels:
             channel.rotation_mode = 6
             channel.joint_rotation = [0.0, 0.0, 0.0]
         armature.update()
@@ -580,7 +580,7 @@ class Human(GraspingRobot):
     @service
     def grasp(self):
         ''' grasp object '''
-        
+
         if self.is_wa:
             self.walk_back()
         if self.is_gr or self.is_ag:
@@ -729,6 +729,7 @@ class Human(GraspingRobot):
             self.attempt_grasp_back()
             # time.sleep(0.5)
             self.is_ho = False
+            self.is_gr = True # I set it True after grasp back for the observation. Currently grasp call is not threaded
 
             ####### MOTION - 7 #######
             # turn left 90 degree
@@ -925,7 +926,8 @@ class Human(GraspingRobot):
             obj.worldPosition = [7.7, -2.1, 0.80]
 
             self.attempt_grasp_back()
-            self.is_ho = False
+            self.is_ag = True # now that attempt grasp is not threaded, this is kept true for the observer to catch the action after it is done
+
             return True
 
         else:
@@ -946,7 +948,6 @@ class Human(GraspingRobot):
         f_speed_left = [-1 * i for i in self.change_hand_l]
         f_speed_back_rot = [-1 * i for i in self.change_back_rot]
         f_speed_back_loc = [-1 * i for i in self.change_back]
-        # f_speed_back_loc = [y - x for x, y in zip([-0.0438, -0.0000, 0.9175], back.localPosition)]
 
         N = 20
         for i in range(N):
@@ -1029,4 +1030,3 @@ class Human(GraspingRobot):
     def default_action(self):
         """ Main function of this component. """
         pass
-

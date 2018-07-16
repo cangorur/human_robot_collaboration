@@ -5,7 +5,9 @@ import rospy
 import threading
 import time
 
+from hrc_ros.msg import TraySensor
 from std_srvs.srv import Trigger, TriggerResponse
+from std_msgs.msg import String
 
 
 class HumanControlAndMonitor():
@@ -25,12 +27,27 @@ class HumanControlAndMonitor():
         self.is_ov = True  # is the object visible to human
         self.is_oir = True  # is the object reachable to human
         self.is_ho = False  # if human has the object
+        self.is_robot_ho = False # if the robot has the object
+
+        self.is_success = False # when the task is successful
+        self.is_failure = False # when the task is failed
+
+        self.task_time = 0
+
+        # To inform the task manager about the state of the task
+        self.process_state_pub = rospy.Publisher("/production_line/tray_sensors", TraySensor, queue_size=10)
+        # Robot calls this service when it accomplishes the task (letting human know, then human informs to task manager)
+        rospy.Subscriber("/robot/informs_status", String, self.robot_informs_status)
+
+        self.task_timer = rospy.Timer(rospy.Duration(1), self.task_status_timer)
+
 
         # Observation response services. Let the requester know about the current human action and situation
         os1 = rospy.Service('~is_ov', Trigger, self.get_ov)
         os2 = rospy.Service('~is_oir', Trigger, self.get_oir)
         os3 = rospy.Service('~is_ho', Trigger, self.get_ho)
         os4 = rospy.Service('~is_a0', Trigger, self.get_a0)
+        os4_1 = rospy.Service('~is_a0_failed', Trigger, self.get_a0_failed)
         os5 = rospy.Service('~is_a2', Trigger, self.get_a2)
         os6 = rospy.Service('~is_a4', Trigger, self.get_a4)
 
@@ -74,6 +91,14 @@ class HumanControlAndMonitor():
         # return if the human is attempting to grasp
 
         if self.is_ag or self.is_gr:  # a0: grasp attempt
+            return TriggerResponse(True, 'human: is_a0 True')
+        else:
+            return TriggerResponse(False, 'human: is_a0 False')
+
+    def get_a0_failed(self, req):
+        # return if the human is attempting to grasp
+
+        if self.is_ag:  # a0: grasp attempted but failed to
             return TriggerResponse(True, 'human: is_a0 True')
         else:
             return TriggerResponse(False, 'human: is_a0 False')
@@ -127,6 +152,14 @@ class HumanControlAndMonitor():
             self.is_oir = True
             self.is_ho = False
             self.is_reset = False
+
+            self.is_success = False # when the task is successful
+            self.is_failure = False # when the task is failed
+            self.human_success_status_publisher() # task is reset therefore the trays are emptied
+            self.robot_success_status_publisher() # task is reset therefore the trays are emptied
+            self.failure_status_publisher()
+            self.task_time = 0
+
             rospy.loginfo("Human agent: reset is completed!")
             return TriggerResponse(True, 'human: reset')
         else:
@@ -166,8 +199,9 @@ class HumanControlAndMonitor():
 
     def look_around(self, req):
         if not self.is_la:
-            t1 = threading.Thread(target=self.look_around_act())
-            t1.start()
+            # t1 = threading.Thread(target=self.look_around_act)
+            # t1.start()
+            self.look_around_act()
             return TriggerResponse(True, 'human: look around')
         else:
             return TriggerResponse(True, 'human: action(look around) is not finished')
@@ -188,8 +222,9 @@ class HumanControlAndMonitor():
         else:
             # TODO: here is also to be threaded. Right now as it is a successful grasp robot waits for it to be finished
             if not self.is_gr:
-                t1 = threading.Thread(target=self.grasp_act)
-                t1.start()
+                # t1 = threading.Thread(target=self.grasp_act)
+                # t1.start()
+                self.grasp_act()
                 return TriggerResponse(True, 'human: grasp object')
             else:
                 return TriggerResponse(True, 'human: action(grasp object) is not finished')
@@ -200,8 +235,9 @@ class HumanControlAndMonitor():
             return TriggerResponse(True, 'human: already had object')
         else:
             if not self.is_ag:
-                t1 = threading.Thread(target=self.attempt_grasp_act)
-                t1.start()
+                # t1 = threading.Thread(target=self.attempt_grasp_act)
+                # t1.start()
+                self.attempt_grasp_act()
                 return TriggerResponse(True, 'human: attempt_grasp')
             else:
                 return TriggerResponse(True, 'human: action(attempt_grasp) is not finished')
@@ -310,6 +346,9 @@ class HumanControlAndMonitor():
 
         if self.is_la:
             return
+        else:
+            self.is_la = True
+            self.is_ov = False
 
         if self.is_wa:
             self.walk_back()
@@ -322,8 +361,6 @@ class HumanControlAndMonitor():
 
         time.sleep(2)
 
-        self.is_la = True
-        self.is_ov = False
         rospy.loginfo("Human agent: look around completed!")
 
     def warn_robot_act(self):
@@ -343,11 +380,10 @@ class HumanControlAndMonitor():
             self.attempt_grasp_back()
 
         time.sleep(1.5)
-        self.is_wr = True
         rospy.loginfo("Human agent: warn the robot completed!")
 
     def grasp_act(self):
-
+        # TODO: seems like always successfull graspattempt is selected that is why here is called and we reach to success.
         if self.is_wa:
             self.walk_back()
         if self.is_gr or self.is_ag:
@@ -356,29 +392,47 @@ class HumanControlAndMonitor():
             self.look_back()
         if self.is_wr:
             self.warn_robot_back()
+
         self.is_gr = True
 
-        # bend to grab the object
-        time.sleep(1.5)
-        self.is_gr = True
+        if (not self.is_failure and not self.is_success):
 
-        # straighten up a bit to lift the object
-        time.sleep(0.5)
-        self.is_ho = True
+            # bend to grab the object
+            time.sleep(1.5)
+            self.is_ho = True
 
-        # turn right 90 degree
-        time.sleep(0.5)
+            # straighten up a bit to lift the object
+            time.sleep(1)
 
-        # bend a bit down to drop the object
-        time.sleep(0.5)
+            # turn right 90 degree
+            time.sleep(1)
 
-        # standing direct after releasing the object. Putting the human back its initial pose and gesture
-        time.sleep(0.5)
-        self.is_ho = False
+            # bend a bit down to drop the object
+            time.sleep(0.5)
 
-        # turn left 90 degree
-        time.sleep(0.25)
-        rospy.loginfo("Human agent: grasp completed!")
+            self.is_ho = False
+            self.is_success = True
+            time.sleep(0.1)
+            self.human_success_status_publisher() # task is accomplished
+
+            # standing direct after releasing the object. Putting the human back its initial pose and gesture
+            time.sleep(1)
+
+            # turn left 90 degree
+            time.sleep(0.25)
+
+            rospy.loginfo("Human agent: grasp completed!")
+
+            self.attempt_grasp_back()
+            self.is_gr = True # now that grasping is not called under a thread, this value is left true for the observer to catch it afterwards
+
+            time.sleep(0.25)
+
+        else:
+
+            self.attempt_grasp_back()
+            self.is_ho = False
+            return False
 
     def attempt_grasp_act(self):
 
@@ -395,42 +449,52 @@ class HumanControlAndMonitor():
         self.is_gr = True
         self.is_ho = False
 
-        # bend to grab the object
-        time.sleep(1.5)
+        if (not self.is_failure and not self.is_success):
 
-        # straighten up a bit to lift the object
-        time.sleep(0.5)
+            # bend to grab the object
+            time.sleep(1.5)
+            self.is_ho = True
 
-        # push hard to lift but no success (but moves up and down)
-        time.sleep(0.5)
+            # straighten up a bit to lift the object
+            time.sleep(0.5)
 
-        # gave up, heads down first then miserably pushes the product
-        time.sleep(2.5)
+            # push hard to lift but no success (but moves up and down)
+            time.sleep(0.5)
 
-        self.attempt_grasp_back()
-        self.is_ho = False
-        rospy.loginfo("Human agent: attempt to grasp completed!")
+            # gave up, heads down first then miserably pushes the product
+            time.sleep(2.5)
+
+            self.attempt_grasp_back()
+            self.is_ag = True # now that grasping is not called under a thread, this value is left true for the observer to catch it afterwards
+            self.is_gr = True # now that grasping is not called under a thread, this value is left true for the observer to catch it afterwards
+
+            self.is_ho = False
+            rospy.loginfo("Human agent: attempted but couldn't grasp!")
+
+        else:
+
+            self.attempt_grasp_back()
+            self.is_ho = False
+            return False
 
     # functions below are to cancel, or revers the actions selected above.
     def look_back(self):
 
-        time.sleep(0.5)
-
         self.is_la = False
         self.is_ov = True
+        time.sleep(0.5)
 
     def attempt_grasp_back(self):
 
-        time.sleep(0.75)
-
         self.is_ag = False
         self.is_gr = False
+        time.sleep(0.75)
 
 
     def warn_robot_back(self):
 
-        time.sleep(0.2)
         self.is_wr = False
+        time.sleep(0.2)
 
     def walk_back(self):
 
@@ -443,6 +507,65 @@ class HumanControlAndMonitor():
 
         self.is_ov = True
         self.is_oir = True
+
+    def task_status_timer(self, event):
+
+        self.task_time += 1 # increase one in every second
+        # after 40 seconds, if success or failure is not already achieved or the human doesnt have the object
+        if (self.task_time >= 40) and (not self.is_success and not self.is_failure) and (not self.is_ho and not self.is_robot_ho):
+            time.sleep(2) # sleep for 2 seconds and check again if the robot/human grasped it in the meantime
+            if (not self.is_ho and not self.is_robot_ho):
+                time.sleep(2) # sleep for 2 seconds: it is too late, the package falls into the unprocessed tray
+                self.is_success = False
+                self.is_failure = True
+                self.failure_status_publisher()
+
+    def robot_informs_status(self, data):
+
+        if data.data == 'got_object':
+            self.is_robot_ho = True
+            rospy.loginfo('Human agent: robot got the object')
+        elif data.data == 'released_object':
+            self.is_robot_ho = False
+            rospy.loginfo('Human agent: robot released the object')
+        elif data.data == 'success':
+            self.is_success = True
+            self.robot_success_status_publisher()
+            rospy.loginfo('Human agent: robot reached to success')
+        else:
+            rospy.loginfo('Human agent: robot sent a wrong message')
+
+    def human_success_status_publisher(self):
+
+        msg = TraySensor()
+        msg.stamp = rospy.Time.now()
+        msg.tray_id = 'tray_human'
+        msg.occupied = self.is_success
+        self.process_state_pub.publish(msg)
+        if self.is_success:
+            rospy.loginfo("Human agent: reached to success!")
+
+
+    def robot_success_status_publisher(self):
+
+        msg = TraySensor()
+        msg.stamp = rospy.Time.now()
+        msg.tray_id = 'tray_robot'
+        msg.occupied = self.is_success
+        self.process_state_pub.publish(msg)
+        if self.is_success:
+            rospy.loginfo("Robot agent: reached to success!")
+
+
+    def failure_status_publisher(self):
+
+        msg = TraySensor()
+        msg.stamp = rospy.Time.now()
+        msg.tray_id = 'tray_unprocessed'
+        msg.occupied = self.is_failure
+        self.process_state_pub.publish(msg)
+        if self.is_failure:
+            rospy.loginfo("Human agent: task is failed!")
 
 
     # manipulation mode
@@ -463,6 +586,8 @@ class HumanControlAndMonitor():
         else:
             return TriggerResponse(True, 'off')
     '''
+
+
 if __name__ == "__main__":
     rospy.init_node('human')
     human = HumanControlAndMonitor()
