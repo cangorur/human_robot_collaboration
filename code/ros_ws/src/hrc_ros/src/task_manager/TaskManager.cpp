@@ -328,12 +328,12 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_AItype = "proactive";
         if (r == 0){
           robot_model = "base.pomdpx";
-        }else if (true){
+        }else if (r == 13){
           robot_model = "reactive.pomdpx";
           robot_AItype = "reactive";
           robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }else{
-          robot_model = "policy" + to_string(r);
+          robot_model = "policy" + to_string(r) + ".pomdpx";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
