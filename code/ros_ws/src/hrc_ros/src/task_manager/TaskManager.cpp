@@ -297,6 +297,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                 robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
                 robot_AItype = "reactive";
             }
+            robot_AItype = "proactive";
             // robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
         }
     }
@@ -306,6 +307,10 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         hrc_ros::SelectPolicy::Response res_cmab;
         cmab_call.call(req_cmab,res_cmab);
         robot_model=res_cmab.robot_model;
+        if (robot_model == "reactive.pomdpx"){
+          robot_AItype = "reactive";
+          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+        }
         robot_shell = robot_shell + robot_model + "\"'";
     }else if(useBPR){ // If the use of BPR is enabled for the policy selection, we overwrite the manually selected robot policy
         hrc_ros::PolicySelectorBPR::Request req_bpr;
@@ -314,17 +319,23 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_belief = res_bpr.belief;
         robot_model = robot_policies[res_bpr.policy_id];
         if (robot_model == "reactive.pomdpx"){
+          robot_AItype = "reactive";
           robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }else if(useRandom){
         int r = (rand() % 14); // from 0 to 13
+        robot_AItype = "proactive";
         if (r == 0){
           robot_model = "base.pomdpx";
-        }else if (r = 13){
+        }else if (true){
           robot_model = "reactive.pomdpx";
-        }else
+          robot_AItype = "reactive";
+          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+        }else{
           robot_model = "policy" + to_string(r);
+        }
+        robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
     else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
         robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
