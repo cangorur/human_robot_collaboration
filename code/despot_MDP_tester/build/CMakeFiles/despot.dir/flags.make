@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++11 -msse2 -mfpmath=sse -fPIC
 
 CXX_DEFINES = -Ddespot_EXPORTS
 
-CXX_INCLUDES = -I/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/include 
+CXX_INCLUDES = -I/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/include 
 

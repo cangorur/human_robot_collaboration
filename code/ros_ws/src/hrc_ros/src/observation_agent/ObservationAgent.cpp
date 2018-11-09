@@ -158,26 +158,27 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		bool a4 = resp7.success;	// action is warn robot
 
 		// ===== ADDING A NOISE TO THE OBSERVATIONS ========
+		// TODO: update for toy example for the HW setup exp
 		bool ov_noisy = ov;
 		bool oir_noisy = oir;
 		bool a0_noisy = a0;
-		bool ipd_noisy = ipd;
+		bool ipd_noisy = ipd; // success: O1
 		bool a4_noisy = a4;
-		bool a2_noisy = a2;
-		bool upd_noisy = upd;
+		bool a2_noisy = a2; // human idle: O7
+		bool upd_noisy = upd; // failure: O2
 
-		int r = rand() % 10;
-		int m = rand() % 2; // mixed or missed
+		int r = rand() % 20;
+		int m = rand() % 2; // confused or missed
 		if ((a0 || a4) && r == 0){ // if one of this is one then 10% noise
-			if (m == 0){ // 5 % chance of mixing up a0 and a4
+			if (m == 0){ // 2.5 % chance of confusing a0 and a4
 				a0_noisy = not a0;
 				a4_noisy = not a4;
-			} else if (m == 1){ // 5 % chance of missing the gesture and assuming idle (a2)
+			} else if (m == 1){ // 2.5 % chance of missing the gesture and assuming idle (a2)
 				a0_noisy = false;
 				a4_noisy = false;
 				a2_noisy = true;
 			}
-		} else if (((not ov) || a2) && r == 0){ // if either looking around (not ov) or idle is detected, 10 % chance of mixing them up
+		} else if (((not ov) || a2) && r == 0){ // if either looking around (not ov) or idle is detected, 10 % chance of confusing them
 			ov_noisy = not ov;
 			a2_noisy = not a2;
 		}
@@ -206,6 +207,7 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 
 		obs_update.stamp_obs_update = ros::Time::now();
 
+		// Real observation is for the task manager to record statistics on running human models
 		std::vector<uint8_t> real_obs_received;
 		real_obs_received.push_back(not ov);
 		real_obs_received.push_back(oir);
@@ -219,7 +221,7 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 
 		obs_update.real_obs_received = real_obs_received;
 
-
+		// Noisy observation is for the robot
 		std::vector<uint8_t> obs_with_noise;
 		obs_with_noise.push_back(not ov_noisy);
 		obs_with_noise.push_back(oir_noisy);
@@ -263,6 +265,7 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 		if (robotType == "reactive"){
 			realRbtSt_code = getRealRbtStMDP(req.new_human_state); // this is the mapped human state to the robot's. Robot should estimate it correctly
 		} else if (robotType == "proactive"){
+			// TODO: update for toy example for the HW setup exp
 			realRbtSt_code = getRealRbtStPOMDP(req.new_human_state); //For POMDP model
 		}
 
@@ -438,6 +441,7 @@ string ObservationAgent::getRealRbtStPOMDP(string humanState)
 	}
 	prev_real_robot_state = real_robot_state_name;
 
+	// LEAVE THESE AS IT IS
 	//Returning with the state number for the despot planner !!
 	if (real_robot_state_name == "TaskHuman")
 		currRbtSt = "0";

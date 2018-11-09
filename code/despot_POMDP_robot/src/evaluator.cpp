@@ -143,21 +143,21 @@ void Evaluator::webSocketClient(int action, string belief_state, double reward, 
 
 	// send action to human actuator
   WsClient client("localhost:8080");
-  
+
   client.on_open=[&]() {
-	  
+
 	  std::size_t index = belief_state.find(":") + 1;
 	  string str = belief_state.substr(index);
 	  string belief_state_str = str.substr(0, str.size()-1);
-	  
+
 	  std::ostringstream strs;
 	  strs << reward;
 	  std::string reward_str = strs.str();
-	  
+
 	  std::ostringstream strss;
 	  strss << discounted_reward;
 	  std::string disc_reward_str = strss.str();
-	  
+
       string message = std::to_string(action) + "," + belief_state_str + "," + reward_str + "," + disc_reward_str;
 
       //*out_ << "Client: Opened connection" << endl;
@@ -166,7 +166,7 @@ void Evaluator::webSocketClient(int action, string belief_state, double reward, 
       auto send_stream=make_shared<WsClient::SendStream>();
       *send_stream << message;
       client.send(send_stream);
-  }; 
+  };
 
   client.on_message=[&client](shared_ptr<WsClient::Message> message) {
       //cout << "Client: Sending close connection" << endl;
@@ -199,7 +199,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 				<< endl;
 		exit(1);
 	}
-	
+
 	OBS_TYPE obs = manual_obs;
 	double start_t;
 	double end_t;
@@ -207,20 +207,20 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 	double step_end_t;
 	int sim_type = 2;
 	double reward;
-	
+
 	*out_ << "-----------------------------------Round " << round
 							<< " Step " << step + 1 << "-----------------------------------"
 							<< endl;
 	*out_ << "- The real state received: " << real_state << endl;
 	*out_ << "- Observation received from websocket: " << manual_obs << endl;
 	*out_ << "=== RESULTS ===" << endl;
-	
+
 	// ################# REWARD CALCULATION STARTS ####################//
 	if (real_state != -1){ // IF REAL STATE INFORMATION RECEIVED THEN CALCULATE THE REWARD
 		// ########## SIMULATOR STARTS ########### //
 		// to get the reward, first simulator runs ! The new state only gives the reward of our previous act!
 		start_t = get_time_second();
-	
+
 		//== Executing the action here ==//
 		bool terminal = ExecuteAction(sim_type, real_state, previous_action, reward, obs);
 		// terminal = false; // TODO: we disabled the termination of the states for continuous testing
@@ -228,16 +228,16 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// Terminal states are: GlobalSuccess and GlobalFail
 		terminal = (real_state == 8 || real_state == 9) ? true : false;
 		ReportStepReward();
-	
+
 		end_t = get_time_second();
 		logi << "[RunStep] Time spent in ExecuteAction(): " << (end_t - start_t)
 			<< endl;
 		//== Action was executed ==//
-		
+
 		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
 		// Sending rewards gathered from the new state
 		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
-		
+
 		if (terminal) {
 			step_end_t = get_time_second();
 			logi << "[RunStep] Time for step: actual / allocated = "
@@ -251,7 +251,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// ########## SIMULATOR ENDS ########### //
 	}
 	// ################# REWARD CALCULATION ENDS ####################//
-	
+
 	// ################# BELIEF UPDATE AND ACTION SELECTION STARTS ####################//
 	if (manual_obs != -1){
 		// ########## AGENT BELIEF UPDATE STARTS########## //
@@ -259,19 +259,19 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			*out_ << "- Observation = ";
 			model_->PrintObs(*state_, obs, *out_);
 		}
-	
+
 		if (state_ != NULL) {
 			if (!Globals::config.silence && out_)
 				*out_ << "- ObsProb = " << model_->ObsProb(obs, *state_, previous_action)
 					<< endl;
 		}
-		
+
 		start_t = get_time_second();
 		solver_->Update(previous_action, obs);
-		
+
 		end_t = get_time_second();
 		logi << "[RunStep] Time spent in Update(): " << (end_t - start_t) << endl;
-		
+
 		//TODO: added for the purpose of printing the particle distribution
 		/*vector<pair<string, double>> particle_distr = solver_->belief_distr;;
 		ostringstream oss;
@@ -282,28 +282,28 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			cout << oss.str();
 		}*/
 		// ########## AGENT BELIEF UPDATE ENDS ########## //
-	
-		
+
+
 		// ########## AGENT'S ACTION SELECTION STARTS ########## //
 		step_start_t = get_time_second();
 		start_t = get_time_second();
 		int action = solver_->Search().action;
 		previous_action = action; // THIS ACTION WILL BE USED IN THE NEXT STEP TO CALCULATE THE BELIEF WHEN NEW OBS ARRIVES
 		end_t = get_time_second();
-	
+
 		logi << "[RunStep] Time spent in " << typeid(*solver_).name()
 			<< "::Search(): " << (end_t - start_t) << endl;
-	
+
 		if (!Globals::config.silence && out_) {
 			*out_ << "- Agent Acts = ";
 			model_->PrintAction(action, *out_);
 		}
 		// ########## AGENT'S ACTION SELECTION ENDS ########## //
-	
-		
+
+
 		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
 
-		vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();	
+		vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();
 
 		int index_first = 0;
 		for (int i = 0; i < belief_distr.size(); i++) {
@@ -316,11 +316,11 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// ######################################################## //
 	}
 	// ################# BELIEF UPDATE AND ACTION SELECTION ENDS ####################//
-	
+
 	*out_<<endl;
 	if (manual_obs != -1) // step counts every time a new observation is received
 		step_++;
-	
+
 	return false;
 }
 

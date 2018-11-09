@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester
+CMAKE_SOURCE_DIR = /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build
+CMAKE_BINARY_DIR = /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/despot.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/despot.dir/flags.make
 
 CMakeFiles/despot.dir/src/core/belief.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/belief.cpp.o: ../src/core/belief.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/despot.dir/src/core/belief.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/belief.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/belief.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/despot.dir/src/core/belief.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/belief.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/belief.cpp
 
 CMakeFiles/despot.dir/src/core/belief.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/belief.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/belief.cpp > CMakeFiles/despot.dir/src/core/belief.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/belief.cpp > CMakeFiles/despot.dir/src/core/belief.cpp.i
 
 CMakeFiles/despot.dir/src/core/belief.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/belief.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/belief.cpp -o CMakeFiles/despot.dir/src/core/belief.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/belief.cpp -o CMakeFiles/despot.dir/src/core/belief.cpp.s
 
 CMakeFiles/despot.dir/src/core/belief.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/despot.dir/src/core/belief.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/core/globals.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/globals.cpp.o: ../src/core/globals.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/despot.dir/src/core/globals.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/globals.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/globals.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/despot.dir/src/core/globals.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/globals.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/globals.cpp
 
 CMakeFiles/despot.dir/src/core/globals.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/globals.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/globals.cpp > CMakeFiles/despot.dir/src/core/globals.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/globals.cpp > CMakeFiles/despot.dir/src/core/globals.cpp.i
 
 CMakeFiles/despot.dir/src/core/globals.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/globals.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/globals.cpp -o CMakeFiles/despot.dir/src/core/globals.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/globals.cpp -o CMakeFiles/despot.dir/src/core/globals.cpp.s
 
 CMakeFiles/despot.dir/src/core/globals.cpp.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/despot.dir/src/core/globals.cpp.o.provides.build: CMakeFiles/despot.d
 
 CMakeFiles/despot.dir/src/core/lower_bound.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/lower_bound.cpp.o: ../src/core/lower_bound.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/despot.dir/src/core/lower_bound.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/lower_bound.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/lower_bound.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/despot.dir/src/core/lower_bound.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/lower_bound.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/lower_bound.cpp
 
 CMakeFiles/despot.dir/src/core/lower_bound.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/lower_bound.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/lower_bound.cpp > CMakeFiles/despot.dir/src/core/lower_bound.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/lower_bound.cpp > CMakeFiles/despot.dir/src/core/lower_bound.cpp.i
 
 CMakeFiles/despot.dir/src/core/lower_bound.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/lower_bound.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/lower_bound.cpp -o CMakeFiles/despot.dir/src/core/lower_bound.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/lower_bound.cpp -o CMakeFiles/despot.dir/src/core/lower_bound.cpp.s
 
 CMakeFiles/despot.dir/src/core/lower_bound.cpp.o.requires:
 
@@ -131,16 +131,16 @@ CMakeFiles/despot.dir/src/core/lower_bound.cpp.o.provides.build: CMakeFiles/desp
 
 CMakeFiles/despot.dir/src/core/mdp.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/mdp.cpp.o: ../src/core/mdp.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/despot.dir/src/core/mdp.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/mdp.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/mdp.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/despot.dir/src/core/mdp.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/mdp.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/mdp.cpp
 
 CMakeFiles/despot.dir/src/core/mdp.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/mdp.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/mdp.cpp > CMakeFiles/despot.dir/src/core/mdp.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/mdp.cpp > CMakeFiles/despot.dir/src/core/mdp.cpp.i
 
 CMakeFiles/despot.dir/src/core/mdp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/mdp.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/mdp.cpp -o CMakeFiles/despot.dir/src/core/mdp.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/mdp.cpp -o CMakeFiles/despot.dir/src/core/mdp.cpp.s
 
 CMakeFiles/despot.dir/src/core/mdp.cpp.o.requires:
 
@@ -155,16 +155,16 @@ CMakeFiles/despot.dir/src/core/mdp.cpp.o.provides.build: CMakeFiles/despot.dir/s
 
 CMakeFiles/despot.dir/src/core/node.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/node.cpp.o: ../src/core/node.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/despot.dir/src/core/node.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/node.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/node.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/despot.dir/src/core/node.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/node.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/node.cpp
 
 CMakeFiles/despot.dir/src/core/node.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/node.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/node.cpp > CMakeFiles/despot.dir/src/core/node.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/node.cpp > CMakeFiles/despot.dir/src/core/node.cpp.i
 
 CMakeFiles/despot.dir/src/core/node.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/node.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/node.cpp -o CMakeFiles/despot.dir/src/core/node.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/node.cpp -o CMakeFiles/despot.dir/src/core/node.cpp.s
 
 CMakeFiles/despot.dir/src/core/node.cpp.o.requires:
 
@@ -179,16 +179,16 @@ CMakeFiles/despot.dir/src/core/node.cpp.o.provides.build: CMakeFiles/despot.dir/
 
 CMakeFiles/despot.dir/src/core/policy.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/policy.cpp.o: ../src/core/policy.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/despot.dir/src/core/policy.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/policy.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/policy.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/despot.dir/src/core/policy.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/policy.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/policy.cpp
 
 CMakeFiles/despot.dir/src/core/policy.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/policy.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/policy.cpp > CMakeFiles/despot.dir/src/core/policy.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/policy.cpp > CMakeFiles/despot.dir/src/core/policy.cpp.i
 
 CMakeFiles/despot.dir/src/core/policy.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/policy.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/policy.cpp -o CMakeFiles/despot.dir/src/core/policy.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/policy.cpp -o CMakeFiles/despot.dir/src/core/policy.cpp.s
 
 CMakeFiles/despot.dir/src/core/policy.cpp.o.requires:
 
@@ -203,16 +203,16 @@ CMakeFiles/despot.dir/src/core/policy.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/core/pomdp.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/pomdp.cpp.o: ../src/core/pomdp.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/despot.dir/src/core/pomdp.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/pomdp.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/pomdp.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/despot.dir/src/core/pomdp.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/pomdp.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/pomdp.cpp
 
 CMakeFiles/despot.dir/src/core/pomdp.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/pomdp.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/pomdp.cpp > CMakeFiles/despot.dir/src/core/pomdp.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/pomdp.cpp > CMakeFiles/despot.dir/src/core/pomdp.cpp.i
 
 CMakeFiles/despot.dir/src/core/pomdp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/pomdp.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/pomdp.cpp -o CMakeFiles/despot.dir/src/core/pomdp.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/pomdp.cpp -o CMakeFiles/despot.dir/src/core/pomdp.cpp.s
 
 CMakeFiles/despot.dir/src/core/pomdp.cpp.o.requires:
 
@@ -227,16 +227,16 @@ CMakeFiles/despot.dir/src/core/pomdp.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/core/solver.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/solver.cpp.o: ../src/core/solver.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/despot.dir/src/core/solver.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/solver.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/solver.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/despot.dir/src/core/solver.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/solver.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/solver.cpp
 
 CMakeFiles/despot.dir/src/core/solver.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/solver.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/solver.cpp > CMakeFiles/despot.dir/src/core/solver.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/solver.cpp > CMakeFiles/despot.dir/src/core/solver.cpp.i
 
 CMakeFiles/despot.dir/src/core/solver.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/solver.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/solver.cpp -o CMakeFiles/despot.dir/src/core/solver.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/solver.cpp -o CMakeFiles/despot.dir/src/core/solver.cpp.s
 
 CMakeFiles/despot.dir/src/core/solver.cpp.o.requires:
 
@@ -251,16 +251,16 @@ CMakeFiles/despot.dir/src/core/solver.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/core/upper_bound.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/core/upper_bound.cpp.o: ../src/core/upper_bound.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/despot.dir/src/core/upper_bound.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/upper_bound.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/upper_bound.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/despot.dir/src/core/upper_bound.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/core/upper_bound.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/upper_bound.cpp
 
 CMakeFiles/despot.dir/src/core/upper_bound.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/core/upper_bound.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/upper_bound.cpp > CMakeFiles/despot.dir/src/core/upper_bound.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/upper_bound.cpp > CMakeFiles/despot.dir/src/core/upper_bound.cpp.i
 
 CMakeFiles/despot.dir/src/core/upper_bound.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/core/upper_bound.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/upper_bound.cpp -o CMakeFiles/despot.dir/src/core/upper_bound.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/upper_bound.cpp -o CMakeFiles/despot.dir/src/core/upper_bound.cpp.s
 
 CMakeFiles/despot.dir/src/core/upper_bound.cpp.o.requires:
 
@@ -275,16 +275,16 @@ CMakeFiles/despot.dir/src/core/upper_bound.cpp.o.provides.build: CMakeFiles/desp
 
 CMakeFiles/despot.dir/src/evaluator.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/evaluator.cpp.o: ../src/evaluator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/despot.dir/src/evaluator.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/evaluator.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/evaluator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/despot.dir/src/evaluator.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/evaluator.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/evaluator.cpp
 
 CMakeFiles/despot.dir/src/evaluator.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/evaluator.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/evaluator.cpp > CMakeFiles/despot.dir/src/evaluator.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/evaluator.cpp > CMakeFiles/despot.dir/src/evaluator.cpp.i
 
 CMakeFiles/despot.dir/src/evaluator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/evaluator.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/evaluator.cpp -o CMakeFiles/despot.dir/src/evaluator.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/evaluator.cpp -o CMakeFiles/despot.dir/src/evaluator.cpp.s
 
 CMakeFiles/despot.dir/src/evaluator.cpp.o.requires:
 
@@ -299,16 +299,16 @@ CMakeFiles/despot.dir/src/evaluator.cpp.o.provides.build: CMakeFiles/despot.dir/
 
 CMakeFiles/despot.dir/src/ippc/client.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/ippc/client.cpp.o: ../src/ippc/client.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/despot.dir/src/ippc/client.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/ippc/client.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/ippc/client.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/despot.dir/src/ippc/client.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/ippc/client.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/ippc/client.cpp
 
 CMakeFiles/despot.dir/src/ippc/client.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/ippc/client.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/ippc/client.cpp > CMakeFiles/despot.dir/src/ippc/client.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/ippc/client.cpp > CMakeFiles/despot.dir/src/ippc/client.cpp.i
 
 CMakeFiles/despot.dir/src/ippc/client.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/ippc/client.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/ippc/client.cpp -o CMakeFiles/despot.dir/src/ippc/client.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/ippc/client.cpp -o CMakeFiles/despot.dir/src/ippc/client.cpp.s
 
 CMakeFiles/despot.dir/src/ippc/client.cpp.o.requires:
 
@@ -323,16 +323,16 @@ CMakeFiles/despot.dir/src/ippc/client.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o: ../src/pomdpx/parser/function.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/function.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/function.cpp
 
 CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/function.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/function.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.i
 
 CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/function.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/function.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.s
 
 CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o.requires:
 
@@ -347,16 +347,16 @@ CMakeFiles/despot.dir/src/pomdpx/parser/function.cpp.o.provides.build: CMakeFile
 
 CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o: ../src/pomdpx/parser/parser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp
 
 CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.i
 
 CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.s
 
 CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o.requires:
 
@@ -371,16 +371,16 @@ CMakeFiles/despot.dir/src/pomdpx/parser/parser.cpp.o.provides.build: CMakeFiles/
 
 CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o: ../src/pomdpx/parser/variable.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp
 
 CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp > CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.i
 
 CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp -o CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.s
 
 CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o.requires:
 
@@ -395,16 +395,16 @@ CMakeFiles/despot.dir/src/pomdpx/parser/variable.cpp.o.provides.build: CMakeFile
 
 CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o: ../src/pomdpx/pomdpx.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp
 
 CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp > CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp > CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.i
 
 CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp -o CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp -o CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.s
 
 CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o.requires:
 
@@ -419,16 +419,16 @@ CMakeFiles/despot.dir/src/pomdpx/pomdpx.cpp.o.provides.build: CMakeFiles/despot.
 
 CMakeFiles/despot.dir/src/random_streams.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/random_streams.cpp.o: ../src/random_streams.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/despot.dir/src/random_streams.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/random_streams.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/random_streams.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/despot.dir/src/random_streams.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/random_streams.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/random_streams.cpp
 
 CMakeFiles/despot.dir/src/random_streams.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/random_streams.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/random_streams.cpp > CMakeFiles/despot.dir/src/random_streams.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/random_streams.cpp > CMakeFiles/despot.dir/src/random_streams.cpp.i
 
 CMakeFiles/despot.dir/src/random_streams.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/random_streams.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/random_streams.cpp -o CMakeFiles/despot.dir/src/random_streams.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/random_streams.cpp -o CMakeFiles/despot.dir/src/random_streams.cpp.s
 
 CMakeFiles/despot.dir/src/random_streams.cpp.o.requires:
 
@@ -443,16 +443,16 @@ CMakeFiles/despot.dir/src/random_streams.cpp.o.provides.build: CMakeFiles/despot
 
 CMakeFiles/despot.dir/src/simple_tui.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/simple_tui.cpp.o: ../src/simple_tui.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/despot.dir/src/simple_tui.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/simple_tui.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/simple_tui.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/despot.dir/src/simple_tui.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/simple_tui.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/simple_tui.cpp
 
 CMakeFiles/despot.dir/src/simple_tui.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/simple_tui.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/simple_tui.cpp > CMakeFiles/despot.dir/src/simple_tui.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/simple_tui.cpp > CMakeFiles/despot.dir/src/simple_tui.cpp.i
 
 CMakeFiles/despot.dir/src/simple_tui.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/simple_tui.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/simple_tui.cpp -o CMakeFiles/despot.dir/src/simple_tui.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/simple_tui.cpp -o CMakeFiles/despot.dir/src/simple_tui.cpp.s
 
 CMakeFiles/despot.dir/src/simple_tui.cpp.o.requires:
 
@@ -467,16 +467,16 @@ CMakeFiles/despot.dir/src/simple_tui.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/solver/aems.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/solver/aems.cpp.o: ../src/solver/aems.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/despot.dir/src/solver/aems.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/aems.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/aems.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/despot.dir/src/solver/aems.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/aems.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/aems.cpp
 
 CMakeFiles/despot.dir/src/solver/aems.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/solver/aems.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/aems.cpp > CMakeFiles/despot.dir/src/solver/aems.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/aems.cpp > CMakeFiles/despot.dir/src/solver/aems.cpp.i
 
 CMakeFiles/despot.dir/src/solver/aems.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/solver/aems.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/aems.cpp -o CMakeFiles/despot.dir/src/solver/aems.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/aems.cpp -o CMakeFiles/despot.dir/src/solver/aems.cpp.s
 
 CMakeFiles/despot.dir/src/solver/aems.cpp.o.requires:
 
@@ -491,16 +491,16 @@ CMakeFiles/despot.dir/src/solver/aems.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/solver/despot.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/solver/despot.cpp.o: ../src/solver/despot.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/despot.dir/src/solver/despot.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/despot.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/despot.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/despot.dir/src/solver/despot.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/despot.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/despot.cpp
 
 CMakeFiles/despot.dir/src/solver/despot.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/solver/despot.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/despot.cpp > CMakeFiles/despot.dir/src/solver/despot.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/despot.cpp > CMakeFiles/despot.dir/src/solver/despot.cpp.i
 
 CMakeFiles/despot.dir/src/solver/despot.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/solver/despot.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/despot.cpp -o CMakeFiles/despot.dir/src/solver/despot.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/despot.cpp -o CMakeFiles/despot.dir/src/solver/despot.cpp.s
 
 CMakeFiles/despot.dir/src/solver/despot.cpp.o.requires:
 
@@ -515,16 +515,16 @@ CMakeFiles/despot.dir/src/solver/despot.cpp.o.provides.build: CMakeFiles/despot.
 
 CMakeFiles/despot.dir/src/solver/pomcp.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/solver/pomcp.cpp.o: ../src/solver/pomcp.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/despot.dir/src/solver/pomcp.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/pomcp.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/pomcp.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/despot.dir/src/solver/pomcp.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/solver/pomcp.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/pomcp.cpp
 
 CMakeFiles/despot.dir/src/solver/pomcp.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/solver/pomcp.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/pomcp.cpp > CMakeFiles/despot.dir/src/solver/pomcp.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/pomcp.cpp > CMakeFiles/despot.dir/src/solver/pomcp.cpp.i
 
 CMakeFiles/despot.dir/src/solver/pomcp.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/solver/pomcp.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/pomcp.cpp -o CMakeFiles/despot.dir/src/solver/pomcp.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/pomcp.cpp -o CMakeFiles/despot.dir/src/solver/pomcp.cpp.s
 
 CMakeFiles/despot.dir/src/solver/pomcp.cpp.o.requires:
 
@@ -539,16 +539,16 @@ CMakeFiles/despot.dir/src/solver/pomcp.cpp.o.provides.build: CMakeFiles/despot.d
 
 CMakeFiles/despot.dir/src/util/coord.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/coord.cpp.o: ../src/util/coord.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/despot.dir/src/util/coord.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/coord.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/coord.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/despot.dir/src/util/coord.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/coord.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/coord.cpp
 
 CMakeFiles/despot.dir/src/util/coord.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/coord.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/coord.cpp > CMakeFiles/despot.dir/src/util/coord.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/coord.cpp > CMakeFiles/despot.dir/src/util/coord.cpp.i
 
 CMakeFiles/despot.dir/src/util/coord.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/coord.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/coord.cpp -o CMakeFiles/despot.dir/src/util/coord.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/coord.cpp -o CMakeFiles/despot.dir/src/util/coord.cpp.s
 
 CMakeFiles/despot.dir/src/util/coord.cpp.o.requires:
 
@@ -563,16 +563,16 @@ CMakeFiles/despot.dir/src/util/coord.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/util/dirichlet.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/dirichlet.cpp.o: ../src/util/dirichlet.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/despot.dir/src/util/dirichlet.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/dirichlet.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/dirichlet.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/despot.dir/src/util/dirichlet.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/dirichlet.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/dirichlet.cpp
 
 CMakeFiles/despot.dir/src/util/dirichlet.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/dirichlet.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/dirichlet.cpp > CMakeFiles/despot.dir/src/util/dirichlet.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/dirichlet.cpp > CMakeFiles/despot.dir/src/util/dirichlet.cpp.i
 
 CMakeFiles/despot.dir/src/util/dirichlet.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/dirichlet.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/dirichlet.cpp -o CMakeFiles/despot.dir/src/util/dirichlet.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/dirichlet.cpp -o CMakeFiles/despot.dir/src/util/dirichlet.cpp.s
 
 CMakeFiles/despot.dir/src/util/dirichlet.cpp.o.requires:
 
@@ -587,16 +587,16 @@ CMakeFiles/despot.dir/src/util/dirichlet.cpp.o.provides.build: CMakeFiles/despot
 
 CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o: ../src/util/exec_tracker.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/exec_tracker.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/exec_tracker.cpp
 
 CMakeFiles/despot.dir/src/util/exec_tracker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/exec_tracker.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/exec_tracker.cpp > CMakeFiles/despot.dir/src/util/exec_tracker.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/exec_tracker.cpp > CMakeFiles/despot.dir/src/util/exec_tracker.cpp.i
 
 CMakeFiles/despot.dir/src/util/exec_tracker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/exec_tracker.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/exec_tracker.cpp -o CMakeFiles/despot.dir/src/util/exec_tracker.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/exec_tracker.cpp -o CMakeFiles/despot.dir/src/util/exec_tracker.cpp.s
 
 CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o.requires:
 
@@ -611,16 +611,16 @@ CMakeFiles/despot.dir/src/util/exec_tracker.cpp.o.provides.build: CMakeFiles/des
 
 CMakeFiles/despot.dir/src/util/floor.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/floor.cpp.o: ../src/util/floor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/despot.dir/src/util/floor.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/floor.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/floor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/despot.dir/src/util/floor.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/floor.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/floor.cpp
 
 CMakeFiles/despot.dir/src/util/floor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/floor.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/floor.cpp > CMakeFiles/despot.dir/src/util/floor.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/floor.cpp > CMakeFiles/despot.dir/src/util/floor.cpp.i
 
 CMakeFiles/despot.dir/src/util/floor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/floor.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/floor.cpp -o CMakeFiles/despot.dir/src/util/floor.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/floor.cpp -o CMakeFiles/despot.dir/src/util/floor.cpp.s
 
 CMakeFiles/despot.dir/src/util/floor.cpp.o.requires:
 
@@ -635,16 +635,16 @@ CMakeFiles/despot.dir/src/util/floor.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/util/gamma.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/gamma.cpp.o: ../src/util/gamma.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/despot.dir/src/util/gamma.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/gamma.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/gamma.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/despot.dir/src/util/gamma.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/gamma.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/gamma.cpp
 
 CMakeFiles/despot.dir/src/util/gamma.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/gamma.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/gamma.cpp > CMakeFiles/despot.dir/src/util/gamma.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/gamma.cpp > CMakeFiles/despot.dir/src/util/gamma.cpp.i
 
 CMakeFiles/despot.dir/src/util/gamma.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/gamma.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/gamma.cpp -o CMakeFiles/despot.dir/src/util/gamma.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/gamma.cpp -o CMakeFiles/despot.dir/src/util/gamma.cpp.s
 
 CMakeFiles/despot.dir/src/util/gamma.cpp.o.requires:
 
@@ -659,16 +659,16 @@ CMakeFiles/despot.dir/src/util/gamma.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/util/logging.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/logging.cpp.o: ../src/util/logging.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/despot.dir/src/util/logging.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/logging.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/logging.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/despot.dir/src/util/logging.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/logging.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/logging.cpp
 
 CMakeFiles/despot.dir/src/util/logging.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/logging.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/logging.cpp > CMakeFiles/despot.dir/src/util/logging.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/logging.cpp > CMakeFiles/despot.dir/src/util/logging.cpp.i
 
 CMakeFiles/despot.dir/src/util/logging.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/logging.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/logging.cpp -o CMakeFiles/despot.dir/src/util/logging.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/logging.cpp -o CMakeFiles/despot.dir/src/util/logging.cpp.s
 
 CMakeFiles/despot.dir/src/util/logging.cpp.o.requires:
 
@@ -683,16 +683,16 @@ CMakeFiles/despot.dir/src/util/logging.cpp.o.provides.build: CMakeFiles/despot.d
 
 CMakeFiles/despot.dir/src/util/random.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/random.cpp.o: ../src/util/random.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/despot.dir/src/util/random.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/random.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/random.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/despot.dir/src/util/random.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/random.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/random.cpp
 
 CMakeFiles/despot.dir/src/util/random.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/random.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/random.cpp > CMakeFiles/despot.dir/src/util/random.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/random.cpp > CMakeFiles/despot.dir/src/util/random.cpp.i
 
 CMakeFiles/despot.dir/src/util/random.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/random.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/random.cpp -o CMakeFiles/despot.dir/src/util/random.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/random.cpp -o CMakeFiles/despot.dir/src/util/random.cpp.s
 
 CMakeFiles/despot.dir/src/util/random.cpp.o.requires:
 
@@ -707,16 +707,16 @@ CMakeFiles/despot.dir/src/util/random.cpp.o.provides.build: CMakeFiles/despot.di
 
 CMakeFiles/despot.dir/src/util/seeds.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/seeds.cpp.o: ../src/util/seeds.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/despot.dir/src/util/seeds.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/seeds.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/seeds.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/despot.dir/src/util/seeds.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/seeds.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/seeds.cpp
 
 CMakeFiles/despot.dir/src/util/seeds.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/seeds.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/seeds.cpp > CMakeFiles/despot.dir/src/util/seeds.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/seeds.cpp > CMakeFiles/despot.dir/src/util/seeds.cpp.i
 
 CMakeFiles/despot.dir/src/util/seeds.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/seeds.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/seeds.cpp -o CMakeFiles/despot.dir/src/util/seeds.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/seeds.cpp -o CMakeFiles/despot.dir/src/util/seeds.cpp.s
 
 CMakeFiles/despot.dir/src/util/seeds.cpp.o.requires:
 
@@ -731,16 +731,16 @@ CMakeFiles/despot.dir/src/util/seeds.cpp.o.provides.build: CMakeFiles/despot.dir
 
 CMakeFiles/despot.dir/src/util/util.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/util.cpp.o: ../src/util/util.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/despot.dir/src/util/util.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/util.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/util.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/despot.dir/src/util/util.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/util.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/util.cpp
 
 CMakeFiles/despot.dir/src/util/util.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/util.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/util.cpp > CMakeFiles/despot.dir/src/util/util.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/util.cpp > CMakeFiles/despot.dir/src/util/util.cpp.i
 
 CMakeFiles/despot.dir/src/util/util.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/util.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/util.cpp -o CMakeFiles/despot.dir/src/util/util.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/util.cpp -o CMakeFiles/despot.dir/src/util/util.cpp.s
 
 CMakeFiles/despot.dir/src/util/util.cpp.o.requires:
 
@@ -755,16 +755,16 @@ CMakeFiles/despot.dir/src/util/util.cpp.o.provides.build: CMakeFiles/despot.dir/
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o: ../src/util/tinyxml/tinystr.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.i
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.s
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o.requires:
 
@@ -779,16 +779,16 @@ CMakeFiles/despot.dir/src/util/tinyxml/tinystr.cpp.o.provides.build: CMakeFiles/
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o: ../src/util/tinyxml/tinyxml.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.i
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.s
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o.requires:
 
@@ -803,16 +803,16 @@ CMakeFiles/despot.dir/src/util/tinyxml/tinyxml.cpp.o.provides.build: CMakeFiles/
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o: ../src/util/tinyxml/tinyxmlerror.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.i
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.s
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o.requires:
 
@@ -827,16 +827,16 @@ CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlerror.cpp.o.provides.build: CMakeF
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o: CMakeFiles/despot.dir/flags.make
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o: ../src/util/tinyxml/tinyxmlparser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o -c /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o -c /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp > CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.i
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp -o CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.s
 
 CMakeFiles/despot.dir/src/util/tinyxml/tinyxmlparser.cpp.o.requires:
 
@@ -932,7 +932,7 @@ libdespot.so: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
 libdespot.so: /usr/lib/x86_64-linux-gnu/libpthread.so
 libdespot.so: /usr/lib/x86_64-linux-gnu/libcrypto.so
 libdespot.so: CMakeFiles/despot.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Linking CXX shared library libdespot.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Linking CXX shared library libdespot.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/despot.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -981,6 +981,6 @@ CMakeFiles/despot.dir/clean:
 .PHONY : CMakeFiles/despot.dir/clean
 
 CMakeFiles/despot.dir/depend:
-	cd /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles/despot.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles/despot.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/despot.dir/depend
 

@@ -8,4 +8,3 @@ bool occupied
 
 # name of the package if any is near
 # string package
-

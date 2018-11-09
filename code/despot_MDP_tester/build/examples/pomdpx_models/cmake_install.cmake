@@ -1,4 +1,4 @@
-# Install script for directory: /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/examples/pomdpx_models
+# Install script for directory: /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/examples/pomdpx_models
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,12 +39,12 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/despot_pomdpx"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/examples/pomdpx_models/despot_pomdpx")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/examples/pomdpx_models/despot_pomdpx")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/despot_pomdpx" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/despot_pomdpx")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/despot_pomdpx"
-         OLD_RPATH "/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build:"
+         OLD_RPATH "/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/despot_pomdpx")

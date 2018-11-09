@@ -1,0 +1,14 @@
+proactive.pomdpx --> base.pomdpx
+proactive_beginner.pomdpx --> policy1.pomdpx  (model from students, bad rewarding)
+proactive_distracted.pomdpx --> policy2.pomdpx  (model from students, bad rewarding)
+proactive_noncollaborative.pomdpx --> policy3.pomdpx  (model from students, bad rewarding)
+proactive_tired.pomdpx --> policy4.pomdpx  (model from students, bad rewarding)
+proactive_beginner_v2.pomdpx --> policy5.pomdpx  (model from me, bad rewarding)
+proactive_noncollaborative_v2.pomdpx --> policy6.pomdpx  (model from me, bad rewarding)
+
+proactive_beginner.pomdpx --> policy7.pomdpx  (model from students, fair rewarding)
+proactive_distracted.pomdpx --> policy8.pomdpx  (model from students, fair rewarding)
+proactive_noncollaborative.pomdpx --> policy9.pomdpx  (model from students, fair rewarding)
+proactive_tired.pomdpx --> policy10.pomdpx  (model from students, fair rewarding)
+proactive_beginner_v2.pomdpx --> policy11.pomdpx  (model from me, fair rewarding)
+proactive_noncollaborative_v2.pomdpx --> policy12.pomdpx  (model from me, fair rewarding)

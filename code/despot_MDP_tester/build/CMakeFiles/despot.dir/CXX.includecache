@@ -470,17 +470,17 @@ locale
 sys/time.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/belief.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/belief.cpp
 despot/core/belief.h
 -
 despot/core/pomdp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/globals.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/globals.cpp
 despot/core/globals.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/lower_bound.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/lower_bound.cpp
 despot/core/lower_bound.h
 -
 despot/core/pomdp.h
@@ -490,17 +490,17 @@ despot/core/node.h
 despot/solver/pomcp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/mdp.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/mdp.cpp
 despot/core/mdp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/node.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/node.cpp
 despot/core/node.h
 -
 despot/solver/despot.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/policy.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/policy.cpp
 despot/core/policy.h
 -
 despot/core/pomdp.h
@@ -508,7 +508,7 @@ despot/core/pomdp.h
 unistd.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/pomdp.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/pomdp.cpp
 despot/core/pomdp.h
 -
 despot/core/policy.h
@@ -520,7 +520,7 @@ despot/core/upper_bound.h
 despot/solver/pomcp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/solver.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/solver.cpp
 despot/core/solver.h
 -
 despot/util/logging.h
@@ -530,7 +530,7 @@ despot/core/pomdp.h
 despot/core/belief.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/core/upper_bound.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/core/upper_bound.cpp
 despot/core/upper_bound.h
 -
 despot/core/pomdp.h
@@ -538,11 +538,11 @@ despot/core/pomdp.h
 despot/core/mdp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/evaluator.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/evaluator.cpp
 despot/evaluator.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/ippc/client.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/ippc/client.cpp
 despot/ippc/client.h
 -
 despot/util/tinyxml/tinyxml.h
@@ -550,13 +550,13 @@ despot/util/tinyxml/tinyxml.h
 iostream
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/function.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/function.cpp
 despot/pomdpx/parser/function.h
 -
 stdexcept
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/parser.cpp
 stdlib.h
 -
 time.h
@@ -572,7 +572,7 @@ despot/pomdpx/parser/parser.h
 despot/core/pomdp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/parser/variable.cpp
 despot/pomdpx/parser/variable.h
 -
 iostream
@@ -582,13 +582,13 @@ string
 despot/util/util.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/pomdpx/pomdpx.cpp
 despot/pomdpx/pomdpx.h
 -
 despot/solver/pomcp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/random_streams.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/random_streams.cpp
 despot/random_streams.h
 -
 despot/util/seeds.h
@@ -596,27 +596,27 @@ despot/util/seeds.h
 vector
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/simple_tui.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/simple_tui.cpp
 despot/simple_tui.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/aems.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/aems.cpp
 despot/solver/aems.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/despot.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/despot.cpp
 despot/solver/despot.h
 -
 despot/solver/pomcp.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/solver/pomcp.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/solver/pomcp.cpp
 despot/solver/pomcp.h
 -
 despot/util/logging.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/coord.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/coord.cpp
 despot/util/coord.h
 -
 cstdlib
@@ -626,29 +626,29 @@ cmath
 cassert
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/dirichlet.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/dirichlet.cpp
 despot/util/dirichlet.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/exec_tracker.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/exec_tracker.cpp
 despot/util/exec_tracker.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/floor.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/floor.cpp
 despot/util/floor.h
 -
 queue
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/gamma.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/gamma.cpp
 despot/util/gamma.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/logging.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/logging.cpp
 despot/util/logging.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/random.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/random.cpp
 despot/util/random.h
 -
 stdlib.h
@@ -658,15 +658,15 @@ iostream
 math.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/seeds.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/seeds.cpp
 despot/util/seeds.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinystr.cpp
 despot/util/tinyxml/tinystr.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxml.cpp
 ctype.h
 -
 sstream
@@ -676,11 +676,11 @@ iostream
 despot/util/tinyxml/tinyxml.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlerror.cpp
 despot/util/tinyxml/tinyxml.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/tinyxml/tinyxmlparser.cpp
 ctype.h
 -
 stddef.h
@@ -690,7 +690,7 @@ despot/util/tinyxml/tinyxml.h
 windows.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/src/util/util.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/src/util/util.cpp
 despot/util/util.h
 -
 

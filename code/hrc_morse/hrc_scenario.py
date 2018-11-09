@@ -1,4 +1,5 @@
 from morse.builder import *
+from morse.builder.robots.conveyor import *
 from add_objects import *
 import json
 

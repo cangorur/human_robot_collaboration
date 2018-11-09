@@ -34,4 +34,4 @@ examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/src/main.cpp.o
  ../include/despot/util/random.h
  ../include/despot/util/seeds.h
  ../include/despot/util/util.h
- /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/examples/pomdpx_models/src/main.cpp
+ /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/examples/pomdpx_models/src/main.cpp

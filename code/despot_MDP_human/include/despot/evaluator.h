@@ -59,6 +59,7 @@ public:
  */
 class Evaluator {
 protected:
+        //pomdpx.cpp
 	DSPOMDP* model_;
 	std::string belief_type_;
 	Solver* solver_;
@@ -68,14 +69,19 @@ protected:
 	double target_finish_time_;
 	std::ostream* out_;
 	int previous_action; // this is to keep the recording of the prev action taken to calculate the belief on the next step
-	
-	
+
+
 	std::vector<double> discounted_round_rewards_;
 	std::vector<double> undiscounted_round_rewards_;
 	double reward_;
 	double total_discounted_reward_;
 	double total_undiscounted_reward_;
 
+    // int m_new_state = -1;
+    std::string m_new_state = "-1";
+    std::string previous_state = "-1";
+
+    int sim_type = 1;
 public:
 	Evaluator(DSPOMDP* model, std::string belief_type, Solver* solver,
 		clock_t start_clockt, std::ostream* out);

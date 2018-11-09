@@ -12,6 +12,7 @@
 #include <ros/ros.h>
 // include <package_name/service_type_name.h>
 #include <std_srvs/Trigger.h>
+#include <std_srvs/SetBool.h>
 #include <hrc_ros/InformRobotToTaskMang.h>
 #include <hrc_ros/RobotUpdateMsg.h>
 #include <hrc_ros/ResetRobotROS.h>
@@ -32,7 +33,7 @@ private:
 	 * @todo in the future can be a ROS service initialized by the task manager
 	 */
 	void initialize();
-	
+
 	/**
 	 * Control service to reset robot actions/position (task manager calls during the operation).
 	 * @param req ResetRobotROS Request object
@@ -46,8 +47,8 @@ private:
 	 * The socket information is defined under the variables below. Port = 9090
 	 */
 	void update();
-	
-	
+
+
 private:
 
 	/*
@@ -56,7 +57,7 @@ private:
 	 */
 	ros::ServiceClient callTaskMang_inform;
 
-	
+
 	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient pointToObj;
 	/// ROS services opened by MORSE to control human actions
@@ -70,7 +71,7 @@ private:
 	 * Advertised service. See the method: bool resetScenario
 	 */
 	ros::ServiceServer reset_scenario;
-	
+
 	/// Ros time instance to get the ROS up time. This is used as an information of when the robot acted, how long it took etc.
 	ros::Time action_taken_time;
 

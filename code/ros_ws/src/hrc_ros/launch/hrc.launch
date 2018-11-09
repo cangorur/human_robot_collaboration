@@ -10,7 +10,13 @@
 <!-- <param name="conveyor_init" type="bool" value="True" /> -->
 
 <!-- Package Manipulator -->
-<node pkg="hrc_ros" type="PackageManipulator.py" name="package_manipulator" />
+<node pkg="hrc_ros" type="PackageManipulator.py" name="package_manipulator"/>
+
+
+<node pkg="hrc_ros" type="human_mc_sampler.py" name="human_mc_sampler" output="screen" cwd="node"/>
+<node pkg="hrc_ros" type="policy_evaluator.py" name="policy_evaluator" output="screen" cwd="node"/>
+<node pkg="hrc_ros" type="CMAB.py" name="cmab" output="screen" cwd="node"/>
+<node pkg="hrc_ros" type="policy_selector_bpr.py" name="policy_selector_bpr" output="screen" cwd="node"/>
 
 <node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/>
 

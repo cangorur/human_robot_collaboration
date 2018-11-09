@@ -138,7 +138,7 @@ Evaluator::~Evaluator() {
 //==========================================================
 void Evaluator::webSocketClient(int action, std::string state) {
 	typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
-	
+
 	// state = " " means the msg is sent for informing only the action
 
 	std::size_t index = state.find(":") + 1;
@@ -166,7 +166,7 @@ void Evaluator::webSocketClient(int action, std::string state) {
 	*/
 	// send action to human actuator
   WsClient client("localhost:9090");
-  
+
   client.on_open=[&]() {
       string message = std::to_string(action) + "," + state_str;
 
@@ -176,7 +176,7 @@ void Evaluator::webSocketClient(int action, std::string state) {
       auto send_stream=make_shared<WsClient::SendStream>();
       *send_stream << message;
       client.send(send_stream);
-  }; 
+  };
 
   client.on_message=[&client](shared_ptr<WsClient::Message> message) {
       //cout << "Client: Sending close connection" << endl;
@@ -208,7 +208,7 @@ bool Evaluator::RunStep(int step, int round) {
 				<< endl;
 		exit(1);
 	}
-	
+
 	//== Setting the next state manually ==//
 	*out_ << "Please enter the next state: "; //[integer from 0 to 6, press any non-int key for autogen]: ";
 	int new_state;
@@ -225,14 +225,14 @@ bool Evaluator::RunStep(int step, int round) {
 		*out_ << "Assignment failed, random state generation..." << endl;
 	}
 	//== ==//
-	
+
 	OBS_TYPE obs;
 	double start_t;
 	double end_t;
 	double step_start_t;
 	double step_end_t;
 	double reward;
-	
+
 	*out_ << "- The real state received: " << new_state << endl;
 	*out_ << "=== RESULTS ===" << endl;
 
@@ -246,16 +246,16 @@ bool Evaluator::RunStep(int step, int round) {
 	// terminal = false; // TODO: we disabled the termination of the states for continuous testing
 	// TODO: Since the terminal states are hard to define in a rewarding system automatically, here we manually check
 	// Terminal states are: GlobalSuccess and GlobalFail
-	terminal = (new_state == 1 || new_state == 2) ? true : false;
+	// terminal = (new_state == 1 || new_state == 2) ? true : false;
 	//== Action was executed ==//
 	ReportStepReward();
-	
+
 	end_t = get_time_second();
 	logi << "[RunStep] Time spent in ExecuteAction(): " << (end_t - start_t)
 			<< endl;
-	
+
 	Evaluator::webSocketClient(-1, state_->text()); // informing about the new state
-	
+
 	if (terminal) {
 		step_end_t = get_time_second();
 		logi << "[RunStep] Time for step: actual / allocated = "
@@ -266,23 +266,23 @@ bool Evaluator::RunStep(int step, int round) {
 		step_++;
 		return true;
 	}
-	
+
 	// ########## SIMULATOR ENDS ########### //
-	
+
 	// ########## AGENT BELIEF UPDATE STARTS########## //
-	
+
 	*out_ << "-----------------------------------Round " << round
 				<< " Step " << step << "-----------------------------------"
 				<< endl;
 	string text_of_newState = state_->text(); // this is the actual state the human is in
-	
+
 	start_t = get_time_second();
 	solver_->Update(text_of_newState, previous_action, obs);
 	end_t = get_time_second();
 	logi << "[RunStep] Time spent in Update(): " << (end_t - start_t) << endl;
 
 	// ########## AGENT BELIEF UPDATE ENDS########## //
-	
+
 	// ########## AGENT'S ACTION SELECTION STARTS ########## //
 	step_start_t = get_time_second();
 	start_t = get_time_second();
@@ -300,7 +300,7 @@ bool Evaluator::RunStep(int step, int round) {
 	// ########## AGENT'S ACTION SELECTION ENDS ########## //
 	// ########## SENDING THE RESULTS TO THE SOCKET ########### //
 
-	vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();	
+	vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();
 
 	int index_first = 0;
 	for (int i = 0; i < belief_distr.size(); i++) {

@@ -2,7 +2,7 @@
 
 from hrc_ros.srv import *
 import rospy
-import pymorse 
+import pymorse
 
 def handleMovePackage(req):
     success = True

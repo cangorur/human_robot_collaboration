@@ -141,6 +141,8 @@ class PR2(GraspingRobot):
 
         self.cancel = False
         self.is_ho = False
+        self.is_gr = False
+        self.is_pl = False
 
     @service
     def obj_reset(self):
@@ -316,6 +318,7 @@ class PR2(GraspingRobot):
                 # When turned the robot cannot see the human warning
                 if self.cancel:
                     self.reset()
+                    self.obj_reset()
                     self.reset()
                     self.reset()
                     return True
@@ -356,6 +359,9 @@ class PR2(GraspingRobot):
             self.is_ho = False
             self.is_gr = False # since it is threaded this variable is not important much. But is_ho still valid as it comes from pr2.py
             self.is_pl = False  # after the grasping process there needs to be replanning for the upcoming grasp
+            self.reset()
+            self.reset()
+            self.reset()
             return True
         else:
             self.reset()

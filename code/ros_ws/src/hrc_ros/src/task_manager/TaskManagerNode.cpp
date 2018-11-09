@@ -10,13 +10,13 @@
 #include <task_manager/TaskManager.h>
 
 int main(int argc, char **argv) {
-	
+
 	ros::init(argc, argv, "task_manager");
 	ros::NodeHandle nh;
-	
+
 	TaskManager task_manager;
-	
+
   	ROS_INFO("Task Manager is ready!");
-	
+
   	ros::spin();
 }

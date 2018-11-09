@@ -47,6 +47,9 @@ class RobotControlAndMonitor(MorseOverlay):
     @ros_service(type=Trigger, name='reset')
     def reset(self):
         self.overlaid_object.reset()
+        time.sleep(0.5)
+        self.overlaid_object.reset()
+        self.overlaid_object.reset()
         self.is_obj = False
         self.is_gr = False
         self.is_po = False

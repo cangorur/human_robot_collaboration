@@ -514,6 +514,8 @@ class Human(GraspingRobot):
 
         time.sleep(1)
         self.is_wr = True
+        self.is_ag = False
+        self.is_gr = False
 
     @service
     def warn_robot_back(self):

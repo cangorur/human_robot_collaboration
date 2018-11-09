@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(hrc_ros)
 
-find_package(catkin REQUIRED COMPONENTS 
+find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   nav_msgs
   roscpp
@@ -67,6 +67,9 @@ add_service_files(
    ResetRobotROS.srv
    MoveNewPackage.srv
    SetConveyorSpeed.srv
+   DrawNewStateMC.srv
+   SelectPolicy.srv
+   PolicySelectorBPR.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -79,9 +82,9 @@ add_service_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  geometry_msgs 
-  nav_msgs 
-  sensor_msgs 
+  geometry_msgs
+  nav_msgs
+  sensor_msgs
   std_msgs
 )
 
@@ -95,28 +98,28 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(task_manager 
+add_executable(task_manager
 	src/task_manager/TaskManager.cpp
 	src/task_manager/TaskManagerNode.cpp)
 add_dependencies(task_manager ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(task_manager ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(human_agent 
+add_executable(human_agent
   src/human_agent/HumanAgent.cpp
   src/human_agent/HumanAgentNode.cpp)
 add_dependencies(human_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(human_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(robot_agent 
+add_executable(robot_agent
   src/robot_agent/RobotAgent.cpp
   src/robot_agent/RobotAgentNode.cpp)
 add_dependencies(robot_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(robot_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(observation_agent 
+add_executable(observation_agent
   src/observation_agent/ObservationAgent.cpp
   src/observation_agent/ObservationAgentNode.cpp)
 add_dependencies(observation_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})

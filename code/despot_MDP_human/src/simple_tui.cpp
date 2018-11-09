@@ -245,7 +245,6 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
 
       bool terminal = simulator->RunStep(i, round);
 
-
       // TODO: COMMENT OUT FOR CONTINUOUS RUN, OR ELSE IT WILL TERMINATE WHEN NO SOLUTION
       if (terminal)
         break;

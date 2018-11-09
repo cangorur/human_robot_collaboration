@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester
+CMAKE_SOURCE_DIR = /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build
+CMAKE_BINARY_DIR = /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/despot.dir
@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/cod
 CMakeFiles/despot.dir/all:
 	$(MAKE) -f CMakeFiles/despot.dir/build.make CMakeFiles/despot.dir/depend
 	$(MAKE) -f CMakeFiles/despot.dir/build.make CMakeFiles/despot.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34 "Built target despot"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34 "Built target despot"
 .PHONY : CMakeFiles/despot.dir/all
 
 # Include target in all.
@@ -76,9 +76,9 @@ all: CMakeFiles/despot.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/despot.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles 34
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles 34
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/despot.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles 0
 .PHONY : CMakeFiles/despot.dir/rule
 
 # Convenience name for target.
@@ -121,7 +121,7 @@ examples/pomdpx_models/preinstall:
 examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/all: CMakeFiles/despot.dir/all
 	$(MAKE) -f examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/build.make examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/depend
 	$(MAKE) -f examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/build.make examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles --progress-num=35,36 "Built target despot_pomdpx"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles --progress-num=35,36 "Built target despot_pomdpx"
 .PHONY : examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/all
 
 # Include target in all.
@@ -131,9 +131,9 @@ all: examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/all
 
 # Build rule for subdir invocation for target.
 examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles 36
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles 36
 	$(MAKE) -f CMakeFiles/Makefile2 examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/build/CMakeFiles 0
 .PHONY : examples/pomdpx_models/CMakeFiles/despot_pomdpx.dir/rule
 
 # Convenience name for target.

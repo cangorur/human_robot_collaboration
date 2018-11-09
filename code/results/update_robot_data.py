@@ -53,10 +53,8 @@ def get_important_information(dir):
             col_human_taskID = col_index
         elif human_updates[0][col_index] == "step_count":
             col_humanStep = col_index
-        elif human_updates[0][col_index] == "human_mood":
-            col_humanMood = col_index
-        elif human_updates[0][col_index] == "human_trust":
-            col_humanTrust = col_index
+        elif human_updates[0][col_index] == "human_model":
+            col_humanModel = col_index
         elif human_updates[0][col_index] == "belief_state":
             col_humanBelief = col_index
 
@@ -69,6 +67,8 @@ def get_important_information(dir):
             col_act_secs = col_index
         elif robot_updates[0][col_index] == "acted_nsecs":
             col_act_nsecs = col_index
+        elif robot_updates[0][col_index] == "robot_model":
+            col_robot_model = col_index
         elif robot_updates[0][col_index] == "taken_action":
             col_action = col_index
         elif robot_updates[0][col_index] == "belief_state":
@@ -85,8 +85,8 @@ def get_important_information(dir):
     with open(dir + '/robot_important_info.csv', 'a') as new_file:
         wr = csv.writer(new_file, dialect='excel')
         first_row = ["task_id", "task_init_secs", "task_init_nsecs", "acted_secs", "acted_nsecs", "taken_action",
-                     "belief_state", "real_state", "human_state", "human_mood", "human_trust", "isEstimationCorrect", "immediate_reward",
-                     "total_disc_reward", "warning_received"]
+                     "belief_state", "real_state", "human_state", "human_model", "isEstimationCorrect", "robot_model",
+                     "immediate_reward", "total_disc_reward", "warning_received"]
         wr.writerow(first_row)
         new_row = [None] * 15  # initiate a row
         task_id = robot_updates[1][col_taskID]
@@ -112,7 +112,8 @@ def get_important_information(dir):
             new_row[5] = robot_updates[row_index][col_action]
             new_row[6] = robot_updates[row_index][col_belief_st]
             new_row[7] = robot_updates[row_index][col_real_st]
-            new_row[11] = robot_updates[row_index][col_est]
+            new_row[10] = robot_updates[row_index][col_est]
+            new_row[11] = robot_updates[row_index][col_robot_model]
             new_row[12] = robot_updates[row_index][col_reward]
             new_row[13] = robot_updates[row_index][col_tot_reward]
             reward_str = robot_updates[row_index][col_reward]
@@ -122,20 +123,18 @@ def get_important_information(dir):
                 new_row[14] = "1"
             else:
                 new_row[14] = "0"
-            step_count = int(human_updates[row_index][col_step])
+            step_count = int(robot_updates[row_index][col_step])
             for row_human in range(len(human_updates)):
                 if row_human == 0:  # skip the first row which has titles only
                     continue
                 if int(human_updates[row_human][col_human_taskID]) == task_id and \
                                 int(human_updates[row_human][col_humanStep]) == step_count:
                     new_row[8] = human_updates[row_human][col_humanBelief]
-                    new_row[9] = human_updates[row_human][col_humanMood]
-                    new_row[10] = human_updates[row_human][col_humanTrust]
+                    new_row[9] = human_updates[row_human][col_humanModel]
                     break
                 else:
                     new_row[8] = ""
                     new_row[9] = ""
-                    new_row[10] = ""
 
             wr.writerow(new_row)  # finished a row for a task
             new_row = [None] * 15  # initiate a row
@@ -144,7 +143,7 @@ def get_important_information(dir):
     human_file.close()
     status_file.close()
     robot_file.close()
-    print 'INFO: robot information has been weeded out of unnessary information'
+    print 'INFO: robot information has been rid out of unnecessary information'
 
 def get_results(dir):
     with open(dir + '/robot_important_info.csv', 'rb') as robot_file:
@@ -160,6 +159,8 @@ def get_results(dir):
                 col_real_st = col_index
             elif robot_updates[0][col_index] == "isEstimationCorrect":
                 col_est = col_index
+            elif robot_updates[0][col_index] == "robot_model":
+                col_model = col_index
             elif robot_updates[0][col_index] == "total_disc_reward":
                 col_tot_reward = col_index
             elif robot_updates[0][col_index] == "warning_received":
@@ -167,13 +168,17 @@ def get_results(dir):
 
         with open(dir + '/robot_final_results.csv', 'a') as new_file:
             wr = csv.writer(new_file, dialect='excel')
-            first_row = ["task_id", "total_disc_reward", "overall_est_accur", "warnings_received"]
+            first_row = ["task_id", "total_disc_reward", "cumulative_reward", "moving_avg_reward",
+                        "overall_est_accur", "warnings_received", "cumulative_warnings", "moving_avg_warnings",
+                        "robot_model_ID"]
             wr.writerow(first_row)
-            new_row = [None] * 4  # initiate a row
+            new_row = [None] * 9  # initiate a row
             task_id = int(robot_updates[1][col_taskID])
             tot_warnings = 0
             est_true_ct = 0
             tot_step = 0
+            cumulated_reward = 0.0
+            cumulated_warnings = 0.0
             help_est_tot = 0 # TODO: currently the need for help estimation accuracy is calculated manually
             help_est_correct = 0
             for row_index in range(len(robot_updates)):
@@ -191,9 +196,28 @@ def get_results(dir):
                 if row_index+1 == len(robot_updates) or int(robot_updates[row_index+1][col_taskID]) == task_id + 1:
 
                     new_row[0] = robot_updates[row_index][col_taskID]
-                    new_row[1] = robot_updates[row_index][col_tot_reward]
-                    new_row[2] = (float(est_true_ct) / float(tot_step)) * 100.0
-                    new_row[3] = tot_warnings
+                    _reward = robot_updates[row_index][col_tot_reward]
+                    reward = _reward.strip('\"')
+                    new_row[1] = reward
+                    cumulated_reward = cumulated_reward + float(reward)
+                    new_row[2] = cumulated_reward # cumulative reward
+                    new_row[3] = cumulated_reward / task_id # moving avg
+
+                    new_row[4] = (float(est_true_ct) / float(tot_step)) * 100.0
+                    new_row[5] = tot_warnings
+                    cumulated_warnings = cumulated_warnings + tot_warnings
+                    new_row[6] = cumulated_warnings # cumulative warnings
+                    new_row[7] = float(cumulated_warnings / task_id) # moving avg
+                    _model = robot_updates[row_index][col_model]
+                    model = _model.strip('\"')
+                    model_id, bullshit = model.split(".")
+                    if model_id == "base":
+                        model_id = "0"
+                    elif model_id == "reactive":
+                        model_id = "13"
+                    else:
+                        bullshit, model_id = model_id.split("y") # now only remains integer ID out of e.g. "policy6.pomdpx"
+                    new_row[8] = model_id
 
                     task_id += 1
                     est_true_ct = 0
@@ -201,7 +225,7 @@ def get_results(dir):
                     tot_step = 0
 
                     wr.writerow(new_row)  # finished a row for a task
-                    new_row = [None] * 4  # initiate a row
+                    new_row = [None] * 9  # initiate a row
 
         new_file.close()
     robot_file.close()
@@ -212,6 +236,10 @@ if __name__ == '__main__':
     reader = csv.reader(work_book, delimiter=',')
     raw = list(reader)
 
+    if sys.argv[2] == "save_all":
+        save_robot_data(sys.argv[1], raw)
+        get_important_information(sys.argv[1])
+        get_results(sys.argv[1])
     if sys.argv[2] == "save_robot":
         save_robot_data(sys.argv[1], raw)
     if sys.argv[2] == "robot_info":

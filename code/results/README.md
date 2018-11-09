@@ -7,9 +7,9 @@ The auto created files named with the format: ´tests_<date-and-time>.bag´. The
 In the ´task_status´ topic there are 5 agents reporting separately: *MANAGER, HUMAN, ROBOT, OBSERVATION, SENSORS*
 Run first below to safely convert .bag file to .csv
 
-´´´sh
+```sh
 python bag_to_csv.py <name_of_the_bag_file.bag>
-´´´
+```
 
 This creates a folder with the same name of the .bag file. Now we should separate ROBOT, HUMAN, OBSERVATION and SENSOR information
 
@@ -20,11 +20,11 @@ First of all we should separate task status information under a new .csv. This i
 - save_human_obs: Compiles a new file with human observables [Detected?, Looking around?, Graspped successfully?, Failed to grasp?, Warning?, Staying idle?]
 - task_status: Extracts the task state information gathered from the sensors, Success or Fail. Adds the time a task took
 
-´´´sh
+```sh
 python update_sensor_data.py <name_of_the_folder_created> save_sensors
 python update_sensor_data.py <name_of_the_folder_created> save_human_obs
 python update_sensor_data.py <name_of_the_folder_created> task_status
-´´´
+```
 
 ### Saving Human Results
 Second of all we should separate human information under a new .csv. This information is provided by *HUMAN* agent.
@@ -33,12 +33,11 @@ Second of all we should separate human information under a new .csv. This inform
 - append_human: Appends the human states observed for distribution analysis
 - state_distribution: Adds up the states human was in and creates total distribution for each task
 
-´´´sh
+```sh
 python update_human_data.py <name_of_the_folder_created> save_human
 python update_human_data.py <name_of_the_folder_created> append_human
 python update_human_data.py <name_of_the_folder_created> state_distribution
-
-´´´
+```
 
 ### Saving Results for Robot
 Finally we get the robot results. Those info provided by *ROBOT* agent.
@@ -47,7 +46,8 @@ Finally we get the robot results. Those info provided by *ROBOT* agent.
 - robot_info: Gets only the important robot information from the raw data
 - robot_results: Calculates total disc rewards for each task and estimation accuracy (*this is not providing correct values currently*)
 
-´´´sh
+```sh
 python update_robot_data.py <name_of_the_folder_created> save_robot
 python update_robot_data.py <name_of_the_folder_created> robot_info
 python update_robot_data.py <name_of_the_folder_created> robot_results
+```

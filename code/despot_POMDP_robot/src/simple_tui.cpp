@@ -242,13 +242,13 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
 
     simulator->solver(solver);
   }
-  
+
   simulator->InitRound(); // TODO: initializing. This will be changed to get also the initial state from outside (TASK ASSGINMENT
   simulator->RunInitial(); // make the initial run, robot finding an action for the initial state
-  
+
   //==========================================================
   cout << ">>> waiting for the next message from websocket ..." << endl;
-  
+
   int step = 0;
 
   echo.on_open=[](shared_ptr<WsServer::Connection> connection) {
@@ -261,7 +261,7 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
       cout << ">>> Robot POMDP Server: Message received: \"" << message_str << "\"" << endl;
 
       int new_state = 0;
-      
+
       std::size_t index = message_str.find(",");
       string manual_obs_str = message_str.substr(0, index);
       string real_state_str = message_str.substr(index+1);
@@ -272,7 +272,7 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
       	stringstream obsString(manual_obs_str);
       	obsString >> manual_obs;
       }
-      
+
       int real_state = -1;
       if (real_state_str != "-1"){ // means the information provided is the real new state
       	stringstream stateString(real_state_str);
@@ -280,7 +280,7 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
       }
 
       double step_start_t = get_time_second();
-      
+
       bool terminal = simulator->RunStep(step, round, real_state, manual_obs);
       cout << endl << ">>> waiting for the next message from websocket ..." << endl;
 

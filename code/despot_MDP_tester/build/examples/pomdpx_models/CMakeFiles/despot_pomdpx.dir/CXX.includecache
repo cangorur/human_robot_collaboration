@@ -418,7 +418,7 @@ locale
 sys/time.h
 -
 
-/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/despot_MDP_tester/examples/pomdpx_models/src/main.cpp
+/home/cangorur/Workspace/app-ras/hrc_industry/code/despot_MDP_tester/examples/pomdpx_models/src/main.cpp
 despot/simple_tui.h
 -
 despot/pomdpx/pomdpx.h

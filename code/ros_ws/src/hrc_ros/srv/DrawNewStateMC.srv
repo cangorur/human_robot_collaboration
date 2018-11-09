@@ -1,0 +1,7 @@
+#string human_action
+#string current_human_state
+int32 current_human_state
+int32 human_action
+---
+#string new_state
+int32 new_state
