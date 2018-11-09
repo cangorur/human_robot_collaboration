@@ -113,7 +113,7 @@ L shaped conveyor belts:
 ```
 
 ### Running Simulation Without MORSE (EXPERIMENTAL)
-For model testing or faster data recording, we created an option to not to run MORSE to simulate. The human agent (action executor) is also created as a ROS node so that when run the ROS agents send action commands to this node (actions are simulated as sleep functions) and it replies with the observations back to the ROS agents. The simulaion this way is executed without running MORSE environment.
+For model testing or faster data recording, we created an option to not to run MORSE to simulate. The human agent (action executor) is also created as a ROS node so that when run the ROS agents send action commands to this node (actions are simulated as sleep functions) and it replies with the observations back to the ROS agents. The simulation this way is executed without running MORSE environment.
 To run:
 ```
 source ros_ws/devel/setup.bash
@@ -152,9 +152,9 @@ Most important features to update are, `human`, `robot`, `operation_modes` and `
 - For the student version of the code, `useCMAB` and `useBPR` modes are not implemented to promote students to develop their own policy generation (RL) / policy selection approaches. These may be replaced by the students' own solutions. Please note that `useCMAB` in the original version is not stable; however, `useBPR` works fine. But it is not a RL algorithm.
 - *The procedure for Training Model creation*: After the evaluation mode has terminated (all combinations are tested), please ctrl+c (terminate) the ros window and you should see a `.bag` file created under the `Results` folder. This bag file holds the recorded task status topic: `/task_manager/task_status`. Examine the `README` file under the results folder for further possible analysis.
   - First step should be to convert bag to a csv file. run
-  ```
-  python bag_to_csv.py <your_bag_file_here>
-  ```
+```
+python bag_to_csv.py <your_bag_file_here>
+```
   - `raw_data.csv` excel sheet holds all the information.
   - In the original version, we have training set creations for BPR implementation. However, for the student version the students should come up with their own training strategies according to their RL / human type estimation implementations (e.g. any classification algorithm, RL algos etc).
   - `raw_data.csv` has the informed status of each of the agents. `human` agent outputs his current action, state etc, `observation` agent informs about the human and task state observables to be used under robot models, `robot` agent informs about the momentary action selected, belief state and the immediate and accumulated discounted rewards gathered.
@@ -179,7 +179,6 @@ rosservice call /human/reset # replace reset with look_around OR warn_robot OR g
 
 rosservice call /robot/reset # replace reset with grasp OR point_to_obj OR cancel_action (cancel whatever it is doing) OR planning_for_motion (this is implemented as a timer blocking robot doing anything else to simulate planning for kinematics for any action)
 ```
-
 
 ## MDP, POMDP Models
 
