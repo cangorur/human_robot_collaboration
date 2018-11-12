@@ -990,6 +990,8 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 				robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
 			else if (prev_robot_state == "TaskRobot")
 				robot_state = "TaskRobot"; // whoever is assigned for the first state
+			else
+				robot_state = "HumanNeedsHelp";
 		} else if ((observation == "2" || observation == "3")) {
 			robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
 		} else if (observation == "6" || observation == "7") { // human attempted to grasp

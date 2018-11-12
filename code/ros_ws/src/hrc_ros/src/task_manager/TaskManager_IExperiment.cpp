@@ -58,7 +58,7 @@ void TaskManager::initialize(){
     // Initialize Contextual MAB service and if you want to use it
     cmab_call = nh.serviceClient<hrc_ros::SelectPolicy>("/cmab/select_policy");
     // Client for Bayesian Policy Selector service
-    bpr_call = nh.serviceClient<hrc_ros::BPRPolicySelector>("/bpr_policy_selector/select_policy");
+    bpr_call = nh.serviceClient<hrc_ros::PolicySelectorBPR>("/policy_selector_bpr/select_policy");
 
 
     ros::param::set("/task_count", task_number);
@@ -129,6 +129,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     bool useCMAB = config_pt.get<bool>("operation_modes.useCMAB");
     bool useBPR = config_pt.get<bool>("operation_modes.useBPR");
     bool useEvaluator = config_pt.get<bool>("operation_modes.useEvaluator.active");
+    bool useRandom = config_pt.get<bool>("operation_modes.useRandom");
     int interactionSampleNumber = config_pt.get<int>("operation_modes.useEvaluator.interactionNumber"); // # of interactions for each human-robot model
     bool useTransitionFunction = config_pt.get<bool>("operation_modes.useTransitionFunction");
     std::vector<string> robot_policies;
@@ -296,6 +297,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                 robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
                 robot_AItype = "reactive";
             }
+            robot_AItype = "proactive";
             // robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
         }
     }
@@ -305,18 +307,37 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         hrc_ros::SelectPolicy::Response res_cmab;
         cmab_call.call(req_cmab,res_cmab);
         robot_model=res_cmab.robot_model;
+        if (robot_model == "reactive.pomdpx"){
+          robot_AItype = "reactive";
+          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+        }
         robot_shell = robot_shell + robot_model + "\"'";
     }else if(useBPR){ // If the use of BPR is enabled for the policy selection, we overwrite the manually selected robot policy
-        hrc_ros::BPRPolicySelector::Request req_bpr;
-        hrc_ros::BPRPolicySelector::Response res_bpr;
+        hrc_ros::PolicySelectorBPR::Request req_bpr;
+        hrc_ros::PolicySelectorBPR::Response res_bpr;
         bpr_call.call(req_bpr, res_bpr);
         robot_belief = res_bpr.belief;
         robot_model = robot_policies[res_bpr.policy_id];
         if (robot_model == "reactive.pomdpx"){
+          robot_AItype = "reactive";
           robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
-    }else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
+    }else if(useRandom){
+        int r = (rand() % 14); // from 0 to 13
+        robot_AItype = "proactive";
+        if (r == 0){
+          robot_model = "base.pomdpx";
+        }else if (r == 13){
+          robot_model = "reactive.pomdpx";
+          robot_AItype = "reactive";
+          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+        }else{
+          robot_model = "policy" + to_string(r) + ".pomdpx";
+        }
+        robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
+    }
+    else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
         robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
         if (robot_AItype == "proactive"){
             robot_shell = robot_shell + robot_model + "\"'";
@@ -373,6 +394,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     ROS_INFO("[TASK MANAGER] ======= ROBOT INFORMATION ======");
     ROS_INFO("[TASK_MANAGER]: CMAB Policy selector use is on?: %d", useCMAB);
     ROS_INFO("[TASK_MANAGER]: BPR Policy selector use is on?: %d", useBPR);
+    ROS_INFO("[TASK_MANAGER]: Random selection use is on?: %d", useRandom);
     ROS_INFO("[TASK_MANAGER]: ROBOT MODEL is: %s", robot_model.c_str());
 
     // ======= Informing about the init ===========
