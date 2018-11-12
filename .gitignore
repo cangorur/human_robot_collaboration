@@ -9,3 +9,5 @@ code/ros_ws/install
 code/ros_ws/doc/html/*
 code/hrc_morse/src/__pycache__
 code/hrc_morse/src/.idea
+./vscode/
+.*

@@ -17,7 +17,7 @@
 #define GetCurrentDir getcwd
 #include <iostream>
 
-#include <task_manager/TaskManager.h>
+#include <task_manager/TaskManager_IExperiment.h>
 
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"

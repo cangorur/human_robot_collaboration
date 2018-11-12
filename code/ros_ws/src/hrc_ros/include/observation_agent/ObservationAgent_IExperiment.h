@@ -17,6 +17,8 @@
 #include <hrc_ros/InformHumanState.h>
 #include <hrc_ros/InformObsToTaskMang.h>
 #include <hrc_ros/ResetObsROS.h>
+#include <hrc_ros/TrayUpdateCamera.h>
+#include <hrc_ros/InformTrayUpdate.h>
 
 #include "simple_web_socket/client_ws.hpp"
 
@@ -69,6 +71,19 @@ private:
 	 * (e.g. input from a camera) and should be processed here to recognize.
 	 */
 	bool action_to_obs_Map(hrc_ros::InformHumanAction::Request &req, hrc_ros::InformHumanAction::Response &res);
+
+    /** ################  functions for recognition update in Interaction Experiment 
+	 * 
+	 * 
+	 */
+	//void IEaction_recognized_update_to_obs_map(hrc_ros::TrayUpdateCamera &msg);
+
+
+	//void IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg);
+	bool IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res);
+
+
+
 
 	/**
 	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
@@ -155,8 +170,10 @@ private:
 	// ros::ServiceServer server = node_handle.advertiseService(service_name, pointer_to_callback_function);
     /// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer action_server;
-	 /// Advertised service. See their methods for the functionality of the services
-	ros::ServiceServer IEaction_recognition_server ;
+	/// Advertised service. See their methods for the functionality of the services
+	//ros::ServiceServer IEaction_recognition_server ;
+	/// Advertised service. See their methods for the functionality of the services
+	ros::ServiceServer IEtray_update_server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer new_state__server;
 	/// Advertised service. See their methods for the functionality of the services
@@ -228,13 +245,13 @@ private:
 
 	// global variables to store the last recognized human action and other observables 
 	// name in code  | observable number according to https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit#gid=1272592695
-	ov	= false;				// O_4  Human is not looking around  
-	oir	= false;				// O_3  Human is detected 
-	a0	= false;				// O_5  grasping attempt
-	ipd	= false;				// O_1  task successs (processed product detected)
-	a4	= false;				// O_6  warning received
-	a2	= false; 				// O_7  Idle
-	upd	= false; 				// O_2	failure
+	bool ov		= false;				// O_4  Human is not looking around  
+	bool oir	= false;				// O_3  Human is detected 
+	bool a0		= false;				// O_5  grasping attempt
+	bool ipd	= false;				// O_1  task successs (processed product detected)
+	bool a4		= false;				// O_6  warning received
+	bool a2		= false; 				// O_7  Idle
+	bool upd	= false; 				// O_2	failure
 	
 };
 

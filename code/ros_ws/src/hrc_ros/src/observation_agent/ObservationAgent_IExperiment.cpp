@@ -10,7 +10,7 @@
 #include <string>
 #include <thread>
 
-#include <observation_agent/ObservationAgent.h>
+#include <observation_agent/ObservationAgent_IExperiment.h>
 
 using namespace std;
 
@@ -44,7 +44,7 @@ void ObservationAgent::initialize(){
 	 * ROS Services initialization
 	 */
 	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
-	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_human_action_recognized", &ObservationAgent::IEaction_recognized_update_to_obs_map, this);
+	//IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_human_action_recognized", &ObservationAgent::IEaction_recognized_update_to_obs_map, this);
 	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IEtray_update_to_obs_map, this);
 	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
@@ -52,12 +52,12 @@ void ObservationAgent::initialize(){
 	/*
 	 * A ROS topic for a subscription to tray proximity sensors (detecting packages in the trays)
 	 */
-	traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &ObservationAgent::ReceiveTraySensors, this);
+	//traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &ObservationAgent::ReceiveTraySensors, this);
 
 	/*
 	 * A ROS topic for a subscription to the 9D tray_detection, that indicates which object is placed in which container
-	 */
-	trayDetection_subs = nh.subscribe("/camera_agent/tray_detection9D", 1000, &ObservationAgent::ReceiveTrayDetection9D, this);
+	 */  // TODO remove if not needed 
+	//trayDetection_subs = nh.subscribe("/camera_agent/tray_detection9D", 1000, &ObservationAgent::ReceiveTrayDetection9D, this);
 
 	/// A ROS timer for the duration of a task assigned to the human
 	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
@@ -278,7 +278,7 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 // TODO: change here, that only the communication to the despot is triggered
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
 // HUMAN ACTION IS RECEIVED in Experiment setup !!!
-bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
+/*bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
 		hrc_ros::InformHumanAction::Response &res) {
 
 	//WebSocket (WS)-client at port 7070 using 1 thread
@@ -305,7 +305,7 @@ bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &
 		is_ho.call(req3, resp3);
 		bool ho = resp3.success;	// have object
 		*/
-		std_srvs::Trigger::Request req5;
+/*		std_srvs::Trigger::Request req5;
 		std_srvs::Trigger::Response resp5;
 		is_a0.call(req5, resp5);
 		bool a0 = resp5.success;	// action is attemp grasp
@@ -420,7 +420,8 @@ bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &
 	client.start();
 
 	return true;
-}
+}   
+*/
 
 bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
 		hrc_ros::InformHumanState::Response &res) {
@@ -457,14 +458,17 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 // ********************************** //
 
 
+
 // *** Service handler that receives a tray update message and calculates the observables success and failure 
-void ObservationAgent::IEtray_update_to_obs_map(hrc_ros:: TrayUpdateCamera &msg){
-	tray_msg_stamp = msg.stamp;
+//void ObservationAgent::IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg){
+bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res){
+	
+	//tray_msg_stamp = msg.stamp;
 
 	// get the rule for the single task at hand by browsing the current task rule sets // TODO test this and implement task_rules updater 
-	current_task_rule = task_rules[msg.current_object] // TODO task_rules should be a global variable filled once 
+	//current_task_rule = task_rules[msg.current_object] // TODO task_rules should be a global variable filled once 
 
-	if (msg.tray_obj_combination == current_task_rule) { 		// success in single task => ipd_sensor = true 
+	/*if (msg.tray_obj_combination == current_task_rule) { 		// success in single task => ipd_sensor = true 
 		//ipd_sensor = true; 
 		//upd_sensor = false;
 		ipd_O1	= true;				// O_1  task successs (processed product detected)
@@ -475,16 +479,17 @@ void ObservationAgent::IEtray_update_to_obs_map(hrc_ros:: TrayUpdateCamera &msg)
 		//upd_sensor = true; 
 		ipd_O1	= false;				
 		upd_O2	= true; 				
-	
+	*/
+
+	ROS_INFO("OBSERVATION ROS: **++**++**++**++  TrayUpdate_Camera  RECEIVED  **++**++**++**++");
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
-	bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
-		hrc_ros::InformHumanAction::Response &res) {
+	//bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,hrc_ros::InformHumanAction::Response &res) {
 }
 
 
 // *** Service handler that receives a human action update message (once it has been recognized)  and calculates the observables success and failure 
-void ObservationAgent::IEaction_recognized_update_to_obs_map(hrc_ros::TraySensor_IE_9D &msg){
+/*void ObservationAgent::IEaction_recognized_update_to_obs_map(){ // hrc_ros::TraySensor_IE_9D &msg
 	tray_msg_stamp = msg.stamp;
 
 	//ov_O4	= false;				// O_4  Human is not looking around   => TODO supply, once head gesture recognition is ready 
@@ -498,20 +503,19 @@ void ObservationAgent::IEaction_recognized_update_to_obs_map(hrc_ros::TraySensor
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
-	bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
-		hrc_ros::InformHumanAction::Response &res) {
+	//bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,hrc_ros::InformHumanAction::Response &res) {
 }
-
+*/
 
 
 // TODO  delete
 
 // ********* CALLBACKS *********** //
-void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
+/*void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 	tray_msg_stamp = msg.stamp;
 
 	
-/*
+
 	if (msg.tray_id == "tray_unprocessed"){
 		if (msg.occupied)
 			upd_sensor = true;
@@ -535,8 +539,9 @@ void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 			ipd_sensor = false;
 			whoSucceeded = "";
 		}
-	}*/
+	}
 }
+*/
 // ********************************** //
 
 
@@ -548,7 +553,7 @@ void ObservationAgent::ReceiveTraySensors(const hrc_ros::TraySensor &msg){
 
 // upd = failure in task step
 // ipd = success in task step 
-void ObservationAgent::ReceiveTrayDetection9D(const hrc_ros::TraySensor &msg){
+/*void ObservationAgent::ReceiveTrayDetection9D(const hrc_ros::TraySensor &msg){
 	tray_msg_stamp = msg.stamp;
 
 	if (msg.tray_id == "tray_unprocessed"){
@@ -576,6 +581,7 @@ void ObservationAgent::ReceiveTrayDetection9D(const hrc_ros::TraySensor &msg){
 		}
 	}
 }
+*/
 // ********************************** //
 
 

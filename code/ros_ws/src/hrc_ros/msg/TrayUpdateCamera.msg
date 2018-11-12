@@ -1,7 +1,7 @@
 time stamp
 
 # latest tray and object combination 
-int tray_obj_combination
+uint32 tray_obj_combination
 
 # R_tray: 	1 = Red object in Red tray 
 # 		2 = Green object in Red tray 
@@ -15,7 +15,7 @@ int tray_obj_combination
 
 
 # latest object color
-int current_object 
+uint32 current_object 
 
 # 1 = Red 
 # 2 = Green 

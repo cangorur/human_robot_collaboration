@@ -51,6 +51,7 @@ add_message_files(
   HumanUpdateMsg.msg
   ObsUpdateMsg.msg
   RobotUpdateMsg.msg
+  TrayUpdateCamera.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -70,6 +71,7 @@ add_service_files(
    DrawNewStateMC.srv
    SelectPolicy.srv
    PolicySelectorBPR.srv
+   InformTrayUpdate.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -99,8 +101,10 @@ catkin_package(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(task_manager
-	src/task_manager/TaskManager.cpp
-	src/task_manager/TaskManagerNode.cpp)
+	#src/task_manager/TaskManager.cpp
+	#src/task_manager/TaskManagerNode.cpp
+        src/task_manager/TaskManager_IExperiment.cpp
+	src/task_manager/TaskManagerNode_IExperiment.cpp)
 add_dependencies(task_manager ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(task_manager ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
@@ -120,7 +124,9 @@ target_link_libraries(robot_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENS
 
 
 add_executable(observation_agent
-  src/observation_agent/ObservationAgent.cpp
-  src/observation_agent/ObservationAgentNode.cpp)
+  #src/observation_agent/ObservationAgent.cpp
+  #src/observation_agent/ObservationAgentNode.cpp
+  src/observation_agent/ObservationAgentNode_IExperiment.cpp
+  src/observation_agent/ObservationAgent_IExperiment.cpp)
 add_dependencies(observation_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(observation_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
