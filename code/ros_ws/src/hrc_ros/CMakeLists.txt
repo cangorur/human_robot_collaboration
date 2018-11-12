@@ -130,3 +130,9 @@ add_executable(observation_agent
   src/observation_agent/ObservationAgent_IExperiment.cpp)
 add_dependencies(observation_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(observation_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+
+add_executable(test_decision_trigger
+  src/test_agents_IE/test_decision_trigger.cpp)
+add_dependencies(test_decision_trigger ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(test_decision_trigger ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})

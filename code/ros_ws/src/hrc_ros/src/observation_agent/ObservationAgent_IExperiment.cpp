@@ -490,6 +490,14 @@ bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Reque
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
 	//bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,hrc_ros::InformHumanAction::Response &res) {
+   /* int r = rand() % 3;
+	if(r== 1){
+		return true; 
+	} else {
+		return false; 
+	} */
+
+	return true; 
 }
 
 

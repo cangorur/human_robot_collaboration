@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include <hrc_ros/TrayUpdateCamera.h>
 #include <cstdlib>
+#include <hrc_ros/InformTrayUpdate.h>
 
 int main(int argc, char **argv)
 {
@@ -8,11 +9,11 @@ int main(int argc, char **argv)
   ROS_INFO(" currently only triggers decision once ");
   ros::NodeHandle nh; 
  
-  ros::ServiceClient client = n.serviceClient<hrc_ros::InformTrayUpdate>("/observation_agent/inform_tray_update");
+  ros::ServiceClient client = nh.serviceClient<hrc_ros::InformTrayUpdate>("/observation_agent/inform_tray_update");
 
   // compiling the message for the service
   hrc_ros::InformTrayUpdate srv; 
-  srv.request.message = " "; 
+  srv.request.tray_obj_combination =  12; 
 
   if (client.call(srv))
   {
