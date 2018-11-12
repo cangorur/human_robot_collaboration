@@ -463,6 +463,10 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 //void ObservationAgent::IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg){
 bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res){
 	
+	ROS_INFO("OBSERVATION ROS: ## TrayUpdate_Camera  RECEIVED ##");
+	ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
+	ROS_INFO("********\n\n\n");
+
 	//tray_msg_stamp = msg.stamp;
 
 	// get the rule for the single task at hand by browsing the current task rule sets // TODO test this and implement task_rules updater 
@@ -481,7 +485,8 @@ bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Reque
 		upd_O2	= true; 				
 	*/
 
-	ROS_INFO("OBSERVATION ROS: **++**++**++**++  TrayUpdate_Camera  RECEIVED  **++**++**++**++");
+	
+	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
 	//bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,hrc_ros::InformHumanAction::Response &res) {
