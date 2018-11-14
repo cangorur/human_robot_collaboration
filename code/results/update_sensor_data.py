@@ -242,7 +242,7 @@ if __name__ == '__main__':
     if sys.argv[2] == "save_all":
         save_sensor_data(sys.argv[1], raw)
         human_observables(sys.argv[1], raw)
-        arrange_human_obs(sys.argv[1])
+        # arrange_human_obs(sys.argv[1])
         task_status(sys.argv[1])
     if sys.argv[2] == "save_sensors":
         save_sensor_data(sys.argv[1], raw)

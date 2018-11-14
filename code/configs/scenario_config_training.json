@@ -51,11 +51,12 @@
 		"useEvaluator":{
 			 "active": true,
 			 "interactionNumber": 50,
-			 "trainingSetName": "training_sets/exp3_7000t.mat"
+			 "trainingSetName": "training_sets/exp4_7000t.mat"
 			},
 		"useCMAB": false,
 		"useBPR": false,
-		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/ros_ws/src/hrc_ros/src/BPR_EI/training_sets/exp3_7000t.mat",
+		"useRandom": false,
+		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/exp4_7000t.mat",
 		"useTransitionFunction": false
 	},
 	"evaluation_models":{

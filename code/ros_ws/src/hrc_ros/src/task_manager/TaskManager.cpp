@@ -43,6 +43,7 @@ void TaskManager::initialize(){
      * Initializing ros services to reset human and the robot
      */
     humanReset = nh.serviceClient<std_srvs::Trigger>("/human/reset");
+    objReset = nh.serviceClient<std_srvs::Trigger>("/human/obj_reset");
     robotReset = nh.serviceClient<std_srvs::Trigger>("/robot/reset");
     conveyorPrinterOnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/printer_part/switch_on_off");
     conveyorAssembly1OnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/assembly_part1/switch_on_off");
@@ -221,6 +222,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // Allowing to manually update the task_number
     ros::param::get("/task_count", task_number);
     task_number += 1;
+    if (((task_number-1) % 300) == 0)// NOTE: this reset at every 300th task is for testing purposes
+        task_number = 1;
     ros::param::set("/task_count", task_number);
     // TODO Whether reset warnings_count is required?
     warning_number = 0;
@@ -640,6 +643,19 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
         conveyorPrinterOnOff.call(req, res); // SWITCH ON
         conveyorAssembly1OnOff.call(req, res); // SWITCH ON
         conveyorAssembly2OnOff.call(req, res);
+    } else if (task_time == 80){ // if the pkg fell down somewhere else, this directly terminates
+        std_srvs::Trigger::Request req;
+        std_srvs::Trigger::Response res;
+        std_srvs::Trigger::Request req1;
+        std_srvs::Trigger::Response res1;
+        objReset.call(req1, res1);
+        conveyorPrinterOnOff.call(req, res); // SWITCH ON
+        conveyorAssembly1OnOff.call(req, res); // SWITCH ON
+        conveyorAssembly2OnOff.call(req, res); // TODO: define a conveyor belt status flag (global)
+        ros::Duration(7).sleep(); // sleep until task reaches to a failure or a success
+        conveyorPrinterOnOff.call(req, res); // SWITCH ON
+        conveyorAssembly1OnOff.call(req, res); // SWITCH ON
+        conveyorAssembly2OnOff.call(req, res);
         task_time = 0;
     }
     // Check if the task is accomplished (all the agents should acknowledge the success or fail)
@@ -713,6 +729,7 @@ void TaskManager::CheckToStartNewTask(void){
         human_has_informed = false;
         robot_has_informed = false;
         task_stuck_flag = false;
+        task_time = 0;
 
         hrc_ros::InitiateScenario::Request req_init;
         hrc_ros::InitiateScenario::Response res_init;

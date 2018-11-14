@@ -123,6 +123,8 @@ private:
 	/// Below are the client objects for the ros services called
 	ros::ServiceClient robotReset;
 	/// Below are the client objects for the ros services called
+	ros::ServiceClient objReset;
+	/// Below are the client objects for the ros services called
 	ros::ServiceClient humanROSReset;
 	/// Below are the client objects for the ros services called
 	ros::ServiceClient obsROSReset;

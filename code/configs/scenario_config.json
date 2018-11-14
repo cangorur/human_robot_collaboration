@@ -13,8 +13,8 @@
 	"human": {
 		"type": {
 			"expertise": "beginner",
-			"mood": "tired",
-			"collaborativeness": "noncollaborative"
+			"mood": "nontired",
+			"collaborativeness": "collaborative"
 		},
 		"position":{
 			"x": 7.7,
@@ -50,32 +50,34 @@
   "operation_modes": {
 		"useEvaluator":{
 			 "active": true,
-			 "interactionNumber": 50,
-			 "trainingSetName": "training_sets/exp3_7000t.mat"
+			 "interactionNumber": 30,
+			 "trainingSetName": "training_sets/exp4_7000t.mat"
 			},
-		"useCMAB": false,
-		"useBPR": true,
-		"useRandom": false,
-		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/exp3_7000t.mat",
-		"useTransitionFunction": false
+			"useCMAB": false,
+			"useBPR": false,
+			"useRandom": true,
+			"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/exp4_7000t.mat",
+			"useTransitionFunction": false
 	},
 	"evaluation_models":{
-		"humans": ["distracted_collaborative.POMDPx",
-					 "distracted_noncollaborative.POMDPx",
-					 "expert_nontired_collaborative.POMDPx",
-					 "expert_nontired_noncollaborative.POMDPx",
-					 "expert_tired_collaborative.POMDPx",
+		"humans": [	"expert_tired_noncollaborative.POMDPx",
 					 "expert_tired_noncollaborative.POMDPx",
-					 "beginner_nontired_collaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx",
+				   "expert_tired_noncollaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx",
+					 "beginner_tired_noncollaborative.POMDPx",
+					 "expert_nontired_noncollaborative.POMDPx",
 					 "beginner_nontired_noncollaborative.POMDPx",
+					 "distracted_collaborative.POMDPx",
 					 "beginner_tired_collaborative.POMDPx",
-					 "beginner_tired_noncollaborative.POMDPx"],
-					 "policies": ["base.pomdpx", "policy1.pomdpx",
-				 				 "policy2.pomdpx", "policy3.pomdpx",
-				 				 "policy4.pomdpx", "policy5.pomdpx",
-				 				 "policy6.pomdpx", "policy7.pomdpx",
-				 				 "policy8.pomdpx", "policy9.pomdpx",
-				 				 "policy10.pomdpx", "policy11.pomdpx",
-				 				 "policy12.pomdpx", "reactive.pomdpx"]
+					 "distracted_noncollaborative.POMDPx",
+					 "beginner_tired_noncollaborative.POMDPx",
+					 "expert_nontired_collaborative.POMDPx",
+					 "beginner_nontired_collaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx"],
+		"policies": ["policy8.pomdpx"]
 	}
 }

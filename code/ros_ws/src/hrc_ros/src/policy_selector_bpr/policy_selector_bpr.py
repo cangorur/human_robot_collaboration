@@ -64,6 +64,11 @@ class PolicySelector:
                 @param request
                 @return self.selected_policy
         '''
+        while not rospy.has_param('/task_count'):
+            continue
+        taskNumber = rospy.get_param('/task_count')
+        if (taskNumber == 1): # each time the scenario has been restarted
+            self.initialize_models()
         self.belief_updater()
         self.policy_selector()
         rospy.logwarn("[BPR_POLICY_SELECTOR] Selected Policy: %d", self.selected_policy)
@@ -205,12 +210,13 @@ class PolicySelector:
             # expected reward of policy on belief
             theta_pi_t[pol] = np.matmul(beta,expctdS)
         Ubeta = np.max(theta_pi_t) # max expected utility from all policies
+        #TODO: Lower bound needs to be U+
         linspace=np.array(range(0,600,6))
         Uplus = Ubeta + linspace*(np.max(mus)+np.max(sigs)-Ubeta)/600
         # compute online PI
         for pol in range(0,self.policies.size):
             [temp] = self.evaluateFSample(mus[:,pol], sigs[:,pol]+2, Uplus)
-            #dilsad: I do not understand the actual reason behind "+2"
+            #TODO: dilsad: I do not understand the actual reason behind "+2"
             beta=np.array(beta)
             vEI[pol] = np.sum(np.matmul(temp,beta))
         return[vEI]
@@ -273,7 +279,7 @@ class PolicySelector:
                 p = p * (observation_row[observation_number]+1e-4) # 1e-5
             # New belief for this human type
             # TODO: add an epsilon value below to beta.items. Currently after a time belief never changes
-            P=np.append(P, p*beta.item(humtype))
+            P=np.append(P, p * (beta.item(humtype) + 1e-5))
 
         # update and normalise belief
         beta=P/(P.sum())
