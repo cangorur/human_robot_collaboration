@@ -72,6 +72,7 @@ add_service_files(
    SelectPolicy.srv
    PolicySelectorBPR.srv
    InformTrayUpdate.srv
+   InformActionRecognized.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -123,13 +124,13 @@ add_dependencies(robot_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(robot_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
-add_executable(observation_agent
+add_executable(observation_agent_IE
   #src/observation_agent/ObservationAgent.cpp
   #src/observation_agent/ObservationAgentNode.cpp
   src/observation_agent/ObservationAgentNode_IExperiment.cpp
   src/observation_agent/ObservationAgent_IExperiment.cpp)
-add_dependencies(observation_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(observation_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+add_dependencies(observation_agent_IE ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(observation_agent_IE ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(test_decision_trigger

@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv) {
 	
-	ros::init(argc, argv, "observation_agent");
+	ros::init(argc, argv, "observation_agent_IE");
 	ros::NodeHandle nh;
 	
 	ObservationAgent observation_agent;

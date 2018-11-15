@@ -11,3 +11,4 @@ code/hrc_morse/src/__pycache__
 code/hrc_morse/src/.idea
 ./vscode/
 .*
+*.bag

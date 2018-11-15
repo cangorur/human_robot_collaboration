@@ -19,6 +19,7 @@
 #include <hrc_ros/ResetObsROS.h>
 #include <hrc_ros/TrayUpdateCamera.h>
 #include <hrc_ros/InformTrayUpdate.h>
+#include <hrc_ros/InformActionRecognized.h>
 
 #include "simple_web_socket/client_ws.hpp"
 
@@ -78,11 +79,12 @@ private:
 	 */
 	//void IEaction_recognized_update_to_obs_map(hrc_ros::TrayUpdateCamera &msg);
 
+	bool IEaction_to_obs_Map();
 
 	//void IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg);
-	bool IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res);
+	bool IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res);
 
-
+	bool IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res);
 
 
 	/**
@@ -171,7 +173,7 @@ private:
     /// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer action_server;
 	/// Advertised service. See their methods for the functionality of the services
-	//ros::ServiceServer IEaction_recognition_server ;
+	ros::ServiceServer IEaction_recognition_server ;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer IEtray_update_server;
 	/// Advertised service. See their methods for the functionality of the services
@@ -245,13 +247,33 @@ private:
 
 	// global variables to store the last recognized human action and other observables 
 	// name in code  | observable number according to https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit#gid=1272592695
-	bool ov		= false;				// O_4  Human is not looking around  
-	bool oir	= false;				// O_3  Human is detected 
-	bool a0		= false;				// O_5  grasping attempt
-	bool ipd	= false;				// O_1  task successs (processed product detected)
-	bool a4		= false;				// O_6  warning received
-	bool a2		= false; 				// O_7  Idle
-	bool upd	= false; 				// O_2	failure
+	bool o4_ov		= false;				// O_4  Human is not looking around  
+	bool o3_oir		= false;				// O_3  Human is detected 
+	bool o5_a0		= false;				// O_5  grasping attempt
+	bool o1_ipd		= false;				// O_1  task successs (processed product detected)
+	bool o6_a4		= false;				// O_6  warning received
+	bool o7_a2		= false; 				// O_7  Idle
+	bool o2_upd		= false; 				// O_2	failure
+
+	// global variables to store the latest tray status and the latest recognized human action 
+	int tray_object_combination = 0; 		
+		/*# R_tray: 	1 = Red object in Red tray 
+		# 				2 = Green object in Red tray 
+		#				4 = Blue  object in Red tray 
+		# G_tray: 		8 = Red object in Green tray 
+		#		... 
+		#		...
+		# B_tray: 		64 = Red object in Blue tray 
+		#		... 
+		#		... 
+		*/
+
+	int current_object = 0; 				// 1 = Red | 2 = Green | 3 = Blue 
+
+
+	// global variables to store the scenario data -> will be used to elaborate success and failure 
+	int true_tray_object_combination = 0; 
+	
 	
 };
 

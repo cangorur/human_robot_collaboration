@@ -44,8 +44,8 @@ void ObservationAgent::initialize(){
 	 * ROS Services initialization
 	 */
 	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
-	//IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_human_action_recognized", &ObservationAgent::IEaction_recognized_update_to_obs_map, this);
-	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IEtray_update_to_obs_map, this);
+	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_action_recognized", &ObservationAgent::IE_receive_actionrecognition_update, this);
+	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IE_receive_tray_update, this);
 	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 
@@ -84,7 +84,7 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 		whoIsAssigned = "robot";
 	}
 
-
+    // TODO inform robot type and human type -> remove human type 
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
 	humanType = req.humanType;
 	humanMood = req.humanMood;
@@ -278,27 +278,28 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 // TODO: change here, that only the communication to the despot is triggered
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
 // HUMAN ACTION IS RECEIVED in Experiment setup !!!
-/*bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,
-		hrc_ros::InformHumanAction::Response &res) {
+bool ObservationAgent::IEaction_to_obs_Map(void) {
 
+	ROS_INFO("In IEaction_to_obs_Map");
 	//WebSocket (WS)-client at port 7070 using 1 thread
 	WsClient client("localhost:7070");
 
 	client.on_open=[&]() {
 
+	ROS_INFO("client opened");
 
-		std_srvs::Trigger::Request req1;
-		std_srvs::Trigger::Response resp1;
-		is_ov.call(req1, resp1);
-		bool ov = resp1.success;	// object is visiable
+		//std_srvs::Trigger::Request req1;
+		//std_srvs::Trigger::Response resp1;
+		//is_ov.call(req1, resp1);
+		//bool ov = resp1.success;	// object is visiable
 
-		std_srvs::Trigger::Request req2;
-		std_srvs::Trigger::Response resp2;
-		is_oir.call(req2, resp2);
-		bool oir = resp2.success;	// object is in range
+		//std_srvs::Trigger::Request req2;
+		//std_srvs::Trigger::Response resp2;
+		//is_oir.call(req2, resp2);
+		//bool oir = resp2.success;	// object is in range
 
-		bool ipd = ipd_sensor;	// inspected product is detected // SITUATION: INSPECTED PRODUCT DETECTED? (SUCCESS)
-		bool upd = upd_sensor;	// uninspected product is detected  // SITUATION: UNINSPECTED PRODUT DETECTED? (FAIL)
+		//bool ipd = ipd_sensor;	// inspected product is detected // SITUATION: INSPECTED PRODUCT DETECTED? (SUCCESS)
+		//bool upd = upd_sensor;	// uninspected product is detected  // SITUATION: UNINSPECTED PRODUT DETECTED? (FAIL)
 		/*
 		std_srvs::Trigger::Request req3;
 		std_srvs::Trigger::Response resp3;
@@ -325,36 +326,40 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		is_a4.call(req7, resp7);
 		bool a4 = resp7.success;	// action is warn robot
 
+		*/
+
 		// ===== ADDING A NOISE TO THE OBSERVATIONS ========
 		// TODO: update for toy example for the HW setup exp
-		bool ov_noisy = ov;
-		bool oir_noisy = oir;
-		bool a0_noisy = a0;
-		bool ipd_noisy = ipd; // success: O1
-		bool a4_noisy = a4;
-		bool a2_noisy = a2; // human idle: O7
-		bool upd_noisy = upd; // failure: O2
+
+
+		bool o4_ov_noisy =  o4_ov;
+		bool o3_oir_noisy = o3_oir;
+		bool o5_a0_noisy = o5_a0;
+		bool o1_ipd_noisy = o1_ipd; // success: O1
+		bool o6_a4_noisy = o6_a4;
+		bool o7_a2_noisy = o7_a2; // human idle: O7
+		bool o2_upd_noisy = o2_upd; // failure: O2
 
 		int r = rand() % 20;
 		int m = rand() % 2; // confused or missed
-		if ((a0 || a4) && r == 0){ // if one of this is one then 10% noise
+		if ((o5_a0 || o6_a4) && r == 0){ // if one of this is one then 10% noise
 			if (m == 0){ // 2.5 % chance of confusing a0 and a4
-				a0_noisy = not a0;
-				a4_noisy = not a4;
+				o5_a0_noisy = not o5_a0;
+				o6_a4_noisy = not o6_a4;
 			} else if (m == 1){ // 2.5 % chance of missing the gesture and assuming idle (a2)
-				a0_noisy = false;
-				a4_noisy = false;
-				a2_noisy = true;
+				o5_a0_noisy = false;
+				o6_a4_noisy = false;
+				o7_a2_noisy = true;
 			}
-		} else if (((not ov) || a2) && r == 0){ // if either looking around (not ov) or idle is detected, 10 % chance of confusing them
-			ov_noisy = not ov;
-			a2_noisy = not a2;
+		} else if (((not o4_ov) || o7_a2) && r == 0){ // if either looking around (not o4_ov) or idle is detected, 10 % chance of confusing them
+			o4_ov_noisy = not o4_ov;
+			o7_a2_noisy = not o7_a2;
 		}
 		// ===================================================
 
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
-		robot_observation_real = MapObservablesToObservations(ov,oir,a0,ipd,a4,a2,upd);
-		robot_observation_noisy = MapObservablesToObservations(ov_noisy,oir_noisy,a0_noisy,ipd_noisy,a4_noisy,a2_noisy,upd_noisy);
+		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd);
+		robot_observation_noisy = MapObservablesToObservations(o4_ov_noisy,o3_oir_noisy,o5_a0_noisy,o1_ipd_noisy,o6_a4_noisy,o7_a2_noisy,o2_upd_noisy);
 
 		if (robotType == "reactive"){
 			observation = MapObservationsToMDP(robot_observation_noisy); // Get correspending state for reactive ROBOT wrt observations to state mapping
@@ -377,27 +382,28 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 
 		// Real observation is for the task manager to record statistics on running human models
 		std::vector<uint8_t> real_obs_received;
-		real_obs_received.push_back(not ov);
-		real_obs_received.push_back(oir);
-		real_obs_received.push_back(a0);
-		real_obs_received.push_back(ipd);
-		real_obs_received.push_back(a4);
-		real_obs_received.push_back(a2);
-		real_obs_received.push_back(upd);
-		real_obs_received.push_back(a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
+		real_obs_received.push_back(not o4_ov);
+		real_obs_received.push_back(o3_oir);
+		real_obs_received.push_back(o5_a0);
+		real_obs_received.push_back(o1_ipd);
+		real_obs_received.push_back(o6_a4);
+		real_obs_received.push_back(o7_a2);
+		real_obs_received.push_back(o2_upd);
+		// TODO how to gain grasp attempt failed ?? 
+		//real_obs_received.push_back(o5_a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
 
 
 		obs_update.real_obs_received = real_obs_received;
 
 		// Noisy observation is for the robot
 		std::vector<uint8_t> obs_with_noise;
-		obs_with_noise.push_back(not ov_noisy);
-		obs_with_noise.push_back(oir_noisy);
-		obs_with_noise.push_back(a0_noisy);
-		obs_with_noise.push_back(ipd_noisy);
-		obs_with_noise.push_back(a4_noisy);
-		obs_with_noise.push_back(a2_noisy);
-		obs_with_noise.push_back(upd_noisy);
+		obs_with_noise.push_back(not o4_ov_noisy);
+		obs_with_noise.push_back(o3_oir_noisy);
+		obs_with_noise.push_back(o5_a0_noisy);
+		obs_with_noise.push_back(o1_ipd_noisy);
+		obs_with_noise.push_back(o6_a4_noisy);
+		obs_with_noise.push_back(o7_a2_noisy);
+		obs_with_noise.push_back(o2_upd_noisy);
 
 		obs_update.obs_with_noise = obs_with_noise;
 		obs_update.who_succeeded = whoSucceeded;
@@ -421,7 +427,7 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 
 	return true;
 }   
-*/
+
 
 bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
 		hrc_ros::InformHumanState::Response &res) {
@@ -461,7 +467,29 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 
 // *** Service handler that receives a tray update message and calculates the observables success and failure 
 //void ObservationAgent::IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg){
-bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res){
+bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res){
+	
+	
+  /*o6_a4						// O_6  warning received
+	o7_a2						// O_7  Idle
+	o4_ov  						// O_4  Human is not looking around  
+	o3_oir						// O_3  Human is detected 
+	o5_a0						// O_5  grasping attempt
+	*/
+
+	current_object = req.current_object;  // or recalculate from tray_object_combination
+	tray_object_combination = req.tray_obj_combination; 
+
+	// mapping tray status to observables ( o1 = success | o2 = failure )
+	
+
+	if (true_tray_object_combination == tray_object_combination){
+		o1_ipd = true; //  O_1  task successs (processed product detected)
+		o2_upd = false; // O_2	failure 
+	} else {
+		o1_ipd = false; //  O_1  task successs (processed product detected)
+		o2_upd = true; // O_2	failure 
+	}
 	
 	ROS_INFO("OBSERVATION ROS: ## TrayUpdate_Camera  RECEIVED ##");
 	ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
@@ -489,7 +517,7 @@ bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Reque
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
-	//bool ObservationAgent::IEaction_to_obs_Map(hrc_ros::InformHumanAction::Request &req,hrc_ros::InformHumanAction::Response &res) {
+	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
    /* int r = rand() % 3;
 	if(r== 1){
 		return true; 
@@ -497,6 +525,75 @@ bool ObservationAgent::IEtray_update_to_obs_map(hrc_ros::InformTrayUpdate::Reque
 		return false; 
 	} */
 
+	ROS_INFO("Mapping success: %d" ,mapping_success);
+	res.success = true;
+	return true; 
+}
+
+
+// *** Service handler that receives a classified action and calculates the observables 
+bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
+	
+	
+	if (req.action == "warning"){
+		o6_a4 = true;
+	} else{
+		o6_a4 = false; 
+	} 
+
+	if (req.action == "idle"){
+		o7_a2 = true; 
+	} else {
+		o7_a2 = false; 
+	}
+  
+	if (req.action == "grasping"){ // O_5  grasping attempt
+		o5_a0 = true; 
+	} else {
+		o5_a0 = false;
+	}
+
+	 o3_oir = req.human_detected;            // O_3  Human is detected 
+	 o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
+
+	ROS_INFO("\n\nOBSERVATION ROS: ## ActionRecognition update received  RECEIVED ##");
+	ROS_INFO(" Action %s",req.action.c_str());
+	ROS_INFO("Human detected =  %d", o3_oir);
+	ROS_INFO("Human looking around = %d", o4_ov);
+	ROS_INFO("********\n\n\n");
+
+	//tray_msg_stamp = msg.stamp;
+
+	// get the rule for the single task at hand by browsing the current task rule sets // TODO test this and implement task_rules updater 
+	//current_task_rule = task_rules[msg.current_object] // TODO task_rules should be a global variable filled once 
+
+	/*if (msg.tray_obj_combination == current_task_rule) { 		// success in single task => ipd_sensor = true 
+		//ipd_sensor = true; 
+		//upd_sensor = false;
+		ipd_O1	= true;				// O_1  task successs (processed product detected)
+		upd_O2	= false; 				// O_2	failure 
+
+	} else if (msg.tray_obj_combination != current_task_rule) { // failure in single task => upd_sensor = true 
+		//ipd_sensor = false; 
+		//upd_sensor = true; 
+		ipd_O1	= false;				
+		upd_O2	= true; 				
+	*/
+
+	
+	
+	// trigger decision !!!! 
+	// TODO change this to the actual trigger function 
+	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+   /* int r = rand() % 3;
+	if(r== 1){
+		return true; 
+	} else {
+		return false; 
+	} */
+
+	ROS_INFO("Mapping success: %d" ,mapping_success);
+	res.success = true;
 	return true; 
 }
 
