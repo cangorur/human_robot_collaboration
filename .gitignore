@@ -12,3 +12,4 @@ code/hrc_morse/src/.idea
 ./vscode/
 .*
 *.bag
+code/ros_ws/src/cmake-build-debug/*
