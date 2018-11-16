@@ -13,3 +13,5 @@ code/hrc_morse/src/.idea
 .*
 *.bag
 code/ros_ws/src/cmake-build-debug/*
+code/configs/Changes_to_scenario_config.txt
+

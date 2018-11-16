@@ -18,20 +18,7 @@ int main(int argc, char **argv)
   hrc_ros::InformTrayUpdate srv; 
   srv.request.tray_obj_combination =  12; 
 
-  srv.response.success = client.call(srv);
-  ROS_INFO("Response is: %d\n",srv.response.success);
-  if (srv.response.success)
-  {
-    ROS_INFO(" Service call successfull  --- inform_tray_update");
-  }
-  else
-  {
-    ROS_ERROR("Failed to call service    --- inform_tray_update");
-    return 1;
-  }
-
-  ROS_INFO(" Service call successfull  --- inform_tray_update");
-
+ 
 
 
  // ++++++++++  service client to inform action recognized 
@@ -43,24 +30,41 @@ int main(int argc, char **argv)
   srv2.request.human_detected = true; 
   srv2.request.human_looking_around = false;
   
+ while(1){
+        srv.response.success = client.call(srv);
+        ROS_INFO("Response is: %d\n",srv.response.success);
+        if (srv.response.success)
+        {
+          ROS_INFO(" Service call successfull  --- inform_tray_update");
+        }
+        else
+        {
+          ROS_ERROR("Failed to call service    --- inform_tray_update");
+          return 1;
+        }
 
-  srv2.response.success = action_client.call(srv2);
-  ROS_INFO("Response is: %d\n",srv2.response.success);
-  if (srv2.response.success)
-  {
-    ROS_INFO(" Service call successfull  --- inform_action_recognized");
-  }
-  else
-  {
-    ROS_ERROR("Failed to call service    --- inform_action_recognized");
-    return 1;
-  }
-
-  ROS_INFO(" Service call successfull  --- inform_action_recognized");
+        ROS_INFO(" +++ Service call successfull  --- inform_tray_update \n\n ");
 
 
+        ros::Duration(5.0).sleep();
 
-  return 0;
 
-  //ros::spin()  // if the node should run continuously -> also remove the return 0 then 
+        srv2.response.success = action_client.call(srv2);
+        ROS_INFO("Response is: %d\n",srv2.response.success);
+        if (srv2.response.success)
+        {
+          ROS_INFO(" Service call successfull  --- inform_action_recognized");
+        }
+        else
+        {
+          ROS_ERROR("Failed to call service    --- inform_action_recognized");
+          return 1;
+        }
+
+        ROS_INFO(" +++ Service call successfull  --- inform_action_recognized\n\n");
+
+        ros::Duration(5.0).sleep();
+ }
+
+  ros::spin();  // if the node should run continuously -> also remove the return 0 then 
 }

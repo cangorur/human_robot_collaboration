@@ -179,7 +179,6 @@ rosservice call /human/reset # replace reset with look_around OR warn_robot OR g
 
 rosservice call /robot/reset # replace reset with grasp OR point_to_obj OR cancel_action (cancel whatever it is doing) OR planning_for_motion (this is implemented as a timer blocking robot doing anything else to simulate planning for kinematics for any action)
 ```
-
 ## MDP, POMDP Models
 
 All the predesigned human and robot models can be found under code/models.
@@ -217,3 +216,17 @@ System Architecture drawing of the new version of the project, also showing the 
 ## References
 In any use of this code, please let the author know and please cite the articles below:
 * O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In Proceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (HRI '18). ACM, New York, NY, USA, 398-406. DOI: https://doi.org/10.1145/3171221.3171256
+
+## Running the interaction experiment 
+
+In the real world interaction experiment example, some nodes are different and some services slightly changed. 
+
+The nodes that changed: 
+- task_manager is now task_manager_IE
+- observation_manager is now observation_manager_IE 
+- TODO - others to follow 
+
+How to start the system:
+``` 
+rosservice call /task_manager_IE/new_scenario_request
+```

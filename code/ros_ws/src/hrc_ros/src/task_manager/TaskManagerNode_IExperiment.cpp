@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv) {
 
-	ros::init(argc, argv, "task_manager");
+	ros::init(argc, argv, "task_manager_IE");
 	ros::NodeHandle nh;
 
 	TaskManager task_manager;

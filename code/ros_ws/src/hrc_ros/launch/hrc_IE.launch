@@ -6,7 +6,7 @@
 
 <!-- <node pkg="hrc_ros" type="observation_agent" name="observation_agent_IE" output="screen" respawn="true" /> -->
 
-<node pkg="hrc_ros" type="task_manager" name="task_manager_IE" output="screen" respawn="true" />
+<!-- <node pkg="hrc_ros" type="task_manager" name="task_manager_IE" output="screen" respawn="true" /> -->
 <!-- <param name="conveyor_init" type="bool" value="True" /> -->
 
 <!-- Package Manipulator -->

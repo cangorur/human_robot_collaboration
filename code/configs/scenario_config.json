@@ -49,7 +49,7 @@
 	},
   "operation_modes": {
 		"useEvaluator":{
-			 "active": true,
+			 "active": false,
 			 "interactionNumber": 50,
 			 "trainingSetName": "training_sets/exp3_7000t.mat"
 			},

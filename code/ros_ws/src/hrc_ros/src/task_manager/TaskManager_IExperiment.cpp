@@ -189,15 +189,16 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // ==== Moving a New Package ====
     // TODO: fix here so that it always goes to the beginning of the conveyor belt
     // TODO: add conveyor run and stop when the package arrives between the human and the robot
-    hrc_ros::MoveNewPackage::Request req_ForPkg;
+   /* hrc_ros::MoveNewPackage::Request req_ForPkg;
     hrc_ros::MoveNewPackage::Response res_ForPkg;
     req_ForPkg.package_id = "package1";
     req_ForPkg.x = 5.5;
     req_ForPkg.y = -2.1;
     req_ForPkg.z = 0.8;
     moveNewPackage.call(req_ForPkg, res_ForPkg);
+    */
     // run the conveyor until pkg arrives between the human and the robot
-    std_srvs::Trigger::Request req_conveyor;
+    /*std_srvs::Trigger::Request req_conveyor;
     std_srvs::Trigger::Response res_conveyor;
     conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
     conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
@@ -206,15 +207,18 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
     conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
     conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
+    */
 
     // assure the package is in between human and the robot
+    /*
     req_ForPkg.package_id = "package1";
     req_ForPkg.x = 7.7;
     req_ForPkg.y = -2.1;
     req_ForPkg.z = 0.8;
     moveNewPackage.call(req_ForPkg, res_ForPkg);
     // ===============================
-
+    */ 
+   
     // ==== Timers set =====
     step_counter = 0;
     task_time = 0;
