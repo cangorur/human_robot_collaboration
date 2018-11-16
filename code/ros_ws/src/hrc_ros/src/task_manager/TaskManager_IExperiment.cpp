@@ -37,6 +37,12 @@ TaskManager::~TaskManager() {
 void TaskManager::initialize(){
     ros::NodeHandle nh("~");
 
+    /*
+    * Initializing counters for the task and subtask control   
+    */
+    task_counter = 0; 
+    sub_task_counter = 0; 
+
     //here set the parameter of conveyor belt to "init" so it automatically starts
 
     /*
@@ -93,6 +99,18 @@ void TaskManager::initialize(){
 //================Advertised Services=======================
 bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                                    hrc_ros::InitiateScenarioResponse &res) {
+    /*
+    * read in task scenario definitions at start
+    */ 
+    if (task_counter == 1){
+        ROS_INFO("[TASK_MANAGER]: Parsing task scenario definition file @initialisation");
+
+        // Call the parse function to parse the scenario definition file 
+        
+
+        task_counter += 1; 
+    }
+
 
     ROS_INFO("[TASK_MANAGER]: Initiating started");
     ros::Duration(3, 0).sleep();
@@ -219,7 +237,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // ===============================
     */ 
    
-    // ==== Timers set =====
+    // ==== Timers set ===== 
     step_counter = 0;
     task_time = 0;
     // Allowing to manually update the task_number

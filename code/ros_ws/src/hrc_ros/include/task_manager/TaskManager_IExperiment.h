@@ -53,14 +53,15 @@ private:
 
 	// ================Advertised Services=======================
 	/**
-	 * Rosservice is called /task_manager/new_scenario_request
+	 * Rosservice is called /task_manager_IE/new_scenario_request
 	 * This service is manually called from the terminal to initiate a new scenario: human, robot and obs agents are reset,
-	 * a package arrives conveyor runs and stops in the middle of the human and the robot.
+	 * a package arrives conveyor runs and stops in the middle of the human and the robot. After a task has been executed the task manager
+	 * node will call this function again. A whole task set (consisting of multiple individual placing tasks) is implemented here. 
 	 */
 	bool initiateScenario(hrc_ros::InitiateScenarioRequest &req, hrc_ros::InitiateScenarioResponse &res);
 
 	/**
-	 * Rosservice is called /task_manager/reset_task
+	 * Rosservice is called /task_manager_IE/reset_task
 	 * This service is manually called from the terminal to reset a scenario: human, robot and obs agents are reset,
 	 * a package arrives conveyor runs and stops in the middle of the human and the robot.
 	 */
@@ -191,6 +192,11 @@ private:
 	/// holds the human type belief distr of the robot
 	std::vector<float> robot_belief;
 
+
+	/// Counts the sub_task within task(set). Each subtask is an individual placing tasks
+	int sub_task_counter = 0; 
+	/// Counts the task number that should currently be executed | note: the first task is taks 1!!! 
+	int task_counter = 0; 
 	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
 	int step_counter = 0;
 	/// The time a task takes. This is counted by the ros timer event, increased in every second

@@ -230,3 +230,6 @@ How to start the system:
 ``` 
 rosservice call /task_manager_IE/new_scenario_request
 ```
+
+Additional: 
+- for now *useEvaluator* has to be set to *false* in the *scenario_config.json*
