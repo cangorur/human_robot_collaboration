@@ -222,8 +222,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // Allowing to manually update the task_number
     ros::param::get("/task_count", task_number);
     task_number += 1;
-    if (((task_number-1) % 300) == 0)// NOTE: this reset at every 300th task is for testing purposes
-        task_number = 1;
+    //if (((task_number-1) % 300) == 0)// NOTE: this reset at every 300th task is for testing purposes
+    //    task_number = 1;
     ros::param::set("/task_count", task_number);
     // TODO Whether reset warnings_count is required?
     warning_number = 0;
