@@ -20,6 +20,7 @@
 #include <hrc_ros/TrayUpdateCamera.h>
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
+#include "std_msgs/String.h"
 
 #include "simple_web_socket/client_ws.hpp"
 
@@ -183,6 +184,9 @@ private:
 
 	/// ROS subscribers (traySensor_subs) subscribes to the proximity sensors on the trays in the MORSE env.
 	ros::Subscriber traySensor_subs;
+
+	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask 
+	ros::Publisher 	traySensor_success_pub; 
 
 	/// Ros time instance to record the time when the tray sensor message has been changed.
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario

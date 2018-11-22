@@ -41,6 +41,13 @@ void ObservationAgent::initialize(){
 	is_a0_failed  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0_failed");  // ACTION: GRASP ATTEMPTED BUT FAILED
 
 	/*
+	 *Ros Publishers and Subscriber initialization 
+	 * 
+	 */
+	traySensor_success_pub = nh.advertise<std_msgs::String>("pub_observedsuccess_status_update_IE", 1000); 
+															 
+	 
+	/*
 	 * ROS Services initialization
 	 */
 	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
@@ -513,11 +520,22 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		upd_O2	= true; 				
 	*/
 
-	
+	std_msgs::String success_status_msg;
+
+    success_status_msg.data = string("success");
+	traySensor_success_pub.publish(success_status_msg);
+	ros::spinOnce();
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+
+	//TODO broadcast the tray_update here -> success or failure   
+
+
+
+	
+
    /* int r = rand() % 3;
 	if(r== 1){
 		return true; 
