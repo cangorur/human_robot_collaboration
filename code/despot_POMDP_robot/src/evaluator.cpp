@@ -141,7 +141,7 @@ Evaluator::~Evaluator() {
 void Evaluator::webSocketClient(int action, string belief_state, double reward, double discounted_reward) {
 	typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
 
-	// send action to human actuator
+	// send action to robot actuator
   WsClient client("localhost:8080");
 
   client.on_open=[&]() {

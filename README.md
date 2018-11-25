@@ -144,12 +144,12 @@ rostopic echo /task_manager/task_status
 This project provides flexibility in selecting different human and robot models for the interaction scenario. The configuration is done under `code/configs/scenario_config.json`.
 For now, in a repeated interaction mode (Evaluation mode), since we use only one package the package pool and the package configurations are not affective.
 Most important features to update are, `human`, `robot`, `operation_modes` and `evaluation_models`.
-- `human` allows to select one particular human model to run, when `useEvaluator` is NOT activated. For each human type we created one model (for the latest versions please see `/code/models/human_models/Evaluate`). The type consists of three characteristics. `expertise` can be `beginner, expert` (leave empty for `distracted` type), `mood` can be `tired, nontired, distracted`, `collaborativeness` can be `collaborative, noncollaborative`.
-- `robot` similar to the human, this allows to select one particular robot model to run, when `useEvaluator`, `useCMAB` and `useBPR` are all deactive!. Please refer to `/code/models/robot_models/Evaluate` for possible robot policies. To run one of them, simply put its name to `AItype` variable (*without the .pomdx file extension*) and leave the rest empty under the config file. Under TaskManager.cpp, these strings are simply added to create one robot type string. So, make sure you levae the rest empty.
+- `human`: allows to select one particular human model to run, when `useEvaluator` is NOT activated. For each human type we created one model (for the latest versions please see `/code/models/human_models/Evaluate`). The type consists of three characteristics. `expertise` can be `beginner, expert` (leave empty for `distracted` type), `mood` can be `tired, nontired, distracted`, `collaborativeness` can be `collaborative, noncollaborative`.
+- `robot`: similar to the human, this allows to select one particular robot model to run, when `useEvaluator`, `useCMAB` and `useBPR` are all deactive!. Please refer to `/code/models/robot_models/Evaluate` for possible robot policies. To run one of them, simply put its name to `AItype` variable (*without the .pomdx file extension*) and leave the rest empty under the config file. Under TaskManager.cpp, these strings are simply added to create one robot type string. So, make sure you levae the rest empty.
 - `operation_modes` is to define if the scenario run is for training (data collection), a run with some policy selectors and to use dynamic transitions on human models for better performance test of the policy selector.
 - `useEvaluator`: if this is active, then the `TaskManager.cpp` calls the `policy_evaluator` node to retrieve one human and one robot model to interact several times (defined under `interactionNumber`). The purpose is to run every single human model with robot models to collect performance information (which policy is the best for which human) and to collect human observation data for type estimation algorithms of the robot. The models to be tested under this mode are provided under `evaluation_models` for human and the robot (currently all existing models are put there).
 - `useCMAB` and `useBPR`: These are two implemented policy selection algorithms (Contextual Multi-Arm Bandit and Bayesian Policy Reuse) to select the best policy for a robot interacting with a certain (unknown) human type. This is for the real time test run of the robot and the algorithms use the trained models after `useEvaluator` mode. The model file locations are given under `trainingSetForPolicySelect`.
-- For the student version of the code, `useCMAB` and `useBPR` modes are not implemented to promote students to develop their own policy generation (RL) / policy selection approaches. These may be replaced by the students' own solutions. Please note that `useCMAB` in the original version is not stable; however, `useBPR` works fine. But it is not a RL algorithm.
+- For the student version of the code, `useCMAB` and `useBPR` modes are not implemented to promote students to develop their own policy generation (RL) / policy selection approaches. These may be replaced by the students' own solutions.
 - *The procedure for Training Model creation*: After the evaluation mode has terminated (all combinations are tested), please ctrl+c (terminate) the ros window and you should see a `.bag` file created under the `Results` folder. This bag file holds the recorded task status topic: `/task_manager/task_status`. Examine the `README` file under the results folder for further possible analysis.
   - First step should be to convert bag to a csv file. run
 ```
@@ -199,7 +199,7 @@ For more model creation, refer to this shared excel sheet for easily adjust stat
 - https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit?usp=sharing
 
 ### Controlling Human and Robot Models
-After you successfully run the a scenario, you will notice that two terminal will open automatically. Those are opened by despot_human and despot_robot packages. They simply execute the human and robot policies generated.
+After you successfully run the scenario, you will notice that two terminal will open automatically. Those are opened by despot_human and despot_robot packages. They simply execute the human and robot policies generated.
 In this version, the robot model runs automatically, the terminal is for you to visualize what reward the robot got, which state (or belief state in POMDP) the robot is in and which action it took. Also you can call the task_status topic for these information. Please see the robot_model designs for MDP and POMDP visaulized below. Taking this connection scheme and the observations mentioned as the base there can be different robot models created by tweaking around with the state transition, observation and reward probabilities.
 
 The terminal opened by despot_human allows you to control the human actions. This is left as it is for easy testing of the expected robot behaviors. Simply follow the human_model drawing given below to input the next state the human is in (an integer from 0 to 9 each referring to a state as given in the drawing).
@@ -208,6 +208,28 @@ The functionality is basically then, you input the next state, the human model s
 ![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/robot_models.png)
 - Human Models:
 ![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/human_model_v2.png)
+
+In order to test your own human and robot models, below are some tips and commands;
+
+For human model tests (without running the project):
+```
+cd code/despot_MDP_tester/build/examples/pomdpx_models
+./despot_pomdpx -m <full_path_of_.pomdpx_file> --runs 1
+```
+This will run the human model on the terminal. Since for an MDP model next state information is directly available, the system expects you to input a state manually. (state # put into the .pomdpx model). Or, if you press *enter* MDP model will sample the next state. The action selection and the immediate and discounted rewards are printed on the terminal.
+
+To test robot models (without running the project):
+```
+# This is for POMDP models. For MDP robot models, follow the same steps as for human model tests above
+cd code/despot_POMDP_robot/build/examples/pomdpx_models
+./despot_pomdpx -m <full_path_of_.pomdpx_file> --runs 1
+```
+This will run the robot pomdp model on the terminal. Since there is no a separate tester for pomdp, this is the original despot package used in the project. So it accepts a communication only through websockets. Please follow the next steps to communicate with this despot terminal:
+```
+cd code/ros_ws/src/hrc_ros/model_scripts
+python test_pomdp_client.py
+```
+The terminal running the python script will ask for the states and observations from the environment. Initially, the robot makes an initial action decision, then waits for the real state information. Therefore, we first input the real state information to terminal. The despot agent calculates the reward it gathered and awaits for the observation. We input the observation, then the agent updates its belief and decides on the next action. Then we inform the actual state the robot is in resulting from the action selected. Note that the state and observations are the integer numbers as input to the .pomdpx file. 
 
 ## Brief overview of the system
 
