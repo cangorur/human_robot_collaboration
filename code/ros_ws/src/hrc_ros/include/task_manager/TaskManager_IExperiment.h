@@ -32,6 +32,7 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
+#include "std_msgs/String.h"
 
 
 class TaskManager {
@@ -107,6 +108,9 @@ private:
 	void ReceiveTraySensors(const hrc_ros::TraySensor &msg);
 	// =======================================
 
+	void ReceiveTraySuccessStatus(const std_msgs::String &msg);
+	// =======================================
+
 	/// =========== Other Methods============
 	/**
 	 * This function starts a new task if current one has finished,
@@ -170,6 +174,8 @@ private:
 
 	ros::Subscriber traySensor_subs; // SUBSCRIBE: TRAY SENSORS
 
+	ros::Subscriber trayObservation_success_status_subs; // subscribe to the success or fail update by observation agent
+
 	/// this holds every iteration the state the robot should estimate correctly (for accuracy check)
 	std::string realRobotState = "";
 	/// beginner, expert: For now by default it is beginner. Information comes from task manager. This can be modified under configs/scenario_config.json
@@ -194,7 +200,7 @@ private:
 
 
 	/// Counts the sub_task within task(set). Each subtask is an individual placing tasks
-	int sub_task_counter = 0; 
+	int subtask_counter = 0; 
 	/// Counts the task number that should currently be executed | note: the first task is taks 1!!! 
 	int task_counter = 0; 
 	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
@@ -214,6 +220,9 @@ private:
 	bool task_has_finished = false;
 	bool task_stuck_flag = false; // This is to save the system if a task is stuck (despot models are not informed somehow)
 
+
+	int subtask_number = 5; 
+	boost::property_tree::ptree testscenario_pt;
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */
