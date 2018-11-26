@@ -53,7 +53,8 @@ void ObservationAgent::initialize(){
 	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
 	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_action_recognized", &ObservationAgent::IE_receive_actionrecognition_update, this);
 	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IE_receive_tray_update, this);
-	new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
+	//new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
+	IE_new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::IE_humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 
 	/*
@@ -451,7 +452,10 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 			realRbtSt_code = getRealRbtStPOMDP(req.new_human_state); //For POMDP model
 		}
 
+		
 		string message = "-1," + realRbtSt_code;
+
+		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
 
 		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
@@ -469,6 +473,42 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 	return true;
 }
 // ********************************** //
+
+bool ObservationAgent::IE_humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
+		hrc_ros::InformHumanState::Response &res) {
+
+	//WebSocket (WS)-client at port 7070 using 1 thread
+	WsClient client("localhost:7070");
+
+	client.on_open=[&]() {
+		string realRbtSt_code = "";
+		if (robotType == "reactive"){
+			realRbtSt_code = getRealRbtStMDP(req.new_human_state); // this is the mapped human state to the robot's. Robot should estimate it correctly
+		} else if (robotType == "proactive"){
+			// TODO: update for toy example for the HW setup exp
+			realRbtSt_code = getRealRbtStPOMDP(req.new_human_state); //For POMDP model
+		}
+
+		
+		string message = "-1," + realRbtSt_code;
+
+		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
+
+		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
+		auto send_stream=make_shared<WsClient::SendStream>();
+		*send_stream << message;
+		client.send(send_stream);
+	};
+
+	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
+	//cout << "Client: Sending close connection" << endl;
+	client.send_close(1000);
+	};
+
+	client.start();
+
+	return true;
+}
 
 
 

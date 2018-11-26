@@ -88,13 +88,27 @@ private:
 	bool IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res);
 
 
-	/**
+	/**  // TODO delete once new function works 
 	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
 	 * information from despot MDP human decision-making process. Then the (actual) state information is mapped to the robot states with the functions below
 	 * and provided to the despot MDP / POMDP robot (thru web client) as the current state information. In MDP it is used as the decision-making for the next action,
 	 * in POMDP it is used for calculating the immediate rewards.
 	 */
 	bool humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req, hrc_ros::InformHumanState::Response &res);
+
+
+	/**
+	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
+	 * information from despot MDP human decision-making process. Then the (actual) state information is mapped to the robot states with the functions below
+	 * and provided to the despot MDP / POMDP robot (thru web client) as the current state information. In MDP it is used as the decision-making for the next action,
+	 * in POMDP it is used for calculating the immediate rewards.
+	 * 
+	 * So far this whole behaviour is simulated in the tes_decision_trigger nodee 
+	 */
+    bool IE_humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req, hrc_ros::InformHumanState::Response &res);
+
+
+
 	// ********************************** //
 
 	/**
@@ -179,6 +193,8 @@ private:
 	ros::ServiceServer IEtray_update_server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer new_state__server;
+	/// Advertised service. See their methods for the functionality of the services
+	ros::ServiceServer IE_new_state__server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer reset_scenario;
 
