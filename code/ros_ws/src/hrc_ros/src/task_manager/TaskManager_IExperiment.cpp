@@ -689,7 +689,7 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
         task_time = 0;
     }
     // Check if the task is accomplished (all the agents should acknowledge the success or fail)
-    //CheckToStartNewTask();
+    CheckToStartNewTask();
 }
 
 
