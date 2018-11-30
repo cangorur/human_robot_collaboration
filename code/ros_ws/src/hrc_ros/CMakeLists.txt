@@ -105,7 +105,8 @@ add_executable(task_manager_IE
 	#src/task_manager/TaskManager.cpp
 	#src/task_manager/TaskManagerNode.cpp
         src/task_manager/TaskManager_IExperiment.cpp
-	src/task_manager/TaskManagerNode_IExperiment.cpp)
+	src/task_manager/TaskManagerNode_IExperiment.cpp
+	src/helper_functions/Json_parser.cpp)
 add_dependencies(task_manager_IE ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(task_manager_IE ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 

@@ -200,9 +200,11 @@ private:
 
 
 	/// Counts the sub_task within task(set). Each subtask is an individual placing tasks
-	int subtask_counter = 0; 
+	/// Note: The counter starts at 1!!! 
+	int subtask_counter = 1; 
 	/// Counts the task number that should currently be executed | note: the first task is taks 1!!! 
-	int task_counter = 0; 
+	/// Note: The counter starts at 1!!! 
+	int task_counter = 1; 
 	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
 	int step_counter = 0;
 	/// The time a task takes. This is counted by the ros timer event, increased in every second

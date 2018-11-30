@@ -37,11 +37,13 @@ int main(int argc, char **argv)
 
   // compiling the message for the service
   hrc_ros::InformActionRecognized srv2;
-  srv2.request.action = "grasping";
+  srv2.request.action = "warning";
   srv2.request.human_detected = true; 
   srv2.request.human_looking_around = false;
   
  while(1){
+
+   // inform about tray update 
         srv.response.success = client.call(srv);
         ROS_INFO("Response is: %d\n",srv.response.success);
         if (srv.response.success)

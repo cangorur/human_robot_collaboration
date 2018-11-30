@@ -54,7 +54,7 @@ void ObservationAgent::initialize(){
 	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_action_recognized", &ObservationAgent::IE_receive_actionrecognition_update, this);
 	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IE_receive_tray_update, this);
 	//new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
-	IE_new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::IE_humanSt_to_robotSt_Map, this);
+	//IE_new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::IE_humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 
 	/*
@@ -474,25 +474,27 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 }
 // ********************************** //
 
-bool ObservationAgent::IE_humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
-		hrc_ros::InformHumanState::Response &res) {
+bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observed) {
 
 	//WebSocket (WS)-client at port 7070 using 1 thread
 	WsClient client("localhost:7070");
 
 	client.on_open=[&]() {
 		string realRbtSt_code = "";
+		// TODO: remove if reactive model is not used anymore 
 		if (robotType == "reactive"){
-			realRbtSt_code = getRealRbtStMDP(req.new_human_state); // this is the mapped human state to the robot's. Robot should estimate it correctly
+			realRbtSt_code = getRealRbtStMDP(real_human_state_observed); // this is the mapped human state to the robot's. Robot should estimate it correctly
 		} else if (robotType == "proactive"){
 			// TODO: update for toy example for the HW setup exp
-			realRbtSt_code = getRealRbtStPOMDP(req.new_human_state); //For POMDP model
+			realRbtSt_code = getRealRbtStPOMDP(real_human_state_observed); //For POMDP model
 		}
 
 		
 		string message = "-1," + realRbtSt_code;
 
 		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
+		// TODO remove
+		ROS_INFO("observed state received was  = %s", real_human_state_observed.c_str());
 
 		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
@@ -562,9 +564,16 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 	std_msgs::String success_status_msg;
 
+	// TODO change to subtask success or failure!!!
     success_status_msg.data = string("success");
 	traySensor_success_pub.publish(success_status_msg);
 	ros::spinOnce();
+
+	// TODO 
+	// check if task is global success or global fail 
+	// for this i need the subtask number from the task manager !!! 
+	
+
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
@@ -592,9 +601,11 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 // *** Service handler that receives a classified action and calculates the observables 
 bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
 	
+	string observation_mapped = "TaskHuman"; // only WarningReceved, GlobalSuccess, and GlobalFail are relevant
 	
 	if (req.action == "warning"){
 		o6_a4 = true;
+		observation_mapped = "WarningTheRobot";
 	} else{
 		o6_a4 = false; 
 	} 
@@ -618,6 +629,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	ROS_INFO(" Action %s",req.action.c_str());
 	ROS_INFO("Human detected =  %d", o3_oir);
 	ROS_INFO("Human looking around = %d", o4_ov);
+	ROS_INFO("observation_mapped =  %s",observation_mapped.c_str());
 	ROS_INFO("********\n\n\n");
 
 	//tray_msg_stamp = msg.stamp;
@@ -638,11 +650,39 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		upd_O2	= true; 				
 	*/
 
+
+	// send real human state to robot -> this state is needed to calculate the rewards
+	// TODO : check mapping between req.action and getRealRbtStPOMDP  input states, which are: 
+	// only GlobalFail, GlobalSuccess, and WarningReceived are relevant!!!  
+
+		/*
+	*	Input		Output
+	* 
+	 *	 				TaskHuman		
+	 *	 				MayNotBeCapable
+	 *	 				MayBeTired
+	 *	 				NoFocus
+	 *	 				NeedsToBeReminded
+	 *	 				NeedsHelp
+	 *	 				NoNeedHelp
+	 *WarningTheRobot	WarningReceived
+	 *GlobalSuccess 	GlobalSuccess
+	 *GlobalFail 		GlobalFail
+	 * 					TaskRobot
+	 */
+
+	IE_humanSt_to_robotSt_Map(observation_mapped);
+	 
 	
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+
+
+
+
+
    /* int r = rand() % 3;
 	if(r== 1){
 		return true; 

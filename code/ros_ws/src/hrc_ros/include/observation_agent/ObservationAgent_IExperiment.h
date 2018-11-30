@@ -103,9 +103,11 @@ private:
 	 * and provided to the despot MDP / POMDP robot (thru web client) as the current state information. In MDP it is used as the decision-making for the next action,
 	 * in POMDP it is used for calculating the immediate rewards.
 	 * 
-	 * So far this whole behaviour is simulated in the tes_decision_trigger nodee 
+	 * So far this whole behaviour is simulated in the tes_decision_trigger node
+	 * 
+	 * Note: the real_human_state_observed actually denotes the human's state in the robot POMDP state space
 	 */
-    bool IE_humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req, hrc_ros::InformHumanState::Response &res);
+    bool IE_humanSt_to_robotSt_Map(string real_human_state_observed);
 
 
 
@@ -193,8 +195,6 @@ private:
 	ros::ServiceServer IEtray_update_server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer new_state__server;
-	/// Advertised service. See their methods for the functionality of the services
-	ros::ServiceServer IE_new_state__server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer reset_scenario;
 

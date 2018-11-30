@@ -22,6 +22,8 @@
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
 
+#include <helper_functions/Json_parser.h>
+
 using namespace std;
 
 
@@ -40,8 +42,8 @@ void TaskManager::initialize(){
     /*
     * Initializing counters for the task and subtask control   
     */
-    task_counter = 0; 
-    subtask_counter = 0; 
+    task_counter = 1; 
+    subtask_counter = 1; 
 
     //here set the parameter of conveyor belt to "init" so it automatically starts
 
@@ -106,7 +108,7 @@ void TaskManager::initialize(){
 bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                                    hrc_ros::InitiateScenarioResponse &res) {
     /*
-    * read in task scenario definitions at start (task_counter = 0)
+    * read in task scenario definitions at start (task_counter = 1)
     */ 
 
         ROS_INFO("[TASK_MANAGER]: Parsing task scenario definition file @initialisation");
@@ -125,6 +127,19 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
  
         cout << "# task_counter: " << task_counter << endl << endl; 
     
+
+    // ####################  sending current task rules to the observation agent #####################
+    
+    string task_counter_str; 
+    stringstream ss;
+    ss << task_counter;
+    
+    task_set current_task_set = read_task_set(ss.str(),testscenario_pt);
+
+    print_task_set(current_task_set);
+    
+
+
 
 
     ROS_INFO("[TASK_MANAGER]: Initiating started");
@@ -696,13 +711,14 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
 // TODO instead of this function, the observation agent should inform 
 void TaskManager::ReceiveTraySuccessStatus(const std_msgs::String &msg){
 
-    string taskStatus = "ONGOING";
+    string subtaskStatus = "ONGOING";
 
-    task_has_finished = true; 
+    task_has_finished = true;
+     
     if( ( msg.data.compare("success") == 0 ) ) {
-        taskStatus = "SUCCESS";
+        subtaskStatus = "SUCCESS";
     } else {
-        taskStatus = "FAIL";
+        subtaskStatus = "FAIL";
     }
 
     subtask_counter += 1; 
@@ -777,6 +793,7 @@ void TaskManager::CheckToStartNewTask(void){
 
     cout << "#CheckToStartNewTask:   task_has_finished: " << task_has_finished << "   robot_has_informed:   " << robot_has_informed << endl; 
     cout << "#CheckToStartNewTask:   task_counter: " << task_counter << "   subtask_counter:  " << subtask_counter << endl; 
+    // TODO: check if task_has_finished && robot_hs_informed is stil relevant 
     if ( (task_has_finished && robot_has_informed ) || task_stuck_flag || (subtask_counter >= subtask_number)){
 
         
