@@ -22,6 +22,9 @@
 #include <hrc_ros/InformActionRecognized.h>
 #include "std_msgs/String.h"
 
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
+
 #include "simple_web_socket/client_ws.hpp"
 
 using namespace std;
@@ -296,8 +299,12 @@ private:
 	
 	// counter that counts the subtasks that have been executed. 
 	/// Note: counter starts at 1!!!
+
 	int task_counter = 1; 
-	int subtask_counter = 1;  
+	int subtask_counter = 1;
+
+	// property tree to hold the testscenario information 
+	boost::property_tree::ptree testscenario_pt;  
 	
 };
 

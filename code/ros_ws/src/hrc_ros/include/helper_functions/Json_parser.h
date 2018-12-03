@@ -35,3 +35,4 @@ success_combo get_success_criteria(std::string str_task,std::string subtask_str,
 // Helper functions for string to int conversion and vice versa 
 int object_str_to_int(std::string string_in);
 std::string object_int_to_str(int obj_int_in);
+void print_task_set(task_set task_rules);

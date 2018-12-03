@@ -129,7 +129,8 @@ add_executable(observation_agent_IE
   #src/observation_agent/ObservationAgent.cpp
   #src/observation_agent/ObservationAgentNode.cpp
   src/observation_agent/ObservationAgentNode_IExperiment.cpp
-  src/observation_agent/ObservationAgent_IExperiment.cpp)
+  src/observation_agent/ObservationAgent_IExperiment.cpp
+  src/helper_functions/Json_parser.cpp)
 add_dependencies(observation_agent_IE ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(observation_agent_IE ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 

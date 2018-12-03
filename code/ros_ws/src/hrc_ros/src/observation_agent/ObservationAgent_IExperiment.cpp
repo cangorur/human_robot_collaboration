@@ -5,12 +5,16 @@
  */
 
 #include <ros/ros.h>
+#include <ros/package.h>
 
 #include <stdlib.h> 				// for rand() and RAND_MAX
 #include <string>
 #include <thread>
 
 #include <observation_agent/ObservationAgent_IExperiment.h>
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/json_parser.hpp"
+#include <helper_functions/Json_parser.h>
 
 using namespace std;
 
@@ -95,7 +99,24 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	// get task_counter & reset subtask_counter 
 	task_counter = req.task_cnt; 
 	subtask_counter = 1;
-	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;  
+	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;
+
+	// Read in the task_scenario -> this info is used to elaborate subtask success or failure 
+
+        ROS_INFO("[Observation_Manager]: Parsing task scenario definition file @initialisation");
+
+        // Call the parse function to parse the scenario definition file 
+            string pkg_path1 = ros::package::getPath("hrc_ros");
+            std::ifstream jsonFiletask(pkg_path1 + "/../../../configs/IE_task_config.json");
+
+            try {
+                boost::property_tree::read_json(jsonFiletask, testscenario_pt);
+            } catch(boost::property_tree::json_parser::json_parser_error &e) {
+                ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+                res.success = false;
+                return false;
+            }
+
 
     // TODO inform robot type and human type -> remove human type 
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
@@ -536,6 +557,31 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 	// mapping tray status to observables ( o1 = success | o2 = failure )
 	
+	// ##### Check if subtask is success or failure #### 
+	string subtask_success_state = "subtask_fail";
+	std_msgs::String success_status_msg;
+	success_combo success_criteria_read;
+
+	// get strings for success_criteria request
+	stringstream ss_task_counter;  
+	stringstream ss_subtask_counter; 
+
+	ss_task_counter << task_counter;
+	ss_subtask_counter << subtask_counter;
+	 
+
+	string task_str = ss_task_counter.str();
+	string subtask_str = ss_subtask_counter.str();
+	string object_str  = object_int_to_str(current_object);
+	// TODO change to subtask success or failure!!!
+
+    try {
+	success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
+	} catch(boost::property_tree::json_parser::json_parser_error &e) {
+			ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+			res.success = false;
+			return false;
+		}
 
 	if (true_tray_object_combination == tray_object_combination){
 		o1_ipd = true; //  O_1  task successs (processed product detected)
@@ -567,11 +613,10 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		upd_O2	= true; 				
 	*/
 
-	string subtask_success_state = "subtask_fail";
 
-	std_msgs::String success_status_msg;
 
-	// TODO change to subtask success or failure!!!
+
+
     success_status_msg.data = string("success");
 	traySensor_success_pub.publish(success_status_msg);
 

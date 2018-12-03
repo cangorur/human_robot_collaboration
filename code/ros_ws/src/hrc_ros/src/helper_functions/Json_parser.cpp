@@ -1,4 +1,4 @@
-#include "Json_parser.h"
+#include <helper_functions/Json_parser.h>
 
 using namespace std; 
 
@@ -165,8 +165,18 @@ string object_int_to_str(int obj_int_in){
 }
 */
 
+void print_task_set(task_set task_rules){
 
+    for ( int subt_i =0; subt_i < (task_rules.subtask_set_vector.size()) ; subt_i ++){
 
+        task_set print_task_set = task_rules;
+        cout << "####### Print current task set ### " << endl << "  task_set : " << subt_i << "   |  task : " << print_task_set.task << "   subtask: " << print_task_set.subtask_set_vector.at(subt_i).subtask << "   subtask_quantity  : " << print_task_set.subtask_quantity  << endl;
+        for ( int combo_j = 0; combo_j < print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.size(); combo_j++){
+            cout << "  success_criteria: " << print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.at(combo_j).object << "  tray:  " << print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.at(combo_j).tray << endl;
+        } 
+        cout << endl << endl; 
+    }
+}
 
 task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
 
