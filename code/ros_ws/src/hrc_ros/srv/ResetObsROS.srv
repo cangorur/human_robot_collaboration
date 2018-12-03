@@ -4,5 +4,6 @@ string humanTrustsRobot
 string humanType
 string humanMood
 string robotType
+uint32 task_cnt
 ---
 bool success

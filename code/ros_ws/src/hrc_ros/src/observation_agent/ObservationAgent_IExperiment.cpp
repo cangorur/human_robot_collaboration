@@ -92,6 +92,11 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 		whoIsAssigned = "robot";
 	}
 
+	// get task_counter & reset subtask_counter 
+	task_counter = req.task_cnt; 
+	subtask_counter = 1;
+	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;  
+
     // TODO inform robot type and human type -> remove human type 
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
 	humanType = req.humanType;
@@ -562,13 +567,18 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		upd_O2	= true; 				
 	*/
 
+	string subtask_success_state = "subtask_fail";
+
 	std_msgs::String success_status_msg;
 
 	// TODO change to subtask success or failure!!!
     success_status_msg.data = string("success");
 	traySensor_success_pub.publish(success_status_msg);
-	ros::spinOnce();
 
+
+
+	// TODO  check if subtask_counter has to be reset according to the current task? 
+	subtask_counter += 1; 
 	// TODO 
 	// check if task is global success or global fail 
 	// for this i need the subtask number from the task manager !!! 
@@ -577,6 +587,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 
+    cout << endl << endl << " ###############  Current task counters and success states ######################## " << endl << endl; 
+	cout << "task_counter = " << task_counter << "  subtask_counter = " << subtask_counter << " subtask_success_state = " << subtask_success_state << endl;  
+
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 
 	//TODO broadcast the tray_update here -> success or failure   

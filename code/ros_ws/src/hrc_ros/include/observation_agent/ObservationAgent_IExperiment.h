@@ -292,8 +292,12 @@ private:
 
 
 	// global variables to store the scenario data -> will be used to elaborate success and failure 
-	int true_tray_object_combination = 0; 
+	int true_tray_object_combination = 0;
 	
+	// counter that counts the subtasks that have been executed. 
+	/// Note: counter starts at 1!!!
+	int task_counter = 1; 
+	int subtask_counter = 1;  
 	
 };
 

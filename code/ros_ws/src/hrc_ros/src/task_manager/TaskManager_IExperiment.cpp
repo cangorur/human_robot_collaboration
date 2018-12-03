@@ -433,6 +433,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //req_obs.humanMood = human_mood;
     req_robot.assignedTo = task_assigned;
     req_obs.robotType = robot_AItype;
+    req_obs.task_cnt = task_counter; 
 //    humanROSReset.call(req_human, res_human);
     obsROSReset.call(req_obs, res_obs);
     //robotROSReset.call(req_robot, res_robot);
@@ -808,7 +809,7 @@ void TaskManager::CheckToStartNewTask(void){
         hrc_ros::InitiateScenario::Response res_init;
 
         // increment task counters here!!!
-        subtask_counter = 0; 
+        subtask_counter = 1; 
         task_counter += 1; 
         cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
         initiateScenario(req_init, res_init);

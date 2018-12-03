@@ -203,7 +203,7 @@ private:
 	/// Note: The counter starts at 1!!! 
 	int subtask_counter = 1; 
 	/// Counts the task number that should currently be executed | note: the first task is taks 1!!! 
-	/// Note: The counter starts at 1!!! 
+	
 	int task_counter = 1; 
 	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
 	int step_counter = 0;
