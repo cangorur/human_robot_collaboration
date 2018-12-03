@@ -1,10 +1,9 @@
-#include <helper_functions/Json_parser.h>
+#include "Json_parser.h"
 
-
+using namespace std; 
 
 namespace pt = boost::property_tree; 
 using boost::property_tree::ptree;
-using namespace std; 
 
 // Reading array with helper function
 template <typename T>
@@ -45,6 +44,35 @@ int object_str_to_int(std::string string_in){
     } else return_int = 999; // ERROR! 
 
     return return_int; 
+}
+
+
+// helper functions
+string object_int_to_str(int obj_int_in){
+    string return_str = "EMPTY"; 
+    if (obj_int_in == 0){
+        return_str = "object_0"; 
+    } else if (obj_int_in == 1){
+        return_str = "object_1"; 
+    } else if (obj_int_in == 2){
+        return_str = "object_2"; 
+    } else if (obj_int_in == 3){
+        return_str = "object_3";
+    } else if (obj_int_in == 4){
+        return_str = "object_4"; 
+    } else if (obj_int_in == 5){
+        return_str = "object_5"; 
+    } else if (obj_int_in == 6){
+        return_str = "object_6"; 
+    } else if (obj_int_in == 7){
+        return_str = "object_7"; 
+    } else if (obj_int_in == 8){
+        return_str = "object_8"; 
+    } else if (obj_int_in == 9){
+        return_str = "object_9";                                              
+    } else return_str = "EMPTY"; // ERROR! 
+
+    return return_str; 
 }
 
 /*vector<task_set> get_success_criteria_task(string str_task, string str_subtask,boost::property_tree::ptree config_pt){
@@ -140,7 +168,7 @@ int object_str_to_int(std::string string_in){
 
 
 
-task_set read_task_set(std::string str_task,boost::property_tree::ptree config_pt){
+task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
 
     // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
     string subtask_path = string("task.") + str_task + string(".subtask"); 
@@ -218,15 +246,56 @@ task_set read_task_set(std::string str_task,boost::property_tree::ptree config_p
 }
 
 
-void print_task_set(task_set task_rules){
 
-    for ( int subt_i =0; subt_i < (task_rules.subtask_set_vector.size()) ; subt_i ++){
+success_combo get_success_criteria(string str_task,string subtask_str, string object_str, boost::property_tree::ptree config_pt){
 
-        task_set print_task_set = task_rules;
-        cout << "####### Print current task set ### " << endl << "  task_set : " << subt_i << "   |  task : " << print_task_set.task << "   subtask: " << print_task_set.subtask_set_vector.at(subt_i).subtask << "   subtask_quantity  : " << print_task_set.subtask_quantity  << endl;
-        for ( int combo_j = 0; combo_j < print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.size(); combo_j++){
-            cout << "  success_criteria: " << print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.at(combo_j).object << "  tray:  " << print_task_set.subtask_set_vector.at(subt_i).success_combo_vect.at(combo_j).tray << endl;
-        } 
-        cout << endl << endl; 
-    }
+    // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
+    string subtask_path = string("task.") + str_task + string(".subtask"); 
+    string object_path;
+    string subtask_quantity_string;
+    task_set task_set_read;
+    success_combo success_combo_read; 
+    
+    vector <task_set> task_set_vect; 
+    
+
+    //task_set_read.subtask_quantity = stoi( config_pt.get<string>(( string("task.") + str_task + string(".subtask_quantity") ) )  );
+    //task_set_read.task = stoi(str_task);
+
+    BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(subtask_path)){ // looping trough subtasks
+            
+            string subtask_chooser = child_object.first.data();
+            subtask_set subtask_set_read;
+
+            if (subtask_chooser.compare("all") == 0){
+                object_path = subtask_path + string(".") + string("all") + string(".") + object_str; 
+                cout << " object_path_all  : "  << object_path << endl;
+
+
+                int success_tray = stoi ( config_pt.get<string>(( object_path  + string(".tray") ))  );
+                int success_object = object_str_to_int(object_str);
+                
+                
+                success_combo_read.tray = success_tray;
+                success_combo_read.object = success_object;  
+                break; 
+                
+            } else if (subtask_chooser.compare("subtask_count") != 0 ) {  // if not subtask_count 
+                object_path = subtask_path + string(".") + subtask_str + string(".") + object_str;
+                cout << " object_path_subtasks  : "  << object_path << endl;
+
+
+                int success_tray = stoi ( config_pt.get<string>(( object_path  + string(".tray") ))  );
+                int success_object = object_str_to_int(object_str);
+                
+                
+                success_combo_read.tray = success_tray;
+                success_combo_read.object = success_object; 
+                break; 
+              
+  
+            }
+        }
+
+        return success_combo_read; 
 }

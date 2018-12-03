@@ -5,7 +5,6 @@
 #include <boost/foreach.hpp>
 #include <string>
 
-
 struct success_combo {
     int object, tray;
 };
@@ -25,8 +24,14 @@ struct task_set {
     std::vector <subtask_set> subtask_set_vector; 
 };
 
+// read complete taks set 
 task_set read_task_set(std::string str_task,boost::property_tree::ptree config_pt);
-std::vector<task_set> get_success_criteria(std::string str_task, std::string str_subtask, boost::property_tree::ptree config_pt);
-std::vector<task_set> get_success_criteria_object(std::string str_task, std::string str_subtask,std::string str_object,boost::property_tree::ptree config_pt);
+//std::vector<task_set> get_success_criteria(std::string str_task, std::string str_subtask, boost::property_tree::ptree config_pt);
+//std::vector<task_set> get_success_criteria_object(std::string str_task, std::string str_subtask,std::string str_object,boost::property_tree::ptree config_pt);
+
+// getting a single success_criteria (right tray) according to the current task rules 
+success_combo get_success_criteria(std::string str_task,std::string subtask_str,std::string object_str, boost::property_tree::ptree config_pt);
+
+// Helper functions for string to int conversion and vice versa 
 int object_str_to_int(std::string string_in);
-void print_task_set(task_set task_rules);
+std::string object_int_to_str(int obj_int_in);
