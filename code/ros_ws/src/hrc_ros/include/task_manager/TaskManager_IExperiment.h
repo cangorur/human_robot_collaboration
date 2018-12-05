@@ -27,6 +27,7 @@
 #include <hrc_ros/MoveNewPackage.h>
 #include <hrc_ros/SelectPolicy.h>
 #include <hrc_ros/PolicySelectorBPR.h>
+#include <hrc_ros/SuccessStatusObserved.h>
 
 #include <hrc_ros/TraySensor.h>
 
@@ -108,7 +109,7 @@ private:
 	void ReceiveTraySensors(const hrc_ros::TraySensor &msg);
 	// =======================================
 
-	void ReceiveTraySuccessStatus(const std_msgs::String &msg);
+	void ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved &msg);
 	// =======================================
 
 	/// =========== Other Methods============

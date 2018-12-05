@@ -28,6 +28,9 @@ int main(int argc, char **argv)
   // compiling the message for the service
   hrc_ros::InformTrayUpdate srv; 
   srv.request.tray_obj_combination =  12; 
+  srv.request.current_tray = 1;
+  srv.request.current_object = 1; 
+ 
 
  
 

@@ -20,6 +20,7 @@
 #include <hrc_ros/TrayUpdateCamera.h>
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
+#include <hrc_ros/SuccessStatusObserved.h>
 #include "std_msgs/String.h"
 
 #include <boost/property_tree/json_parser.hpp>

@@ -86,7 +86,7 @@ void TaskManager::initialize(){
     // TODO delete if not needed in IE anymore 
     //traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
 
-    trayObservation_success_status_subs = nh.subscribe("/observation_agent_IE/pub_observedsuccess_status_update_IE", 1000, &TaskManager::ReceiveTraySuccessStatus, this);
+    trayObservation_success_status_subs = nh.subscribe("/observation_agent/observedsuccess_status", 1000, &TaskManager::ReceiveTraySuccessStatus, this);
 
     /*
          * Timer initialization
@@ -710,13 +710,13 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
 
 
 // TODO instead of this function, the observation agent should inform 
-void TaskManager::ReceiveTraySuccessStatus(const std_msgs::String &msg){
+void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved &msg){
 
     string subtaskStatus = "ONGOING";
 
     task_has_finished = true;
      
-    if( ( msg.data.compare("success") == 0 ) ) {
+    if( ( msg.subtask_success_status.compare("success") == 0 ) ) {
         subtaskStatus = "SUCCESS";
     } else {
         subtaskStatus = "FAIL";

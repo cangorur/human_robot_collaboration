@@ -48,8 +48,9 @@ void ObservationAgent::initialize(){
 	 *Ros Publishers and Subscriber initialization 
 	 * 
 	 */
-	traySensor_success_pub = nh.advertise<std_msgs::String>("pub_observedsuccess_status_update_IE", 1000); 
-															 
+	traySensor_success_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/observedsuccess_status", 1000); 
+	
+												 
 	 
 	/*
 	 * ROS Services initialization
@@ -553,13 +554,13 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	*/
 
 	current_object = req.current_object;  // or recalculate from tray_object_combination
-	tray_object_combination = req.tray_obj_combination; 
+	 
 
 	// mapping tray status to observables ( o1 = success | o2 = failure )
 	
 	// ##### Check if subtask is success or failure #### 
-	string subtask_success_state = "subtask_fail";
-	std_msgs::String success_status_msg;
+	string subtask_success_state = "fail";
+	hrc_ros::SuccessStatusObserved success_status_msg;
 	success_combo success_criteria_read;
 
 	// get strings for success_criteria request
@@ -583,16 +584,23 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			return false;
 		}
 
-	if (true_tray_object_combination == tray_object_combination){
+	int success_tray_read = success_criteria_read.tray; 
+	if (req.current_tray == success_tray_read){
 		o1_ipd = true; //  O_1  task successs (processed product detected)
-		o2_upd = false; // O_2	failure 
+		o2_upd = false; // O_2	failure
+		subtask_success_state = "success";
 	} else {
 		o1_ipd = false; //  O_1  task successs (processed product detected)
 		o2_upd = true; // O_2	failure 
+		subtask_success_state = "fail";
 	}
 	
-	ROS_INFO("OBSERVATION ROS: ## TrayUpdate_Camera  RECEIVED ##");
+	ROS_INFO("\n\n");
+	ROS_INFO("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED ####");
 	ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
+	ROS_INFO(" Current_object %d",req.current_object);
+	ROS_INFO(" Current_tray %d",req.current_tray);
+	ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
 	ROS_INFO("********\n\n\n");
 
 	//tray_msg_stamp = msg.stamp;
@@ -616,8 +624,22 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 
 
+    //success_status_msg = string(subtask_success_state);
+	success_status_msg.stamp = ros::Time::now();
+	success_status_msg.subtask_success_status = subtask_success_state;
+	// TODO get task_success_state
+	//success_status_msg.task_success_status = task_success_state;
+	
+	
+	
+	// ++++ fields for debugging
+	success_status_msg.current_object = current_object; 
+	success_status_msg.current_tray = req.current_tray;
+	success_status_msg.success_tray = success_tray_read; 
+	success_status_msg.task_counter = task_counter;
+	success_status_msg.subtask_counter = subtask_counter;  
 
-    success_status_msg.data = string("success");
+
 	traySensor_success_pub.publish(success_status_msg);
 
 

@@ -52,6 +52,7 @@ add_message_files(
   ObsUpdateMsg.msg
   RobotUpdateMsg.msg
   TrayUpdateCamera.msg
+  SuccessStatusObserved.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -139,3 +140,14 @@ add_executable(test_decision_trigger
   src/test_agents_IE/test_decision_trigger.cpp)
 add_dependencies(test_decision_trigger ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(test_decision_trigger ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+#add_executable(test_1_synchronisation_task_observation
+#  src/test_agents_IE/test_1_synchronisation_task_observation.cpp)
+#add_dependencies(test_1_synchronisation_task_observation ${${PROJECT_NAME}_EXPORTED_TARGETS})
+#target_link_libraries(test_1_synchronisation_task_observation ${catkin_LIBRARIES} ${Boost_LIBRARIES} #${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_1
+  src/test_agents_IE/test_1_synchro_task_observation.cpp
+  src/test_agents_IE/test_1_node.cpp)
+add_dependencies(test_1 ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(test_1 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
