@@ -255,7 +255,27 @@ task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
         return task_set_read; 
 }
 
+int get_subtask_quantity(string str_task,boost::property_tree::ptree config_pt){
 
+    string path = "task." + str_task + ".subtask_quantity"; 
+    int subtask_quantity = 0; 
+
+    subtask_quantity = stoi(config_pt.get<string>(path));
+    return subtask_quantity; 
+
+}
+
+global_task_config read_global_task_config(boost::property_tree::ptree config_pt){
+
+    global_task_config task_config_read;
+
+    task_config_read.subtask_max = stoi(config_pt.get<string>("config.subtask_max"));
+    task_config_read.task_max    = stoi(config_pt.get<string>("config.task_max"));
+    task_config_read.global_success_assert = stoi(config_pt.get<string>("config.global_success"));
+    task_config_read.global_fail_assert = stoi(config_pt.get<string>("config.global_fail"));
+
+    return task_config_read; 
+}
 
 success_combo get_success_criteria(string str_task,string subtask_str, string object_str, boost::property_tree::ptree config_pt){
 

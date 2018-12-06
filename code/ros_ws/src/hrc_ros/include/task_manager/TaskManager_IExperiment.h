@@ -34,6 +34,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
 #include "std_msgs/String.h"
+#include <helper_functions/Json_parser.h>
 
 
 class TaskManager {
@@ -224,8 +225,11 @@ private:
 	bool task_stuck_flag = false; // This is to save the system if a task is stuck (despot models are not informed somehow)
 
 
-	int subtask_number = 5; 
+	int subtask_number_current_task = 100; 
 	boost::property_tree::ptree testscenario_pt;
+	task_set current_task_set;
+	global_task_config current_global_task_config; 
+	int task_quantity_scenario = 5; 
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */

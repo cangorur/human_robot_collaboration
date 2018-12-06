@@ -35,6 +35,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
 #include "std_msgs/String.h"
+#include <helper_functions/Json_parser.h>
 
 
 class TestAgent {
@@ -54,6 +55,8 @@ public:
 
 	bool success_received = false;
 	std::string subtask_success_status = "uninitialized";
+	int task_cnt_received = 0; 
+	int subtask_cnt_received = 0; 
 
 
 private:

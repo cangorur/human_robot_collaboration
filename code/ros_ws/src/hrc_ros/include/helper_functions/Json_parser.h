@@ -5,6 +5,13 @@
 #include <boost/foreach.hpp>
 #include <string>
 
+struct global_task_config {
+    int subtask_max; 
+    int task_max; 
+    int global_success_assert; 
+    int global_fail_assert; 
+};
+
 struct success_combo {
     int object, tray;
 };
@@ -29,8 +36,11 @@ task_set read_task_set(std::string str_task,boost::property_tree::ptree config_p
 //std::vector<task_set> get_success_criteria(std::string str_task, std::string str_subtask, boost::property_tree::ptree config_pt);
 //std::vector<task_set> get_success_criteria_object(std::string str_task, std::string str_subtask,std::string str_object,boost::property_tree::ptree config_pt);
 
+global_task_config read_global_task_config(boost::property_tree::ptree config_pt);
+
 // getting a single success_criteria (right tray) according to the current task rules 
 success_combo get_success_criteria(std::string str_task,std::string subtask_str,std::string object_str, boost::property_tree::ptree config_pt);
+int get_subtask_quantity(std::string str_task,boost::property_tree::ptree config_pt);
 
 // Helper functions for string to int conversion and vice versa 
 int object_str_to_int(std::string string_in);

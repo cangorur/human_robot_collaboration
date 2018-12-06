@@ -2,7 +2,7 @@
     "config" :
     {
 	"subtask_max"    : "10",
-	"task_max"       : "20",
+	"task_max"       : "3",
 	"global_success" : "6",
 	"global_fail"    : "4"
     },
@@ -14,7 +14,7 @@
         "1" :
 	{
 
-	   "subtask_quantity" : "1",			
+	   "subtask_quantity" : "2",			
 
 	   "subtask" : 
 	   {
@@ -51,14 +51,61 @@
                 {
 			"object_1": { "tray": "2"},
 			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
+			"object_3": { "tray": "15"}
 		},
 
 		"3": 
                 {
-			"object_1": { "tray": "23"},
-			"object_2": { "tray": "23"},
-			"object_3": { "tray": "23"}
+			"object_1": { "tray": "21"},
+			"object_2": { "tray": "20"},
+			"object_3": { "tray": "22"}
+		},
+
+		"4": 
+                {
+			"object_1": { "tray": "24"},
+			"object_2": { "tray": "24"},
+			"object_3": { "tray": "24"}
+		}
+
+	   }
+
+	},
+
+	 "3" :
+	{
+
+	   "subtask_quantity" : "1",
+
+	   "subtask" : 
+	   {
+		"1": 
+                {
+			"object_1": { "tray": "11"},
+			"object_2": { "tray": "12"},
+			"object_3": { "tray": "13"}
+		},
+
+
+		"2": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "15"}
+		},
+
+		"3": 
+                {
+			"object_1": { "tray": "21"},
+			"object_2": { "tray": "20"},
+			"object_3": { "tray": "22"}
+		},
+
+		"4": 
+                {
+			"object_1": { "tray": "24"},
+			"object_2": { "tray": "24"},
+			"object_3": { "tray": "24"}
 		}
 
 	   }

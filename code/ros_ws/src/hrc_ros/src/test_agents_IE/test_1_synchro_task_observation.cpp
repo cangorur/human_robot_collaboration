@@ -38,11 +38,16 @@ void TestAgent::ReceiveSuccessStatusObserved(const hrc_ros::SuccessStatusObserve
     //std::cout << " In callback SuccessStatusReceived" << endl << endl;
     subtask_success_status = msg.subtask_success_status;
 
+    task_cnt_received = msg.task_counter; 
+    subtask_cnt_received = msg.subtask_counter; 
     // ##### print debugging messages 
     cout << endl << "  ## Received success status ## " << endl; 
     cout << "  current_object: " << msg.current_object << endl << "  current_tray: " << msg.current_tray; 
     cout << "  success_tray  : " << msg.success_tray << endl << endl;
-    cout << "  task_counter  : " << msg.task_counter << "  subtask_counter: " << msg.subtask_counter << endl; 
+    //cout << "  task_counter  : " << msg.task_counter << "  subtask_counter: " << msg.subtask_counter << endl; 
+
+    cout << "  task_counter  : " << task_cnt_received << "  subtask_counter: " << subtask_cnt_received << endl; 
+
     cout << "  task_sucess_status : " << msg.task_success_status << endl << "  subtask_success_status: " << msg.subtask_success_status << endl;   
 
 

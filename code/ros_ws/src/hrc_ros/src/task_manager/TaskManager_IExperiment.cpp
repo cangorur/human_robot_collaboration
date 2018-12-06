@@ -20,9 +20,8 @@
 #include <task_manager/TaskManager_IExperiment.h>
 
 #include "boost/property_tree/ptree.hpp"
-#include "boost/property_tree/json_parser.hpp"
 
-#include <helper_functions/Json_parser.h>
+
 
 using namespace std;
 
@@ -133,14 +132,13 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     string task_counter_str; 
     stringstream ss;
     ss << task_counter;
-    
-    task_set current_task_set = read_task_set(ss.str(),testscenario_pt);
-
-    print_task_set(current_task_set);
+    string task_str = ss.str(); 
     
 
-
-
+    current_global_task_config = read_global_task_config(testscenario_pt);
+    current_task_set = read_task_set(task_str,testscenario_pt);
+    subtask_number_current_task = current_task_set.subtask_quantity; // this var is used to check if new tasks should be started
+  
 
     ROS_INFO("[TASK_MANAGER]: Initiating started");
     ros::Duration(3, 0).sleep();
@@ -705,7 +703,7 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
         task_time = 0;
     }
     // Check if the task is accomplished (all the agents should acknowledge the success or fail)
-    CheckToStartNewTask();
+    //CheckToStartNewTask();
 }
 
 
@@ -795,10 +793,12 @@ void TaskManager::CheckToStartNewTask(void){
     cout << "#CheckToStartNewTask:   task_has_finished: " << task_has_finished << "   robot_has_informed:   " << robot_has_informed << endl; 
     cout << "#CheckToStartNewTask:   task_counter: " << task_counter << "   subtask_counter:  " << subtask_counter << endl; 
     // TODO: check if task_has_finished && robot_hs_informed is stil relevant 
-    if ( (task_has_finished && robot_has_informed ) || task_stuck_flag || (subtask_counter >= subtask_number)){
+    if ( (task_has_finished && robot_has_informed ) || task_stuck_flag || (subtask_counter > subtask_number_current_task)){
 
         
-
+        // TODO remove printout 
+        cout << endl << " -> -> Initiation will be triggered (in if) " << endl << " Task_stuck_flag : " << task_stuck_flag << "subtask_counter : " << subtask_counter << " subtask_number_current_task : " << subtask_number_current_task << endl; 
+        cout << " task_has_finished = " << task_has_finished << " robot_has_informed : = " << robot_has_informed << endl << endl << endl; 
         // Task status informers reset
         task_has_finished = false;
         human_has_informed = false;
@@ -811,9 +811,13 @@ void TaskManager::CheckToStartNewTask(void){
         // increment task counters here!!!
         subtask_counter = 1; 
         task_counter += 1; 
-        cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
-        initiateScenario(req_init, res_init);
 
+        if (task_counter > (current_global_task_config.task_max) ){
+            cout << endl << endl << " All tests are done - :-) " << endl << endl; 
+        } else { 
+            cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
+            initiateScenario(req_init, res_init);
+        }
 
 
         // initiate new scenario if whole task is finished -> also new set of rules are relevant 
