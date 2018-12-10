@@ -174,6 +174,7 @@ rosparam set /scenario_count <integer number> # be careful that the scenario cou
 NOTE THAT: This update in its experimental phase and task count and scenario count need to be consisting with each other in terms of the interactionNumber defined for each scenario.
 ```
 - Human and robot actions can be controlled manually. These actions are implemented under MORSE; therefore, the ros services are provided from there. See the list of human and robot actions by running rosservice list when MORSE project is on. Some possible action calls (the most useful one would be /reset to put human and robot back to their original positions and canceling previous actions):
+
 ```
 rosservice call /human/reset # replace reset with look_around OR warn_robot OR grasp OR walk_away OR sit_down OR stand_up (the last two actions are not included under human models)
 
