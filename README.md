@@ -206,9 +206,9 @@ In this version, the robot model runs automatically, the terminal is for you to 
 The terminal opened by despot_human allows you to control the human actions. This is left as it is for easy testing of the expected robot behaviors. Simply follow the human_model drawing given below to input the next state the human is in (an integer from 0 to 9 each referring to a state as given in the drawing).
 The functionality is basically then, you input the next state, the human model selects one action in that state (according to the model design), then the robot observes the action and responds, then you will decide on the next state (in response to the robot action). Although here we have the control over the human, the action selection of the human is still unknown to us, selected by the MDP model. Please ask the author for any further questions.
 - Robot Models:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/robot_models.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/robot_models.png)
 - Human Models:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/human_model_v2.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/human_model_v2.png)
 
 In order to test your own human and robot models, below are some tips and commands;
 
@@ -235,7 +235,7 @@ The terminal running the python script will ask for the states and observations 
 ## Brief overview of the system
 
 System Architecture drawing of the new version of the project, also showing the nodes to be updated for the student developments.
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/master/doc/system_architecture_v2.png)
+![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/system_architecture_v2.png)
 
 ## References
 In any use of this code, please let the author know and please cite the articles below:
