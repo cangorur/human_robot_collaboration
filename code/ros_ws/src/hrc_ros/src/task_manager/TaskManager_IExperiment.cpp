@@ -75,7 +75,7 @@ void TaskManager::initialize(){
          */
     scenarioRequestService = nh.advertiseService("new_scenario_request", &TaskManager::initiateScenario, this);
     HumanUpdateService = nh.advertiseService("human_status_update", &TaskManager::HumanStatusUpdater,this);
-    ObsUpdateService = nh.advertiseService("observation_update", &TaskManager::ObsUpdater, this);
+    ObsUpdateService = nh.advertiseService("/task_manager/observation_update", &TaskManager::ObsUpdater, this);
     RobotUpdateService = nh.advertiseService("/task_manager/robot_status_update", &TaskManager::RobotStatusUpdater, this);
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
 
@@ -640,8 +640,9 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
     taskState_msg.belief_state = req.robot_update.robot_belief_state;
     taskState_msg.real_state = req.robot_update.robot_real_state;
 
+    
     // TODO remove after debugging
-    cout << "#RobotStatusUpdater:   Robot_real_state =  " <<  req.robot_update.robot_real_state << endl; 
+    cout << "#RobotStatusUpdater:   Robot_real_state =  " <<  req.robot_update.robot_real_state  << " Robot_belief_state: " << req.robot_update.robot_belief_state << endl; 
     if (req.robot_update.robot_belief_state == req.robot_update.robot_real_state)
         taskState_msg.isEstimationCorrect = true;
     else
@@ -657,12 +658,16 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
     taskState_msg.total_disc_reward = req.robot_update.total_disc_reward;
     taskState_msg.robot_belief = robot_belief;
 
+    
     taskStatusPublisher.publish(taskState_msg);
 
+    // TODO double check which robot state should be elaborated (real_state or belief_state [ real state is only delayed version of belief_state currently])  (was robot_real_state before) -> how to get the real state -> currently it equals  the detected state 
     if (req.robot_update.robot_real_state == "GlobalSuccess" || req.robot_update.robot_real_state == "GlobalFail"){
         // checked when the task is finished to start a new one (all agents need to inform)
         robot_has_informed = true;
     }
+
+    CheckToStartNewTask();
 
     res.success = true;
     return res.success;
@@ -712,13 +717,25 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
 
     string subtaskStatus = "ONGOING";
 
-    task_has_finished = true;
+    task_has_finished = false;
      
     if( ( msg.subtask_success_status.compare("success") == 0 ) ) {
         subtaskStatus = "SUCCESS";
     } else {
         subtaskStatus = "FAIL";
     }
+
+    if( (msg.task_success_status.compare("success") == 0) ) {
+        task_has_finished = true; 
+        task_success_statistics += 1;
+        // TODO remove 
+        cout << endl << endl << " Global success received " << endl; 
+    } else if ( (msg.task_success_status.compare("fail") == 0) ) {
+        task_has_finished = true; 
+        task_fail_statisctics += 1; 
+        cout << endl << endl << " Global fail received " << endl;  
+    }
+
 
     subtask_counter += 1; 
     // TODO remove after debugging 

@@ -14,7 +14,7 @@
 #include <observation_agent/ObservationAgent_IExperiment.h>
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/json_parser.hpp"
-#include <helper_functions/Json_parser.h>
+
 
 using namespace std;
 
@@ -34,15 +34,8 @@ void ObservationAgent::initialize(){
 	 */
 	ObsUpdater = nh.serviceClient<hrc_ros::InformObsToTaskMang>("/task_manager/observation_update");  // Client for the task manager service for the status update
 
-	/// ROS services by MORSE to call for the human actions
-	is_ov  = nh.serviceClient<std_srvs::Trigger>("/human/is_ov");  // ACTION: LOOK AROUND
-	is_oir = nh.serviceClient<std_srvs::Trigger>("/human/is_oir"); // SITUATION: IS HUMAN DETECTED?
-	//ros::ServiceClient is_ho  = nh.serviceClient<std_srvs::Trigger>("/human/is_ho");
-	is_a0  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0");  // ACTION: GRASP ATTEMPT
-	is_a2  = nh.serviceClient<std_srvs::Trigger>("/human/is_a2");  // ACTION: IDLE
-	is_a4  = nh.serviceClient<std_srvs::Trigger>("/human/is_a4");  // ACTION: WARN THE ROBOT
-	// This information below for recording human observable history. Processed and saved under TaskManager
-	is_a0_failed  = nh.serviceClient<std_srvs::Trigger>("/human/is_a0_failed");  // ACTION: GRASP ATTEMPTED BUT FAILED
+	successful_subtasks = 0; 
+	failed_subtasks = 0; 
 
 	/*
 	 *Ros Publishers and Subscriber initialization 
@@ -59,7 +52,6 @@ void ObservationAgent::initialize(){
 	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_action_recognized", &ObservationAgent::IE_receive_actionrecognition_update, this);
 	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IE_receive_tray_update, this);
 	//new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
-	//IE_new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::IE_humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 
 	/*
@@ -100,6 +92,13 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	// get task_counter & reset subtask_counter 
 	task_counter = req.task_cnt; 
 	subtask_counter = 1;
+
+	// reset successful_subtasks and failed_subtasks counters 
+	successful_subtasks = 0; 
+	failed_subtasks = 0; 
+	o1_ipd = false; //  O_1  task successs (processed product detected)
+	o2_upd = false; // O_2	failure
+
 	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;
 
 	// Read in the task_scenario -> this info is used to elaborate subtask success or failure 
@@ -118,6 +117,8 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
                 return false;
             }
 
+	// get global task_configuration setting (criterias for global success and failure) once per task 
+	global_task_configuration_read = read_global_task_config(testscenario_pt); 
 
     // TODO inform robot type and human type -> remove human type 
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
@@ -501,6 +502,7 @@ bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request
 }
 // ********************************** //
 
+
 bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observed) {
 
 	//WebSocket (WS)-client at port 7070 using 1 thread
@@ -553,17 +555,18 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	o5_a0						// O_5  grasping attempt
 	*/
 
-	current_object = req.current_object;  // or recalculate from tray_object_combination
+	
 	 
 
-	// mapping tray status to observables ( o1 = success | o2 = failure )
+	// #### mapping tray status to observables ( o1 = success | o2 = failure ) ####
 	
-	// ##### Check if subtask is success or failure #### 
+	current_object = req.current_object;
+	string task_success_state = "ongoing";
 	string subtask_success_state = "fail";
 	hrc_ros::SuccessStatusObserved success_status_msg;
 	success_combo success_criteria_read;
 
-	// get strings for success_criteria request
+	// ## get strings for success_criteria request
 	stringstream ss_task_counter;  
 	stringstream ss_subtask_counter; 
 
@@ -574,8 +577,8 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	string task_str = ss_task_counter.str();
 	string subtask_str = ss_subtask_counter.str();
 	string object_str  = object_int_to_str(current_object);
-	// TODO change to subtask success or failure!!!
 
+	// ## determine subtask success state 
     try {
 	success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
 	} catch(boost::property_tree::json_parser::json_parser_error &e) {
@@ -584,95 +587,99 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			return false;
 		}
 
+
 	int success_tray_read = success_criteria_read.tray; 
 	if (req.current_tray == success_tray_read){
-		o1_ipd = true; //  O_1  task successs (processed product detected)
+
+		// TODO remove o3 - o7 after test -> they are set in the action_received function
+		o1_ipd = false; //  O_1  task successs (processed product detected)
 		o2_upd = false; // O_2	failure
+		
+		//o3_oir = true;
+		//o7_a2  = true;
+
 		subtask_success_state = "success";
+		successful_subtasks += 1; 
 	} else {
 		o1_ipd = false; //  O_1  task successs (processed product detected)
-		o2_upd = true; // O_2	failure 
+		o2_upd = false; // O_2	failure
+		
+		//o3_oir = true; 
+		//o5_a0  = true; 
+		//o7_a2  = false; 
+
 		subtask_success_state = "fail";
+		failed_subtasks += 1; 
 	}
+
 	
-	ROS_INFO("\n\n");
-	ROS_INFO("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED ####");
-	ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
-	ROS_INFO(" Current_object %d",req.current_object);
-	ROS_INFO(" Current_tray %d",req.current_tray);
-	ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
-	ROS_INFO("********\n\n\n");
+	// ## determine global success state 
+	if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
+		task_success_state = "success"; // global success 
+		o1_ipd = true; //  O_1  task successs (processed product detected)
+		o2_upd = false; // O_2	failure
+		//TODO remove 
+		cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
+	} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
+		task_success_state = "fail"; // global fail
+		o1_ipd = false; //  O_1  task successs (processed product detected)
+		o2_upd = true; // O_2	failure 
+		// TODO remove 
+		cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl; 
+	}
 
-	//tray_msg_stamp = msg.stamp;
-
-	// get the rule for the single task at hand by browsing the current task rule sets // TODO test this and implement task_rules updater 
-	//current_task_rule = task_rules[msg.current_object] // TODO task_rules should be a global variable filled once 
-
-	/*if (msg.tray_obj_combination == current_task_rule) { 		// success in single task => ipd_sensor = true 
-		//ipd_sensor = true; 
-		//upd_sensor = false;
-		ipd_O1	= true;				// O_1  task successs (processed product detected)
-		upd_O2	= false; 				// O_2	failure 
-
-	} else if (msg.tray_obj_combination != current_task_rule) { // failure in single task => upd_sensor = true 
-		//ipd_sensor = false; 
-		//upd_sensor = true; 
-		ipd_O1	= false;				
-		upd_O2	= true; 				
-	*/
-
-
-
-
-    //success_status_msg = string(subtask_success_state);
+	// ## Compose success_status_msg
 	success_status_msg.stamp = ros::Time::now();
 	success_status_msg.subtask_success_status = subtask_success_state;
-	// TODO get task_success_state
-	//success_status_msg.task_success_status = task_success_state;
+	success_status_msg.task_success_status = task_success_state;
 	
-	
-	
-	// ++++ fields for debugging
+	// ## fields for debugging
 	success_status_msg.current_object = current_object; 
 	success_status_msg.current_tray = req.current_tray;
 	success_status_msg.success_tray = success_tray_read; 
 	success_status_msg.task_counter = task_counter;
 	success_status_msg.subtask_counter = subtask_counter;  
 
+	// ## Trigger a decision 
+	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+	
 
+	// ############ if final state is reached is should also be informed to the POMDP -> the pomdp will terminate aftewards
+	if (task_success_state.compare("success") ==0 ){
+		cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl; 
+		IE_humanSt_to_robotSt_Map("GlobalSuccess");
+	} else if (task_success_state.compare("fail")==0) {
+		cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl; 
+		IE_humanSt_to_robotSt_Map("GlobalFail");
+	}
+
+	// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 	traySensor_success_pub.publish(success_status_msg);
 
-
-
-	// TODO  check if subtask_counter has to be reset according to the current task? 
+	// ## increment subtask counter
 	subtask_counter += 1; 
-	// TODO 
-	// check if task is global success or global fail 
-	// for this i need the subtask number from the task manager !!! 
-	
+
+
+	ROS_INFO("\n\n");
+	ROS_INFO("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED ####");
+	//ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
+	ROS_INFO(" Current_object %d",req.current_object);
+	ROS_INFO(" Current_tray %d",req.current_tray);
+	ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
+	ROS_INFO("task_success_state = %s \n ",task_success_state.c_str());
+	ROS_INFO("Failed_subtasks = %d  ",failed_subtasks);
+	ROS_INFO("successful_subtasks = %d  ",successful_subtasks);
+	ROS_INFO("********\n\n\n");
+
 
 	
-	// trigger decision !!!! 
-	// TODO change this to the actual trigger function 
-    cout << endl << endl << " ###############  Current task counters and success states ######################## " << endl << endl; 
+    cout << endl << " ###############  Current task counters and success states ######################## " << endl << endl; 
 	cout << "task_counter = " << task_counter << "  subtask_counter = " << subtask_counter << " subtask_success_state = " << subtask_success_state << endl;  
 
-	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
-
-	//TODO broadcast the tray_update here -> success or failure   
-
-
-
 	
+ 
 
-   /* int r = rand() % 3;
-	if(r== 1){
-		return true; 
-	} else {
-		return false; 
-	} */
-
-	ROS_INFO("Mapping success: %d" ,mapping_success);
+	ROS_INFO("Mapping success: %d \n \n \n" ,mapping_success);
 	res.success = true;
 	return true; 
 }
@@ -706,9 +713,9 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	 o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
 
 	ROS_INFO("\n\nOBSERVATION ROS: ## ActionRecognition update received  RECEIVED ##");
-	ROS_INFO(" Action %s",req.action.c_str());
-	ROS_INFO("Human detected =  %d", o3_oir);
-	ROS_INFO("Human looking around = %d", o4_ov);
+	ROS_INFO(" Action %s     | warning = O6 | Idle = O7",req.action.c_str());
+	ROS_INFO("Human detected (O3) =  %d", o3_oir);
+	ROS_INFO("Human NOT looking around (!O4) = %d", o4_ov);
 	ROS_INFO("observation_mapped =  %s",observation_mapped.c_str());
 	ROS_INFO("********\n\n\n");
 
@@ -752,8 +759,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	 */
 
 	IE_humanSt_to_robotSt_Map(observation_mapped);
-	 
-	
+
 	
 	// trigger decision !!!! 
 	// TODO change this to the actual trigger function 

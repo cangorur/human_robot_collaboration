@@ -13,10 +13,10 @@ using namespace std;
 
 int main(int argc, char **argv) {
 
-	ros::init(argc, argv, "test_2_synchronisation_task_observation");
+	ros::init(argc, argv, "test_1_synchro_task_observation");
 	ros::NodeHandle nh;
 
-	ROS_INFO("Test2 is setup and ready!\n\n");
+	ROS_INFO("Test1 is setup and ready!\n\n");
 
 	TestAgent test_agent;
 

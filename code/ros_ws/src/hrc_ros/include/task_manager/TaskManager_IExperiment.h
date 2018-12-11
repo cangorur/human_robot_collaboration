@@ -230,6 +230,10 @@ private:
 	task_set current_task_set;
 	global_task_config current_global_task_config; 
 	int task_quantity_scenario = 5; 
+
+	// variables for statistic 
+	int task_fail_statisctics = 0; 
+	int task_success_statistics = 0; 
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */

@@ -21,6 +21,8 @@ void TestAgent::initialize(){
   ros::NodeHandle nh("~");
   // subscriber
   sucessStatus_sub = nh.subscribe("/observation_agent/observedsuccess_status",1000,&TestAgent::ReceiveSuccessStatusObserved, this);
+  // subscriber to task manager task_status -> this includes the current state of the robot 
+  task_manag_task_status_sub = nh.subscribe("/task_manager_IE/task_status",1000,&TestAgent::ReceiveTaskManageTaskStatus, this);
   // service client to inform tray update 
   tray_client = nh.serviceClient<hrc_ros::InformTrayUpdate>("/observation_agent/inform_tray_update");
   //hrc_ros::InformTrayUpdate tray_srv;
@@ -57,6 +59,16 @@ void TestAgent::ReceiveSuccessStatusObserved(const hrc_ros::SuccessStatusObserve
     //issue_tray_update(2,3);
 }
 
+void TestAgent::ReceiveTaskManageTaskStatus(const hrc_ros::TaskState &msg){
+
+      // the current Despot robot state = task_status
+      //cout << endl <<  " ## TaskManager_task_status reveived ## " << endl; 
+      //cout << "task_status = " << msg.task_status; 
+      Despot_global_task_status = msg.task_status; 
+
+
+} 
+
 
 bool TestAgent::issue_tray_update(int current_object_int,int current_tray_int){
 
@@ -77,9 +89,32 @@ bool TestAgent::issue_tray_update(int current_object_int,int current_tray_int){
           return 1;
         }
 
-
 }
 
+
+bool TestAgent::issue_action_update(string action,int human_detected, int human_looking_around){
+
+     // inform about tray update 
+
+        // compose message to be sent
+        action_srv.request.stamp = ros::Time::now();
+        action_srv.request.action = action;
+        action_srv.request.human_detected = human_detected; 
+        action_srv.request.human_looking_around = human_looking_around;  
+
+        action_srv.response.success = action_client.call(action_srv);
+       
+        if (action_srv.response.success)
+        {
+          ROS_INFO(" ++++ Service call successfull  --- inform_action_update");
+        }
+        else
+        {
+          ROS_ERROR(" ++++ Failed to call service    --- inform_action_update");
+          return 1;
+        }
+
+}
 
   int current_object_int; 
   int current_tray_int; 

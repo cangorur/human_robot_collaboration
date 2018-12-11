@@ -49,6 +49,7 @@ public:
 	void ReceiveSuccessStatusObserved(const hrc_ros::SuccessStatusObserved &msg);
 
 	bool issue_tray_update(int current_object_int, int current_tray_int);
+	bool issue_action_update(std::string action,int human_detected, int human_looking_around);
 
 
 	// global variables that need to be accessible
@@ -57,6 +58,7 @@ public:
 	std::string subtask_success_status = "uninitialized";
 	int task_cnt_received = 0; 
 	int subtask_cnt_received = 0; 
+	std::string Despot_global_task_status = "uninitilized";
 
 
 private:
@@ -88,6 +90,9 @@ private:
 	// =======================================
 
 	void ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved &msg);
+
+
+	void ReceiveTaskManageTaskStatus(const hrc_ros::TaskState &msg);
 	// =======================================
 
 	/// =========== Other Methods============
@@ -104,6 +109,7 @@ private:
 private:
 
 	 ros::Subscriber sucessStatus_sub;
+	 ros::Subscriber task_manag_task_status_sub;
 	 hrc_ros::InformTrayUpdate tray_srv;
 	 hrc_ros::InformActionRecognized action_srv;
 	 ros::ServiceClient tray_client;

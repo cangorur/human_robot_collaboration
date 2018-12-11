@@ -28,6 +28,8 @@
 
 #include "simple_web_socket/client_ws.hpp"
 
+#include <helper_functions/Json_parser.h>
+
 using namespace std;
 typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
 
@@ -202,6 +204,9 @@ private:
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer reset_scenario;
 
+
+	ros::ServiceServer IE_new_state__server; 
+
 	/// ROS subscribers (traySensor_subs) subscribes to the proximity sensors on the trays in the MORSE env.
 	ros::Subscriber traySensor_subs;
 
@@ -304,8 +309,13 @@ private:
 	int task_counter = 1; 
 	int subtask_counter = 1;
 
+	// counters that count the successes and failures during a task -> used to determine global_success and global_fail
+	int successful_subtasks = 0; 
+	int failed_subtasks 	= 0; 
+
 	// property tree to hold the testscenario information 
-	boost::property_tree::ptree testscenario_pt;  
+	boost::property_tree::ptree testscenario_pt; 
+	global_task_config global_task_configuration_read;  
 	
 };
 

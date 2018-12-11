@@ -51,7 +51,6 @@ add_message_files(
   HumanUpdateMsg.msg
   ObsUpdateMsg.msg
   RobotUpdateMsg.msg
-  TrayUpdateCamera.msg
   SuccessStatusObserved.msg
 )
 
@@ -147,7 +146,13 @@ target_link_libraries(test_decision_trigger ${catkin_LIBRARIES} ${Boost_LIBRARIE
 #target_link_libraries(test_1_synchronisation_task_observation ${catkin_LIBRARIES} ${Boost_LIBRARIES} #${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(test_1
-  src/test_agents_IE/test_1_synchro_task_observation.cpp
-  src/test_agents_IE/test_1_node.cpp)
+  src/test_agents_IE/test_agent.cpp
+  src/test_agents_IE/test_1_node_synchro_task_observation.cpp)
 add_dependencies(test_1 ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(test_1 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_2
+  src/test_agents_IE/test_agent.cpp
+  src/test_agents_IE/test_2_node_despot_subtask_behaviour.cpp)
+add_dependencies(test_2 ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(test_2 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
