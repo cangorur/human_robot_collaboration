@@ -233,7 +233,10 @@ private:
 
 	// variables for statistic 
 	int task_fail_statisctics = 0; 
-	int task_success_statistics = 0; 
+	int task_success_statistics = 0;
+	int subtask_success_statistics = 0; 
+	int subtask_fail_statistics	   = 0; 
+	std::string final_state_statistics = "uninitialized"; 
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */

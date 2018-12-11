@@ -728,11 +728,15 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     if( (msg.task_success_status.compare("success") == 0) ) {
         task_has_finished = true; 
         task_success_statistics += 1;
+        subtask_success_statistics = msg.successful_subtasks;
+        final_state_statistics = "GlobalSuccess";
         // TODO remove 
         cout << endl << endl << " Global success received " << endl; 
     } else if ( (msg.task_success_status.compare("fail") == 0) ) {
         task_has_finished = true; 
         task_fail_statisctics += 1; 
+        subtask_success_statistics = msg.failed_subtasks; 
+        final_state_statistics = "GlobalFail";
         cout << endl << endl << " Global fail received " << endl;  
     }
 
@@ -828,6 +832,18 @@ void TaskManager::CheckToStartNewTask(void){
         // increment task counters here!!!
         subtask_counter = 1; 
         task_counter += 1; 
+
+        
+        // ###### Reset all subtask relevant variables 
+        // TODO : save all relevant statistics to file -> afterwards savely reset all variables
+        //std::ofstream StatisticFile; 
+        //StatisticFile.open("StatisticsTest.csv");
+        //StatisticFile << "Task,Successfull_Subtasks,FailedSubtask,FinalState" << endl; 
+        //StatisticFile << task_counter << "," << subtask_success_statistics << "," << subtask_fail_statistics << "," << final_state_statistics; 
+        //StatisticFile.close();
+        subtask_success_statistics = 0; 
+        subtask_fail_statistics    = 0;
+        final_state_statistics     = "Reset"; 
 
         if (task_counter > (current_global_task_config.task_max) ){
             cout << endl << endl << " All tests are done - :-) " << endl << endl; 

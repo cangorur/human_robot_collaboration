@@ -638,13 +638,18 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	success_status_msg.current_tray = req.current_tray;
 	success_status_msg.success_tray = success_tray_read; 
 	success_status_msg.task_counter = task_counter;
-	success_status_msg.subtask_counter = subtask_counter;  
+	success_status_msg.subtask_counter = subtask_counter; 
+
+	// ## fields for statistics 
+	success_status_msg.failed_subtasks = failed_subtasks; 
+	success_status_msg.successful_subtasks = successful_subtasks; 
+	 
 
 	// ## Trigger a decision 
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 	
 
-	// ############ if final state is reached is should also be informed to the POMDP -> the pomdp will terminate aftewards
+	// ############ if final state is reached is should also be informed to the POMDP -> the pomdp will terminate afterwards
 	if (task_success_state.compare("success") ==0 ){
 		cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl; 
 		IE_humanSt_to_robotSt_Map("GlobalSuccess");
