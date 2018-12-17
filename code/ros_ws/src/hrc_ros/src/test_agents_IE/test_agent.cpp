@@ -1,6 +1,7 @@
 #include "ros/ros.h"
-#include <hrc_ros/TrayUpdateCamera.h>
+//#include <hrc_ros/TrayUpdateCamera.h>
 #include <cstdlib>
+
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/InformHumanState.h>
