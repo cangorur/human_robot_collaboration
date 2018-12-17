@@ -582,12 +582,6 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::
     ROS_INFO("[TASK_MANAGER]: Real Observables: %s", real_observation_array.c_str());
     taskState_msg.real_obs_received = real_observation_array;
 
-    std::vector<uint8_t> noisy_obs_msg = req.obs_update.obs_with_noise;
-    string observation_with_noise_array = "LA: " + to_string(noisy_obs_msg[0]) + " || H.DET: " + to_string(noisy_obs_msg[1]) +
-            " || GRASP: " + to_string(noisy_obs_msg[2]) + " || SUCCESS: " + to_string(noisy_obs_msg[3]) + " || WARN: " + to_string(noisy_obs_msg[4]) +
-            " || IDLE: " + to_string(noisy_obs_msg[5]) + " || FAIL: " + to_string(noisy_obs_msg[6]);
-    ROS_INFO("[TASK_MANAGER]: Noisy Observables: %s", observation_with_noise_array.c_str());
-    taskState_msg.obs_with_noise = observation_with_noise_array;
 
     // Human observables are the observation vector only related to the human actions and situation:
     // human_obs as vector<bool> =                  [Human Detected?,

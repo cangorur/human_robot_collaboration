@@ -368,43 +368,17 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		// TODO: update for toy example for the HW setup exp
 
 
-		bool o4_ov_noisy =  o4_ov;
-		bool o3_oir_noisy = o3_oir;
-		bool o5_a0_noisy = o5_a0;
-		bool o1_ipd_noisy = o1_ipd; // success: O1
-		bool o6_a4_noisy = o6_a4;
-		bool o7_a2_noisy = o7_a2; // human idle: O7
-		bool o2_upd_noisy = o2_upd; // failure: O2
-
-		int r = rand() % 20;
-		int m = rand() % 2; // confused or missed
-		if ((o5_a0 || o6_a4) && r == 0){ // if one of this is one then 10% noise
-			if (m == 0){ // 2.5 % chance of confusing a0 and a4
-				o5_a0_noisy = not o5_a0;
-				o6_a4_noisy = not o6_a4;
-			} else if (m == 1){ // 2.5 % chance of missing the gesture and assuming idle (a2)
-				o5_a0_noisy = false;
-				o6_a4_noisy = false;
-				o7_a2_noisy = true;
-			}
-		} else if (((not o4_ov) || o7_a2) && r == 0){ // if either looking around (not o4_ov) or idle is detected, 10 % chance of confusing them
-			o4_ov_noisy = not o4_ov;
-			o7_a2_noisy = not o7_a2;
-		}
-		// ===================================================
-
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
 		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd);
-		robot_observation_noisy = MapObservablesToObservations(o4_ov_noisy,o3_oir_noisy,o5_a0_noisy,o1_ipd_noisy,o6_a4_noisy,o7_a2_noisy,o2_upd_noisy);
 
 		if (robotType == "reactive"){
-			observation = MapObservationsToMDP(robot_observation_noisy); // Get correspending state for reactive ROBOT wrt observations to state mapping
+			observation = MapObservationsToMDP(robot_observation_real); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
-			observation = MapObservationsToPOMDP(robot_observation_noisy); // Get correspending observation for proactive ROBOT wrt observables received
+			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
 
-		ROS_INFO("OBSERVATION ROS: real_observable: %s, noisy_observable: %s, mapped observation: %s",
-				robot_observation_real.c_str(), robot_observation_noisy.c_str(), observation.c_str());
+		ROS_INFO("OBSERVATION ROS: real_observable: %s, mapped observation: %s",
+				robot_observation_real.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
 		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
@@ -416,6 +390,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		obs_update.stamp_obs_update = ros::Time::now();
 
+		// ********* NOTE Real observations and noisy observations are the same in IE. The received ones are 
 		// Real observation is for the task manager to record statistics on running human models
 		std::vector<uint8_t> real_obs_received;
 		real_obs_received.push_back(not o4_ov);
@@ -431,15 +406,15 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		obs_update.real_obs_received = real_obs_received;
 
-		// Noisy observation is for the robot
+		// Noisy observation is for the robot (noisy observations and real are the same in Interaction Experiment)
 		std::vector<uint8_t> obs_with_noise;
-		obs_with_noise.push_back(not o4_ov_noisy);
-		obs_with_noise.push_back(o3_oir_noisy);
-		obs_with_noise.push_back(o5_a0_noisy);
-		obs_with_noise.push_back(o1_ipd_noisy);
-		obs_with_noise.push_back(o6_a4_noisy);
-		obs_with_noise.push_back(o7_a2_noisy);
-		obs_with_noise.push_back(o2_upd_noisy);
+		obs_with_noise.push_back(not o4_ov);
+		obs_with_noise.push_back(o3_oir);
+		obs_with_noise.push_back(o5_a0);
+		obs_with_noise.push_back(o1_ipd);
+		obs_with_noise.push_back(o6_a4);
+		obs_with_noise.push_back(o7_a2);
+		obs_with_noise.push_back(o2_upd);
 
 		obs_update.obs_with_noise = obs_with_noise;
 		obs_update.who_succeeded = whoSucceeded;
@@ -695,14 +670,14 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	
 	string observation_mapped = "TaskHuman"; // only WarningReceved, GlobalSuccess, and GlobalFail are relevant
 	
-	if (req.action == "warning"){
+	if (req.action == "warning"){		//O6
 		o6_a4 = true;
 		observation_mapped = "WarningTheRobot";
 	} else{
 		o6_a4 = false; 
 	} 
 
-	if (req.action == "idle"){
+	if (req.action == "idle"){			// O7
 		o7_a2 = true; 
 	} else {
 		o7_a2 = false; 
