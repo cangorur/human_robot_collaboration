@@ -1,0 +1,5 @@
+<launch>
+<node pkg="object_tracking" type="feature_processer" name="feature_processer" output="screen"  launch-prefix="gnome-terminal --command" />
+<node pkg="object_tracking" type="tray_observer" name="tray_observer" output="screen" launch-prefix="gnome-terminal --command" />
+<node pkg="object_tracking" type="obj_track" name="obj_track" output="screen" />
+</launch>
