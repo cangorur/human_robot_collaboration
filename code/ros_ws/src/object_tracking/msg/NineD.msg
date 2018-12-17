@@ -1,4 +1,0 @@
-time stamp
-int32[] data
-int32 tray_obj_combination
-int32 current_object

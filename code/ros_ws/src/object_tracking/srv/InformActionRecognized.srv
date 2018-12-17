@@ -1,9 +1,0 @@
-time stamp
-
-# latest recognized action + duration this action has not changed 
-string action 
-uint32    action_duration
-bool 	  human_detected
-bool 	  human_looking_around
----
-bool success
