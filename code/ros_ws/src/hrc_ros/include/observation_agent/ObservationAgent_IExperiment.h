@@ -17,7 +17,6 @@
 #include <hrc_ros/InformHumanState.h>
 #include <hrc_ros/InformObsToTaskMang.h>
 #include <hrc_ros/ResetObsROS.h>
-#include <hrc_ros/TrayUpdateCamera.h>
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/SuccessStatusObserved.h>
