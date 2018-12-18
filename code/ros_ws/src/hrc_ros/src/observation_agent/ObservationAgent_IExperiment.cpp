@@ -676,6 +676,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 // *** Service handler that receives a classified action and calculates the observables 
 bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
 	
+
 	string observation_mapped = "TaskHuman"; // only WarningReceved, GlobalSuccess, and GlobalFail are relevant
 	
 	if (req.action == "warning"){		//O6
@@ -697,8 +698,8 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		o5_a0 = false;
 	}
 
-	 o3_oir = req.human_detected;            // O_3  Human is detected 
-	 o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
+	o3_oir = req.human_detected;            // O_3  Human is detected 
+	o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
 
 	ROS_INFO("\n\nOBSERVATION ROS: ## ActionRecognition update received  RECEIVED ##");
 	ROS_INFO(" Action %s     | warning = O6 | Idle = O7",req.action.c_str());
@@ -746,25 +747,28 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	 * 					TaskRobot
 	 */
 
-	IE_humanSt_to_robotSt_Map(observation_mapped);
+	ROS_INFO(" \n \n XXXXXX  Time_passed_since_new_action   : %f" , (req.stamp - former_time_stamp).toSec() );
 
-	
-	// trigger decision !!!! 
-	// TODO change this to the actual trigger function 
-	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+	if (  (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(5.0))  ) {
+		
+		former_time_stamp = req.stamp;
+		IE_humanSt_to_robotSt_Map(observation_mapped);
+
+		// trigger decision !!!! 
+		// TODO change this to the actual trigger function 
+		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+		ROS_INFO(" \n \n XXXXXX  New Observation detected -> issue despot decision making    : %d" ,mapping_success);
+
+	}
 
 
+	o6_former = o6_a4; 	// Assign former values -> used to check if update occured !!!! 
+	o7_former = o7_a2;
+	o5_former = o5_a0; 
+	o3_former = o3_oir;
+	o4_former = o4_ov; 
 
 
-
-   /* int r = rand() % 3;
-	if(r== 1){
-		return true; 
-	} else {
-		return false; 
-	} */
-
-	ROS_INFO("Mapping success: %d" ,mapping_success);
 	res.success = true;
 	return true; 
 }

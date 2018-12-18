@@ -283,6 +283,14 @@ private:
 	bool o7_a2		= false; 				// O_7  Idle
 	bool o2_upd		= false; 				// O_2	failure
 
+	// former values to calculate if update happened -> only update will trigger despot decision making
+	bool o6_former = true; 
+	bool o7_former = true; 
+	bool o5_former = true; 
+	bool o3_former = true; 
+	bool o4_former = true; 
+	ros::Time former_time_stamp; 
+
 	// global variables to store the latest tray status and the latest recognized human action 
 	int tray_object_combination = 0; 		
 		/*# R_tray: 	1 = Red object in Red tray 
