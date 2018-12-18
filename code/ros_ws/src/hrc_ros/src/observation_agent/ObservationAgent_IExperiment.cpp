@@ -118,7 +118,12 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
             }
 
 	// get global task_configuration setting (criterias for global success and failure) once per task 
+	// get task related number of subtask 
 	global_task_configuration_read = read_global_task_config(testscenario_pt); 
+	stringstream s_stream;
+	s_stream << task_counter; 
+	string task_str = s_stream.str(); 
+	current_subtask_quantity = get_subtask_quantity(task_str,testscenario_pt);
 
     // TODO inform robot type and human type -> remove human type 
 	humanTrustsRobot = (req.humanTrustsRobot == "YES") ? true : false;
@@ -587,20 +592,23 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		failed_subtasks += 1; 
 	}
 
-	
-	// ## determine global success state 
-	if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
-		task_success_state = "success"; // global success 
-		o1_ipd = true; //  O_1  task successs (processed product detected)
-		o2_upd = false; // O_2	failure
-		//TODO remove 
-		cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
-	} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
-		task_success_state = "fail"; // global fail
-		o1_ipd = false; //  O_1  task successs (processed product detected)
-		o2_upd = true; // O_2	failure 
-		// TODO remove 
-		cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl; 
+	// ## determine global success state -> it is only set once all subtasks are finished
+	if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done 
+		 
+		if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
+			task_success_state = "success"; // global success 
+			o1_ipd = true; //  O_1  task successs (processed product detected)
+			o2_upd = false; // O_2	failure
+			//TODO remove 
+			cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
+		} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
+			task_success_state = "fail"; // global fail
+			o1_ipd = false; //  O_1  task successs (processed product detected)
+			o2_upd = true; // O_2	failure 
+			// TODO remove 
+			cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl; 
+		}
+
 	}
 
 	// ## Compose success_status_msg

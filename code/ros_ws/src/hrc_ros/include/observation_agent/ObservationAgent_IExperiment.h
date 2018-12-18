@@ -314,7 +314,10 @@ private:
 
 	// property tree to hold the testscenario information 
 	boost::property_tree::ptree testscenario_pt; 
-	global_task_config global_task_configuration_read;  
+	global_task_config global_task_configuration_read;
+	int current_subtask_quantity = 0;  
+
+	
 	
 };
 

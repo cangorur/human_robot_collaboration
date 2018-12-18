@@ -156,3 +156,9 @@ add_executable(test_2
   src/test_agents_IE/test_2_node_despot_subtask_behaviour.cpp)
 add_dependencies(test_2 ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(test_2 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_3
+  src/test_agents_IE/test_agent.cpp
+  src/test_agents_IE/test_3_node_despot_real_setup_task_checker.cpp)
+add_dependencies(test_3 ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(test_3 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})

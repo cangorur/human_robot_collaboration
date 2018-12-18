@@ -1,10 +1,10 @@
 {
     "config" :
     {
-	"subtask_max"    : "11",
-	"task_max"       : "3",
-	"global_success" : "5",
-	"global_fail"    : "5"
+	"subtask_max"    : "4",
+	"task_max"       : "4",
+	"global_success" : "2",
+	"global_fail"    : "2"
     },
 
 
@@ -14,7 +14,7 @@
         "1" :
 	{
 
-	   "subtask_quantity" : "10",			
+	   "subtask_quantity" : "4",			
 
 	   "subtask" : 
 	   {
@@ -23,9 +23,9 @@
 
 		"all": 
 		{	
-			"object_1": {"tray": "4"}, 
-			"object_2": {"tray": "3"},
-			"object_3": {"tray": "2"}
+			"object_1": {"tray": "1"}, 
+			"object_2": {"tray": "2"},
+			"object_3": {"tray": "3"}
 		}
 		
 	   }		
@@ -36,15 +36,15 @@
 	 "2" :
 	{
 
-	   "subtask_quantity" : "6",
+	   "subtask_quantity" : "4",
 
 	   "subtask" : 
 	   {
 		"1": 
                 {
-			"object_1": { "tray": "10"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
 		},
 
 
@@ -52,81 +52,110 @@
                 {
 			"object_1": { "tray": "2"},
 			"object_2": { "tray": "2"},
-			"object_3": { "tray": "15"}
+			"object_3": { "tray": "2"}
 		},
 
 		"3": 
                 {
-			"object_1": { "tray": "21"},
-			"object_2": { "tray": "20"},
-			"object_3": { "tray": "22"}
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
 		},
 
 		"4": 
                 {
-			"object_1": { "tray": "24"},
-			"object_2": { "tray": "24"},
-			"object_3": { "tray": "24"}
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
 		},
 
 		"5": 
                 {
-			"object_1": { "tray": "24"},
-			"object_2": { "tray": "26"},
-			"object_3": { "tray": "24"}
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
 		},
+
 		"6": 
                 {
-			"object_1": { "tray": "24"},
-			"object_2": { "tray": "26"},
-			"object_3": { "tray": "24"}
-		}
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		},
 
+		"7": 
+                {
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
+		},
+
+		"8": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		},
+
+		"9": 
+                {
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
+		},
+
+		"10": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		}
 
 	   }
 
 	},
 
-	 "3" :
+
+	"3" :
 	{
 
-	   "subtask_quantity" : "1",
+	   "subtask_quantity" : "4",			
 
 	   "subtask" : 
 	   {
-		"1": 
-                {
-			"object_1": { "tray": "11"},
-			"object_2": { "tray": "12"},
-			"object_3": { "tray": "13"}
-		},
 
-
-		"2": 
-                {
-			"object_1": { "tray": "2"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "15"}
-		},
-
-		"3": 
-                {
-			"object_1": { "tray": "21"},
-			"object_2": { "tray": "20"},
-			"object_3": { "tray": "22"}
-		},
-
-		"4": 
-                {
-			"object_1": { "tray": "24"},
-			"object_2": { "tray": "24"},
-			"object_3": { "tray": "24"}
+			
+		"all": 
+		{	
+			"object_1": {"tray": "3"}, 
+			"object_2": {"tray": "3"},
+			"object_3": {"tray": "3"}
 		}
+		
+	   }		
 
-	   }
+	},
+
+	"4" :
+	{
+
+	   "subtask_quantity" : "4",			
+
+	   "subtask" : 
+	   {
+
+			
+
+		"all": 
+		{	
+			"object_1": {"tray": "1"}, 
+			"object_2": {"tray": "1"},
+			"object_3": {"tray": "1"}
+		}
+		
+	   }		
 
 	}
-
 
     }
 
