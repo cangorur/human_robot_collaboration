@@ -10,6 +10,8 @@ struct global_task_config {
     int task_max; 
     int global_success_assert; 
     int global_fail_assert; 
+    double sameaction_timeout; 
+    double decision_timer_periode; 
 };
 
 struct success_combo {

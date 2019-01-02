@@ -66,8 +66,9 @@ void ObservationAgent::initialize(){
 
 	/// A ROS timer for the duration of a task assigned to the human
 	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
-
-
+	decision_timer = nh.createTimer(ros::Duration(10.0),&ObservationAgent::DecisionTimer,this);
+	decision_timer.stop(); 
+	
 	/// ROS rate to control the loop frequency
 	ros::Rate rate(0.2);
 
@@ -146,6 +147,10 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	humanidle_counter = 0;
 	humanfail_counter = 0;
 
+	decision_timer.stop(); 
+	decision_timer.setPeriod(ros::Duration(global_task_configuration_read.decision_timer_periode));
+	decision_timer.start(); 
+
 	ipd_sensor = false;	// inspected product detector sensor
 	upd_sensor = false;	// uninspected product detector sensor
 	ROS_INFO("OBSERVATION ROS: Reset!");
@@ -169,6 +174,17 @@ upd =  uninspected product detected (upd box sensor)
 
 void ObservationAgent::HumanTaskTimer(const ros::TimerEvent&){
 	human_task_time += 1; // increase one in every second
+}
+
+void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
+	 
+	 // Note the duration printout is wrong for the first time when the timer has been restarted 
+	 double seconds_real = ( ((event.current_real - event.last_real).toNSec() ) / double(1000000000.0) );  
+	 ROS_WARN(" \n \n XXXXXX  DecisionTimer Event because Timeout reached after   : %f  seconds" , seconds_real);
+
+	 // trigger a decision 
+	 bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+  
 }
 
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
@@ -536,6 +552,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	*/
 
 	
+	// Reset decision timer ( timer only triggers if system is stuck )
+	decision_timer.stop(); 
+	decision_timer.start(); 
 	 
 
 	// #### mapping tray status to observables ( o1 = success | o2 = failure ) ####
@@ -632,7 +651,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 	
 
-	// ############ if final state is reached is should also be informed to the POMDP -> the pomdp will terminate afterwards
+	// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
 	if (task_success_state.compare("success") ==0 ){
 		cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl; 
 		IE_humanSt_to_robotSt_Map("GlobalSuccess");
@@ -676,6 +695,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 // *** Service handler that receives a classified action and calculates the observables 
 bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
 	
+	// Reset decision timer ( timer only triggers if system is stuck )
+	decision_timer.stop(); 
+	decision_timer.start(); 
 
 	string observation_mapped = "TaskHuman"; // only WarningReceved, GlobalSuccess, and GlobalFail are relevant
 	
@@ -746,10 +768,10 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	 *GlobalFail 		GlobalFail
 	 * 					TaskRobot
 	 */
+	cout << " \n \n XXXXXX  Time_passed_since_new_action    : "  << ( (req.stamp - former_time_stamp).toSec() ) ; 
+	ROS_WARN(" \n \n XXXXXX  Time_passed_since_new_action   : %f" , (req.stamp - former_time_stamp).toSec() );
 
-	ROS_INFO(" \n \n XXXXXX  Time_passed_since_new_action   : %f" , (req.stamp - former_time_stamp).toSec() );
-
-	if (  (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(5.0))  ) {
+	if (  (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout))  ) {
 		
 		former_time_stamp = req.stamp;
 		IE_humanSt_to_robotSt_Map(observation_mapped);

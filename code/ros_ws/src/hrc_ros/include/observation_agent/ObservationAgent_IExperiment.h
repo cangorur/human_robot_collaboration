@@ -60,6 +60,12 @@ private:
 	void HumanTaskTimer(const ros::TimerEvent&);
 
 	/**
+	 * Timer event created to trigger a decision even if no action has been received for a long time
+	 */
+	void DecisionTimer(const ros::TimerEvent&);
+
+
+	/**
 	 * Callback function to catch the updated tray sensor information
 	 */
 	void ReceiveTraySensors(const hrc_ros::TraySensor &msg);
@@ -218,6 +224,8 @@ private:
 
 	/// A ROS timer to track human task !
 	ros::Timer task_timer;
+	/// A Timer that will trigger a decision if no action has been recognices for a certain amount of time 
+	ros::Timer decision_timer; 
 
 	/// Flags to control the information communication and variables for task and human-robot states tracking
 	bool prevStIsInitSt = true;
@@ -290,6 +298,7 @@ private:
 	bool o3_former = true; 
 	bool o4_former = true; 
 	ros::Time former_time_stamp; 
+	
 
 	// global variables to store the latest tray status and the latest recognized human action 
 	int tray_object_combination = 0; 		
@@ -323,9 +332,9 @@ private:
 	// property tree to hold the testscenario information 
 	boost::property_tree::ptree testscenario_pt; 
 	global_task_config global_task_configuration_read;
-	int current_subtask_quantity = 0;  
+	int current_subtask_quantity = 0; 
 
-	
+
 	
 };
 

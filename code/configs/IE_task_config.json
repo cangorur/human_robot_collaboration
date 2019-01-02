@@ -1,10 +1,12 @@
 {
     "config" :
     {
-	"subtask_max"    : "4",
-	"task_max"       : "4",
-	"global_success" : "2",
-	"global_fail"    : "2"
+	"subtask_max"    	 : "4",
+	"task_max"       	 : "4",
+	"global_success" 	 : "2",
+	"global_fail"    	 : "2",
+	"same_action_timeout"	 : "5.0",
+	"decision_timer_periode" : "20.0"
     },
 
 

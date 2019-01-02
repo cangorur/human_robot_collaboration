@@ -273,6 +273,8 @@ global_task_config read_global_task_config(boost::property_tree::ptree config_pt
     task_config_read.task_max    = stoi(config_pt.get<string>("config.task_max"));
     task_config_read.global_success_assert = stoi(config_pt.get<string>("config.global_success"));
     task_config_read.global_fail_assert = stoi(config_pt.get<string>("config.global_fail"));
+    task_config_read.sameaction_timeout = stod(config_pt.get<string>("config.same_action_timeout"));
+    task_config_read.decision_timer_periode = stod(config_pt.get<string>("config.decision_timer_periode"));
 
     return task_config_read; 
 }
