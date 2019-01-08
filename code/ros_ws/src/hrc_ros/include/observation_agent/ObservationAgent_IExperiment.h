@@ -143,10 +143,14 @@ private:
 	/**
 	 * This function gets the human observation names and maps them into logic numbers (binaries, e.g. 100001).
 	 * Refer to the google doc for the map: https://docs.google.com/spreadsheets/d/1jDDyNXrNnYsDy5L82CDVipNZQwEvev44tx2FqHkm2wE/edit#gid=2060522298
+	 * ## subtask_status mapping: 
+	 *    ## 0 = ongoing
+	 *    ## 1 = subtask_success 
+	 *    ## 3 = subtask_failure 
 	 * @todo: the observable names of ov and oir to be updated. Currently !OV = Looking Around and OIR = Human is detected
 	 * @todo: Simplify the observation combinations if the reactive model responds almost better than the proactive one!
 	 */
-	string MapObservablesToObservations(bool ov, bool oir, bool a0, bool ipd, bool a4, bool a2, bool upd);
+	string MapObservablesToObservations(bool ov, bool oir, bool a0, bool ipd, bool a4, bool a2, bool upd, int subtask_status);
 
 	/**
 	 * This function maps the binary observable numbers to the POMDP model observations. POMDP model
@@ -224,7 +228,7 @@ private:
 
 	/// A ROS timer to track human task !
 	ros::Timer task_timer;
-	/// A Timer that will trigger a decision if no action has been recognices for a certain amount of time 
+	/// A Timer that will trigger a decision if no action has been recognised for a certain amount of time 
 	ros::Timer decision_timer; 
 
 	/// Flags to control the information communication and variables for task and human-robot states tracking
@@ -290,6 +294,7 @@ private:
 	bool o6_a4		= false;				// O_6  warning received
 	bool o7_a2		= false; 				// O_7  Idle
 	bool o2_upd		= false; 				// O_2	failure
+	int  int_subtask_status = 0; 			// 0 = ongoing | 1 = success | 2 = fail  this is used to issue the subtask observables  
 
 	// former values to calculate if update happened -> only update will trigger despot decision making
 	bool o6_former = true; 

@@ -263,8 +263,9 @@ bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &re
 		// ===================================================
 
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
-		robot_observation_real = MapObservablesToObservations(ov,oir,a0,ipd,a4,a2,upd);
-		robot_observation_noisy = MapObservablesToObservations(ov_noisy,oir_noisy,a0_noisy,ipd_noisy,a4_noisy,a2_noisy,upd_noisy);
+		int subtask_status = 0; // ongoing
+		robot_observation_real = MapObservablesToObservations(ov,oir,a0,ipd,a4,a2,upd,subtask_status);
+		robot_observation_noisy = MapObservablesToObservations(ov_noisy,oir_noisy,a0_noisy,ipd_noisy,a4_noisy,a2_noisy,upd_noisy,subtask_status);
 
 		if (robotType == "reactive"){
 			observation = MapObservationsToMDP(robot_observation_noisy); // Get correspending state for reactive ROBOT wrt observations to state mapping
@@ -390,7 +391,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
-		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd);
+		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd,int_subtask_status);
 
 		if (robotType == "reactive"){
 			observation = MapObservationsToMDP(robot_observation_real); // Get correspending state for reactive ROBOT wrt observations to state mapping
@@ -561,7 +562,8 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	
 	current_object = req.current_object;
 	string task_success_state = "ongoing";
-	string subtask_success_state = "fail";
+	string subtask_success_state = "ongoing";
+	int_subtask_status = 0; // 0 = ongoing | 1 = success | 3 = fail
 	hrc_ros::SuccessStatusObserved success_status_msg;
 	success_combo success_criteria_read;
 
@@ -598,6 +600,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		//o7_a2  = true;
 
 		subtask_success_state = "success";
+		int_subtask_status = 1; 
 		successful_subtasks += 1; 
 	} else {
 		o1_ipd = false; //  O_1  task successs (processed product detected)
@@ -608,6 +611,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		//o7_a2  = false; 
 
 		subtask_success_state = "fail";
+		int_subtask_status = 3; 
 		failed_subtasks += 1; 
 	}
 
@@ -649,6 +653,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 	// ## Trigger a decision 
 	bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+	int_subtask_status = 0; // reset to ongoing 
 	
 
 	// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
@@ -663,7 +668,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 	traySensor_success_pub.publish(success_status_msg);
 
-	// ## increment subtask counter
+	// ## increment subtask counte
 	subtask_counter += 1; 
 
 
@@ -1070,6 +1075,9 @@ string ObservationAgent::MapObservationsToPOMDP(string observable){
 		else if (observable == "16" || observable == "17" || observable == "18" || observable == "19" || observable == "27") {
 			robot_observation = "6";
 		}
+		else if (observable == "23"){   // subtask_fail 
+			robot_observation = "13"; 
+		}
 		else if (observable == "32" || observable == "33") {
 			robot_observation = "7";
 		}
@@ -1078,6 +1086,9 @@ string ObservationAgent::MapObservationsToPOMDP(string observable){
 		}
 		else if (observable == "35") {
 			robot_observation = "9";
+		}
+		else if (observable == "39"){   // subtask_success
+			robot_observation = "12"; 
 		}
 		else if (observable == "40" || observable == "42" || observable == "43") {
 			robot_observation = "10";
@@ -1100,9 +1111,15 @@ string ObservationAgent::MapObservationsToPOMDP(string observable){
 
 //TODO: the observable names of ov and oir update. !OV = Looking Around and OIR = Human is detected
 //TODO: Simplify the observation combinations if the reactive model responds almost better than the proactive one!
-string ObservationAgent::MapObservablesToObservations(bool ov, bool oir, bool a0, bool ipd, bool a4, bool a2, bool upd){
+string ObservationAgent::MapObservablesToObservations(bool ov, bool oir, bool a0, bool ipd, bool a4, bool a2, bool upd, int subtask_status){
 	string robot_observation = prev_observables;
-	if (not ov && not oir && not a0 && not ipd && not a4 && not a2 && not upd) {
+	if ( (subtask_status == 1) && not ipd && not upd  ) {  // subtask success | most observables not inspected for that 
+		robot_observation = "39";
+	} 
+	else if ((subtask_status == 3) && not ipd && not upd ) { // subtask fail |  most observables not inspected for that 
+		robot_observation = "23"; 
+	}
+	else if (not ov && not oir && not a0 && not ipd && not a4 && not a2 && not upd) {
 		robot_observation = "0";
 	}
 	else if (ov && not oir && not a0 && not ipd && not a4 && not a2 && not upd) {
