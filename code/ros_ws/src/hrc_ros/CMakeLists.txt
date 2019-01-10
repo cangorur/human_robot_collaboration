@@ -159,6 +159,6 @@ target_link_libraries(test_2 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CR
 
 add_executable(test_3
   src/test_agents_IE/test_agent.cpp
-  src/test_agents_IE/test_3_node_despot_real_setup_task_checker.cpp)
+  src/test_agents_IE/test_3_node_despot_subtask_behaviour_constant_subtasks.cpp)
 add_dependencies(test_3 ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(test_3 ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})

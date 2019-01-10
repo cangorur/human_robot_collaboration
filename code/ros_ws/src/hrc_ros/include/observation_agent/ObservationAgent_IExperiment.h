@@ -339,6 +339,9 @@ private:
 	global_task_config global_task_configuration_read;
 	int current_subtask_quantity = 0; 
 
+	// global variables for interaction experiment 
+	bool experiment_started = false; //variable that is set true, once the experiment started. Some data will only be evaluated aftewards (e.g. tray updates and actions) 
+
 
 	
 };

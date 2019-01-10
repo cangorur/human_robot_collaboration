@@ -6,6 +6,7 @@
 #include <hrc_ros/InformHumanState.h>
 #include <hrc_ros/SuccessStatusObserved.h> 
 #include <test_agents_IE/TestAgent.h>
+#include <signal.h>
 
 using namespace std; 
 
@@ -28,7 +29,6 @@ void TestAgent::initialize(){
   //hrc_ros::InformTrayUpdate tray_srv;
   action_client = nh.serviceClient<hrc_ros::InformActionRecognized>("/observation_agent/inform_action_recognized");
   //hrc_ros::InformActionRecognized action_srv;
-
   //issue_tray_update((1),2);
   cout << "Test agent initialized" << endl; 
 
@@ -150,4 +150,16 @@ int main(int argc, char **argv)
   ros::spin();  // if the node should run continuously -> also remove the return 0 then 
 } 
 
+*/
+
+// for safe shutdown -> not working so far
+// TODO make work if needed  
+/*static void mySigintHandler(int sig)
+{
+  // Do some custom action.
+  // For example, publish a stop message to some other nodes.
+  cout << " Test node is shutdown " << endl; 
+  // All the default sigint handler does is call shutdown()
+  ros::shutdown();
+}
 */

@@ -224,7 +224,7 @@ task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
                 
             } else if (subtask_chooser.compare("subtask_count") != 0 ) {  // if not subtask_count 
                 object_path = subtask_path + string(".") + subtask_chooser + string(".");
-                cout << " object_path_subtasks  : "  << object_path << endl;
+                //cout << " object_path_subtasks  : "  << object_path << endl;
                 task_set_read.all_set = false;
 
                 BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(object_path)){ // looping trough subtasks
@@ -301,7 +301,7 @@ success_combo get_success_criteria(string str_task,string subtask_str, string ob
 
             if (subtask_chooser.compare("all") == 0){
                 object_path = subtask_path + string(".") + string("all") + string(".") + object_str; 
-                cout << " object_path_all  : "  << object_path << endl;
+                //cout << " object_path_all  : "  << object_path << endl;
 
 
                 int success_tray = stoi ( config_pt.get<string>(( object_path  + string(".tray") ))  );
@@ -314,7 +314,7 @@ success_combo get_success_criteria(string str_task,string subtask_str, string ob
                 
             } else if (subtask_chooser.compare("subtask_count") != 0 ) {  // if not subtask_count 
                 object_path = subtask_path + string(".") + subtask_str + string(".") + object_str;
-                cout << " object_path_subtasks  : "  << object_path << endl;
+                //cout << " object_path_subtasks  : "  << object_path << endl;
 
 
                 int success_tray = stoi ( config_pt.get<string>(( object_path  + string(".tray") ))  );

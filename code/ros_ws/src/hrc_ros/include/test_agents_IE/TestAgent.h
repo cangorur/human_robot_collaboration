@@ -60,6 +60,8 @@ public:
 	int subtask_cnt_received = 0; 
 	std::string Despot_global_task_status = "uninitilized";
 
+	//static void mySigintHandler(int sig);  // for correct shutdown of the node -> not working currently 
+
 
 private:
 
@@ -114,6 +116,7 @@ private:
 	 hrc_ros::InformActionRecognized action_srv;
 	 ros::ServiceClient tray_client;
 	 ros::ServiceClient action_client;
+
 
 	
 	  
