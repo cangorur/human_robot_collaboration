@@ -63,7 +63,6 @@ for bagFile in listOfBagFiles:
 		if topic not in listOfTopics:
 			listOfTopics.append(topic)
 
-
 	for topicName in listOfTopics:
 		#Create a new CSV file for each topic
 		filename = folder + '/' + 'raw_data' + '.csv'
@@ -92,7 +91,7 @@ for bagFile in listOfBagFiles:
 				values = [str(t)]	#first column will have rosbag timestamp
 				for pair in instantaneousListOfData:
 					if len(pair) > 1:
-						values.append(pair[1])
+						values.append(":".join(pair[1:]))
 				filewriter.writerow(values)
 	bag.close()
 print "Done reading all " + numberOfFiles + " bag files."
