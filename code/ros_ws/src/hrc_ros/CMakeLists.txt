@@ -125,6 +125,13 @@ add_dependencies(robot_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(robot_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
+add_executable(robot_agent_pomdp_evaluation
+  src/robot_agent/RobotAgent_pomdp_eval.cpp
+  src/robot_agent/RobotAgentNode.cpp)
+add_dependencies(robot_agent_pomdp_evaluation ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(robot_agent_pomdp_evaluation ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+
 add_executable(observation_agent_IE
   #src/observation_agent/ObservationAgent.cpp
   #src/observation_agent/ObservationAgentNode.cpp

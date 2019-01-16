@@ -18,6 +18,8 @@
 #include <hrc_ros/ResetRobotROS.h>
 
 #include "simple_web_socket/server_ws.hpp"
+#include <iostream> 
+#include <fstream>
 
 using namespace std;
 typedef SimpleWeb::SocketServer<SimpleWeb::WS> WsServer;
@@ -26,6 +28,10 @@ class RobotAgent {
 public:
 	RobotAgent();
 	virtual ~RobotAgent();
+
+	// file and filename to store the results from the pomdp evaluation
+	std::ofstream test_result_file; 
+	string filename_robot_pomdp_eval;
 
 private:
 	/**
