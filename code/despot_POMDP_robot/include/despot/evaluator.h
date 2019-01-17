@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
+#include <ctime>
 
 namespace despot {
 
@@ -137,6 +138,10 @@ public:
 	double StderrUndiscountedRoundReward() const;
 	double AverageDiscountedRoundReward() const;
 	double StderrDiscountedRoundReward() const;
+
+	// file for evaluation of pomdp models 
+	std::ofstream test_result_file;
+	std::string filename_evaluator; 
 };
 
 /* =============================================================================

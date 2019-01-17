@@ -22,11 +22,12 @@ for i in long_range:
 # state = TaskHuman 	
 
 	obs = "9"
-	state = "0"
+	state = "0"  # TaskHuman
 	ws.send(obs + "," + "-1")
-	print "Observation is sent : " + obs
+	print "Observation is sent : " + obs + "\n"
 	ws.send("-1" + "," + state)
-	time.sleep(0.2)
+	print "Real state is sent  : " + state + "  = TaskHuman \n\n"
+	time.sleep(0.5)
 
 
 for i in mid_range:
@@ -35,8 +36,24 @@ for i in mid_range:
 # state = HumanDoingOk 	
 
 	obs = "4"
-	state = "11"
+	state = "11"  # HumanDoingOk
 	ws.send(obs + "," + "-1")
-	print "Observation is sent : " + obs
+	print "Observation is sent : " + obs + "\n"
 	ws.send("-1" + "," + state)
-	time.sleep(0.2)
+	print "Real state is sent  : " + state + "  = HumanDoingOk \n\n"
+	time.sleep(0.5)
+
+
+# Subtask_success  
+# *************  step 3 ********* 
+# OBS = 12  | subtask_success 
+# state = HumanDoingOk 	
+
+obs = "12"
+state = "11"  # HumanDoingOk
+ws.send(obs + "," + "-1")
+print "Observation is sent : " + obs + "\n"
+ws.send("-1" + "," + state)
+print "Real state is sent  : " + state + "  = HumanDoingOk \n\n"
+time.sleep(
+0.5)

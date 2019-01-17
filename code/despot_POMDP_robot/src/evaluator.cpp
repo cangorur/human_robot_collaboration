@@ -182,6 +182,18 @@ bool Evaluator::RunInitial() {
 	Evaluator::webSocketClient(action, state_->text(), 0.0, 0.0);
 	previous_action = action;
 	*out_ << "Robot Took Action: " << action << "in init state: " << state_->text() << endl;
+    
+	time_t now = time(0);
+	struct tm * now_tm = localtime(&now); 
+	char date_buffer [80];
+    strftime (date_buffer,80,"%Y-%m-%d_%R",now_tm); 
+	filename_evaluator = string("/home/elia/master_thesis/catkin_ws/src/hrc_industry/code/results/POMDP_IE_tests/pomdp_evaluator_file_") + date_buffer + string(".csv");
+
+	test_result_file.open (filename_evaluator,std::ios_base::app); 
+	//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
+	test_result_file << string("observation_received") + "," + string("observation_probability") + "," + string("belief_state") + "," + string("belief_state_probability") + "," + string("action_taken") + "," + string("real_state") + "," + string("reward") + "," + string("total_discounted_reward") + "," + string("total_undiscounted_reward") + "\n";; // "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
+	test_result_file.close();
+
 	return true;
 }
 
@@ -237,6 +249,12 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// ########## SENDING THE RESULTS TO THE SOCKET ########### //
 		// Sending rewards gathered from the new state
 		Evaluator::webSocketClient(-1, state_->text(), reward_, total_discounted_reward_);
+
+		// writing rewards and real state to the evaluation file and put an endline 
+		test_result_file.open (filename_evaluator,std::ios_base::app); 
+		cout << "writing rewards to file" << endl; 
+		test_result_file << "," + to_string(real_state) + "," + to_string(reward_) + "," + to_string(total_discounted_reward_) + "," + to_string(total_undiscounted_reward_) + "\n";
+		test_result_file.close();
 
 		if (terminal) {
 			step_end_t = get_time_second();
@@ -313,6 +331,13 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
 		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl;
 		Evaluator::webSocketClient(action, belief_distr[index_first].first, 0.0, 0.0);
+
+		test_result_file.open (filename_evaluator,std::ios_base::app); 
+		//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
+		
+		test_result_file << to_string(manual_obs) + "," + to_string( model_->ObsProb(obs, *state_, previous_action) ) + "," + to_string(belief_distr[index_first].first) + "," + to_string(belief_distr[index_first].second) + "," + to_string(action); 
+		test_result_file.close();
+
 		// ######################################################## //
 	}
 	// ################# BELIEF UPDATE AND ACTION SELECTION ENDS ####################//
