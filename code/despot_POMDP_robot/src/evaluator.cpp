@@ -197,6 +197,13 @@ bool Evaluator::RunInitial() {
 	return true;
 }
 
+/* ################################################################################
+*
+* 	Comment on the evaluator code as it was used in simulation: 
+*   The variable state_ is actually the real_state, in real world experiments the real states are not available
+*  
+*   BUT: The belief update is actually done in the function solver_->Update(previous_action, obs) which uses the belief_state 
+*/
 bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 	if (target_finish_time_ != -1 && get_time_second() > target_finish_time_) {
 		if (!Globals::config.silence && out_)
@@ -280,8 +287,9 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 
 		if (state_ != NULL) {
 			if (!Globals::config.silence && out_)
-				*out_ << "- ObsProb = " << model_->ObsProb(obs, *state_, previous_action)
+				*out_ << "- ObsProb = " << model_->ObsProb(obs, *state_, previous_action) 
 					<< endl;
+				cout << endl << " In Observation Retrieval *state_  :   " << *state_ << endl;
 		}
 
 		start_t = get_time_second();
@@ -334,7 +342,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 
 		test_result_file.open (filename_evaluator,std::ios_base::app); 
 		//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
-		
+		cout << endl << " *state_  :   " << *state_ << endl; 
 		test_result_file << to_string(manual_obs) + "," + to_string( model_->ObsProb(obs, *state_, previous_action) ) + "," + to_string(belief_distr[index_first].first) + "," + to_string(belief_distr[index_first].second) + "," + to_string(action); 
 		test_result_file.close();
 
