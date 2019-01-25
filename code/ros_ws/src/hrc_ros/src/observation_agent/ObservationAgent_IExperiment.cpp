@@ -32,8 +32,9 @@ void ObservationAgent::initialize(){
 	/*
 	 * Initializing ros services
 	 */
-	ObsUpdater = nh.serviceClient<hrc_ros::InformObsToTaskMang>("/task_manager/observation_update");  // Client for the task manager service for the status update
-
+	ObsUpdater = nh.serviceClient<hrc_ros::InformObsToTaskMangIE>("/task_manager/observation_update");  // Client for the task manager service for the status update
+	ObsUpdaterPub = nh.advertise<hrc_ros::ObsUpdateMsgIE>("/observation_agent/observation_update",1000);
+	
 	successful_subtasks = 0; 
 	failed_subtasks = 0; 
 
@@ -48,7 +49,6 @@ void ObservationAgent::initialize(){
 	/*
 	 * ROS Services initialization
 	 */
-	action_server = nh.advertiseService("/observation_agent/inform_human_action", &ObservationAgent::action_to_obs_Map, this);
 	IEaction_recognition_server = nh.advertiseService("/observation_agent/inform_action_recognized", &ObservationAgent::IE_receive_actionrecognition_update, this);
 	IEtray_update_server = nh.advertiseService("/observation_agent/inform_tray_update", &ObservationAgent::IE_receive_tray_update, this);
 	//new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
@@ -199,151 +199,6 @@ void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
   
 }
 
-// ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
-// HUMAN ACTION IS RECEIVED !!!
-bool ObservationAgent::action_to_obs_Map(hrc_ros::InformHumanAction::Request &req, // TODO check if InformHumanAction can still be used
-		hrc_ros::InformHumanAction::Response &res) {
-
-	//WebSocket (WS)-client at port 7070 using 1 thread
-	WsClient client("localhost:7070");
-
-	client.on_open=[&]() {
-
-		std_srvs::Trigger::Request req1;
-		std_srvs::Trigger::Response resp1;
-		is_ov.call(req1, resp1);
-		bool ov = resp1.success;	// object is visiable
-
-		std_srvs::Trigger::Request req2;
-		std_srvs::Trigger::Response resp2;
-		is_oir.call(req2, resp2);
-		bool oir = resp2.success;	// object is in range
-
-		bool ipd = ipd_sensor;	// inspected product is detected // SITUATION: INSPECTED PRODUCT DETECTED? (SUCCESS)
-		bool upd = upd_sensor;	// uninspected product is detected  // SITUATION: UNINSPECTED PRODUT DETECTED? (FAIL)
-		/*
-		std_srvs::Trigger::Request req3;
-		std_srvs::Trigger::Response resp3;
-		is_ho.call(req3, resp3);
-		bool ho = resp3.success;	// have object
-		*/
-		std_srvs::Trigger::Request req5;
-		std_srvs::Trigger::Response resp5;
-		is_a0.call(req5, resp5);
-		bool a0 = resp5.success;	// action is attemp grasp
-
-		std_srvs::Trigger::Request req5_1;
-		std_srvs::Trigger::Response resp5_1;
-		is_a0_failed.call(req5_1, resp5_1);
-		bool a0_failed = resp5_1.success;	// attemped to grasp but failed
-
-		std_srvs::Trigger::Request req6;
-		std_srvs::Trigger::Response resp6;
-		is_a2.call(req6, resp6);
-		bool a2 = resp6.success;	// action is staying idle
-
-		std_srvs::Trigger::Request req7;
-		std_srvs::Trigger::Response resp7;
-		is_a4.call(req7, resp7);
-		bool a4 = resp7.success;	// action is warn robot
-
-		// ===== ADDING A NOISE TO THE OBSERVATIONS ========
-		// TODO: update for toy example for the HW setup exp
-		bool ov_noisy = ov;
-		bool oir_noisy = oir;
-		bool a0_noisy = a0;
-		bool ipd_noisy = ipd; // success: O1
-		bool a4_noisy = a4;
-		bool a2_noisy = a2; // human idle: O7
-		bool upd_noisy = upd; // failure: O2
-
-		int r = rand() % 20;
-		int m = rand() % 2; // confused or missed
-		if ((a0 || a4) && r == 0){ // if one of this is one then 10% noise
-			if (m == 0){ // 2.5 % chance of confusing a0 and a4
-				a0_noisy = not a0;
-				a4_noisy = not a4;
-			} else if (m == 1){ // 2.5 % chance of missing the gesture and assuming idle (a2)
-				a0_noisy = false;
-				a4_noisy = false;
-				a2_noisy = true;
-			}
-		} else if (((not ov) || a2) && r == 0){ // if either looking around (not ov) or idle is detected, 10 % chance of confusing them
-			ov_noisy = not ov;
-			a2_noisy = not a2;
-		}
-		// ===================================================
-
-		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
-		int subtask_status = 0; // ongoing
-		robot_observation_real = MapObservablesToObservations(ov,oir,a0,ipd,a4,a2,upd,subtask_status);
-		robot_observation_noisy = MapObservablesToObservations(ov_noisy,oir_noisy,a0_noisy,ipd_noisy,a4_noisy,a2_noisy,upd_noisy,subtask_status);
-
-		if (robotType == "reactive"){
-			observation = MapObservationsToMDP(robot_observation_noisy); // Get correspending state for reactive ROBOT wrt observations to state mapping
-		} else if (robotType == "proactive"){
-			observation = MapObservationsToPOMDP(robot_observation_noisy); // Get correspending observation for proactive ROBOT wrt observables received
-		}
-
-		ROS_INFO("OBSERVATION ROS: real_observable: %s, noisy_observable: %s, mapped observation: %s",
-				robot_observation_real.c_str(), robot_observation_noisy.c_str(), observation.c_str());
-		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
-
-		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
-
-		hrc_ros::ObsUpdateMsg obs_update;
-
-		hrc_ros::InformObsToTaskMang::Request reqForUpdate;
-		hrc_ros::InformObsToTaskMang::Response resForUpdate;
-
-		obs_update.stamp_obs_update = ros::Time::now();
-
-		// Real observation is for the task manager to record statistics on running human models
-		std::vector<uint8_t> real_obs_received;
-		real_obs_received.push_back(not ov);
-		real_obs_received.push_back(oir);
-		real_obs_received.push_back(a0);
-		real_obs_received.push_back(ipd);
-		real_obs_received.push_back(a4);
-		real_obs_received.push_back(a2);
-		real_obs_received.push_back(upd);
-		real_obs_received.push_back(a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
-
-
-		obs_update.real_obs_received = real_obs_received;
-
-		// Noisy observation is for the robot
-		std::vector<uint8_t> obs_with_noise;
-		obs_with_noise.push_back(not ov_noisy);
-		obs_with_noise.push_back(oir_noisy);
-		obs_with_noise.push_back(a0_noisy);
-		obs_with_noise.push_back(ipd_noisy);
-		obs_with_noise.push_back(a4_noisy);
-		obs_with_noise.push_back(a2_noisy);
-		obs_with_noise.push_back(upd_noisy);
-
-		obs_update.obs_with_noise = obs_with_noise;
-		obs_update.who_succeeded = whoSucceeded;
-
-		reqForUpdate.obs_update = obs_update;
-		ObsUpdater.call(reqForUpdate, resForUpdate);
-
-		// ###########################################################################################
-
-		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: OBSERVATION= %s", message.c_str());
-		auto send_stream=make_shared<WsClient::SendStream>();
-		*send_stream << message;
-		client.send(send_stream);
-	};
-
-	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
-		client.send_close(1000);
-	};
-
-	client.start();
-
-	return true;
-}
 
 // TODO: change here, that only the communication to the despot is triggered
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
@@ -417,10 +272,10 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
 
-		hrc_ros::ObsUpdateMsg obs_update;
+		hrc_ros::ObsUpdateMsgIE obs_update;
 
-		hrc_ros::InformObsToTaskMang::Request reqForUpdate;
-		hrc_ros::InformObsToTaskMang::Response resForUpdate;
+		hrc_ros::InformObsToTaskMangIE::Request reqForUpdate;
+		hrc_ros::InformObsToTaskMangIE::Response resForUpdate;
 
 		obs_update.stamp_obs_update = ros::Time::now();
 
@@ -439,22 +294,16 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 
 		obs_update.real_obs_received = real_obs_received;
+		obs_update.mapped_observation_pomdp = std::stoi(observation); 
+		obs_update.mapped_observation_raw   = std::stoi(robot_observation_real); 
 
-		// Noisy observation is for the robot (noisy observations and real are the same in Interaction Experiment)
-		std::vector<uint8_t> obs_with_noise;
-		obs_with_noise.push_back(not o4_ov);
-		obs_with_noise.push_back(o3_oir);
-		obs_with_noise.push_back(o5_a0);
-		obs_with_noise.push_back(o1_ipd);
-		obs_with_noise.push_back(o6_a4);
-		obs_with_noise.push_back(o7_a2);
-		obs_with_noise.push_back(o2_upd);
-
-		obs_update.obs_with_noise = obs_with_noise;
 		obs_update.who_succeeded = whoSucceeded;
 
 		reqForUpdate.obs_update = obs_update;
 		ObsUpdater.call(reqForUpdate, resForUpdate);
+
+		// also publish the message for logging 
+		ObsUpdaterPub.publish(obs_update); 
 
 		// ###########################################################################################
 
@@ -474,42 +323,6 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 }   
 
 
-bool ObservationAgent::humanSt_to_robotSt_Map(hrc_ros::InformHumanState::Request &req,
-		hrc_ros::InformHumanState::Response &res) {
-
-	//WebSocket (WS)-client at port 7070 using 1 thread
-	WsClient client("localhost:7070");
-
-	client.on_open=[&]() {
-		string realRbtSt_code = "";
-		if (robotType == "reactive"){
-			realRbtSt_code = getRealRbtStMDP(req.new_human_state); // this is the mapped human state to the robot's. Robot should estimate it correctly
-		} else if (robotType == "proactive"){
-			// TODO: update for toy example for the HW setup exp
-			realRbtSt_code = getRealRbtStPOMDP(req.new_human_state); //For POMDP model
-		}
-
-		
-		string message = "-1," + realRbtSt_code;
-
-		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
-
-		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
-		auto send_stream=make_shared<WsClient::SendStream>();
-		*send_stream << message;
-		client.send(send_stream);
-	};
-
-	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
-	//cout << "Client: Sending close connection" << endl;
-	client.send_close(1000);
-	};
-
-	client.start();
-
-	return true;
-}
-// ********************************** //
 
 
 bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observed) {

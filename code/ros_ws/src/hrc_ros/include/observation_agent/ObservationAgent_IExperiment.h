@@ -15,7 +15,7 @@
 #include <hrc_ros/TraySensor.h>
 #include <hrc_ros/InformHumanAction.h>
 #include <hrc_ros/InformHumanState.h>
-#include <hrc_ros/InformObsToTaskMang.h>
+#include <hrc_ros/InformObsToTaskMangIE.h>
 #include <hrc_ros/ResetObsROS.h>
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
@@ -203,7 +203,6 @@ private:
 
 	// ros::ServiceServer server = node_handle.advertiseService(service_name, pointer_to_callback_function);
     /// Advertised service. See their methods for the functionality of the services
-	ros::ServiceServer action_server;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer IEaction_recognition_server ;
 	/// Advertised service. See their methods for the functionality of the services
@@ -221,6 +220,12 @@ private:
 
 	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask 
 	ros::Publisher 	traySensor_success_pub; 
+
+	/// publishes the observation update -> this info is used for logging and analysis on system level 
+	ros::Publisher ObsUpdaterPub; 
+
+	/// publishes an updated tray status -> this info is used for logging and analysis on system level 
+	ros:: Publisher TrayUpdatePub; 
 
 	/// Ros time instance to record the time when the tray sensor message has been changed.
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario

@@ -556,7 +556,7 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
 
 // TODO throw from observation agent 
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
-bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res){
+bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros::InformObsToTaskMangIEResponse &res){
 
     hrc_ros::TaskState taskState_msg;
 
