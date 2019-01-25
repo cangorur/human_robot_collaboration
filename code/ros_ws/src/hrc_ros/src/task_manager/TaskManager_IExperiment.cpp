@@ -80,7 +80,7 @@ void TaskManager::initialize(){
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
 
     /// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
-    taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("task_status", 1);
+    taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("/task_manager/task_status", 1);
 
     // TODO delete if not needed in IE anymore 
     //traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
