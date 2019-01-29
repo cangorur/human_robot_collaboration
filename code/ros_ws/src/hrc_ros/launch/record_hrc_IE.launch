@@ -1,0 +1,31 @@
+<launch>
+
+<node pkg="hrc_ros" type="robot_agent" name="robot_agent" output="screen" respawn="true" />
+
+<!-- <node pkg="hrc_ros" type="human_agent" name="human_agent" output="screen" respawn="true" /> -->
+
+<node pkg="rosbag" type="record" name="rosbag_record_IE_full" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_full /task_manager/task_status /observation_agent/observation_update /camera_agent/motion_features /observation_agent/inform_action_recognized_pub /camera/depth/image /camera/rgb/image_raw "/>
+
+<node pkg="rosbag" type="record" name="rosbag_record_IE_replay" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_replay /task_manager/task_status /observation_agent/observation_update /observation_agent/observedsuccess_status /observation_agent/inform_action_recognized_pub /camera/depth/image /camera/rgb/image_raw "/>
+
+
+
+
+
+<!-- <node pkg="hrc_ros" type="observation_agent" name="observation_agent_IE" output="screen" respawn="true" /> -->
+
+<!-- <node pkg="hrc_ros" type="task_manager" name="task_manager_IE" output="screen" respawn="true" /> -->
+<!-- <param name="conveyor_init" type="bool" value="True" /> -->
+
+<!-- Package Manipulator -->
+<!-- <node pkg="hrc_ros" type="PackageManipulator.py" name="package_manipulator"/> -->
+
+
+<!-- <node pkg="hrc_ros" type="human_mc_sampler.py" name="human_mc_sampler" output="screen" cwd="node"/>  		-->
+<!-- <node pkg="hrc_ros" type="policy_evaluator.py" name="policy_evaluator" output="screen" cwd="node"/>  		-->
+<!-- <node pkg="hrc_ros" type="CMAB.py" name="cmab" output="screen" cwd="node"/>					-->
+<!-- <node pkg="hrc_ros" type="policy_selector_bpr.py" name="policy_selector_bpr" output="screen" cwd="node"/> 	-->
+
+<!-- <node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status /observation_agent/observation_update /observation_agent/observedsuccess_status"/> -->
+
+</launch>

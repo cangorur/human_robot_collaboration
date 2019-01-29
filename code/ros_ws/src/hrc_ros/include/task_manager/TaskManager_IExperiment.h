@@ -13,7 +13,7 @@
 #include <ros/ros.h>
 #include <hrc_ros/InitiateScenario.h>
 #include <hrc_ros/InformHumanToTaskMang.h>
-#include <hrc_ros/InformObsToTaskMang.h>
+#include <hrc_ros/InformObsToTaskMangIE.h>
 #include <hrc_ros/InformRobotToTaskMang.h>
 #include <std_srvs/Trigger.h>
 
@@ -87,7 +87,7 @@ private:
 	 * Rosservice call: /task_manager/observation_update
 	 * It is called by the observation_agent to provide last information
 	 */
-	bool ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res);
+	bool ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros::InformObsToTaskMangIEResponse &res);
 
 	/**
 	 * Rosservice call: /task_manager/robot_status_update

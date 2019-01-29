@@ -49,7 +49,7 @@ add_message_files(
   TaskState.msg
   TraySensor.msg
   HumanUpdateMsg.msg
-  ObsUpdateMsg.msg
+  ObsUpdateMsgIE.msg
   RobotUpdateMsg.msg
   SuccessStatusObserved.msg
 )
@@ -61,7 +61,7 @@ add_service_files(
    InformHumanAction.srv
    InformHumanState.srv
    InformHumanToTaskMang.srv
-   InformObsToTaskMang.srv
+   InformObsToTaskMangIE.srv
    InformRobotToTaskMang.srv
    ResetHumanROS.srv
    ResetObsROS.srv
@@ -73,6 +73,7 @@ add_service_files(
    PolicySelectorBPR.srv
    InformTrayUpdate.srv
    InformActionRecognized.srv
+   
 )
 
 ## Generate actions in the 'action' folder

@@ -80,7 +80,7 @@ void TaskManager::initialize(){
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
 
     /// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
-    taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("task_status", 1);
+    taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("/task_manager/task_status", 1);
 
     // TODO delete if not needed in IE anymore 
     //traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
@@ -556,7 +556,7 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
 
 // TODO throw from observation agent 
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
-bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangRequest &req, hrc_ros::InformObsToTaskMangResponse &res){
+bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros::InformObsToTaskMangIEResponse &res){
 
     hrc_ros::TaskState taskState_msg;
 
