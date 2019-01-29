@@ -458,7 +458,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		// ###########################################################################################
 
-		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: OBSERVATION= %s", message.c_str());
+		ROS_INFO("\n\n OBSERVATION Client: TRIGGER -- Sending to the robot planner:: OBSERVATION= %s \n\n", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
@@ -744,8 +744,8 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		o3_oir = req.human_detected;            // O_3  Human is detected 
 		o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
 
-		ROS_INFO("\n\nOBSERVATION ROS: ## ActionRecognition update received  RECEIVED ##");
-		ROS_INFO(" Action %s     | warning = O6 | Idle = O7",req.action.c_str());
+		ROS_INFO("\n\nOBSERVATION ROS: ##### ActionRecognition update received  RECEIVED #####");
+		ROS_INFO(" Action %s     			| warning = O6 | Idle = O7",req.action.c_str());
 		ROS_INFO("Human detected (O3) =  %d", o3_oir);
 		ROS_INFO("Human NOT looking around (!O4) = %d", o4_ov);
 		ROS_INFO("observation_mapped =  %s",observation_mapped.c_str());

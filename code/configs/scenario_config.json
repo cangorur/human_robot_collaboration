@@ -25,7 +25,7 @@
 	"robot": {
 		"type":{
 				"AItype": "proactive",
-				"forHumanType": "beginner",
+				"forHumanType": "IE_base",
 				"forHumanCollab": ""
 		},
 		"position":{
@@ -54,7 +54,7 @@
 			 "trainingSetName": "training_sets/exp3_7000t.mat"
 			},
 		"useCMAB": false,
-		"useBPR": true,
+		"useBPR": false,
 		"useRandom": false,
 		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/exp3_7000t.mat",
 		"useTransitionFunction": false
