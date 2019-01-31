@@ -179,6 +179,7 @@ rosservice call /human/reset # replace reset with look_around OR warn_robot OR g
 
 rosservice call /robot/reset # replace reset with grasp OR point_to_obj OR cancel_action (cancel whatever it is doing) OR planning_for_motion (this is implemented as a timer blocking robot doing anything else to simulate planning for kinematics for any action)
 ```
+
 ## MDP, POMDP Models
 
 All the predesigned human and robot models can be found under code/models.
@@ -233,8 +234,6 @@ rosservice call /task_manager_IE/new_scenario_request
 
 Additional: 
 - for now *useEvaluator* has to be set to *false* in the *scenario_config.json*
-
-
 
 ## Simulating POMDPS with rosbags in minimal setup 
 
