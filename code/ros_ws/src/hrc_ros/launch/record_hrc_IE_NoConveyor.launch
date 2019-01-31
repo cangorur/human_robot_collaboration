@@ -6,13 +6,12 @@
 
 <node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /task_manager_IE/new_scenario_request"/>
 
-<node pkg="rosbag" type="record" name="rosbag_record_IE_full" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_full /task_manager/task_status /observation_agent/observation_update /camera_agent/motion_features /observation_agent/inform_action_recognized_pub /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/points /camera/rgb/image_raw "/>
+<node pkg="rosbag" type="record" name="rosbag_record_IE_full" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_full /task_manager/task_status /observation_agent/observation_update /camera_agent/motion_features /observation_agent/inform_action_recognized_pub /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/camera_info /camera/depth_registered/image_raw /camera/rgb/camera_info /camera/rgb/image_raw"/>
 
-<node pkg="rosbag" type="record" name="rosbag_record_IE_replay" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_replay /task_manager/task_status /observation_agent/observation_update /observation_agent/observedsuccess_status /observation_agent/inform_action_recognized_pub /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/points /camera/rgb/image_raw "/>
+<node pkg="rosbag" type="record" name="rosbag_record_IE_replay" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_replay /task_manager/task_status /observation_agent/observation_update /observation_agent/observedsuccess_status /observation_agent/inform_action_recognized_pub /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/camera_info /camera/depth_registered/image_raw /camera/rgb/camera_info /camera/rgb/image_raw "/>
 
-<node pkg="rosbag" type="record" name="rosbag_record_IE_ActionRecReplace" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_ActionRecReplace /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/points /camera/rgb/image_raw "/>
+<node pkg="rosbag" type="record" name="rosbag_record_IE_ActionRecReplace" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_ActionRecReplace /action_recognition/publish_action_recognized /object_tracking/publish_tray_update /camera/depth_registered/camera_info /camera/depth_registered/image_raw /camera/rgb/camera_info /camera/rgb/image_raw "/>
 
 
 </launch> 
-
 

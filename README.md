@@ -233,3 +233,34 @@ rosservice call /task_manager_IE/new_scenario_request
 
 Additional: 
 - for now *useEvaluator* has to be set to *false* in the *scenario_config.json*
+
+
+
+## Simulating POMDPS with rosbags in minimal setup 
+
+### record the rosbag 
+For the rosbag recording the full dobot setup has to be done first. Please refer to the dobot setup guide for that. 
+After Dobot and the conveyor belt is running, the rosbags can be recorded. 
+
+Do the following steps: 
+- roslaunch openni2_launch openni2.launch depth_registration:=true
+- roslaunch hrc_ros record_hrc_IE_NoConveyor.launch   => this will start the observation_agent_IE and the task_manager_IE as well as record the rosbags 
+- close with CTRL + C 
+
+### replay the bag in minimal setup 
+In the minimal setup a rosbag file containing the rgb image stream will be played.
+Openni2 will generate depth data from it. 
+Please make sure to run the *observation_agent_IE*, since the hmmgmm node is blocking while waiting for this service. 
+Follow these steps:
+
+- roscore
+- rosparam set /use_sim_time true
+- roslaunch openni2_launch openni2.launch load_driver:=false depth_registration:=true
+
+- roslaunch object_tracking tracking.launch
+- rosrun hrc_ros observation_agent_IE
+- rosrun hrc_ros task_manager_IE
+- rosbag play -d 7 --clock yourRGBbag.bag
+- *start the test_scenario:* rosservice call /task_manager_IE/new_scenario_request
+
+
