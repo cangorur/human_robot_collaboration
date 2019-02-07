@@ -1,3 +1,9 @@
+/* Copyright 2019 Elia Jona Kargruber 
+ *
+ * This project is licensed under the terms of the MIT license.
+ * 
+*/
+
 #include <helper_functions/Json_parser.h>
 
 using namespace std; 
@@ -75,95 +81,11 @@ string object_int_to_str(int obj_int_in){
     return return_str; 
 }
 
-/*vector<task_set> get_success_criteria_task(string str_task, string str_subtask,boost::property_tree::ptree config_pt){
-
-    // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
-    string subtask_path = string("task.") + str_task + string(".subtask"); 
-    string object_path;
-    task_set task_set_read;
-    vector <task_set> task_set_vect; 
-    vector <success_combo> success_combo_read;
-
-    BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(subtask_path)){ // looping trough subtasks
-            
-            string subtask_chooser = child_object.first.data();
-            if (subtask_chooser.compare("all") == 0){
-                object_path = subtask_path + string(".") + string("all"); 
-                cout << " object_path_all  : "  << object_path << endl;
-                break;
-            } else {
-                object_path = subtask_path + string(".") + str_task;
-                 cout << " object_path_subtasks  : "  << object_path << endl; 
-            }
-        }
-
-
-        BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(object_path)){ // looping trough subtasks
-            
-            string str_object = child_object.first.data(); 
-            string str_tray   = config_pt.get<string>(( object_path + string(".") + str_object + string(".tray") ) );
-            //cout << " task: " << str_task << "  subtask: " << str_subtask << " object : " << str_object << " tray : " << str_tray << endl; 
-            task_set_read.task = number_str_to_int(str_task);
-            task_set_read.subtask = number_str_to_int(str_task);
-            task_set_read.success_combo.object = object_str_to_int(str_object); 
-            task_set_read.success_combo.tray   = std::stoi(str_tray);
-            task_set_vect.push_back(task_set_read); 
-          
-        }
-
-        return task_set_vect; 
-}
-*/
-
-
-// ####################  get success criteria worked with ################################## 
-
-/*vector<task_set> get_success_criteria_object(string str_task, string str_subtask,string str_object,boost::property_tree::ptree config_pt){
-
-    // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
-    string subtask_path = string("task.") + str_task + string(".subtask"); 
-    string object_path;
-    string subtask_quantity_string;
-    task_set task_set_read;
-    vector <task_set> task_set_vect; 
-    success_combo current_success_combo; 
-
-    task_set_read.subtask_quantity = stoi( config_pt.get<string>(( string("task.") + str_task + string(".subtask_quantity") ) )  );
-
-    BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(subtask_path)){ // looping trough subtasks
-            
-            string subtask_chooser = child_object.first.data();
 
 
 
-            if (subtask_chooser.compare("all") == 0){
-                object_path = subtask_path + string(".") + string("all") + string(".") + str_object; 
-                //cout << " object_path_all  : "  << object_path << endl;
-                break;
-            } else if (subtask_chooser.compare("subtask_count") != 0 ) {  // if not subtask_count 
-                object_path = subtask_path + string(".") + str_subtask + string(".") + str_object;
-                cout << " object_path_subtasks  : "  << object_path << endl; 
-                break;
-            }
-        }
 
 
-        BOOST_FOREACH (boost::property_tree::ptree::value_type &child_object , config_pt.get_child(object_path)){ // looping trough subtasks
-             
-            string str_tray   = config_pt.get<string>(( object_path + string(".tray") ) );
-            //cout << " task: " << str_task << "  subtask: " << str_subtask << " object : " << str_object << " tray : " << str_tray << endl;
-            current_success_combo.object = object_str_to_int(str_object);
-            current_success_combo.tray   = stoi(str_tray);
-            task_set_read.task = stoi(str_task);
-            task_set_read.subtask = stoi(str_subtask);
-            task_set_read.success_combo_vect.push_back(current_success_combo);
-            task_set_vect.push_back(task_set_read); 
-          
-        }
-
-        return task_set_vect; 
-}
-*/
 
 void print_task_set(task_set task_rules){
 
@@ -178,6 +100,11 @@ void print_task_set(task_set task_rules){
     }
 }
 
+/*********************************************************************** 
+ * 
+ * boost property tree is searched for a specific task_set and the task_set is returned 
+ * 
+ */
 task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
 
     // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
@@ -279,6 +206,14 @@ global_task_config read_global_task_config(boost::property_tree::ptree config_pt
     return task_config_read; 
 }
 
+/*********************************************************************** 
+ * 
+ * boost property tree is searched for a specific success criteria combination
+ * consitint of the correct object tray combination.
+ * Inputs: task, subtask, object, property_tree
+ * Outputs: success_combo
+ * 
+ */
 success_combo get_success_criteria(string str_task,string subtask_str, string object_str, boost::property_tree::ptree config_pt){
 
     // first get subtask_chooser that decides wether multiple rules for different subtasks are present or if all rules are the same! 
