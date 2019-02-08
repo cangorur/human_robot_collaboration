@@ -1,4 +1,27 @@
-TEST_NO,POMDP_MODEL,TEST_SEQUENCE
-1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle(9).py
-1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle(9).py
-1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle(9).py
+TEST_NO,POMDP_MODEL,TEST_SEQUENCE,COMMENTS
+1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_minimalChanges.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_slowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,Sending obs 9 all the time
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_extremelyslowJudgement.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_slowerJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_slowerJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_slowerJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_slowerJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_slowerJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_mediumJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_mediumJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_mediumJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_mediumJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
+1,proactive_IE_mediumJudgement.pomdpx.pomdpx,pomdp_1_all_idle_obs9.py,
