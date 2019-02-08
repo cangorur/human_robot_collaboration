@@ -321,7 +321,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			<< "::Search(): " << (end_t - start_t) << endl;
 
 		if (!Globals::config.silence && out_) {
-			*out_ << "- Agent Acts = ";
+			*out_ << endl << endl << "########### SUMMARY ##########" << endl <<"- Agent Acts = ";
 			model_->PrintAction(action, *out_);
 		}
 		// ########## AGENT'S ACTION SELECTION ENDS ########## //
@@ -336,13 +336,13 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 			if (belief_distr[i].second >= belief_distr[index_first].second)
 				index_first = i;
 		}
-		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
-		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl;
+		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl << endl << endl;
+		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl << endl;
 		Evaluator::webSocketClient(action, belief_distr[index_first].first, 0.0, 0.0);
 
 		test_result_file.open (filename_evaluator,std::ios_base::app); 
 		//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
-		cout << endl << " *state_  :   " << *state_ << endl; 
+		//cout << endl << " *state_  :   " << *state_ << endl; 
 		test_result_file << to_string(manual_obs) + "," + to_string( model_->ObsProb(obs, *state_, previous_action) ) + "," + to_string(belief_distr[index_first].first) + "," + to_string(belief_distr[index_first].second) + "," + to_string(action); 
 		test_result_file.close();
 
