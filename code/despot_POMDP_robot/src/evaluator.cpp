@@ -20,6 +20,9 @@ int EvalLog::curr_inst_remaining_steps = 0;
 double EvalLog::allocated_time = 1.0;
 double EvalLog::plan_time_ratio = 1.0;
 
+
+int int_former_belief = -1; 
+
 EvalLog::EvalLog(string log_file) :
 	log_file_(log_file) {
 	ifstream fin(log_file_.c_str(), ifstream::in);
@@ -234,9 +237,16 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 	*out_ << "- Observation received from websocket: " << manual_obs << endl;
 	*out_ << "=== RESULTS ===" << endl;
 
+
 	// ################# REWARD CALCULATION STARTS ####################//
 	if (real_state != -1){ // IF REAL STATE INFORMATION RECEIVED THEN CALCULATE THE REWARD
 		// ########## SIMULATOR STARTS ########### //
+
+
+		// **** TODO  Revert the change here if the sent real_state should be used. In the IE case, the last belief_state is used as the real state.  
+		cout << " \n The former belief state is used as the real_state in the IE version !!!! \n ";
+		real_state = int_former_belief; 
+		cout << " real_state used   : " << real_state << endl << endl; 
 		// to get the reward, first simulator runs ! The new state only gives the reward of our previous act!
 		start_t = get_time_second();
 
@@ -331,12 +341,26 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 
 		vector<pair<string, double>> belief_distr = solver_->GetBeliefDistribution();
 
+
 		int index_first = 0;
 		for (int i = 0; i < belief_distr.size(); i++) {
 			if (belief_distr[i].second >= belief_distr[index_first].second)
 				index_first = i;
 		}
+
+
+
+		
+		
+		
+
+
 		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl << endl << endl;
+        //*out_ << " index first " << index_first << endl; 
+		
+	 
+		//cout << " Former belief state " << former_belief_state << endl;
+
 		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl << endl;
 		Evaluator::webSocketClient(action, belief_distr[index_first].first, 0.0, 0.0);
 
@@ -345,6 +369,41 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		//cout << endl << " *state_  :   " << *state_ << endl; 
 		test_result_file << to_string(manual_obs) + "," + to_string( model_->ObsProb(obs, *state_, previous_action) ) + "," + to_string(belief_distr[index_first].first) + "," + to_string(belief_distr[index_first].second) + "," + to_string(action); 
 		test_result_file.close();
+
+
+		// manually map belief state to belief_state ints 
+		std::string former_belief_state = belief_distr[index_first].first;
+		int_former_belief = -1; 
+
+		if (former_belief_state.compare(string("[state_1:TaskHuman]")) == 0 ) {
+			int_former_belief = 0; 
+		} else if (former_belief_state.compare(string("[state_1:MayNotBeCapable]")) == 0 ) {
+			int_former_belief = 1;
+		} else if (former_belief_state.compare(string("[state_1:MayBeTired]")) == 0 ) {
+			int_former_belief = 2;
+		} else if (former_belief_state.compare(string("[state_1:NoFocus]")) == 0 ) {
+			int_former_belief = 3;
+		} else if (former_belief_state.compare(string("[state_1:NeedsToBeReminded]")) == 0 ) {
+			int_former_belief = 4;
+		} else if (former_belief_state.compare(string("[state_1:NeedsHelp]")) == 0 ) {
+			int_former_belief = 5;
+		} else if (former_belief_state.compare(string("[state_1:NoNeedHelp]")) == 0 ) {
+			int_former_belief = 6;
+		} else if (former_belief_state.compare(string("[state_1:WarningReceived]")) == 0 ) {
+			int_former_belief = 7;
+		} else if (former_belief_state.compare(string("[state_1:GlobalSuccess]")) == 0 ) {
+			int_former_belief = 8;
+		} else if (former_belief_state.compare(string("[state_1:GlobalFail]")) == 0 ) {
+			int_former_belief = 9;
+		} else if (former_belief_state.compare(string("[state_1:TaskRobot]")) == 0 ) {
+			int_former_belief = 10;
+		} else if (former_belief_state.compare(string("[state_1:HumanDoingOk]")) == 0 ) {
+			int_former_belief = 11;
+		} else {
+			cout << "\nERROR: not able to map belief_state string to int value    => ERROR \n ";
+		}
+
+		cout << "Former belief state : " << former_belief_state << "   mapping to int  :  " << int_former_belief << endl; 
 
 		// ######################################################## //
 	}
