@@ -130,12 +130,12 @@
 <Instance>graspPlanning - - </Instance>
 <ProbTable>
 0.89	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01
-0.01	0.27	0.1	0.1	0.01	0.22	0.13	0.01	0.12	0.01	0.01	0.01
-0.01	0.1	0.27	0.1	0.01	0.22	0.13	0.01	0.12	0.01	0.01	0.01
+0.01	0.37	0.1	0.1	0.01	0.17	0.11	0.01	0.09	0.01	0.01	0.01
+0.01	0.1	0.37	0.1	0.01	0.17	0.11	0.01	0.09	0.01	0.01	0.01
 0.01	0.1	0.1	0.23	0.25	0.01	0.1	0.01	0.16	0.01	0.01	0.01
 0.01	0.01	0.01	0.1	0.8	0.01	0.01	0.01	0.01	0.01	0.01	0.01
 0.01	0.01	0.01	0.01	0.01	0.89	0.01	0.01	0.01	0.01	0.01	0.01
-0.01	0.05	0.05	0.05	0.01	0.02	0.6	0.01	0.11	0.07	0.01	0.01
+0.01	0.05	0.05	0.05	0.01	0.02	0.46	0.01	0.11	0.07	0.01	0.15
 0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.89	0.01	0.01	0.01	0.01
 0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.13	0.73	0.01	0.01	0.05
 0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.01	0.89	0.01	0.01
@@ -242,15 +242,112 @@
 <Var>reward_agent</Var>	
 <Parent>action_agent state_1</Parent>	
 <Parameter type = "TBL">
+
+
+
+<!-- Original rewards extended by HumanDoingOk case TEST_2 --> 
+<Entry>
+<Instance>idle TaskHuman</Instance>
+<ValueTable>0</ValueTable></Entry>
 <Entry>
 <Instance>grasp TaskHuman</Instance>
 <ValueTable>-1</ValueTable></Entry>
+<Entry>
+<Instance>cancel TaskHuman</Instance>
+<ValueTable>0</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning TaskHuman</Instance>
+<ValueTable>-1</ValueTable></Entry>
+<Entry>
+<Instance>point TaskHuman</Instance>
+<ValueTable>0</ValueTable></Entry>
+
+
+<Entry>
+<Instance>idle WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>grasp WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>cancel WarningReceived</Instance>
+<ValueTable>0</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>point WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+
+
+<Entry>
+<Instance>idle GlobalSuccess</Instance>
+<ValueTable>6</ValueTable></Entry>
+<Entry>
+<Instance>grasp GlobalSuccess</Instance>
+<ValueTable>6</ValueTable></Entry>
+<Entry>
+<Instance>cancel GlobalSuccess</Instance>
+<ValueTable>3</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning GlobalSuccess</Instance>
+<ValueTable>6</ValueTable></Entry>
+<Entry>
+<Instance>point GlobalSuccess</Instance>
+<ValueTable>6</ValueTable></Entry>
+
+
+<Entry>
+<Instance>idle GlobalFail</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>grasp GlobalFail</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>cancel GlobalFail</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning GlobalFail</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>point GlobalFail</Instance>
+<ValueTable>-3</ValueTable></Entry>
+
+
+<Entry>
+<Instance>idle HumanDoingOk</Instance>
+<ValueTable>0</ValueTable></Entry>
+<Entry>
+<Instance>grasp HumanDoingOk</Instance>
+<ValueTable>-2</ValueTable></Entry>
+<Entry>
+<Instance>cancel HumanDoingOk</Instance>
+<ValueTable>0</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning HumanDoingOk</Instance>
+<ValueTable>-1</ValueTable></Entry>
+<Entry>
+<Instance>point HumanDoingOk</Instance>
+<ValueTable>-2</ValueTable></Entry>
+
+
+
+
+
+
+<!-- The rewards used for first evaluation --> 
+<!--<Entry>
+<Instance>grasp TaskHuman</Instance>
+<ValueTable>-2</ValueTable></Entry>
 <Entry>
 <Instance>point TaskHuman</Instance>
 <ValueTable>-1</ValueTable></Entry>
 <Entry>
 <Instance>cancel TaskHuman</Instance>
-<ValueTable>-1</ValueTable></Entry>
+<ValueTable>0</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning TaskHuman</Instance>
+<ValueTable>0</ValueTable></Entry>
 <Entry>
 <Instance>grasp GlobalSuccess</Instance>
 <ValueTable>6</ValueTable></Entry>
@@ -282,17 +379,29 @@
 <Instance>graspPlanning GlobalFail</Instance>
 <ValueTable>-3</ValueTable></Entry>
 <Entry>
-<Instance>grasp WarningReceived</Instance>
-<ValueTable>-3</ValueTable></Entry>
-<Entry>
 <Instance>idle WarningReceived</Instance>
 <ValueTable>-3</ValueTable></Entry>
 <Entry>
+<Instance>grasp WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
+<Instance>point WarningReceived</Instance>
+<ValueTable>-3</ValueTable></Entry>
+<Entry>
 <Instance>grasp HumanDoingOk</Instance>
-<ValueTable>-1</ValueTable></Entry>
+<ValueTable>-2</ValueTable></Entry>
+<Entry>
+<Instance>graspPlanning HumanDoingOk</Instance>
+<ValueTable>-2</ValueTable></Entry>
 <Entry>
 <Instance>point HumanDoingOk</Instance>
-<ValueTable>-1</ValueTable></Entry>
+<ValueTable>-2</ValueTable></Entry>       --> 
+
+
+
 <!--<Entry>
 <Instance>graspPlanning NeedsToBeReminded</Instance>
 <ValueTable>1</ValueTable></Entry>
