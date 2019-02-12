@@ -4,7 +4,7 @@
 # 
 # NOTE: Script only works with pyhton2.7
 # Dependency: pandas needs to be installed for python 2.7 e.g. by  python2.7 -m pip install pandas
-
+# Paths have to be adapted to your local project -> change everywhere whre you find a # TODO CHANGE PATH HERE tag 
 
 
 import os
@@ -16,6 +16,7 @@ import shutil
 import errno
 
 # compile all needed path based on the hrc_ros package path ||  hrc_path: /home/elia/master_thesis/catkin_ws/src/hrc_industry/code/ros_ws/src/hrc_ros
+# TODO CHANGE PATH HERE
 rospack = rospkg.RosPack()
 hrc_path = rospack.get_path('hrc_ros')
 pomdp_base_path = hrc_path + "/../../../"
@@ -23,7 +24,7 @@ pomdp_solver_path = pomdp_base_path + "despot_POMDP_robot/build/examples/pomdpx_
 pomdp_model_base_path = pomdp_base_path + "models/robot_models/"
 results_path = pomdp_base_path + "results/POMDP_IE_tests/"
 
-#print("hrc_path: " + hrc_path)
+
 # read in test configuration 
 test_config = pd.read_csv("POMDP_evaluation_config.csv")
 #os.system("rosrun hrc_ros robot_agent_pomdp_evaluation &")   # robot_agent cannot be killed savely -> do not use for now 
@@ -48,7 +49,9 @@ for row in (test_config.index):
 		print(" Sequence : " +current_test_sequence_str)
 		print("Test : " + current_test_no_str)
 		print("row : " + str(row) ) 
-		# build pomdp path and execute model 
+
+		# build pomdp path and execute model
+		# TODO CHANGE PATH HERE 
 		pomdp_model_path = pomdp_model_base_path + current_pomdp_model_str +"' &"
 		pomdp_model_str = "gnome-terminal -e '" + pomdp_solver_path + pomdp_model_path
 
@@ -61,10 +64,12 @@ for row in (test_config.index):
 
 		os.system("sleep 5")
 		# execute test script
+		# TODO CHANGE PATH HERE
 		test_sequ_str = hrc_path + "/../../../pomdp_evaluation/stimuli/" + current_test_sequence_str
 		execfile(test_sequ_str)
 
 		# ***** rename and copy the result files to a folder ******* 
+		# TODO CHANGE PATH HERE
 		new_folder_path = results_path + "Test_" + current_test_no_str
 		new_file_name = current_pomdp_model_str + "__" + current_test_sequence_str + "__" + "Test" + current_test_no_str + "__" + current_time_str + ".csv"
 
@@ -89,6 +94,7 @@ for row in (test_config.index):
 			print("Unexpected error while copying files:")
 			print(" Had to increment minute by 1 - will try again ") 
 			try: # increment minute by 1 and try to copy againn 	
+			# TODO paths can be changed but don't have to be 
 				new_tag = time_tag + datetime.timedelta(0,60) # add 60 seconds 
 				new_time_str = str(new_tag.date()) + "_" + '%02d'%(new_tag.hour) + ":" + '%02d'%(new_tag.minute)
 				new_res_file_name = "pomdp_evaluator_file_" + new_time_str + ".csv"
@@ -111,4 +117,5 @@ for row in (test_config.index):
 		os.system("sleep 65") 
 
 os.system('killall despot_pomdpx')
+print("\n\n I'm done with this :-) All tests executed")
 
