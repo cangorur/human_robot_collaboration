@@ -366,7 +366,7 @@ bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observe
 
 // *** Callback function for the /headGestureAgent/head_gesture_pub/ topic"
 void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
-
+    // TOCONSIDER currently the head_gesture is only updated for the decision making if a new observation is received. In case it should always be up-to date, independent of a observation update then: o4_ov should be used instead  
 		notO4_human_looking_around = msg.humanLookingAround; 
 
 		cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl; 
@@ -564,12 +564,12 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		}
 
 		o3_oir = req.human_detected;            // O_3  Human is detected 
-		o4_ov  = not(notO4_human_looking_around);  // O_4  Human is not looking around (=> global variable received by head_gesture sub)
+		o4_ov  = not(notO4_human_looking_around);  // O_4  Human is not looking around (=> global variable received by head_gesture sub) | o4_ov is only updated for decision making when new observation is detected
 
 		ROS_INFO("\n\nOBSERVATION ROS: ##### ActionRecognition update received  RECEIVED #####");
 		ROS_INFO(" Action %s     			| warning = O6 | Idle = O7",req.action.c_str());
 		ROS_INFO("Human detected (O3) =  %d", o3_oir);
-		ROS_WARN("Human NOT looking around (!O4) = %d", o4_ov);
+		ROS_INFO("Human NOT looking around (!O4) = %d", o4_ov);
 		ROS_INFO("observation_mapped =  %s",observation_mapped.c_str());
 		ROS_INFO("********\n\n\n");
 
