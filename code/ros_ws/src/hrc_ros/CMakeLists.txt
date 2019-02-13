@@ -52,6 +52,7 @@ add_message_files(
   ObsUpdateMsgIE.msg
   RobotUpdateMsg.msg
   SuccessStatusObserved.msg
+  HeadGestureMsg.msg
 )
 
 ## Generate services in the 'srv' folder

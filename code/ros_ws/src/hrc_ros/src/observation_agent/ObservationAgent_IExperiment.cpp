@@ -43,8 +43,8 @@ void ObservationAgent::initialize(){
 	 * 
 	 */
 	traySensor_success_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/observedsuccess_status", 1000); 
-	
-												 
+	//subscriber for the headGesture 
+	headGesture_subs = nh.subscribe("/headGestureAgent/head_gesture_pub/", 100 , &ObservationAgent::ReceiveHeadGesture,this);									 
 	 
 	/*
 	 * ROS Services initialization
@@ -364,6 +364,15 @@ bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observe
 }
 
 
+// *** Callback function for the /headGestureAgent/head_gesture_pub/ topic"
+void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
+
+		notO4_human_looking_around = msg.humanLookingAround; 
+
+		cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl; 
+
+}
+
 
 // *** Service handler that receives a tray update message and calculates the observables success and failure 
 //void ObservationAgent::IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg){
@@ -555,12 +564,12 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		}
 
 		o3_oir = req.human_detected;            // O_3  Human is detected 
-		o4_ov  = not(req.human_looking_around);  // O_4  Human is not looking around  
+		o4_ov  = not(notO4_human_looking_around);  // O_4  Human is not looking around (=> global variable received by head_gesture sub)
 
 		ROS_INFO("\n\nOBSERVATION ROS: ##### ActionRecognition update received  RECEIVED #####");
 		ROS_INFO(" Action %s     			| warning = O6 | Idle = O7",req.action.c_str());
 		ROS_INFO("Human detected (O3) =  %d", o3_oir);
-		ROS_INFO("Human NOT looking around (!O4) = %d", o4_ov);
+		ROS_WARN("Human NOT looking around (!O4) = %d", o4_ov);
 		ROS_INFO("observation_mapped =  %s",observation_mapped.c_str());
 		ROS_INFO("********\n\n\n");
 

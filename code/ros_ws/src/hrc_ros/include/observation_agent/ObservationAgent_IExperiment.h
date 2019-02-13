@@ -20,6 +20,7 @@
 #include <hrc_ros/InformTrayUpdate.h>
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/SuccessStatusObserved.h>
+#include <hrc_ros/HeadGestureMsg.h> 
 #include "std_msgs/String.h"
 
 #include <boost/property_tree/json_parser.hpp>
@@ -97,7 +98,9 @@ private:
 	bool IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res);
 
 	bool IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res);
-
+	
+	// subscriber callback that receives the head gesture 
+	void ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg);
 
 	/**  // TODO delete once new function works 
 	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
@@ -217,7 +220,8 @@ private:
 
 	/// ROS subscribers (traySensor_subs) subscribes to the proximity sensors on the trays in the MORSE env.
 	ros::Subscriber traySensor_subs;
-
+	/// Subscribes to the HeadGesture topic, this indicates the observable O4
+	ros::Subscriber headGesture_subs;
 	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask 
 	ros::Publisher 	traySensor_success_pub; 
 
@@ -292,14 +296,15 @@ private:
 
 	// global variables to store the last recognized human action and other observables 
 	// name in code  | observable number according to https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit#gid=1272592695
-	bool o4_ov		= false;				// O_4  Human is not looking around  
+	bool o4_ov		= true;				// O_4  Human is not looking around  
 	bool o3_oir		= false;				// O_3  Human is detected 
 	bool o5_a0		= false;				// O_5  grasping attempt
 	bool o1_ipd		= false;				// O_1  task successs (processed product detected)
 	bool o6_a4		= false;				// O_6  warning received
 	bool o7_a2		= false; 				// O_7  Idle
 	bool o2_upd		= false; 				// O_2	failure
-	int  int_subtask_status = 0; 			// 0 = ongoing | 1 = success | 2 = fail  this is used to issue the subtask observables  
+	int  int_subtask_status = 0; 			// 0 = ongoing | 1 = success | 2 = fail  this is used to issue the subtask observables 
+	bool notO4_human_looking_around = false;  
 
 	// former values to calculate if update happened -> only update will trigger despot decision making
 	bool o6_former = true; 
