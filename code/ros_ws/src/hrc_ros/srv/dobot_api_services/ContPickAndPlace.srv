@@ -1,0 +1,28 @@
+# Continuous pick and place enabled or not. 
+bool isEnabled
+# Configure pick and place location or not.
+bool isLocConfigEnabled
+# Pick location
+float32 pickX
+float32 pickY
+float32 pickZ
+# Place location
+float32 placeX
+float32 placeY
+float32 placeZ
+# Place interval
+float32 placeInt
+# Place interval in Z direction
+float32 placeIntZ
+# Sorted boxes should be place in which row. 0: row 0; 1: row 1; 2: row 2.
+int32 placeLocR
+int32 placeLocG
+int32 placeLocB
+# Box limit for red color.
+int32 boxLimR
+int32 boxLimG
+int32 boxLimB
+# Storage limit for each row.
+int32 storageLim
+---
+bool result

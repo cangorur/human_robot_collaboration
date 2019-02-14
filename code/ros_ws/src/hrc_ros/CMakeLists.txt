@@ -74,8 +74,27 @@ add_service_files(
    PolicySelectorBPR.srv
    InformTrayUpdate.srv
    InformActionRecognized.srv
-   
+      
 )
+
+# Add the dobot specific services found in the srv/dobot_api_services subfolder  
+add_service_files(DIRECTORY srv/dobot_api_services 
+FILES 
+ContPickAndPlace.srv
+InitDobotArmApp.srv
+SetPTPCmd.srv
+SetQueuedCmdStopExec.srv
+SetQueuedCmdForceStopExec.srv
+OneTimePickAndPlace.srv
+SetPTPCoordinateParams.srv  # service to set speed and velocities of dobot 
+SetQueuedCmdStartExec.srv
+SetPTPCmd.srv # for the gotoPointApp service 
+SetEndEffectorSuctionCup.srv
+SetQueuedCmdClear.srv
+SimplePickAndPlace.srv
+
+)
+
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -132,6 +151,13 @@ add_executable(robot_agent_pomdp_evaluation
   src/robot_agent/RobotAgentNode.cpp)
 add_dependencies(robot_agent_pomdp_evaluation ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(robot_agent_pomdp_evaluation ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+
+add_executable(robot_motion_agent
+  src/robot_motion_agent_IE/RobotMotionAgent_IE.cpp
+  src/robot_motion_agent_IE/RobotMotionAgentNode_IE.cpp)
+add_dependencies(robot_motion_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(robot_motion_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(observation_agent_IE

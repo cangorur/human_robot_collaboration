@@ -1,0 +1,13 @@
+# Moving mode. 0: direct; 1: door shape.
+uint8 ptpMode
+# coordinate x
+float32 x
+# coordinate y
+float32 y
+# coordinate z
+float32 z
+float32 r
+---
+# Communication status. 0: NoError; 1: BufferFull; 2: Timeout.
+int32 result
+uint64 queuedCmdIndex

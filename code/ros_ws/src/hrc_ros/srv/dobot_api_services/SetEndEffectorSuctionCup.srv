@@ -1,0 +1,10 @@
+# Enable control. 1: enable.
+uint8 enableCtrl
+# Sucking on/off. 1: on.
+uint8 suck
+# Put the command in queue or not. 1: queued, default.
+bool isQueued
+---
+# Communication status. 0: NoError; 1: BufferFull; 2: Timeout.
+int32 result
+uint64 queuedCmdIndex

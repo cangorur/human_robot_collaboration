@@ -1,0 +1,12 @@
+# Configure the location or not
+bool isLocConfigEnabled
+# Pick location
+float32 pickX
+float32 pickY
+float32 pickZ
+# Place location
+float32 placeX
+float32 placeY
+float32 placeZ
+---
+bool result
