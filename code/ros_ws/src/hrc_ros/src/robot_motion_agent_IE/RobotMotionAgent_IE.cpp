@@ -40,7 +40,7 @@ void RobotMotionAgent::initialize() {
 	/// ROS services of the DOBOT  
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
 	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");
-  Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
+    Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
 	Dobot_SetQueuedCmdForceStopExec		= nh.serviceClient<hrc_ros::SetQueuedCmdForceStopExec  >("/dobot_arm_app/setQueuedCmdForceStopExecApp");
 	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");
 	Dobot_SetQueuedCmdStartExec 			= nh.serviceClient<hrc_ros::SetQueuedCmdStartExec>("/dobot_arm_app/setQueuedCmdStartExecApp");
@@ -55,7 +55,7 @@ void RobotMotionAgent::initialize() {
 	// Testing the most important services TODO remove after integration 
 
 	
-	
+	cout << "Robot agent created" << endl; 
 	ROS_INFO("[ROBOT AGENT] created !");
 	update();
 }
@@ -79,7 +79,7 @@ bool RobotMotionAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
 bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res){
 
 
-	cout << "Starting with a test now " << endl; 
+  cout << "Starting with a test now " << endl; 
 
   cout << "goto clibration position " << endl; 
 	// goto calibration position: 
