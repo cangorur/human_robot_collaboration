@@ -303,6 +303,8 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		}
 
 		start_t = get_time_second();
+
+		// ### Update current belief, history, and any other internal states that is needed for Search() to function correctly.
 		solver_->Update(previous_action, obs);
 
 		end_t = get_time_second();
@@ -323,6 +325,8 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 		// ########## AGENT'S ACTION SELECTION STARTS ########## //
 		step_start_t = get_time_second();
 		start_t = get_time_second();
+
+		// ### Find the optimal action for current belief, and optionally return the found value for the action. Return the value Globals::NEG_INFTY if the value is not to be used.
 		int action = solver_->Search().action;
 		previous_action = action; // THIS ACTION WILL BE USED IN THE NEXT STEP TO CALCULATE THE BELIEF WHEN NEW OBS ARRIVES
 		end_t = get_time_second();
