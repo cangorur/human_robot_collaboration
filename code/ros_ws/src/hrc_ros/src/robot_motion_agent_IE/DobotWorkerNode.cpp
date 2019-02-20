@@ -12,7 +12,6 @@
 
 #include<ros/callback_queue.h>
 #include<std_msgs/Bool.h>
-#include<hrc_ros/SuccessCriteriaMsg.h> 
 #include<hrc_ros/RequestSuccessCriteria.h> 
 
 // dobot specific services 
