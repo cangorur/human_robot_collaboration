@@ -16,6 +16,7 @@
 #include <hrc_ros/InformRobotToTaskMang.h>
 #include <hrc_ros/RobotUpdateMsg.h>
 #include <hrc_ros/ResetRobotROS.h>
+#include <std_msgs/Bool.h>
 
 // dobot specific services 
 #include <hrc_ros/ContPickAndPlace.h>
@@ -69,12 +70,28 @@ private:
 	void update();
 
 	bool executeDobotMotionTest( std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res);
+	
+	// TODO check if still needed -> remove otherwise 
+	/*static void dobot_pointing_thWorker(); 
+	static void dobot_planning_thWorker() ;
+	static void dobot_warning_thWorker() ;
+	static void dobot_grasping_thWorker() ; 
 
+	std::thread pointing_thread; 
+	std::thread planninging_thread;
+	std::thread warning_thread;
+	std::thread grasping_thread();
+	*/
+	
 
 private:
 
-
-
+// **** publishers to publish the DOBOT command to the worker nodes ****	
+	ros::Publisher dobot_grasp_pub; 
+	ros::Publisher dobot_cancel_pub; 
+	ros::Publisher dobot_plan_pub; 
+	ros::Publisher dobot_idle_pub; 
+	ros::Publisher dobot_point_pub;
 	/*
 	 * /task_manager/robot_status_update is a rosservice by task manager agent to get information on
 	 * the new robot state, action, time of exection, rewards collected and the belief state etc.

@@ -74,7 +74,7 @@ add_service_files(
    PolicySelectorBPR.srv
    InformTrayUpdate.srv
    InformActionRecognized.srv
-      
+   RequestSuccessCriteria.srv   
 )
 
 # Add the dobot specific services found in the srv/dobot_api_services subfolder  
@@ -158,6 +158,11 @@ add_executable(robot_motion_agent
   src/robot_motion_agent_IE/RobotMotionAgentNode_IE.cpp)
 add_dependencies(robot_motion_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(robot_motion_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(dobot_worker_agent
+  src/robot_motion_agent_IE/DobotWorkerNode.cpp)
+add_dependencies(dobot_worker_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(dobot_worker_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 
 add_executable(observation_agent_IE

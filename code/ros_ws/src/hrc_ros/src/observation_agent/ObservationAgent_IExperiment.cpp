@@ -54,6 +54,7 @@ void ObservationAgent::initialize(){
 	//new_state__server = nh.advertiseService("/observation_agent/inform_new_human_state", &ObservationAgent::humanSt_to_robotSt_Map, this);
 	reset_scenario = nh.advertiseService("/observation_agent/reset", &ObservationAgent::resetScenario, this);
 
+	IErequest_successcriteria_server = nh.advertiseService("/observation_agent/request_success_criteria", &ObservationAgent::IE_request_success_criteria, this);
 	/*
 	 * A ROS topic for a subscription to tray proximity sensors (detecting packages in the trays)
 	 */
@@ -373,6 +374,17 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
 
 }
 
+// *** Service handler that returns the current success_criteria - this is used by dobot to place an object 
+bool ObservationAgent::IE_request_success_criteria(hrc_ros::RequestSuccessCriteria::Request &req, hrc_ros::RequestSuccessCriteria::Response &res){
+
+  res.stamp = ros::Time::now(); 
+	res.object = success_criteria_read.object; 
+	res.tray   = success_criteria_read.tray; 
+	
+	return true; 
+
+}
+
 
 // *** Service handler that receives a tray update message and calculates the observables success and failure 
 //void ObservationAgent::IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg){
@@ -399,7 +411,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		string subtask_success_state = "ongoing";
 		int_subtask_status = 0; // 0 = ongoing | 1 = success | 3 = fail
 		hrc_ros::SuccessStatusObserved success_status_msg;
-		success_combo success_criteria_read;
+		// moved to class  header success_combo success_criteria_read;
 
 		// ## get strings for success_criteria request
 		stringstream ss_task_counter;  

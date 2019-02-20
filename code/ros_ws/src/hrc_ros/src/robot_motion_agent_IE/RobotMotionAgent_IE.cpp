@@ -10,7 +10,8 @@
 #include <string>
 #include <robot_motion_agent_IE/RobotMotionAgent_IE.h>
 #include <stdio.h>
-#include <pthread.h>
+#include <thread>
+#include<stdlib.h>
 
 
 
@@ -20,6 +21,7 @@ RobotMotionAgent::RobotMotionAgent() {
 }
 
 RobotMotionAgent::~RobotMotionAgent() {
+	cout << " In destructor " << endl; 
 }
 
 void RobotMotionAgent::initialize() {
@@ -36,11 +38,17 @@ void RobotMotionAgent::initialize() {
 	cancelAction = nh.serviceClient<std_srvs::Trigger>("/robot/cancel_action");
 	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_motion");
 
+  dobot_grasp_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_grasp", 1);
+	dobot_cancel_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_cancel", 1);
+	dobot_plan_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_plan", 1);
+	dobot_idle_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_idle", 1);
+	dobot_point_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_point", 1);
+	
 
 	/// ROS services of the DOBOT  
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
 	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");
-    Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
+  Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
 	Dobot_SetQueuedCmdForceStopExec		= nh.serviceClient<hrc_ros::SetQueuedCmdForceStopExec  >("/dobot_arm_app/setQueuedCmdForceStopExecApp");
 	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");
 	Dobot_SetQueuedCmdStartExec 			= nh.serviceClient<hrc_ros::SetQueuedCmdStartExec>("/dobot_arm_app/setQueuedCmdStartExecApp");
@@ -231,7 +239,10 @@ void RobotMotionAgent::update() {
 		// EVERY MESSAGE EITHER IS A ROBOT ACTION BELIEF UPDATE OR ROBOT REWARD UPDATE
 		// ROBOT BELIEF UPDATE RECEIVED. INFORMING ABOUT BOTH ACTION AND THE BELIEF STATE (either initial or belief state)
 
+
+		
 		if (robot_action != "-1"){
+
 
 			std_srvs::Trigger::Request req;
 			std_srvs::Trigger::Response resp;
@@ -243,19 +254,39 @@ void RobotMotionAgent::update() {
 				//Putting the actual name of the action to inform the task manager
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "idle";
+				std_msgs::Bool msg; 
+				msg.data = bool(true); 
+				dobot_idle_pub.publish(msg);
 				success = true;
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot staying idle...");
 			}
 			else if (robot_action == "1") {	// grasp
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "grasp";
-				success = grasp.call(req, resp);
+				//success = grasp.call(req, resp);
+
+				std_msgs::Bool msg; 
+				msg.data = bool(true); 
+				
+				dobot_grasp_pub.publish(msg);
+
+				//std::thread grasping_thread(dobot_grasping_thWorker);
+				//cout << "after thread call   - in else " << endl;  
+				// TODO check if it is possible to preemt this thread with the real robot. 
+				//ros::spinOnce(); 
+			  //	grasping_thread.join(); 
+				//cout << "after thread.join " << endl; 
+				//ros::spinOnce();
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
 			}
 			else if (robot_action == "2") {	// cancel all actions
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "cancel all actions";
-				success = cancelAction.call(req, resp);
+				//success = cancelAction.call(req, resp);
+
+				std_msgs::Bool msg; 
+				msg.data = bool(true); 
+				dobot_cancel_pub.publish(msg);
 
 				std_srvs::SetBool is_warned;
 				is_warned.request.data = true;
@@ -266,14 +297,26 @@ void RobotMotionAgent::update() {
 			else if (robot_action == "3") {	// point to object
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "point to remind";
-				success = pointToObj.call(req, resp);
+				//success = pointToObj.call(req, resp);
+
+
+				std_msgs::Bool msg; 
+				msg.data = true; 
+				dobot_point_pub.publish(msg);
+
+
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot pointing to object...");
 			}
 			else if (robot_action == "4"){ // planning for grasping 
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "planning for grasping";
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot planning for grasping...");
-				success = planForGrasp.call(req, resp);
+				
+				std_msgs::Bool msg; 
+				msg.data = true; 
+				dobot_plan_pub.publish(msg);
+
+				//success = planForGrasp.call(req, resp);
 				success = true;
 			}
 			else {
@@ -350,6 +393,11 @@ void RobotMotionAgent::update() {
 		cout << "[ROBOT AGENT] Server: Error in connection " << (size_t)connection.get() << ". " <<
 				"Error: " << ec << ", error message: " << ec.message() << endl;
 	};
-
-	server.start();
+server.start(); 
+	
+//  server_thread1([&server]() {
+//			server.start();
+//	});
+	
+//	server_thread.join(); 
 }

@@ -21,6 +21,7 @@
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/HeadGestureMsg.h> 
+#include <hrc_ros/RequestSuccessCriteria.h> 
 #include "std_msgs/String.h"
 
 #include <boost/property_tree/json_parser.hpp>
@@ -96,6 +97,17 @@ private:
 
 	//void IEtray_update_to_obs_map(const hrc_ros::TrayUpdateCamera &msg);
 	bool IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request &req,hrc_ros::InformTrayUpdate::Response &res);
+
+
+	/**
+	 * This advertised rosservice is called "/observation_agent/request_success_criteria". It is called by dobot_worker_agent, if it is commanded to grasp and needs to know the current 
+	 * success criteria. The success criteria is use to let dobot know where to put the current object. 
+	 * The success criteria will be returned by the service handler afterwards. 
+	 * 
+	 */
+	bool IE_request_success_criteria(hrc_ros::RequestSuccessCriteria::Request &req, hrc_ros::RequestSuccessCriteria::Response &res);
+
+
 
 	bool IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res);
 	
@@ -206,6 +218,9 @@ private:
 
 	// ros::ServiceServer server = node_handle.advertiseService(service_name, pointer_to_callback_function);
     /// Advertised service. See their methods for the functionality of the services
+
+	/// Advertised service. See their methods for the functionality of the services
+	ros::ServiceServer IErequest_successcriteria_server ;
 	/// Advertised service. See their methods for the functionality of the services
 	ros::ServiceServer IEaction_recognition_server ;
 	/// Advertised service. See their methods for the functionality of the services
@@ -333,6 +348,8 @@ private:
 
 	// global variables to store the scenario data -> will be used to elaborate success and failure 
 	int true_tray_object_combination = 0;
+
+	success_combo success_criteria_read;
 	
 	// counter that counts the subtasks that have been executed. 
 	/// Note: counter starts at 1!!!
