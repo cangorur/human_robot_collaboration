@@ -1,8 +1,8 @@
 /*
- * HumanAgentNode.cpp
+ * DobotWorkerNode.cpp
  *
- *  Created on: 18.04.2018
- *      Author: Orhan Can Görür
+ *  Created on: 20.02.2019
+ *      Author: Elia Kargruber
  */
 
 #include <ros/ros.h>
@@ -56,25 +56,54 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 		hrc_ros::SetPTPCmd::Response		gotoStart_resp; 
 		if (no_Dobot_flag == false){
 			cout << " - calling services" << endl; 
+		
+		// Point move version 1:: Go up and down 
+
 			// Point position 
-			gotoStart_req.x = 230;   
-			gotoStart_req.y = 50; 
-			gotoStart_req.z = 40;
-
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-
-			// Move a bit further to make point obvious 
-			gotoStart_req.x = 230;   
-			gotoStart_req.y = 48; 
-			gotoStart_req.z = 42;
-
+			gotoStart_req.x = 219;   
+			gotoStart_req.y = 40; 
+			gotoStart_req.z = 94;
 			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 
 			// Standard position for the dobot arm 
 			gotoStart_req.x = 215;   
 			gotoStart_req.y = 45; 
 			gotoStart_req.z = 30; 
+			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+		
+			// Point position 
+			gotoStart_req.x = 219;   
+			gotoStart_req.y = 40; 
+			gotoStart_req.z = 94;
+			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 
+			// Standard position for the dobot arm 
+			gotoStart_req.x = 215;   
+			gotoStart_req.y = 45; 
+			gotoStart_req.z = 30; 
+			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+
+		cout << " Will sleep for 3 seconds and do second pointing afterwards " << endl; 
+		sleep(3);
+		// Point move version 2 :: pointing 	
+		
+		
+			// Point position 
+			gotoStart_req.x = 230;   
+			gotoStart_req.y = 50; 
+			gotoStart_req.z = 40;
+			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+
+			// Move a bit further to make point obvious 
+			gotoStart_req.x = 230;   
+			gotoStart_req.y = 48; 
+			gotoStart_req.z = 42;
+			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+
+			// Standard position for the dobot arm 
+			gotoStart_req.x = 215;   
+			gotoStart_req.y = 45; 
+			gotoStart_req.z = 30; 
 			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 		} else { // only wait - do not call dobot services  
 		  cout << " ~ sleeping " << endl; 
@@ -126,14 +155,20 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		if (no_Dobot_flag == false){ // call dobot api service
 			cout << " - calling services" << endl;  
-			hrc_ros::SetQueuedCmdForceStopExecRequest 	forceStopQueue_req; 
-			hrc_ros::SetQueuedCmdForceStopExecResponse  forceSTopQueue_resp; 
+			hrc_ros::SetQueuedCmdForceStopExec::Request 	forceStopQueue_req; 
+			hrc_ros::SetQueuedCmdForceStopExec::Response  forceSTopQueue_resp; 
 
-			hrc_ros::SetQueuedCmdClearRequest		   	clearQueue_req;
-			hrc_ros::SetQueuedCmdClearResponse		   	clearQueue_resp;
+			hrc_ros::SetQueuedCmdClear::Request		   	clearQueue_req;
+			hrc_ros::SetQueuedCmdClear::Response		   	clearQueue_resp;
 
-			hrc_ros::SetQueuedCmdStartExecRequest     	startQueue_req;
-			hrc_ros::SetQueuedCmdStartExecResponse     	startQueue_resp;
+			hrc_ros::SetQueuedCmdStartExec::Request     	startQueue_req;
+			hrc_ros::SetQueuedCmdStartExec::Response     	startQueue_resp;
+
+			hrc_ros::SetEndEffectorSuctionCup::Request  suctionCup_req;
+			hrc_ros::SetEndEffectorSuctionCup::Response suctionCup_resp;
+			suctionCup_req.suck = 0; 
+			suctionCup_req.enableCtrl = 1;
+
 
 			hrc_ros::SetPTPCmdRequest				   	gotoStart_req;
 			hrc_ros::SetPTPCmdRequest				   	gotoStart_resp; 
@@ -146,6 +181,7 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 			Dobot_SetQueuedCmdForceStopExec.call(forceStopQueue_req,forceSTopQueue_resp);
 			Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
 			Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
+			Dobot_SetEndEffectorSuctionCup.call(suctionCup_req,suctionCup_resp); // turn off suctionCup -> Dobot will drop the object 
 			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 		} else { 
 			cout << " ~ sleeping " << endl;
@@ -263,7 +299,7 @@ int main(int argc, char **argv) {
 	
 	// Subscribers should go here single subscriber for each action
 	ros::Subscriber dobot_grasp_sub = nh.subscribe("/robot_motion_agent/dobot_grasp",1, graspCallback);  
-    ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
+  ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
 	ros::Subscriber dobot_plan_sub = nh.subscribe("/robot_motion_agent/dobot_plan",1, planCallback);  
 	ros::Subscriber dobot_idle_sub = nh.subscribe("/robot_motion_agent/dobot_idle",1, idleCallback); 
 	ros::Subscriber dobot_point_sub = nh.subscribe("/robot_motion_agent/dobot_point",1, pointCallback); 
@@ -274,23 +310,21 @@ int main(int argc, char **argv) {
 
 
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
-	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");
-    Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
+	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");  // not used so far
+  Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init"); 															// not used so far
 	Dobot_SetQueuedCmdForceStopExec		= nh.serviceClient<hrc_ros::SetQueuedCmdForceStopExec  >("/dobot_arm_app/setQueuedCmdForceStopExecApp");
-	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");
+	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");			// not used so far
 	Dobot_SetQueuedCmdStartExec 			= nh.serviceClient<hrc_ros::SetQueuedCmdStartExec>("/dobot_arm_app/setQueuedCmdStartExecApp");
 	Dobot_SetQueuedCmdClear 					= nh.serviceClient<hrc_ros::SetQueuedCmdClear>("/dobot_arm_app/setQueuedCmdClearApp");
 	Dobot_SetEndEffectorSuctionCup 		= nh.serviceClient<hrc_ros::SetEndEffectorSuctionCup>("/dobot_arm_app/setEndEffectorSuctionCupApp");
 	Dobot_gotoPoint 									= nh.serviceClient<hrc_ros::SetPTPCmd>("/dobot_arm_app/gotoPointApp");
-	Dobot_ContPickAndPlace 						= nh.serviceClient<hrc_ros::ContPickAndPlace>("/dobot_arm_app/contPickAndPlace");
-	Dobot_oneTimePickAndPlace 				= nh.serviceClient<hrc_ros::OneTimePickAndPlace>("/dobot_arm_app/oneTimePickAndPlace");
+	Dobot_ContPickAndPlace 						= nh.serviceClient<hrc_ros::ContPickAndPlace>("/dobot_arm_app/contPickAndPlace");									// not used so far
+	Dobot_oneTimePickAndPlace 				= nh.serviceClient<hrc_ros::OneTimePickAndPlace>("/dobot_arm_app/oneTimePickAndPlace");						// not used so far
 	request_success_criteria				= nh.serviceClient<hrc_ros::RequestSuccessCriteria>("/observation_agent/request_success_criteria");
 
-
+	// starting spinners with multiple threads 
 	spinner.start();
 	ros::waitForShutdown();
-  	// ros::spin(); we cannot spin here as it opens a websocket server and runs on that thread
-  	// spin is carried out under Update function of HumanAgent.cpp to spinOnce after certain operation
 }
 
 
