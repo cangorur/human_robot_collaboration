@@ -24,6 +24,9 @@ pomdp_solver_path = pomdp_base_path + "despot_POMDP_robot/build/examples/pomdpx_
 pomdp_model_base_path = pomdp_base_path + "models/robot_models/"
 results_path = pomdp_base_path + "results/POMDP_IE_tests/"
 
+# get the beginning time to measure how long it takes
+start_time = datetime.datetime.now()
+
 
 # read in test configuration 
 test_config = pd.read_csv("POMDP_evaluation_config.csv")
@@ -117,5 +120,11 @@ for row in (test_config.index):
 		os.system("sleep 65") 
 
 os.system('killall despot_pomdpx')
-print("\n\n I'm done with this :-) All tests executed")
+
+finish_time = datetime.datetime.now()
+time_taken = finish_time - start_time
+print("\n\n I'm done with this :-) All tests executed\n\nTook me: ")
+print(time_taken)
+print("\n\n I'm done with this :-) All tests executed\n\nTook me: hh:mm:ss:microseconds " + str(time_taken))
+
 
