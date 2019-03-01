@@ -1,15 +1,13 @@
 from websocket import create_connection
 import json
-import time 
 
 ws = create_connection("ws://localhost:7070")
 
-obs = "9" # IDLE
-state = "0"                     # always TaskHuman
-for i in range(0,1):
-     
+
+print "Sending the state request"
+while 1:
+    obs = raw_input("Observation:")
     ws.send(obs + "," + "-1")
     print "Observation is sent"
-    time.sleep(0.5)    
+    state = "11"
     ws.send("-1" + "," + state)
-    time.sleep(1)  

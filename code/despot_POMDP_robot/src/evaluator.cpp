@@ -189,7 +189,7 @@ bool Evaluator::RunInitial() {
 	time_t now = time(0);
 	struct tm * now_tm = localtime(&now); 
 	char date_buffer [80];
-    strftime (date_buffer,80,"%Y-%m-%d_%R",now_tm); 
+    strftime (date_buffer,80,"%Y-%m-%d_%R_%S",now_tm); 
 	filename_evaluator = string("/home/elia/master_thesis/catkin_ws/src/hrc_industry/code/results/POMDP_IE_tests/pomdp_evaluator_file_") + date_buffer + string(".csv");
 
 	test_result_file.open (filename_evaluator,std::ios_base::app); 
