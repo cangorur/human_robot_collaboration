@@ -25,6 +25,10 @@ pomdp_base_path = hrc_path + "/../../../"
 pomdp_solver_path = pomdp_base_path + "despot_POMDP_robot/build/examples/pomdpx_models/despot_pomdpx -m " 
 pomdp_model_base_path = pomdp_base_path + "models/robot_models/"
 results_path = pomdp_base_path + "results/POMDP_IE_tests/"
+pomdp_in_own_terminal = False # set true if pomdp should be launched in own terminal (this will always be in the foreground )
+
+
+
 
 # get the beginning time to measure how long it takes
 start_time = datetime.datetime.now()
@@ -57,12 +61,18 @@ for row in (test_config.index):
 
 		# build pomdp path and execute model
 		# TODO CHANGE PATH HERE 
-		pomdp_model_path = pomdp_model_base_path + current_pomdp_model_str +"' &"
-		pomdp_model_str = "gnome-terminal -e '" + pomdp_solver_path + pomdp_model_path
+		if (pomdp_in_own_terminal == True):
+			pomdp_model_path = pomdp_model_base_path + current_pomdp_model_str +"' &" 
+			pomdp_execute_command = "gnome-terminal -e '" + pomdp_solver_path + pomdp_model_path
 
-		print("executing : " + str(pomdp_model_str) )
+		elif (pomdp_in_own_terminal == False):
+			pomdp_model_path = pomdp_model_base_path + current_pomdp_model_str 
+			pomdp_execute_command = pomdp_solver_path + pomdp_model_path + " &"
+		
+
+		print("executing : " + str(pomdp_execute_command) )
 		time_tag = datetime.datetime.now()
-		os.system(pomdp_model_str)
+		os.system(pomdp_execute_command)
 		current_time_str = str(time_tag.date()) + "_" + '%02d'%(time_tag.hour) + ":" + '%02d'%(time_tag.minute) + "_" + '%02d'%(time_tag.second)   # str(time_tag.hour) + ":" + str(time_tag.minute)
 		result_file_name = "pomdp_evaluator_file_" + current_time_str + ".csv" 
 		result_file_path = results_path + "pomdp_evaluator_file_" + current_time_str + ".csv" 
