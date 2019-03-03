@@ -194,4 +194,8 @@ time_taken = finish_time - start_time
 print("\n\n I'm done with this :-) All tests executed\n\nTook me: hh:mm:ss:microseconds " + str(time_taken))
 print("\n # of files I could not copy : " + str(files_not_copied))
 
+# open terminal, once all tests are run 
+done_cmd = "gnome-terminal -e 'terminal' "
+
+os.system(done_cmd)
 
