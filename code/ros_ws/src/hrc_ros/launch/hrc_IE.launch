@@ -1,6 +1,6 @@
 <launch>
 
-<node pkg="hrc_ros" type="robot_agent" name="robot_agent" output="screen" respawn="true" />
+<!-- <node pkg="hrc_ros" type="robot_motion_agent" name="robot_motion_agent" output="screen" respawn="true" /> -->
 
 <node pkg="hrc_ros" type="human_agent" name="human_agent" output="screen" respawn="true" />
 
