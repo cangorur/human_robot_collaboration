@@ -38,17 +38,17 @@ void RobotMotionAgent::initialize() {
 	cancelAction = nh.serviceClient<std_srvs::Trigger>("/robot/cancel_action");
 	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_motion");
 
-  dobot_grasp_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_grasp", 1);
+    dobot_grasp_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_grasp", 1);
 	dobot_cancel_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_cancel", 1);
 	dobot_plan_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_plan", 1);
 	dobot_idle_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_idle", 1);
 	dobot_point_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_point", 1);
-	
+	robot_action_pub = nh.advertise<hrc_ros::RobotUpdateMsg>("/experiment_monitoring/robot_action_taken_pub", 1);
 
 	/// ROS services of the DOBOT  
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
 	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");
-  Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
+    Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
 	Dobot_SetQueuedCmdForceStopExec		= nh.serviceClient<hrc_ros::SetQueuedCmdForceStopExec  >("/dobot_arm_app/setQueuedCmdForceStopExecApp");
 	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");
 	Dobot_SetQueuedCmdStartExec 			= nh.serviceClient<hrc_ros::SetQueuedCmdStartExec>("/dobot_arm_app/setQueuedCmdStartExecApp");
@@ -325,6 +325,20 @@ void RobotMotionAgent::update() {
 			}
 			ROS_WARN("[ROBOT AGENT] robot in belief state: %s took action: %s", robot_state.c_str(), robot_action_taken.c_str());
 
+			// publish robot action here: 
+			hrc_ros::RobotUpdateMsg action_update_msg;
+
+			action_update_msg.stamp_robot_update = ros::Time::now();
+			action_update_msg.action_taken_time = action_taken_time;
+			action_update_msg.robot_action_taken = robot_action_taken; // took action in the belief state
+			action_update_msg.robot_belief_state = robot_belief_state;
+			action_update_msg.robot_real_state;
+			action_update_msg.immediate_reward = robot_immediate_reward; // this reward is received from the real state (prev action taken)
+			action_update_msg.total_disc_reward = robot_total_disc_reward;
+
+			robot_action_pub.publish(action_update_msg);
+
+
 			// inform human about robots action via parameter
 			// this is needed to let human know how robot acted. maybe placed in observation agent?
 			ros::param::set("/current_robot_action", stoi(robot_action));
@@ -379,7 +393,8 @@ void RobotMotionAgent::update() {
 
 			hrc_ros::InformRobotToTaskMang::Request robotUpdateReq;
 			hrc_ros::InformRobotToTaskMang::Response robotUpdateRes;
-
+			
+			
 			robotUpdateReq.robot_update = update_msg;
 			callTaskMang_inform.call(robotUpdateReq, robotUpdateRes);
 		}

@@ -92,6 +92,10 @@ private:
 	ros::Publisher dobot_plan_pub; 
 	ros::Publisher dobot_idle_pub; 
 	ros::Publisher dobot_point_pub;
+
+// **** publisher to publish the action the robot took -> this is recorded 
+
+	ros::Publisher robot_action_pub;
 	/*
 	 * /task_manager/robot_status_update is a rosservice by task manager agent to get information on
 	 * the new robot state, action, time of exection, rewards collected and the belief state etc.
