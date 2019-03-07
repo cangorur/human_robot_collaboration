@@ -25,7 +25,7 @@
 	"robot": {
 		"type":{
 				"AItype": "proactive",
-				"forHumanType": "IE_minimalChanges",
+				"forHumanType": "V2_Can_base",
 				"forHumanCollab": ""
 		},
 		"position":{

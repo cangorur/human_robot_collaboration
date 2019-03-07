@@ -5,8 +5,8 @@
 	"task_max"       	 : "4",
 	"global_success" 	 : "2",
 	"global_fail"    	 : "2",
-	"same_action_timeout"	 : "5.0",
-	"decision_timer_periode" : "20.0"
+	"same_action_timeout"	 : "3.0",
+	"decision_timer_periode" : "4.0"
     },
 
 
@@ -16,7 +16,7 @@
         "1" :
 	{
 
-	   "subtask_quantity" : "4",			
+	   "subtask_quantity" : "10",			
 
 	   "subtask" : 
 	   {
@@ -38,7 +38,7 @@
 	 "2" :
 	{
 
-	   "subtask_quantity" : "4",
+	   "subtask_quantity" : "10",
 
 	   "subtask" : 
 	   {
@@ -118,30 +118,93 @@
 	},
 
 
-	"3" :
+	 "3" :
 	{
 
-	   "subtask_quantity" : "4",			
+	   "subtask_quantity" : "10",
 
 	   "subtask" : 
 	   {
+		"1": 
+                {
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
+		},
 
-			
-		"all": 
-		{	
-			"object_1": {"tray": "3"}, 
-			"object_2": {"tray": "3"},
-			"object_3": {"tray": "3"}
+
+		"2": 
+                {
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
+		},
+
+		"3": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		},
+
+		"4": 
+                {
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
+		},
+
+		"5": 
+                {
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
+		},
+
+		"6": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		},
+
+		"7": 
+                {
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
+		},
+
+		"8": 
+                {
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
+		},
+
+		"9": 
+                {
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
+		},
+
+		"10": 
+                {
+			"object_1": { "tray": "3"},
+			"object_2": { "tray": "3"},
+			"object_3": { "tray": "3"}
 		}
-		
-	   }		
+
+	   }
 
 	},
+
 
 	"4" :
 	{
 
-	   "subtask_quantity" : "4",			
+	   "subtask_quantity" : "10",			
 
 	   "subtask" : 
 	   {
