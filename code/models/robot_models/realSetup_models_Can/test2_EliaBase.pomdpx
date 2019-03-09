@@ -16,7 +16,7 @@
 	   NoFocus
 	   NeedsToBeReminded
 	   NeedsHelp
-	   NoNeedHelp
+	   NotWantHelp
 	   WarningReceived
 	   GlobalSuccess
 	   GlobalFail
