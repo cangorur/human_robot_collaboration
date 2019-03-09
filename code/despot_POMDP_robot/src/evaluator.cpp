@@ -238,14 +238,16 @@ bool Evaluator::RunStep(int step, int round, int real_state, int manual_obs) {
 	*out_ << "=== RESULTS ===" << endl;
 
 
+
 	// ################# REWARD CALCULATION STARTS ####################//
-	if (real_state != -1){ // IF REAL STATE INFORMATION RECEIVED THEN CALCULATE THE REWARD
+	if ( (real_state != -1) && (int_former_belief >= 0) ){ // IF REAL STATE INFORMATION RECEIVED THEN CALCULATE THE REWARD
 		// ########## SIMULATOR STARTS ########### //
 
 
 		// **** TODO  Revert the change here if the sent real_state should be used. In the IE case, the last belief_state is used as the real state.  
 		cout << " \n The former belief state is used as the real_state in the IE version !!!! \n ";
-		real_state = int_former_belief; 
+		real_state = int_former_belief;
+
 		cout << " real_state used   : " << real_state << endl << endl; 
 		// to get the reward, first simulator runs ! The new state only gives the reward of our previous act!
 		start_t = get_time_second();
