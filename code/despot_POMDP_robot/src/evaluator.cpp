@@ -189,13 +189,22 @@ bool Evaluator::RunInitial() {
 	time_t now = time(0);
 	struct tm * now_tm = localtime(&now); 
 	char date_buffer [80];
-    strftime (date_buffer,80,"%Y-%m-%d_%R_%S",now_tm); 
-	filename_evaluator = string("/home/elia/master_thesis/catkin_ws/src/hrc_industry/code/results/POMDP_IE_tests/pomdp_evaluator_file_") + date_buffer + string(".csv");
+    strftime (date_buffer,80,"%Y-%m-%d_%R_%S",now_tm);
 
-	test_result_file.open (filename_evaluator,std::ios_base::app); 
-	//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
-	test_result_file << string("observation_received") + "," + string("observation_probability") + "," + string("belief_state") + "," + string("belief_state_probability") + "," + string("action_taken") + "," + string("real_state") + "," + string("reward") + "," + string("total_discounted_reward") + "," + string("total_undiscounted_reward") + "\n";; // "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
-	test_result_file.close();
+	// TODO make the result file path relative to the project root  
+	filename_evaluator = string("/home/elia_master_thesis/catkin_ws/src/hrc_industry/code/results/POMDP_IE_tests/pomdp_evaluator_file_") + date_buffer + string(".csv");
+
+	try{
+		test_result_file.open (filename_evaluator,std::ios_base::app); 
+		//test_result_file << "\n" + string("robot_action_taken") + "," + string("robot_belief_state") + "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
+		test_result_file << string("observation_received") + "," + string("observation_probability") + "," + string("belief_state") + "," + string("belief_state_probability") + "," + string("action_taken") + "," + string("real_state") + "," + string("reward") + "," + string("total_discounted_reward") + "," + string("total_undiscounted_reward") + "\n";; // "," + string("robot_real_state") + "," + string("robot_immediate_reward") + "," + string("robot_total_disc_reward") +  "\n";
+		test_result_file.close();
+		cout << "result file opened at " << filename_evaluator << endl; 
+	} catch (...) { 
+		cout << "Result file path could not be found please change the path in evaluator.cpp and compile DESPOT again" << endl; 
+		cout << "File path use: " << filename_evaluator << endl; 
+	}
+	
 
 	return true;
 }
