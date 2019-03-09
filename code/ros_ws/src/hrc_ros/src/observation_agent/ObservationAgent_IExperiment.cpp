@@ -6,6 +6,7 @@
 
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <ros/console.h>
 
 #include <stdlib.h> 				// for rand() and RAND_MAX
 #include <string>
@@ -28,6 +29,10 @@ ObservationAgent::~ObservationAgent() {
 
 void ObservationAgent::initialize(){
 	ros::NodeHandle nh("~");
+
+
+	 ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Warn);
+	 ros::console::notifyLoggerLevelsChanged();
 
 	/*
 	 * Initializing ros services
@@ -308,7 +313,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		// ###########################################################################################
 
-		ROS_INFO("\n\n OBSERVATION Client: TRIGGER -- Sending to the robot planner:: OBSERVATION= %s \n\n", message.c_str());
+		ROS_WARN("\n\n OBSERVATION Client: TRIGGER -- Sending to the robot planner:: OBSERVATION= %s \n\n", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
@@ -464,6 +469,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		// ## determine global success state -> it is only set once all subtasks are finished
 		if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done 
 			
+			ROS_WARN("Global Success state is calculated");
 			if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
 				task_success_state = "success"; // global success 
 				o1_ipd = true; //  O_1  task successs (processed product detected)
@@ -624,7 +630,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		* 					TaskRobot
 		*/
 
-		ROS_WARN("XXXXXX  Time_passed_since_new_action   : %f \n\n" , (req.stamp - former_time_stamp).toSec() );
+		ROS_INFO("XXXXXX  Time_passed_since_new_action   : %f \n\n" , (req.stamp - former_time_stamp).toSec() );
 
 		if (  (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout))  ) {
 			
@@ -634,8 +640,8 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			// trigger decision !!!! 
 			// TODO change this to the actual trigger function 
 			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
-			ROS_INFO(" \n \n XXXXXX  New Observation detected -> issue despot decision making    : %d" ,mapping_success);
-
+			ROS_WARN(" \n \n XXXXXX  New Observation detected -> issue despot decision making    : %d" ,mapping_success);
+			ROS_WARN("XXXXXX  Time_passed_since_new_action   : %f \n\n" , (req.stamp - former_time_stamp).toSec() );
 		}
 
 
