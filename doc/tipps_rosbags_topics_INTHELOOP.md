@@ -27,7 +27,7 @@ ________________________________________________________________________________
 ## setting it up:
 
 
-###on pc:
+### on pc:
  - minh@minh-ThinkPad-W530:~/ba/catkin_ws$ 
  - source devel/setup.bash
  - export ROS_MASTER_URI=http://130.149.232.237:11311
@@ -64,6 +64,6 @@ ________________________________________________________________________________
 
 
 
-###Start the conveyor belt: 
+### Start the conveyor belt: 
 
  - rosservice call /conveyor_control_app/inOprConveyorControl
