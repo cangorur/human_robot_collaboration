@@ -382,11 +382,29 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
 // *** Service handler that returns the current success_criteria - this is used by dobot to place an object 
 bool ObservationAgent::IE_request_success_criteria(hrc_ros::RequestSuccessCriteria::Request &req, hrc_ros::RequestSuccessCriteria::Response &res){
 
-  res.stamp = ros::Time::now(); 
-	res.object = success_criteria_read.object; 
-	res.tray   = success_criteria_read.tray; 
+		// ## get strings for success_criteria request
+		stringstream ss_task_counter;  
+		stringstream ss_subtask_counter; 
+
+		ss_task_counter << task_counter;
+		ss_subtask_counter << subtask_counter;
+		
+		current_object = req.current_object; 
+		string task_str = ss_task_counter.str();
+		string subtask_str = ss_subtask_counter.str();
+		string object_str  = object_int_to_str(current_object);
+
+		// ## determine subtask success state 
+		try {
+		success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
+		} catch(boost::property_tree::json_parser::json_parser_error &e) {
+				ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+				return false;
+			}
+
+  		res.stamp = ros::Time::now();  
+		res.tray   = success_criteria_read.tray; 
 	
-	return true; 
 
 }
 
