@@ -11,7 +11,7 @@ print(" \nSending observations ... ")
 
 obs = "9" # IDLE
 state = "0"                     # always TaskHuman
-for i in range(0,25):
+for i in range(0,50):
      
     ws.send(obs + "," + "-1")
     #print "Observation is sent"

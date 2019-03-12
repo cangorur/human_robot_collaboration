@@ -15,9 +15,9 @@ code/hrc_morse/src/.idea
 code/ros_ws/src/cmake-build-debug/*
 code/configs/Changes_to_scenario_config.txt
 LogFiles/
-code/results/POMDP_IE_tests/
 
 # temporary
 code/pomdp_evaluation
 code/models/
 *.csv
+code/results/POMDP_IE_tests
