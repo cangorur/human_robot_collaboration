@@ -13,6 +13,8 @@ roslaunch object_tracking tracking.launch
 # topics relevant for POMDP -> tray_update and action_recognized 
 /experiment_monitoring/robot_action_taken_pub   |   published by /robot_motion_agent      | published after DESPOT informed
 /observation_agent/observation_update		|   published by /observation_agent_IE    | published when sending obs to DESPOT
+rosbag filter my.bag only-tf.bag "topic in [ '/experiment_monitoring/robot_action_taken_pub', '/observation_agent/observation_update' , '/camera/rgb/camera_info' , '/camera/rgb/image_raw' ]"
+rosbag filter my.bag only-tf.bag "topic in [ '/experiment_monitoring/robot_action_taken_pub', '/observation_agent/observation_update']"
 
 
 # topics published by action recognition
