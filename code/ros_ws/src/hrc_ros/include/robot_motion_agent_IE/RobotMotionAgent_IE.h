@@ -30,6 +30,7 @@
 #include <hrc_ros/SetEndEffectorSuctionCup.h>
 #include <hrc_ros/SetQueuedCmdClear.h>
 #include <hrc_ros/SimplePickAndPlace.h>
+#include <hrc_ros/InOprConveyorControl.h>
 
 // websocket and stream includes 
 #include "simple_web_socket/server_ws.hpp"
