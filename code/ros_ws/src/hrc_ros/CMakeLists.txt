@@ -92,6 +92,7 @@ SetPTPCmd.srv # for the gotoPointApp service
 SetEndEffectorSuctionCup.srv
 SetQueuedCmdClear.srv
 SimplePickAndPlace.srv
+InOprConveyorControl.srv
 
 )
 

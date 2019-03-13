@@ -6,7 +6,7 @@
 	"global_success" 	 : "2",
 	"global_fail"    	 : "2",
 	"same_action_timeout"	 : "3.0",
-	"decision_timer_periode" : "4.0"
+	"decision_timer_periode" : "20.0"
     },
 
 

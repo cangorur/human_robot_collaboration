@@ -1,0 +1,6 @@
+# Continuous motor control enabled or not
+bool isEnabled
+# Speed. Recommended setting: 25
+float32 speed
+---
+bool success

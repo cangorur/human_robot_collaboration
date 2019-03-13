@@ -8,6 +8,8 @@
 
 <node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" />
 
+<!-- Drive Dobot to calibration position && start the conveyor belt -->
+<node pkg="rosservice" type="rosservice" name="calibrate_dobot" args="call /dobot_worker/calibrate "/>
 
 <!-- Enable the conveyor belt - automatically stops with the IR sensor --> 
 <!-- <node pkg="rosservice" type="rosservice" name="enble_conveyor" args="call /conveyor_control_app/inOprConveyorControl 'isEnabled: true speed: 25' "/> -->

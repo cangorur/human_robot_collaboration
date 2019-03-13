@@ -14,6 +14,9 @@
 #include<std_msgs/Bool.h>
 #include<hrc_ros/RequestSuccessCriteria.h> 
 
+// generic service includes 
+#include <std_srvs/Trigger.h>
+
 // dobot specific services 
 #include <hrc_ros/ContPickAndPlace.h>
 #include <hrc_ros/InitDobotArmApp.h>
@@ -26,6 +29,7 @@
 #include <hrc_ros/SetEndEffectorSuctionCup.h>
 #include <hrc_ros/SetQueuedCmdClear.h>
 #include <hrc_ros/SimplePickAndPlace.h>
+#include <hrc_ros/InOprConveyorControl.h> 
 
 using namespace std;
 
@@ -44,10 +48,29 @@ ros::ServiceClient Dobot_gotoPoint;
 ros::ServiceClient Dobot_ContPickAndPlace;
 ros::ServiceClient Dobot_oneTimePickAndPlace;
 ros::ServiceClient request_success_criteria;
+ros::ServiceClient enableConveyor; 
+
+ros::ServiceServer calibrate_scenario;
+ros::ServiceServer reset_scenario; 
+
 
 // Variables that switch between fullDobot setup and a wait only version 
 bool no_Dobot_flag = false; // used for debugging without dobot (true= only wait | false= call dobot service ) || is set by ros_param 
 int wait_time = 20; // time dobot should wait in noDobot mode
+
+// Struct to hold the package drop place 
+struct package_drop_loc {
+  double x;
+  double y;
+  double z; 
+} ;
+
+package_drop_loc red_package_drop_loc; 
+package_drop_loc green_package_drop_loc;
+package_drop_loc blue_package_drop_loc;
+int red_placed_cnt = 0; 
+int green_placed_cnt = 0; 
+int blue_placed_cnt = 0; 
 
 void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << " In Pointing thread"; 
@@ -125,21 +148,99 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 			hrc_ros::RequestSuccessCriteria::Request success_req; 
 			hrc_ros::RequestSuccessCriteria::Response success_resp;
+			// TODO get the current object by a service from the action recognition - faked to 1=red for now 
+			success_req.current_object = 3; 
 
+
+			// get success tray from observation agent 
 			request_success_criteria.call(success_req, success_resp);
-
-			int object = success_resp.object; 
+			
 			int tray   = success_resp.tray;
 
-			cout << "Requested succes_criteria from observation_agent -  object: " << object << "  tray: " << tray << endl;  
+			cout << "Requested succes_criteria from observation_agent -  object: " << success_req.current_object << "  tray: " << tray << endl;  
 
-			// TODO - map tray to placement positions here 
-			spp_request.pickX = 278; 
-			spp_request.pickY = 50; 
-			spp_request.pickZ = 16; 
-			spp_request.placeX = 252;
-			spp_request.placeY = -204;
-			spp_request.placeZ =  -38; 
+			// TODO - map tray to placement positions here
+			if(tray == 1){ // red container
+				double x_incr = 0.0; 
+				double y_incr = 0.0; 
+				// calculate offset for placement based on first object
+				if (red_placed_cnt == 1){ // second placement 
+					x_incr = 0.0; 
+					y_incr = 35.0;  
+				} else if (red_placed_cnt == 2) {
+					x_incr = 0.0; 
+					y_incr = 70.0; 
+				} else if (red_placed_cnt == 3){
+					x_incr = 35.0; 
+					y_incr = 35.0;
+				} else if (red_placed_cnt == 4){
+					x_incr = 35.0;
+					y_incr = 70.0; 
+				}
+
+				spp_request.placeX = red_package_drop_loc.x + x_incr;
+				spp_request.placeY = red_package_drop_loc.y + y_incr; 
+				spp_request.placeZ = red_package_drop_loc.z; 
+				red_placed_cnt +=1;
+
+			} else if (tray == 2){ // green container
+
+				double x_incr = 0.0; 
+				double y_incr = 0.0; 
+				// calculate offset for placement based on first object
+				if (green_placed_cnt == 1){ // second placement 
+					x_incr = 0.0; 
+					y_incr = 35.0;  
+				} else if (green_placed_cnt == 2) {
+					x_incr = 0.0; 
+					y_incr = 70.0; 
+				} else if (green_placed_cnt == 3){
+					x_incr = 35.0; 
+					y_incr = 0.0;
+				} else if (green_placed_cnt == 4){
+					x_incr = 35.0;
+					y_incr = 35.0; 
+				}
+
+				spp_request.placeX = green_package_drop_loc.x + x_incr;
+				spp_request.placeY = green_package_drop_loc.y + y_incr; 
+				spp_request.placeZ = green_package_drop_loc.z; 
+				green_placed_cnt +=1;
+
+			} else if (tray == 3){ // blue container 
+
+				double x_incr = 0.0; 
+				double y_incr = 0.0; 
+				// calculate offset for placement based on first object
+				if (blue_placed_cnt == 1){ // second placement 
+					x_incr = 0.0; 
+					y_incr = 35.0;  
+				} else if (blue_placed_cnt == 2) {
+					x_incr = 0.0; 
+					y_incr = 70.0; 
+				} else if (blue_placed_cnt == 3){
+					x_incr = 35.0; 
+					y_incr = 0.0;
+				} else if (blue_placed_cnt == 4){
+					x_incr = 35.0;
+					y_incr = 35.0; 
+				}
+
+				spp_request.placeX = blue_package_drop_loc.x + x_incr;
+				spp_request.placeY = blue_package_drop_loc.y + y_incr; 
+				spp_request.placeZ = blue_package_drop_loc.z;
+				blue_placed_cnt +=1; 
+			}
+		
+
+			// TODO PickPlace could also be configured by param server 
+			spp_request.pickX = 282; // before 278; 
+			spp_request.pickY = 40;//before 50; 
+			spp_request.pickZ = 12; 
+			spp_request.isLocConfigEnabled = true; // override default drop locations
+
+			cout << "place_x : " << spp_request.placeX << "place_y " << spp_request.placeY << "place_z " << spp_request.placeZ << endl; 
+
 			Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 		} else { // only wait - do not call dobot services 
 		  cout << " ~ sleeping " << endl;
@@ -277,6 +378,94 @@ void gotoCallibrationCallback(const std_msgs::Bool::ConstPtr&msg)
 	ros::param::get("/noDobot", no_Dobot_flag);
 }
 
+// called to drive Dobot to a position where the containers can be calibrated. Containers will be visible. 
+bool calibrateScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res){
+
+
+
+  cout << "goto clibration position " << endl; 
+	// goto calibration position: 
+	hrc_ros::SetPTPCmdRequest goto_request; 
+	hrc_ros::SetPTPCmdResponse goto_resp;
+	goto_request.x = 60;   
+	goto_request.y = 250; 
+	goto_request.z = -45; 
+	Dobot_gotoPoint.call(goto_request,goto_resp);
+
+	cout << "Wait there for 60 seconds before returning to IDLE position" << endl; 
+	
+	cout << "Make sure conveyor is enabled in the meantime" << endl; 
+	// enable conveyor belt 
+	hrc_ros::InOprConveyorControlRequest enableConv_request; 
+	hrc_ros::InOprConveyorControlResponse enableConv_resp;
+	enableConv_request.isEnabled = true; 
+	enableConv_request.speed = 25; 
+	enableConveyor.call(enableConv_request,enableConv_resp); 
+
+	sleep(60); 
+
+  cout << "goto IDLE position" << endl; 
+	// goto IDLE position: 
+	goto_request.x = 215;   
+	goto_request.y = 45; 
+	goto_request.z = 30; 
+	Dobot_gotoPoint.call(goto_request,goto_resp);
+
+  // returns 
+	res.success = true;
+	return true;
+}
+
+bool resetScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res) {
+
+	//ros::param::get("/...",variable );
+	//TODO Package location could also be retriefed by rosparameter
+	red_package_drop_loc.x = 160.0; 
+	red_package_drop_loc.y = -285.0;
+	red_package_drop_loc.z = -39.0; 
+
+	// green drop place 
+	green_package_drop_loc.x =  70.0; 
+	green_package_drop_loc.y = -290.0;
+	green_package_drop_loc.z = -39.0; 
+
+	blue_package_drop_loc.x =  -30.0; 
+	blue_package_drop_loc.y = -300.0;
+	blue_package_drop_loc.z =  -39.0;
+
+	// reset placed counters 
+	red_placed_cnt = 0; 
+	green_placed_cnt = 0; 
+	blue_placed_cnt = 0;
+
+	res.success = true;
+	return true;
+}
+
+
+void init_drop_locations(void) {
+
+	//ros::param::get("/...",variable );
+	//TODO Package location could also be retriefed by rosparameter
+	red_package_drop_loc.x = 160.0; 
+	red_package_drop_loc.y = -285.0;
+	red_package_drop_loc.z = -39.0; 
+
+	// green drop place 
+	green_package_drop_loc.x =  70.0; 
+	green_package_drop_loc.y = -290.0;
+	green_package_drop_loc.z = -39.0; 
+
+	blue_package_drop_loc.x =  -30.0; 
+	blue_package_drop_loc.y = -300.0;
+	blue_package_drop_loc.z =  -39.0; 
+
+	// reset placed counters 
+	red_placed_cnt = 0; 
+	green_placed_cnt = 0; 
+	blue_placed_cnt = 0;
+
+}
 
 int main(int argc, char **argv) {
 
@@ -286,7 +475,10 @@ int main(int argc, char **argv) {
 	// declare object here is class is use 
 	//RobotMotionAgent robot_motion_agent;
 
+	init_drop_locations(); 
   	ROS_INFO("Robot Motion Agent multi is ready - Dobot can be controlled now !");
+
+	
 
 	ros::AsyncSpinner spinner(11 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
 	
@@ -297,9 +489,10 @@ int main(int argc, char **argv) {
 	ros::param::get("/noDobot", no_Dobot_flag);
 	cout << " no_Dobot_flag = " << no_Dobot_flag << endl << " You can set it by calling rosparam set /noDobot [true/false]  -- will be picked up by node" << endl; 
 	
+
 	// Subscribers should go here single subscriber for each action
 	ros::Subscriber dobot_grasp_sub = nh.subscribe("/robot_motion_agent/dobot_grasp",1, graspCallback);  
-  ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
+    ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
 	ros::Subscriber dobot_plan_sub = nh.subscribe("/robot_motion_agent/dobot_plan",1, planCallback);  
 	ros::Subscriber dobot_idle_sub = nh.subscribe("/robot_motion_agent/dobot_idle",1, idleCallback); 
 	ros::Subscriber dobot_point_sub = nh.subscribe("/robot_motion_agent/dobot_point",1, pointCallback); 
@@ -308,10 +501,11 @@ int main(int argc, char **argv) {
 	ros::Subscriber dobot_calibration_sub = nh.subscribe("/robot_motion_agent/dobot_calibration",1, gotoCallibrationCallback); 
 
 
-
+	calibrate_scenario = nh.advertiseService("/dobot_worker/calibrate", calibrateScenario);
+	reset_scenario = nh.advertiseService("/dobot_worker/reset", resetScenario);
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
 	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");  // not used so far
-  Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init"); 															// not used so far
+  	Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init"); 															// not used so far
 	Dobot_SetQueuedCmdForceStopExec		= nh.serviceClient<hrc_ros::SetQueuedCmdForceStopExec  >("/dobot_arm_app/setQueuedCmdForceStopExecApp");
 	Dobot_SetQueuedCmdStopExec  			= nh.serviceClient<hrc_ros::SetQueuedCmdStopExec>("/dobot_arm_app/setQueuedCmdStopExecApp");			// not used so far
 	Dobot_SetQueuedCmdStartExec 			= nh.serviceClient<hrc_ros::SetQueuedCmdStartExec>("/dobot_arm_app/setQueuedCmdStartExecApp");
@@ -321,6 +515,8 @@ int main(int argc, char **argv) {
 	Dobot_ContPickAndPlace 						= nh.serviceClient<hrc_ros::ContPickAndPlace>("/dobot_arm_app/contPickAndPlace");									// not used so far
 	Dobot_oneTimePickAndPlace 				= nh.serviceClient<hrc_ros::OneTimePickAndPlace>("/dobot_arm_app/oneTimePickAndPlace");						// not used so far
 	request_success_criteria				= nh.serviceClient<hrc_ros::RequestSuccessCriteria>("/observation_agent/request_success_criteria");
+	enableConveyor							= nh.serviceClient<hrc_ros::InOprConveyorControl>("/conveyor_control_app/inOprConveyorControl"); 
+	
 
 	// starting spinners with multiple threads 
 	spinner.start();
