@@ -4,6 +4,10 @@
 roslaunch openni2_launch openni2.launch load_driver:=false depth_registration:=true
 rosbag play --clock dataset_upd.bag
 
+### reducing resolution of asus xtion 
+rosrun dynamic_reconfigure dynparam set /camera/driver color_mode 8
+or in launchfile: <param name="camera/driver/color_mode" value="8" /> 
+
 ### filtering rosbags and export only selected topics 
 rosbag filter my.bag only-tf.bag "topic in ['/camera/depth_registered/camera_info' , '/camera/depth_registered/image_raw' , '/camera/rgb/camera_info' , '/camera/rgb/image_raw' ]"
 
