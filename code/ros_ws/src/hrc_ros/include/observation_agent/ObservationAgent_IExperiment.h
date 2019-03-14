@@ -155,6 +155,13 @@ private:
 	 */
 	string getRealRbtStPOMDP(string humanState);
 
+
+	/**
+	 * This function gets the observable in the DESPOT format [0-11] and calculates an immediate and discounted reward for the interaction experiment case. 
+	 * NOT: The immediate_reward and discounted_reward are passed by reference 
+	 */
+	void calculate_reward_IE(string obs, float &immediate_reward_out, float &discounted_reward_out); 
+
 	/**
 	 * This function gets the human observation names and maps them into logic numbers (binaries, e.g. 100001).
 	 * Refer to the google doc for the map: https://docs.google.com/spreadsheets/d/1jDDyNXrNnYsDy5L82CDVipNZQwEvev44tx2FqHkm2wE/edit#gid=2060522298
@@ -366,6 +373,11 @@ private:
 	global_task_config global_task_configuration_read;
 	int current_subtask_quantity = 0; 
 
+	// variables to calculate rewards in the interaction experiment 
+	float immediate_reward_IE = 0.0; 
+	float discounted_reward_IE = 0.0;
+	float discount_factor = 0.98;  
+	
 	// global variables for interaction experiment 
 	bool experiment_started = false; //variable that is set true, once the experiment started. Some data will only be evaluated aftewards (e.g. tray updates and actions) 
 

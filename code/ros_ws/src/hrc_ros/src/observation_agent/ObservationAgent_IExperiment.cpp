@@ -109,6 +109,9 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	o1_ipd = false; //  O_1  task successs (processed product detected)
 	o2_upd = false; // O_2	failure
 
+	immediate_reward_IE = 0.0; 
+	discounted_reward_IE = 0.0; 
+
 	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;
 
 	// Read in the task_scenario -> this info is used to elaborate subtask success or failure 
@@ -276,6 +279,12 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 				robot_observation_real.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
+		// ############ Calculating reward for interaction experiment ################### 
+
+	  calculate_reward_IE(observation, immediate_reward_IE, discounted_reward_IE);
+		cout << "immediate_reward " <<  immediate_reward_IE << "discounted_rewarc "<< discounted_reward_IE << endl; 
+
+
 		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
 
 		hrc_ros::ObsUpdateMsgIE obs_update;
@@ -377,6 +386,81 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
 
 		cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl; 
 
+}
+
+void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_out, float &discounted_reward_out){
+
+	int obs_int = stoi(obs);
+	float tmp_immediate_rew = 0.0;
+	float tmp_discounted_rew = discounted_reward_out;  
+
+	cout << "calculating_reward :: obs_int= " << obs_int <<" Raw string  " << obs << endl; 
+
+	// TODO check if other rewards need to be given as well 
+	switch (obs_int){
+
+		case 0: 
+
+			break; 
+
+		case 1: 
+
+			break; 
+
+		case 2: 
+
+			break; 
+
+		case 3: 
+
+			break; 
+
+		case 4: 
+
+			break;
+
+		case 5: 
+
+			break;
+
+		case 6: // warning 
+		tmp_immediate_rew  = -3; 
+			break;
+
+		case 7: 
+
+			break;
+
+		case 8: 
+
+			break;
+
+		case 9: 
+
+			break;
+
+		case 10: 
+
+			break;
+
+		case 11: 
+
+			break;
+
+		case 12:  // subtask_success 
+			tmp_immediate_rew  = 6; 
+			break;
+
+		case 13:  // subtask_fail
+			tmp_immediate_rew  = -6; 
+			break;
+	}
+
+	tmp_discounted_rew += pow(discount_factor,(subtask_counter -1) ) * tmp_immediate_rew;
+	
+	// returns by reference 
+	immediate_reward_out  = tmp_immediate_rew;
+	discounted_reward_out = tmp_discounted_rew; 
 }
 
 // *** Service handler that returns the current success_criteria - this is used by dobot to place an object 
