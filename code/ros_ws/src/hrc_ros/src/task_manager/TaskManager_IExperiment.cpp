@@ -80,7 +80,7 @@ void TaskManager::initialize(){
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
 
     /// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
-    taskStatusPublisher = nh.advertise<hrc_ros::TaskState>("/task_manager/task_status", 1);
+    taskStatusPublisher = nh.advertise<hrc_ros::TaskStateIE>("/task_manager/task_status", 1);
 
     // TODO delete if not needed in IE anymore 
     //traySensor_subs = nh.subscribe("/production_line/tray_sensors", 1000, &TaskManager::ReceiveTraySensors, this);
@@ -453,7 +453,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     ROS_INFO("[TASK_MANAGER]: ROBOT MODEL is: %s", robot_model.c_str());
 
     // ======= Informing about the init ===========
-    hrc_ros::TaskState taskState_msg;
+    hrc_ros::TaskStateIE taskState_msg;
     taskState_msg.task_id = task_number;
     taskState_msg.who_reports = "MANAGER";
     taskState_msg.update_received_time = ros::Time::now();
@@ -497,7 +497,7 @@ bool TaskManager::ResetTask(std_srvs::TriggerRequest &req,
 
 bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res){
 
-    hrc_ros::TaskState taskState_msg;
+    hrc_ros::TaskStateIE taskState_msg;
 
     taskState_msg.task_id = task_number;
     taskState_msg.step_count = step_counter;
@@ -558,7 +558,15 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
 bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros::InformObsToTaskMangIEResponse &res){
 
-    hrc_ros::TaskState taskState_msg;
+
+
+    hrc_ros::TaskStateIE taskState_msg;
+    
+    // Additional fields for interaction experiment 
+    taskState_msg.discounted_reward_IE = req.obs_update.discounted_reward_IE; 
+    taskState_msg.immediate_reward_IE  = req.obs_update.immediate_reward_IE; 
+    taskState_msg.mapped_observation_pomdp = req.obs_update.mapped_observation_pomdp; 
+    taskState_msg.mapped_observation_raw   = req.obs_update.mapped_observation_raw; 
 
     taskState_msg.task_id = task_number;
     taskState_msg.step_count = step_counter;
@@ -622,7 +630,7 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
 
 bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req, hrc_ros::InformRobotToTaskMangResponse &res){
 
-    hrc_ros::TaskState taskState_msg;
+    hrc_ros::TaskStateIE taskState_msg;
 
     taskState_msg.task_id = task_number;
     taskState_msg.step_count = step_counter;

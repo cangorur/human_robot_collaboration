@@ -311,9 +311,12 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		obs_update.real_obs_received = real_obs_received;
 		obs_update.mapped_observation_pomdp = std::stoi(observation); 
 		obs_update.mapped_observation_raw   = std::stoi(robot_observation_real); 
+		obs_update.immediate_reward_IE = immediate_reward_IE; 
+		obs_update.discounted_reward_IE = discounted_reward_IE; 
 
 		obs_update.who_succeeded = whoSucceeded;
 
+		// assign obs_update message to InformObsToTaskMang service 
 		reqForUpdate.obs_update = obs_update;
 		ObsUpdater.call(reqForUpdate, resForUpdate);
 

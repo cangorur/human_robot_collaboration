@@ -28,6 +28,7 @@
 #include <hrc_ros/SelectPolicy.h>
 #include <hrc_ros/PolicySelectorBPR.h>
 #include <hrc_ros/SuccessStatusObserved.h>
+#include <hrc_ros/TaskStateIE.h> 
 
 #include <hrc_ros/TraySensor.h>
 

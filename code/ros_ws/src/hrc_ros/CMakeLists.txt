@@ -53,6 +53,7 @@ add_message_files(
   RobotUpdateMsg.msg
   SuccessStatusObserved.msg
   HeadGestureMsg.msg
+  TaskStateIE.msg
 )
 
 ## Generate services in the 'srv' folder
