@@ -13,6 +13,7 @@
 #include<ros/callback_queue.h>
 #include<std_msgs/Bool.h>
 #include<hrc_ros/RequestSuccessCriteria.h> 
+#include <hrc_ros/ObjectGraspColourMsg.h> 
 
 // generic service includes 
 #include <std_srvs/Trigger.h>
@@ -71,6 +72,7 @@ package_drop_loc blue_package_drop_loc;
 int red_placed_cnt = 0; 
 int green_placed_cnt = 0; 
 int blue_placed_cnt = 0; 
+int object_to_grasp_colour = 4;// 1=red|2=green|3=blue|4= reference => no object visible on conveyor belt
 
 void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << " In Pointing thread"; 
@@ -148,9 +150,14 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 			hrc_ros::RequestSuccessCriteria::Request success_req; 
 			hrc_ros::RequestSuccessCriteria::Response success_resp;
-			// TODO get the current object by a service from the action recognition - faked to 1=red for now 
-			success_req.current_object = 3; 
 
+			if (object_to_grasp_colour < 4) {// if colour is red, green or blue 
+				success_req.current_object = object_to_grasp_colour; // object_colour is received by action recognition, object on conveyor in front of IR sensor is published
+				 
+			} else { // default is 1=red 
+				success_req.current_object = 1; 
+			}
+			cout << "Grasping now -> will use object colour " << success_req.current_object << endl; 
 
 			// get success tray from observation agent 
 			request_success_criteria.call(success_req, success_resp);
@@ -358,6 +365,15 @@ void returnHomeCallback(const std_msgs::Bool::ConstPtr&msg)
 		ros::param::get("/noDobot", no_Dobot_flag);
 }
 
+void receiveObjectToGraspCallback(const hrc_ros::ObjectGraspColourMsg &msg ){
+
+	if (msg.object_colour < 4 ){ // not 4 => not reference point 
+			object_to_grasp_colour = msg.object_colour; 
+			//cout << "object_to_grasp  " << object_to_grasp_colour << endl; 
+	}
+
+}
+
 void gotoCallibrationCallback(const std_msgs::Bool::ConstPtr&msg)
 {
 	cout << " In gotoCallibration thread";
@@ -443,6 +459,12 @@ bool resetScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res)
 }
 
 
+
+
+
+
+
+
 void init_drop_locations(void) {
 
 	//ros::param::get("/...",variable );
@@ -480,7 +502,7 @@ int main(int argc, char **argv) {
 
 	
 
-	ros::AsyncSpinner spinner(11 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
+	ros::AsyncSpinner spinner(12 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
 	
 	// bind the queue to the node handle
 	nh.setCallbackQueue( &my_queue );
@@ -492,14 +514,15 @@ int main(int argc, char **argv) {
 
 	// Subscribers should go here single subscriber for each action
 	ros::Subscriber dobot_grasp_sub = nh.subscribe("/robot_motion_agent/dobot_grasp",1, graspCallback);  
-    ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
+  ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
 	ros::Subscriber dobot_plan_sub = nh.subscribe("/robot_motion_agent/dobot_plan",1, planCallback);  
 	ros::Subscriber dobot_idle_sub = nh.subscribe("/robot_motion_agent/dobot_idle",1, idleCallback); 
 	ros::Subscriber dobot_point_sub = nh.subscribe("/robot_motion_agent/dobot_point",1, pointCallback); 
 	ros::Subscriber dobot_resume_sub = nh.subscribe("/robot_motion_agent/dobot_resume",1, resumeQueueCallback); 
 	ros::Subscriber dobot_gohome_sub = nh.subscribe("/robot_motion_agent/dobot_gohome",1, returnHomeCallback); 
 	ros::Subscriber dobot_calibration_sub = nh.subscribe("/robot_motion_agent/dobot_calibration",1, gotoCallibrationCallback); 
-
+	// Other subscribers 
+	ros::Subscriber ObjectToGrasp_sub = nh.subscribe("/object_tracking/object_tograsp_colour",1,receiveObjectToGraspCallback) ;
 
 	calibrate_scenario = nh.advertiseService("/dobot_worker/calibrate", calibrateScenario);
 	reset_scenario = nh.advertiseService("/dobot_worker/reset", resetScenario);

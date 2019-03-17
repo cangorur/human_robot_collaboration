@@ -54,6 +54,7 @@ add_message_files(
   SuccessStatusObserved.msg
   HeadGestureMsg.msg
   TaskStateIE.msg
+  ObjectGraspColourMsg.msg
 )
 
 ## Generate services in the 'srv' folder
