@@ -47,6 +47,12 @@ roslaunch hrc_ros IE_experiment.launch
 sudo apt install ros-kinetic-timed-roslaunch
 source /opt/ros/kinetic/setup.bash
 ```
+- start the experiment: 
+```
+rosservice call /task_manager_IE/new_scenario_request
+```
+
+**NOTE:**  robot_motion_agent sometimes does not terminate cleanly. You can kill it by: ```killall robot_motion_agent```
 
 
 ## Services to manually start and control the system 
