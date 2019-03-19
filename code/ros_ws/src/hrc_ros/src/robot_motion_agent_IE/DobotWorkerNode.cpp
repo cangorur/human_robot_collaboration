@@ -31,6 +31,7 @@
 #include <hrc_ros/SetQueuedCmdClear.h>
 #include <hrc_ros/SimplePickAndPlace.h>
 #include <hrc_ros/InOprConveyorControl.h> 
+#include <hrc_ros/GetQueuedCmdCurrentIndex.h> 
 
 using namespace std;
 
@@ -50,6 +51,7 @@ ros::ServiceClient Dobot_ContPickAndPlace;
 ros::ServiceClient Dobot_oneTimePickAndPlace;
 ros::ServiceClient request_success_criteria;
 ros::ServiceClient enableConveyor; 
+ros::ServiceClient Dobot_getQueueIndex;
 
 ros::ServiceServer calibrate_scenario;
 ros::ServiceServer reset_scenario; 
@@ -58,6 +60,7 @@ ros::ServiceServer reset_scenario;
 // Variables that switch between fullDobot setup and a wait only version 
 bool no_Dobot_flag = false; // used for debugging without dobot (true= only wait | false= call dobot service ) || is set by ros_param 
 int wait_time = 20; // time dobot should wait in noDobot mode
+bool warning_received_flag = false; // flag that indicates that a warning has been received, this is relevant for the grasping action, it is set to false at the beginning of the grasp and checked wether it is set true during the grasp
 
 // Struct to hold the package drop place 
 struct package_drop_loc {
@@ -142,6 +145,9 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << " In grasping thread "; 
+		int grasping_state = 0; // 0=ongoing | 1= grasping done 3 = warning received 
+		bool grasp_done_in_time = false; 
+
 		ros::param::get("/noDobot", no_Dobot_flag);
 		if (no_Dobot_flag == false ) { // call dobot api services 
 			cout << " - calling services" << endl; 
@@ -248,7 +254,41 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 			cout << "place_x : " << spp_request.placeX << "place_y " << spp_request.placeY << "place_z " << spp_request.placeZ << endl; 
 
+			// get Dobots CommanQueuIndex before calling the grasp service, service is comprised of 3 dobot API services, so when the grasp is finished the index should have incremented by 3 
+			hrc_ros::GetQueuedCmdCurrentIndex::Request cmd_index_req; 
+			hrc_ros::GetQueuedCmdCurrentIndex::Response cmd_index_resp; 
+			Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);  
+			int before_grasp_index =  cmd_index_resp.queuedCmdIndex; 
+			int after_grasp_index = before_grasp_index + 3 ; 
 			Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
+			ros::param::set("/robot_grasping_state", grasping_state);
+			
+			// check if grasping is done in time and without interruption of warning 
+			int grasp_time = 0; 
+			while(grasp_time < 250 ){
+				grasp_done_in_time = false; 
+				Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);
+				int current_queue_index = cmd_index_resp.queuedCmdIndex;
+				cout << "current_queue_index: " << current_queue_index << "   grasp_time(1/100sec): " << grasp_time << endl;
+				if (current_queue_index >= after_grasp_index){
+					grasp_done_in_time = true; 
+					break;
+				}
+		
+				ros::Duration(0.01).sleep();   
+				grasp_time ++; 
+			}
+
+			cout << "grasp_done_in_time " << grasp_done_in_time << endl; 
+
+			// set grasping_state via parameter
+			if(warning_received_flag == true ){
+				grasping_state = 3; // grasping interrupted, since warning received 
+			} else if ( (warning_received_flag == false) && (grasp_done_in_time == true) ){
+				grasping_state = 1; // grasping successfully finished in time 
+			}
+			ros::param::set("/robot_grasping_state", grasping_state);
+
 		} else { // only wait - do not call dobot services 
 		  cout << " ~ sleeping " << endl;
 		  sleep(wait_time); 
@@ -261,6 +301,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << " In cancel thread ";
 		ros::param::get("/noDobot", no_Dobot_flag);	
+		warning_received_flag = true; 
 		if (no_Dobot_flag == false){ // call dobot api service
 			cout << " - calling services" << endl;  
 			hrc_ros::SetQueuedCmdForceStopExec::Request 	forceStopQueue_req; 
@@ -539,6 +580,7 @@ int main(int argc, char **argv) {
 	Dobot_oneTimePickAndPlace 				= nh.serviceClient<hrc_ros::OneTimePickAndPlace>("/dobot_arm_app/oneTimePickAndPlace");						// not used so far
 	request_success_criteria				= nh.serviceClient<hrc_ros::RequestSuccessCriteria>("/observation_agent/request_success_criteria");
 	enableConveyor							= nh.serviceClient<hrc_ros::InOprConveyorControl>("/conveyor_control_app/inOprConveyorControl"); 
+	Dobot_getQueueIndex						= nh.serviceClient<hrc_ros::GetQueuedCmdCurrentIndex>("/dobot_arm_app/GetQueuedCmdCurrentIndex");
 	
 
 	// starting spinners with multiple threads 
