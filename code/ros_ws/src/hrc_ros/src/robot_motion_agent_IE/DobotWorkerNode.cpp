@@ -552,7 +552,7 @@ void init_drop_locations(void) {
 
 int main(int argc, char **argv) {
 
-	ros::init(argc, argv, "robot_motion_agent_multi");
+	ros::init(argc, argv, "dobot_worker_node");
 	ros::NodeHandle nh;
 	ros::CallbackQueue my_queue; 
 	// declare object here is class is use 
