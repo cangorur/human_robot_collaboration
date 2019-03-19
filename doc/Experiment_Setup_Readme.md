@@ -1,3 +1,66 @@
+## Starting the Experiment setup:
+
+### on pc:
+ - minh@minh-ThinkPad-W530:~/ba/catkin_ws$ 
+ - source devel/setup.bash
+ - export ROS_MASTER_URI=http://130.149.232.237:11311
+ - export ROS_HOSTNAME=130.149.232.210
+
+ - Or use the alias remote_ros_master 
+
+### RaspberryPi1 dobot arm control: 
+ - ssh ubuntu@130.149.232.237   in 2 terminals 
+ - password: ubuntu
+
+ - Turn on the Raspberry pi of the dobot and turn on the dobot arm. 
+ - wait until dobot beeps
+
+#### on one terminal:
+ 
+ - source hrc_integration/devel/setup.bash && roslaunch dobot_arm_lower dobot.launch
+ - Note: dobot will drive to a calibration position on the far left 
+
+#### wait until dobot stops moving then in another terminal:
+ 
+ - source hrc_integration/devel/setup.bash && roslaunch dobot_chariot app.launch
+
+
+### RaspberryPi2 conveyor belt:
+ - ssh ubuntu@10.0.8.193
+ - password:ubuntu
+
+#### one terminal:
+- source dobot_conveyor_unit_polishing/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
+
+- in a second terminal:  ONLY run if you are not running dobot as well 
+- source dobot_conveyor_unit_polishing/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
+
+
+## Launch all nodes 
+- there is a toplevel launch file that you can launch like this 
+```
+roslaunch hrc_ros IE_experiment.launch
+```
+- this launches the **openni2 driver**, all nodes of the **object_tracking** package as well as the **hrc_ros** packages
+- the launch file makes use of the timed_roslaunch package, if you get an error install it by 
+```
+sudo apt install ros-kinetic-timed-roslaunch
+source /opt/ros/kinetic/setup.bash
+```
+
+
+## Services to manually start and control the system 
+
+### Start the conveyor belt: 
+```
+rosservice call /conveyor_control_app/inOprConveyorControl
+```
+
+
+
+
+____________________________________________________________________________________
+
 ## Some tips for working with rosbags 
 
 ### replaying depth bags with openni2 
@@ -33,47 +96,4 @@ roslaunch object_tracking tracking.launch
 - ffmpeg -framerate 25 -i frame%04d.jpg -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p output.mp4
 
 
-____________________________________________________________________________________
-## setting it up:
 
-
-### on pc:
- - minh@minh-ThinkPad-W530:~/ba/catkin_ws$ 
- - source devel/setup.bash
- - export ROS_MASTER_URI=http://130.149.232.237:11311
- - export ROS_HOSTNAME=130.149.232.210
-
- - Or use the alias remote_ros_master 
-
-### RaspberryPi1 dobot arm control: 
- - ssh ubuntu@130.149.232.237
- - password: ubuntu
-
- - Turn on the Raspberry pi of the dobot and turn on the dobot arm. 
-
-#### one terminal:
- 
- - source hrc_integration/devel/setup.bash && roslaunch dobot_arm_lower dobot.launch
-
-
-#### wait for robot to stop moving then in another terminal:
- 
- - source hrc_integration/devel/setup.bash && roslaunch dobot_chariot app.launch
-
-
-
-### RaspberryPi2 conveyor belt:
- - ssh ubuntu@10.0.8.193
- - password:ubuntu
-
-#### one terminal:
-- source dobot_conveyor_unit_polishing/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
-
-- in a second terminatl:  ONLY run if you are not running dobot as well
-- source dobot_conveyor_unit_polishing/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
-
-
-
-### Start the conveyor belt: 
-
- - rosservice call /conveyor_control_app/inOprConveyorControl
