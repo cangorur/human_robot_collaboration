@@ -62,6 +62,12 @@ rosservice call /task_manager_IE/new_scenario_request
 rosservice call /conveyor_control_app/inOprConveyorControl
 ```
 
+## System monitoring 
+To monitor which observations are sent to the DESPOT and wich action is taken by the robot the following topics can be inspected 
+- /experiment_monitoring/robot_action_taken_pub   |   published by /robot_motion_agent      | published after DESPOT informed
+- /observation_agent/observation_update		  |   published by /observation_agent_IE    | published when sending obs to DESPOT
+All relevant information is also available in a combined topic: 
+- /task_manager/task_status			| published by /task_manager		  | combined topic that includes all relevant information 
 
 
 
