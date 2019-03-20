@@ -1,3 +1,27 @@
+Initial Position: 
+
+READY_X = 197.13
+READY_Y -0.82
+READY_Z 35.22
+
+Color sensor: 
+#define COLOR_SENSOR_X 195.06
+#define COLOR_SENSOR_Y -4.15
+#define COLOR_SENSOR_Z 34.27
+
+Above the IR sensor: 
+x = 215
+y = 45
+z = 30 
+
+grasp_pickup location: 
+
+x = 282
+y = 40
+z = 12
+
+
+
 Pick location measured: 
 x: 282.845916748
 y: 35.2008361816 // 40 taken
