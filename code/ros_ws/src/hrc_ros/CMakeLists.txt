@@ -50,6 +50,7 @@ add_message_files(
   TraySensor.msg
   HumanUpdateMsg.msg
   ObsUpdateMsgIE.msg
+  ObsUpdateMsg.msg
   RobotUpdateMsg.msg
   SuccessStatusObserved.msg
   HeadGestureMsg.msg
@@ -65,6 +66,7 @@ add_service_files(
    InformHumanState.srv
    InformHumanToTaskMang.srv
    InformObsToTaskMangIE.srv
+   InformObsToTaskMang.srv
    InformRobotToTaskMang.srv
    ResetHumanROS.srv
    ResetObsROS.srv
