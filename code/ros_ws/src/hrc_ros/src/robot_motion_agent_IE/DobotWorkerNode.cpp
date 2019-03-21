@@ -235,8 +235,9 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 */
 void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << endl <<" => In grasping thread " << endl; 
-		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error 
+		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor 
 		bool grasp_done_in_time = false;
+		bool conveyor_empty_flag = false; 
 
 		ros::param::get("/noDobot", no_Dobot_flag);
 		if (no_Dobot_flag == false ) { // call dobot api services if available otherwise wait only 
@@ -244,8 +245,15 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 			//set grasping state parameter before grasping => always 0
 			ros::param::set("/robot_grasping_state", grasping_state);
 
+			// conveyor empty flag that will skip grasping and planning 
+			if (object_to_grasp_colour == 4){
+				conveyor_empty_flag = true; 
+				cout << "conveyor is empty " <<endl; 
+			}
+
+
 			// 1. check if grasp has been planned, if not plan grasp path first
-			while(grasp_is_planned_flag == false && (warning_received_flag == false) ) {  
+			while(grasp_is_planned_flag == false && (warning_received_flag == false) &&(conveyor_empty_flag==false)) {  
 				std_msgs::Bool::ConstPtr msg; 
 				planCallback(msg); // call planningCallback to do planning
 			}
@@ -266,6 +274,8 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				success_req.current_object = 1; 
 			}
 			cout << "Grasping now -> will use object colour " << success_req.current_object << endl; 
+
+			
 
 			// get success tray from observation agent 
 			request_success_criteria.call(success_req, success_resp);
@@ -374,7 +384,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 			ros::Duration drop_duration; 
 			ros::Time start_grasp_time; 
 			ros::Time drop_time; 
-			if (warning_received_flag == false){ // skip grasping if warning has been received 
+			if (warning_received_flag == false && (conveyor_empty_flag == false) ){ // skip grasping if warning has been received or conveyor is empty 
 				Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 			
 			//set grasping state parameter before grasping => always 0
@@ -406,16 +416,22 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				stop_grasp_time = ros::Time::now();
 				grasp_duration = stop_grasp_time - start_grasp_time;
 				drop_duration = drop_time - start_grasp_time;   
-			} else { cout << "warning received -> skipping grasp" << endl; }
+			} else { cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
 
 			// 6. set grasping_state via parameter
+			cout << "-----" << endl << "grasp_state:   " << endl; 
 			if(warning_received_flag == true ){
 				grasping_state = 3; // grasping interrupted, since warning received 
 				cout << "warning_received_during_grasp   grasp_state= " << grasping_state << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
 			} else if ( (warning_received_flag == false) && (grasp_done_in_time == true) ){
 				grasping_state = 1; // grasping successfully finished in time 
 				cout << "grasp_done_in_time = " << grasp_done_in_time << "  grasp_state = " << grasping_state  << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
-			} else { // timeout or other error grasping_state = 4 
+			} else if ( conveyor_empty_flag == true ) { // timeout or other error grasping_state = 4 
+
+				grasping_state = 5; 
+				cout << "grasp not executed -> conveyor is empty     grasp_state = " << grasping_state << endl; 	
+			} else {
+				
 				grasping_state = 4; 
 				cout << "Grasp_not_successfull - is dobot running?   grasp_state=  " << grasping_state << endl; 
 			}
@@ -502,9 +518,16 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  ros::param::get("/noDobot", no_Dobot_flag);	
 	  cout << endl << " => In planning thread" << endl;
+	  bool conveyor_empty = false; 
+
+	  // check if conveyor is empty 
+	  if (object_to_grasp_colour == 4){
+		  conveyor_empty = true; 
+	  }
+
 	  cout << "grasp_is_planned = " << grasp_is_planned_flag << "  planning_in_progress = " << planning_in_progress << "  no_Dobot_flag = " << no_Dobot_flag << endl; 
 	  // 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
-	  if (grasp_is_planned_flag == false && (planning_in_progress==false))  { // flag reset to false after each grasp
+	  if (grasp_is_planned_flag == false && (planning_in_progress==false) && (conveyor_empty == false) )  { // flag reset to false after each grasp
 	  	  planning_in_progress = true;  
 		if (no_Dobot_flag == false  ){ // call dobot api service
 
@@ -541,7 +564,9 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  cout << " <= finished planning thread" << endl; 
 	  
 
-	} else {
+	} else if (conveyor_empty == true) {
+		cout << " conveyor is empty -> planning skipped " << endl; 
+	} else { 
 		cout << " planning finished or currently in progress " << endl; 
 	}
 }
@@ -604,11 +629,9 @@ void returnHomeCallback(const std_msgs::Bool::ConstPtr&msg)
 }
 
 void receiveObjectToGraspCallback(const hrc_ros::ObjectGraspColourMsg &msg ){
-
-	if (msg.object_colour < 4 ){ // not 4 => not reference point 
+ 
 			object_to_grasp_colour = msg.object_colour; 
 			//cout << "object_to_grasp  " << object_to_grasp_colour << endl; 
-	}
 
 }
 
