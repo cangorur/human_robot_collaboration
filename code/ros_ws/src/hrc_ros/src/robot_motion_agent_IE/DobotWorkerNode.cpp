@@ -105,10 +105,11 @@ float x_grasp_pick = 282; // // before x=278, y=50, z= 12
 float y_grasp_pick =  40; 
 float z_grasp_pick =  12;
 
-//########### times for physical hrc 
+//########### times and flags for physical hrc 
 int planning_time = 6; // time the robot waits above the object to simulate the grasp path planning 
 int warning_time = 8; // Time the cancel action will block other actions from being executed -> should be bigger than the planning time! 
-
+bool grasp_in_progress = false; // used to block pointing while grasp is in progress 
+bool point_in_progress = false; // used to wait in grasping until pointing is done 
 
 //#################### function declarations ##################### 
 void planCallback(const std_msgs::Bool::ConstPtr& msg);
@@ -130,93 +131,85 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << " In Pointing thread"; 
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		hrc_ros::SetPTPCmd::Request			gotoStart_req;
-		hrc_ros::SetPTPCmd::Response		gotoStart_resp; 
+		hrc_ros::SetPTPCmd::Response		gotoStart_resp;
+		point_in_progress = true;  
 		if (no_Dobot_flag == false){
 			cout << " - calling services" << endl; 
 		
 		// Point move version 1:: Go up and down 
+			if (grasp_in_progress == false && planning_in_progress == false ){ // skip if grasping or planning is in progress 
+				// Point position 
+				gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+				gotoStart_req.x = 204;   
+				gotoStart_req.y = 0; 
+				gotoStart_req.z = 100;
+				Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 
-			// Point position 
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = 204;   
-			gotoStart_req.y = 0; 
-			gotoStart_req.z = 100;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				ros::Duration(1.0).sleep();
 
-			ros::Duration(1.0).sleep(); 
+				if(grasp_in_progress == false && planning_in_progress == false){
+					// Point position -> go a bit lower  
+					gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+					gotoStart_req.x = 204;   
+					gotoStart_req.y = 0; 
+					gotoStart_req.z = 70;
+					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				}
 
-			// Point position -> go a bit lower  
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = 204;   
-			gotoStart_req.y = 0; 
-			gotoStart_req.z = 70;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				ros::Duration(0.1).sleep();
 
-			ros::Duration(0.1).sleep(); 
+				if(grasp_in_progress == false && planning_in_progress == false ) {
+				 
+					// Point position 
+					gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+					gotoStart_req.x = 204;   
+					gotoStart_req.y = 0; 
+					gotoStart_req.z = 100;
+					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				} 
+				
 
-			// Point position 
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = 204;   
-			gotoStart_req.y = 0; 
-			gotoStart_req.z = 100;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				ros::Duration(1.0).sleep();  
 
-			ros::Duration(1.0).sleep();  
+				if(grasp_in_progress == false && planning_in_progress == false ) {
+					// Point position -> go a bit lower  
+					gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+					gotoStart_req.x = 204;   
+					gotoStart_req.y = 0; 
+					gotoStart_req.z = 70;
+					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				}
+				
+				ros::Duration(0.1).sleep(); 
 
-			// Point position -> go a bit lower  
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = 204;   
-			gotoStart_req.y = 0; 
-			gotoStart_req.z = 70;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				if(grasp_in_progress == false && planning_in_progress == false ) {
+					// Point position 
+					gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+					gotoStart_req.x = 204;   
+					gotoStart_req.y = 0; 
+					gotoStart_req.z = 100;
+					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				} 
+				
+				ros::Duration(1.0).sleep();
+				
+				if(grasp_in_progress == false && planning_in_progress == false ){ 
+					// Standard position for the dobot arm 
+					gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+					gotoStart_req.x = x_idle;   
+					gotoStart_req.y = y_idle; 
+					gotoStart_req.z = z_idle;  
+					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+				}
+			}else { cout << " grasp in progress -> pointing skipped " << endl; }
 
-			ros::Duration(0.1).sleep(); 
 
-			// Point position 
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = 204;   
-			gotoStart_req.y = 0; 
-			gotoStart_req.z = 100;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-			
-			ros::Duration(1.0).sleep();
-
-			// Standard position for the dobot arm 
-			gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
-			gotoStart_req.x = x_idle;   
-			gotoStart_req.y = y_idle; 
-			gotoStart_req.z = z_idle;  
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-		 
-
-/*		cout << " Will sleep for 3 seconds and do second pointing afterwards " << endl; 
-		ros::Duration(10).sleep();
-		// Point move version 2 :: pointing 	
-		
-		
-			// Point position 
-			gotoStart_req.x = 230;   
-			gotoStart_req.y = 50; 
-			gotoStart_req.z = 40;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-
-			// Move a bit further to make point obvious 
-			gotoStart_req.x = 230;   
-			gotoStart_req.y = 48; 
-			gotoStart_req.z = 42;
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-
-			// Standard position for the dobot arm 
-			gotoStart_req.x = x_idle;   
-			gotoStart_req.y = y_idle; 
-			gotoStart_req.z = z_idle; 
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-*/
 		} else { // only wait - do not call dobot services  
 		  cout << " ~ sleeping " << endl; 
 		  ros::Duration(wait_time).sleep();
 		}
 	ros::param::get("/noDobot", no_Dobot_flag);	
+	point_in_progress = false; 
 	cout << " => finished pointing thread" << endl;
 	
 }
@@ -238,12 +231,15 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor 
 		bool grasp_done_in_time = false;
 		bool conveyor_empty_flag = false; 
+		grasp_in_progress = true; 
 
 		ros::param::get("/noDobot", no_Dobot_flag);
 		if (no_Dobot_flag == false ) { // call dobot api services if available otherwise wait only 
 
 			//set grasping state parameter before grasping => always 0
 			ros::param::set("/robot_grasping_state", grasping_state);
+
+			while(point_in_progress == true ) { cout << "point in grogress = " << point_in_progress << endl;  } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
 
 			// conveyor empty flag that will skip grasping and planning 
 			if (object_to_grasp_colour == 4){
@@ -257,6 +253,16 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				std_msgs::Bool::ConstPtr msg; 
 				planCallback(msg); // call planningCallback to do planning
 			}
+			// drive to planning position if it has not been reached yet 
+			hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
+			hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
+			ensure_plan_loc_req.ptpMode = 1; // moveJ 
+			ensure_plan_loc_req.x = x_planning; 
+			ensure_plan_loc_req.y = y_planning; 
+			ensure_plan_loc_req.z = z_planning;
+			Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
+			ros::Duration(0.2).sleep();
+			
 
 
 			cout << " - calling services" << endl; 
@@ -362,7 +368,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				blue_placed_cnt +=1; 
 			}
 		
-			 
+
 			spp_request.pickX = x_grasp_pick; 
 			spp_request.pickY = y_grasp_pick;  
 			spp_request.pickZ = z_grasp_pick;  
@@ -371,6 +377,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 			cout << "place_x : " << spp_request.placeX << "place_y " << spp_request.placeY << "place_z " << spp_request.placeZ << endl; 
 
+		
 			// 4. get Dobots CommanQueuIndex before calling the grasp service, service is comprised of 5 dobot API services, so when the grasp is finished the index should have incremented by 5 (4 would be when dobot drops object)
 			hrc_ros::GetQueuedCmdCurrentIndex::Request cmd_index_req; 
 			hrc_ros::GetQueuedCmdCurrentIndex::Response cmd_index_resp; 
@@ -448,6 +455,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		
 		// 7. reset grasp_planned_flag -> when the next planning is triggered it will actually be executed (as log as it is true planning is always skipped)
 		grasp_is_planned_flag = false; 
+		grasp_in_progress = false; 
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		cout << " <= finished grasping thread" << endl;
 		
@@ -518,12 +526,15 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  ros::param::get("/noDobot", no_Dobot_flag);	
 	  cout << endl << " => In planning thread" << endl;
-	  bool conveyor_empty = false; 
+	  bool conveyor_empty = false;
+	   
 
 	  // check if conveyor is empty 
 	  if (object_to_grasp_colour == 4){
 		  conveyor_empty = true; 
 	  }
+
+	  if (point_in_progress == true){ } // wait until pointing is done 
 
 	  cout << "grasp_is_planned = " << grasp_is_planned_flag << "  planning_in_progress = " << planning_in_progress << "  no_Dobot_flag = " << no_Dobot_flag << endl; 
 	  // 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
