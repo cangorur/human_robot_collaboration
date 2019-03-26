@@ -1,5 +1,10 @@
 Initial Position: 
 
+get position: 
+
+
+
+
 READY_X = 197.13
 READY_Y -0.82
 READY_Z 35.22
@@ -121,5 +126,38 @@ like1 but x+35
 4) x:  5
    y: -265 
    z: -39
+
+
+________________________________
+
+Pointing Gesture Version 2: 
+
+PTPmode 1:
+
+1: getting attention: 
+x: 201
+y: 0
+z: 170
+
+
+2: point briefly 
+x: 218
+y: 16
+z: 158
+
+3: back to idle  or stay there 
+
+________________________________
+
+Planning Gesture Version 2: 
+1: idle 
+
+2: above the IR sensor
+x: 205
+y: 45
+z: 55 
+
+stay there 
+
 
 
