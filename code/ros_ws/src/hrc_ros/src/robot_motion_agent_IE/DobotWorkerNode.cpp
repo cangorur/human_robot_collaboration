@@ -249,21 +249,26 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 
 			// 1. check if grasp has been planned, if not plan grasp path first
-			while(grasp_is_planned_flag == false && (warning_received_flag == false) &&(conveyor_empty_flag==false)) {  
+			while((grasp_is_planned_flag == false) && (warning_received_flag == false) && (conveyor_empty_flag==false)) {  
 				std_msgs::Bool::ConstPtr msg; 
+				cout << "planning is issued    conveyor_empty_flag = " << conveyor_empty_flag << endl; 
 				planCallback(msg); // call planningCallback to do planning
 			}
-			// drive to planning position if it has not been reached yet 
-			hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
-			hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
-			ensure_plan_loc_req.ptpMode = 1; // moveJ 
-			ensure_plan_loc_req.x = x_planning; 
-			ensure_plan_loc_req.y = y_planning; 
-			ensure_plan_loc_req.z = z_planning;
-			Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
-			ros::Duration(0.2).sleep();
-			
 
+
+			if (conveyor_empty_flag == false){
+				// drive to planning position if it has not been reached yet 
+				hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
+				hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
+				ensure_plan_loc_req.ptpMode = 1; // moveJ 
+				ensure_plan_loc_req.x = x_planning; 
+				ensure_plan_loc_req.y = y_planning; 
+				ensure_plan_loc_req.z = z_planning;
+				Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
+				ros::Duration(0.2).sleep();
+			}
+
+			
 
 			cout << " - calling services" << endl; 
 			hrc_ros::SimplePickAndPlace::Request spp_request;
