@@ -200,6 +200,9 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 					gotoStart_req.y = y_idle; 
 					gotoStart_req.z = z_idle;  
 					Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+
+					// reset grasp_is_planned flag 
+					grasp_is_planned_flag = false; 
 				}
 			}else { cout << " grasp in progress -> pointing skipped " << endl; }
 
@@ -539,7 +542,7 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 		  conveyor_empty = true; 
 	  }
 
-	  if (point_in_progress == true){ } // wait until pointing is done 
+	  while (point_in_progress == true){ } // wait until pointing is done 
 
 	  cout << "grasp_is_planned = " << grasp_is_planned_flag << "  planning_in_progress = " << planning_in_progress << "  no_Dobot_flag = " << no_Dobot_flag << endl; 
 	  // 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
@@ -587,11 +590,42 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	}
 }
 
+
 void idleCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  ros::param::get("/noDobot", no_Dobot_flag);	
 	  cout << " In IDLE thread" << endl;
-	  ros::Duration(wait_time).sleep();
-	  cout << " => finished planning thread" << endl;
+	   
+	  while(point_in_progress == true){ cout << " point_in_progress " << point_in_progress; } // wait until pointing is done 
+	  
+	  cout << endl << " grasp_in_progress flag " << grasp_in_progress << endl; 
+	  if ((grasp_in_progress==false) )  { // skip if grasp is in progress 
+	  
+		if (no_Dobot_flag == false  ){ // call dobot api service
+
+			if (warning_received_flag == false ){ // skip idle if warning has been received 
+				cout << "  -> calling goto service " << endl; 			
+				// 2. move to a position directly above the object and stop there -> this indicates that robot needs to plan the path 
+				hrc_ros::SetPTPCmd::Request				   	gotoPlanning_req;
+				hrc_ros::SetPTPCmd::Response				gotoPlanning_resp; 
+
+				gotoPlanning_req.ptpMode = 1; // MoveJ -> move joint independently -> maximum speed 
+				gotoPlanning_req.x = x_idle; 
+				gotoPlanning_req.y = y_idle; 
+				gotoPlanning_req.z = z_idle; 
+
+				Dobot_gotoPoint.call(gotoPlanning_req,gotoPlanning_resp);
+
+				// reset grasp_is_planned -> it will have to be replanned 
+				grasp_is_planned_flag = false; 
+			}
+	  	} else { 
+			cout << " ~ sleeping " << endl;
+			ros::Duration(wait_time).sleep(); 
+	  	}
+	}
+
+
+	  cout << " <= finished Idle thread" << endl; 
 	  ros::param::get("/noDobot", no_Dobot_flag); 
 }
 
@@ -695,7 +729,7 @@ bool calibrateScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &
 	enableConv_request.speed = 25; 
 	enableConveyor.call(enableConv_request,enableConv_resp); 
 
-	sleep(30); 
+	sleep(20); 
 
   cout << "goto IDLE position" << endl; 
 	// goto IDLE position: 
