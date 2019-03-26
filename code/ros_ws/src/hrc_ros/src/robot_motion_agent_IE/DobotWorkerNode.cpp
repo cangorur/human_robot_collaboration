@@ -695,13 +695,13 @@ bool calibrateScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &
 	enableConv_request.speed = 25; 
 	enableConveyor.call(enableConv_request,enableConv_resp); 
 
-	sleep(60); 
+	sleep(30); 
 
   cout << "goto IDLE position" << endl; 
 	// goto IDLE position: 
-	goto_request.x = 215;   
-	goto_request.y = 45; 
-	goto_request.z = 30; 
+	goto_request.x = x_idle; //215;   
+	goto_request.y = y_idle;//45; 
+	goto_request.z = z_idle; //30; 
 	Dobot_gotoPoint.call(goto_request,goto_resp);
 
   // returns 
