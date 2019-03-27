@@ -21,7 +21,7 @@ RobotMotionAgent::RobotMotionAgent() {
 }
 
 RobotMotionAgent::~RobotMotionAgent() {
-	cout << " In destructor " << endl; 
+	cout << " In destructor " << endl;
 }
 
 void RobotMotionAgent::initialize() {
@@ -45,7 +45,7 @@ void RobotMotionAgent::initialize() {
 	dobot_point_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_point", 1);
 	robot_action_pub = nh.advertise<hrc_ros::RobotUpdateMsg>("/experiment_monitoring/robot_action_taken_pub", 1);
 
-	/// ROS services of the DOBOT  
+	/// ROS services of the DOBOT
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
 	Dobot_SetPTPCoordinateParams 			= nh.serviceClient<hrc_ros::SetPTPCoordinateParams>("/dobot_arm_app/setPTPCoordinateParamsApp");
     Dobot_InitDobotArmApp 		 				= nh.serviceClient<hrc_ros::InitDobotArmApp>("/dobot_arm_app/init");
@@ -60,10 +60,10 @@ void RobotMotionAgent::initialize() {
 
 	reset_scenario = nh.advertiseService("/robot_agent/reset", &RobotMotionAgent::resetScenario, this);
 	DoDobotMotionTestService = nh.advertiseService("/robot_motion_agent/motionTest", &RobotMotionAgent::executeDobotMotionTest, this);
-	// Testing the most important services TODO remove after integration 
+	// Testing the most important services TODO remove after integration
 
-	
-	cout << "Robot agent created" << endl; 
+
+	cout << "Robot agent created" << endl;
 	ROS_INFO("[ROBOT AGENT] created !");
 	update();
 }
@@ -87,38 +87,38 @@ bool RobotMotionAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
 bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res){
 
 
-  cout << "Starting with a test now " << endl; 
+  cout << "Starting with a test now " << endl;
 
-  cout << "goto clibration position " << endl; 
-	// goto calibration position: 
-	hrc_ros::SetPTPCmdRequest goto_request; 
+  cout << "goto clibration position " << endl;
+	// goto calibration position:
+	hrc_ros::SetPTPCmdRequest goto_request;
 	hrc_ros::SetPTPCmdResponse goto_resp;
-	goto_request.x = 60;   
-	goto_request.y = 250; 
-	goto_request.z = -45; 
+	goto_request.x = 60;
+	goto_request.y = 250;
+	goto_request.z = -45;
 	Dobot_gotoPoint.call(goto_request,goto_resp);
 
-  cout << "goto IDLE position" << endl; 
-	// goto IDLE position: 
-	goto_request.x = 215;   
-	goto_request.y = 45; 
-	goto_request.z = 30; 
+  cout << "goto IDLE position" << endl;
+	// goto IDLE position:
+	goto_request.x = 215;
+	goto_request.y = 45;
+	goto_request.z = 30;
 	Dobot_gotoPoint.call(goto_request,goto_resp);
 
 
 	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;  
+	cout << endl << " => starting the pick & place now !  " << endl;
 
 	hrc_ros::SimplePickAndPlaceRequest spp_request;
-	hrc_ros::SimplePickAndPlaceResponse spp_resp;  
-	spp_request.pickX = 278; 
-	spp_request.pickY = 50; 
-	spp_request.pickZ = 16; 
+	hrc_ros::SimplePickAndPlaceResponse spp_resp;
+	spp_request.pickX = 278;
+	spp_request.pickY = 50;
+	spp_request.pickZ = 16;
 	spp_request.placeX = 252;
 	spp_request.placeY = -204;
-	spp_request.placeZ =  -38; 
+	spp_request.placeZ =  -38;
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
@@ -126,42 +126,42 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;  
+	cout << endl << " => starting the pick & place now !  " << endl;
 
-	spp_request.pickX = 278; 
-	spp_request.pickY = 50; 
-	spp_request.pickZ = 16; 
+	spp_request.pickX = 278;
+	spp_request.pickY = 50;
+	spp_request.pickZ = 16;
 	spp_request.placeX = 252;
 	spp_request.placeY = -204;
-	spp_request.placeZ =  -38; 
+	spp_request.placeZ =  -38;
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
 	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;  
+	cout << endl << " => starting the pick & place now !  " << endl;
 
-	spp_request.pickX = 278; 
-	spp_request.pickY = 50; 
-	spp_request.pickZ = 16; 
+	spp_request.pickX = 278;
+	spp_request.pickY = 50;
+	spp_request.pickZ = 16;
 	spp_request.placeX = 252;
 	spp_request.placeY = -204;
-	spp_request.placeZ =  -38; 
+	spp_request.placeZ =  -38;
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
 	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;  
+	cout << endl << " => starting the pick & place now !  " << endl;
 
-	spp_request.pickX = 278; 
-	spp_request.pickY = 50; 
-	spp_request.pickZ = 16; 
+	spp_request.pickX = 278;
+	spp_request.pickY = 50;
+	spp_request.pickZ = 16;
 	spp_request.placeX = 252;
 	spp_request.placeY = -204;
-	spp_request.placeZ =  -38; 
+	spp_request.placeZ =  -38;
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
@@ -169,18 +169,18 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;  
+	cout << endl << " => starting the pick & place now !  " << endl;
 
-	spp_request.pickX = 278; 
-	spp_request.pickY = 50; 
-	spp_request.pickZ = 16; 
+	spp_request.pickX = 278;
+	spp_request.pickY = 50;
+	spp_request.pickZ = 16;
 	spp_request.placeX = 252;
 	spp_request.placeY = -204;
-	spp_request.placeZ =  -38; 
+	spp_request.placeZ =  -38;
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
-  // returns 
+  // returns
 	res.success = true;
 	return true;
 
@@ -240,7 +240,7 @@ void RobotMotionAgent::update() {
 		// ROBOT BELIEF UPDATE RECEIVED. INFORMING ABOUT BOTH ACTION AND THE BELIEF STATE (either initial or belief state)
 
 
-		
+
 		if (robot_action != "-1"){
 
 
@@ -254,8 +254,8 @@ void RobotMotionAgent::update() {
 				//Putting the actual name of the action to inform the task manager
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "idle";
-				std_msgs::Bool msg; 
-				msg.data = bool(true); 
+				std_msgs::Bool msg;
+				msg.data = bool(true);
 				dobot_idle_pub.publish(msg);
 				success = true;
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot staying idle...");
@@ -265,17 +265,17 @@ void RobotMotionAgent::update() {
 				robot_action_taken = "grasp";
 				//success = grasp.call(req, resp);
 
-				std_msgs::Bool msg; 
-				msg.data = bool(true); 
-				
+				std_msgs::Bool msg;
+				msg.data = bool(true);
+
 				dobot_grasp_pub.publish(msg);
 
 				//std::thread grasping_thread(dobot_grasping_thWorker);
-				//cout << "after thread call   - in else " << endl;  
-				// TODO check if it is possible to preemt this thread with the real robot. 
-				//ros::spinOnce(); 
-			  //	grasping_thread.join(); 
-				//cout << "after thread.join " << endl; 
+				//cout << "after thread call   - in else " << endl;
+				// TODO check if it is possible to preemt this thread with the real robot.
+				//ros::spinOnce();
+			  //	grasping_thread.join();
+				//cout << "after thread.join " << endl;
 				//ros::spinOnce();
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
 			}
@@ -284,8 +284,8 @@ void RobotMotionAgent::update() {
 				robot_action_taken = "cancel all actions";
 				//success = cancelAction.call(req, resp);
 
-				std_msgs::Bool msg; 
-				msg.data = bool(true); 
+				std_msgs::Bool msg;
+				msg.data = bool(true);
 				dobot_cancel_pub.publish(msg);
 
 				std_srvs::SetBool is_warned;
@@ -300,20 +300,20 @@ void RobotMotionAgent::update() {
 				//success = pointToObj.call(req, resp);
 
 
-				std_msgs::Bool msg; 
-				msg.data = true; 
+				std_msgs::Bool msg;
+				msg.data = true;
 				dobot_point_pub.publish(msg);
 
 
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot pointing to object...");
 			}
-			else if (robot_action == "4"){ // planning for grasping 
+			else if (robot_action == "4"){ // planning for grasping
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "planning for grasping";
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot planning for grasping...");
-				
-				std_msgs::Bool msg; 
-				msg.data = true; 
+
+				std_msgs::Bool msg;
+				msg.data = true;
 				dobot_plan_pub.publish(msg);
 
 				//success = planForGrasp.call(req, resp);
@@ -325,16 +325,17 @@ void RobotMotionAgent::update() {
 			}
 			ROS_WARN("[ROBOT AGENT] robot in belief state: %s took action: %s", robot_state.c_str(), robot_action_taken.c_str());
 
-			// publish robot action here: 
+			// publish robot action here:
 			hrc_ros::RobotUpdateMsg action_update_msg;
 
+			// TODO REMOVE this action_update message below
 			action_update_msg.stamp_robot_update = ros::Time::now();
 			action_update_msg.action_taken_time = action_taken_time;
 			action_update_msg.robot_action_taken = robot_action_taken; // took action in the belief state
 			action_update_msg.robot_belief_state = robot_belief_state;
 			action_update_msg.robot_real_state;
-			action_update_msg.immediate_reward = robot_immediate_reward; // this reward is received from the real state (prev action taken)
-			action_update_msg.total_disc_reward = robot_total_disc_reward;
+			//action_update_msg.immediate_reward = robot_immediate_reward; // this reward is received from the real state (prev action taken)
+			//action_update_msg.total_disc_reward = robot_total_disc_reward;
 
 			robot_action_pub.publish(action_update_msg);
 
@@ -356,6 +357,14 @@ void RobotMotionAgent::update() {
 			action_info_received = true; // raise the action received flag
 		}
 		else{
+			// TODO: TEST HERE! Robot received previous state's reward. But it is from DESPOT agent. In real setup, it should come from obs agent
+			// Here Robot waits for obs agent to inform about the reward (in string)
+			immediate_reward = "";
+			ros::param::get("/robot_immediate_reward", immediate_reward);
+			while (immediate_reward == ""){
+				ros::param::get("/robot_immediate_reward", immediate_reward);
+			}
+			ros::param::get("/robot_total_disc_reward", total_disc_reward);
 			ROS_INFO("[ROBOT AGENT] Robot received (prev step) reward: %s from the real state: %s | Total Disc.Reward: %s",
 										immediate_reward.c_str(), robot_state.c_str(), total_disc_reward.c_str());
 			// global variables are assigned ! These are for sending the status later to the task manager
@@ -363,6 +372,8 @@ void RobotMotionAgent::update() {
 			robot_total_disc_reward = total_disc_reward;
 			robot_real_state = robot_state;
 			newstate_info_received = true;
+			// setting it back to "" for sync purposes
+			ros::param::set("/robot_immediate_reward", "");
 		}
 
 		bool init_state = false;
@@ -393,8 +404,8 @@ void RobotMotionAgent::update() {
 
 			hrc_ros::InformRobotToTaskMang::Request robotUpdateReq;
 			hrc_ros::InformRobotToTaskMang::Response robotUpdateRes;
-			
-			
+
+
 			robotUpdateReq.robot_update = update_msg;
 			callTaskMang_inform.call(robotUpdateReq, robotUpdateRes);
 		}
@@ -408,11 +419,11 @@ void RobotMotionAgent::update() {
 		cout << "[ROBOT AGENT] Server: Error in connection " << (size_t)connection.get() << ". " <<
 				"Error: " << ec << ", error message: " << ec.message() << endl;
 	};
-server.start(); 
-	
+server.start();
+
 //  server_thread1([&server]() {
 //			server.start();
 //	});
-	
-//	server_thread.join(); 
+
+//	server_thread.join();
 }
