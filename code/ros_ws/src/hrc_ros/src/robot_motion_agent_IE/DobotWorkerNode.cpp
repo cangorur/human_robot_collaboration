@@ -97,10 +97,15 @@ float y_idle =  -0.82; 		   //-4.15;
 float z_idle =  35.22;
 
 // graspplanning position -> robot will move towards the object but stop above it 
+float x_planning_v1 = 282;
+float y_planning_v1 =  40;
+float z_planning_v1 =  12 + 60; 
 
-float x_planning = 282;
-float y_planning =  40;
-float z_planning =  12 + 60; 
+// graspplanning position Version2 -> less invasive -> robot will move towards the object but stop above the IR sensor -> human can still grasp
+float x_planning_v2 = 205;
+float y_planning_v2 =  45;
+float z_planning_v2 =  55; 
+
 
 // grasp pickup place 
 float x_grasp_pick = 282; // // before x=278, y=50, z= 12 
@@ -319,13 +324,13 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 
 			if (conveyor_empty_flag == false){
-				// drive to planning position if it has not been reached yet 
+				// drive to planning position (v1) directly above the object if it has not been reached yet 
 				hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
 				hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
 				ensure_plan_loc_req.ptpMode = 1; // moveJ 
-				ensure_plan_loc_req.x = x_planning; 
-				ensure_plan_loc_req.y = y_planning; 
-				ensure_plan_loc_req.z = z_planning;
+				ensure_plan_loc_req.x = x_planning_v1; 
+				ensure_plan_loc_req.y = y_planning_v1; 
+				ensure_plan_loc_req.z = z_planning_v1;
 				Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
 				ros::Duration(0.2).sleep();
 			}
@@ -580,7 +585,8 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 *
 * Simulates the planning phase of a grasping path. Will either be called by Dobot after deciding either for planning action or for grasping action but the path is not planned yet. 
 * 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
-* 2. Move Dobot to a position directly above the object and stop there | skip further planning by setting planning_in_progress = true 
+* 2. Move Dobot to a grasping position and stop there. Depending on the dobot_expression_version flag the position is either 1: directly above the object or 2: above the IR sensor => less intrusive
+     skip further planning by setting planning_in_progress = true 
 * 3. Wait for a specified time (planning_time), this simulates the planning of the path
 * 4. Set grasp_is_planned_flag = true (planning will be skipped if function called again) |  and planning_in_progress=false (used to skip planning, if planning is already in progress) 
 *
@@ -592,6 +598,7 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 */
 void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  ros::param::get("/noDobot", no_Dobot_flag);	
+		ros::param::get("/dobot_expression_version", dobot_expression_version);
 	  cout << endl << " => In planning thread" << endl;
 	  bool conveyor_empty = false;
 	   
@@ -611,14 +618,22 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 			if (warning_received_flag == false ){ // skip planning if warning has been received 
 				cout << "  -> calling goto service " << endl; 			
-				// 2. move to a position directly above the object and stop there -> this indicates that robot needs to plan the path 
-				hrc_ros::SetPTPCmd::Request				   	gotoPlanning_req;
+				
+				hrc_ros::SetPTPCmd::Request				  gotoPlanning_req;
 				hrc_ros::SetPTPCmd::Response				gotoPlanning_resp; 
 
-				gotoPlanning_req.ptpMode = 1; // MoveJ -> move joint independently -> maximum speed 
-				gotoPlanning_req.x = x_planning; 
-				gotoPlanning_req.y = y_planning; 
-				gotoPlanning_req.z = z_planning; 
+				if (dobot_expression_version == 1){ //########### execute planning movement V1 -> directly above the object and wait 
+					// 2. move to a position directly above the object and stop there -> this indicates that robot needs to plan the path 
+					gotoPlanning_req.ptpMode = 1; // MoveJ -> move joint independently -> maximum speed 
+					gotoPlanning_req.x = x_planning_v1; 
+					gotoPlanning_req.y = y_planning_v1; 
+					gotoPlanning_req.z = z_planning_v1; 
+				} else if (dobot_expression_version ==2){ // ###### execute planning movement V2 -> move above the IR sensor and wait
+					gotoPlanning_req.ptpMode = 1; // MoveJ -> move joint independently -> maximum speed 
+					gotoPlanning_req.x = x_planning_v2; 
+					gotoPlanning_req.y = y_planning_v2; 
+					gotoPlanning_req.z = z_planning_v2; 
+				}
 
 				Dobot_gotoPoint.call(gotoPlanning_req,gotoPlanning_resp);
 			}
