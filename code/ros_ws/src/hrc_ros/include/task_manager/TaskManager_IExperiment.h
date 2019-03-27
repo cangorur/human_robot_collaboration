@@ -125,7 +125,8 @@ private:
 
 private:
 
-
+	/// Below are the client objects for the ros services called
+	ros::ServiceClient dobotWorkerReset;	
 	/// Below are the client objects for the ros services called
 	ros::ServiceClient humanReset;
 	/// Below are the client objects for the ros services called
