@@ -851,7 +851,10 @@ void TaskManager::CheckToStartNewTask(void){
             cout << endl << endl << " All tests are done - :-) " << endl << endl; 
         } else { 
             cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
-            initiateScenario(req_init, res_init);
+            
+            //initiateScenario(req_init, res_init); // uncomment if next task should be started automatically
+            ROS_WARN("Task is done - please start a new one by calling   /task_manager_IE/new_scenario_request   service  \n");  
+
         }
 
 
