@@ -47,8 +47,9 @@ void TaskManager::initialize(){
     //here set the parameter of conveyor belt to "init" so it automatically starts
 
     /*
-     * Initializing ros services to reset human and the robot
+     * Initializing ros services to reset human and the robot and dobot
      */
+    dobotWorkerReset = nh.serviceClient<std_srvs::Trigger>("/dobot_worker/reset");
     humanReset = nh.serviceClient<std_srvs::Trigger>("/human/reset");
     robotReset = nh.serviceClient<std_srvs::Trigger>("/robot/reset");
     conveyorPrinterOnOff = nh.serviceClient<std_srvs::Trigger>("/conveyor/printer_part/switch_on_off");
@@ -155,15 +156,6 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         return false;
     }
 
-    /* TODO: Below was for randomly choosing human trust. Now it is covered in the human models
-    int r;
-    bool humanTrustsRobot;
-    if (human_expertise == "" || (human_expertise != config_pt.get<string>("human.type.expertise"))){ // if it is still the same human
-        r = rand() % 3;
-        humanTrustsRobot = (r == 0 || r == 1) ? true : false;
-        human_trust = (humanTrustsRobot) ? "YES" : "NO"; // global
-    }
-    */
     string task_assigned = config_pt.get<string>("task.assignment");
 
     human_expertise = config_pt.get<string>("human.type.expertise"); // global
@@ -189,81 +181,19 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     ros::param::set("/dynamic_transition_flag", useTransitionFunction);
     ros::param::set("/interaction_sample_amount", interactionSampleNumber);
 
-    // ========== PACKAGE GENERATOR ================
-    // Calling the right function (rosservice) to respond to the request
-    //int package_amounts = config_pt.get<int>("package_pool.amount.light");
-    // ========== PACKAGE GENERATOR ================
-
-    // =========== OLD HUMAN MOOD ASSIGNMENT =====================
-    // Used to change the human mood as below.
-    // r = (rand() % 50) + 1; // from 1 to 50
-    // if (task_number != 0){
-    //     if (task_number <= 10){
-    //         human_mood = (r <= task_number + 2) ? "thinker" : human_mood; // gradually increasing from 6 % to 25%
-    //     } else if (task_number > 10 && task_number <= 15){
-    //         human_mood = (r <= task_number + 2) ? "thinker" : human_mood; // gradually increasing from 26 % to 30%
-    //         human_mood = ((r > 15) && (r <= 6 + task_number)) ? "tired" : human_mood; // gradually increasing from 4 % to 12%
-    //     } else if (task_number > 15 && task_number <= 20){
-    //         if (task_number <= 17){
-    //             human_mood = (r <= task_number) ? "thinker" : human_mood; // gradually increasing from 30 % to 35%
-    //         } else {
-    //             human_mood = (r <= 17) ? "thinker" : human_mood; // fixed to 35%
-    //         }
-    //         human_mood = ((r > 17) && (r <= 8 + task_number)) ? "tired" : human_mood; // gradually increasing from 14 % to 22%
-    //         human_mood = ((r > 40) && (r <= 42)) ? "distracted" : human_mood; // fixed to 6%
-    //     } else if (task_number > 20 && task_number <= 30){
-    //         human_mood = (r <= 15) ? "thinker" : human_mood; // fixed to 30%
-    //         human_mood = ((r > 15) && (r <= (10 + task_number))) ? "tired" : human_mood; // gradually increasing from 32 % to 40%
-    //         human_mood = (r > 44) ? "distracted" : human_mood; // fixed to 12%
-    //     } else if (task_number > 30 && task_number <= 40){
-    //         human_mood = (r <= 15) ? "thinker" : human_mood; // fixed to 30%
-    //         human_mood = (r > 15 && r <= 40) ? "tired" : human_mood; // fixed to 50%
-    //         human_mood = (r > 40 && r <= 50) ? "distracted" : human_mood; // fixed to 20%
-    //     }
-    // }
-
     // ========================================================
 
-    // ========== RESET HUMAN AND ROBOT=============
+    // ========== RESET DOBOT AGENTS =============
     // We reset the morse / simulator human and robots.
     std_srvs::Trigger::Request req1;
     std_srvs::Trigger::Response res1;
-    humanReset.call(req1, res1);
-    robotReset.call(req1, res1);
+    //humanReset.call(req1, res1);
+    //robotReset.call(req1, res1);
+    // Reset dobot_worker_node -> will ensure that counters ... are initial
+    dobotWorkerReset.call(req1,res1);
+
     // =============================================
     
-    // ==== Moving a New Package ====
-    // TODO: fix here so that it always goes to the beginning of the conveyor belt
-    // TODO: add conveyor run and stop when the package arrives between the human and the robot
-   /* hrc_ros::MoveNewPackage::Request req_ForPkg;
-    hrc_ros::MoveNewPackage::Response res_ForPkg;
-    req_ForPkg.package_id = "package1";
-    req_ForPkg.x = 5.5;
-    req_ForPkg.y = -2.1;
-    req_ForPkg.z = 0.8;
-    moveNewPackage.call(req_ForPkg, res_ForPkg);
-    */
-    // run the conveyor until pkg arrives between the human and the robot
-    /*std_srvs::Trigger::Request req_conveyor;
-    std_srvs::Trigger::Response res_conveyor;
-    conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH ON
-    conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
-    conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH ON
-    ros::Duration(3.5).sleep(); // sleep for half a second
-    conveyorPrinterOnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
-    conveyorAssembly1OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
-    conveyorAssembly2OnOff.call(req_conveyor, res_conveyor); // SWITCH OFF
-    */
-
-    // assure the package is in between human and the robot
-    /*
-    req_ForPkg.package_id = "package1";
-    req_ForPkg.x = 7.7;
-    req_ForPkg.y = -2.1;
-    req_ForPkg.z = 0.8;
-    moveNewPackage.call(req_ForPkg, res_ForPkg);
-    // ===============================
-    */ 
    
         // ==== Timers set ===== 
         step_counter = 0;
@@ -851,7 +781,10 @@ void TaskManager::CheckToStartNewTask(void){
             cout << endl << endl << " All tests are done - :-) " << endl << endl; 
         } else { 
             cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
-            initiateScenario(req_init, res_init);
+            
+            //initiateScenario(req_init, res_init); // uncomment if next task should be started automatically
+            ROS_WARN("Task is done - please start a new one by calling   /task_manager_IE/new_scenario_request   service  \n");  
+
         }
 
 

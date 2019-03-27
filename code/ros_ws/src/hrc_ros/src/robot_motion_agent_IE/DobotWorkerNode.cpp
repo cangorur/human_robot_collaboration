@@ -839,6 +839,24 @@ bool resetScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res)
 	green_placed_cnt = 0; 
 	blue_placed_cnt = 0;
 
+	// reset flags 
+	bool warning_received_flag = false;
+	bool grasp_is_planned_flag = false;
+	bool planning_in_progress  = false;
+	bool grasp_in_progress = false; 
+	bool point_in_progress = false; 
+
+
+
+	// additional task relevant resets 
+	object_to_grasp_colour = 4;
+
+	// move dobot to idle position 
+	std_msgs::Bool::ConstPtr msg;
+	idleCallback(msg); 
+
+	ROS_WARN("[DOBOT WORKER] Reset!");
+
 	res.success = true;
 	return true;
 }
