@@ -32,6 +32,7 @@
 #include <hrc_ros/SimplePickAndPlace.h>
 #include <hrc_ros/InOprConveyorControl.h> 
 #include <hrc_ros/GetQueuedCmdCurrentIndex.h> 
+#include <hrc_ros/PublishActionRecognisedMsg.h>
 
 using namespace std;
 
@@ -127,6 +128,7 @@ int planning_time = 6; // time the robot waits above the object to simulate the 
 int warning_time = 8; // Time the cancel action will block other actions from being executed -> should be bigger than the planning time! 
 bool grasp_in_progress = false; // used to block pointing while grasp is in progress 
 bool point_in_progress = false; // used to wait in grasping until pointing is done 
+bool interrupt_immediately_flag = false; // is set true, then dobot will cancel immediately if warning is recognized - even before DESPOT decided to cancel 
 
 //#################### function declarations ##################### 
 void planCallback(const std_msgs::Bool::ConstPtr& msg);
@@ -455,7 +457,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 			hrc_ros::GetQueuedCmdCurrentIndex::Response cmd_index_resp; 
 			Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);  
 			int before_grasp_index =  cmd_index_resp.queuedCmdIndex; 
-			int after_grasp_index = before_grasp_index + 5 ;
+			int after_grasp_index = before_grasp_index + 4 ;
 
 
 			ros::Time stop_grasp_time;
@@ -515,9 +517,14 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				cout << "Grasp_not_successfull - is dobot running?   grasp_state=  " << grasping_state << endl; 
 			}
 
+			
+			
 
 			ros::param::set("/robot_grasping_state", grasping_state);	// set grasping_state parameter -> checked by observation agent to block decision making while grasping
 
+			// insert wait time if after_grasp_index is only 4 bigger than before_grasp_index 
+			ros::Duration(5).sleep();
+			 
 			// TODO remove when not testing with setup 
 			//ros::Duration(10).sleep(); 
 		} else { // only wait - do not call dobot services 
@@ -767,6 +774,17 @@ void receiveObjectToGraspCallback(const hrc_ros::ObjectGraspColourMsg &msg ){
 
 }
 
+// use to receive action by action recognition and issue cancel action faster by circumventing DESPOT 
+void actionRecognizedCallback(const hrc_ros::PublishActionRecognisedMsg &msg){
+
+	if (msg.action.compare("warning") == 0 && (interrupt_immediately_flag == true) ){
+		ROS_WARN("\n Warning received & interrupt_immediately_flag is set - will cancel \n"); 
+		std_msgs::Bool::ConstPtr msg;
+		cancelCallback(msg);
+	}
+
+}
+
 void gotoCallibrationCallback(const std_msgs::Bool::ConstPtr&msg)
 {
 	cout << " In gotoCallibration thread";
@@ -936,6 +954,7 @@ int main(int argc, char **argv) {
 	ros::Subscriber dobot_calibration_sub = nh.subscribe("/robot_motion_agent/dobot_calibration",1, gotoCallibrationCallback); 
 	// Other subscribers 
 	ros::Subscriber ObjectToGrasp_sub = nh.subscribe("/object_tracking/object_tograsp_colour",1,receiveObjectToGraspCallback) ;
+	ros::Subscriber Action_recognised_sub = nh.subscribe("/action_recognition/publish_action_recognized",1,actionRecognizedCallback);
 
 	// Services 
 	calibrate_scenario = nh.advertiseService("/dobot_worker/calibrate", calibrateScenario);
