@@ -77,7 +77,7 @@ void TaskManager::initialize(){
          * Initializing advertised ros services
          */
     scenarioRequestService = nh.advertiseService("new_scenario_request", &TaskManager::initiateScenario, this);
-    HumanUpdateService = nh.advertiseService("human_status_update", &TaskManager::HumanStatusUpdater,this);
+    // HumanUpdateService = nh.advertiseService("human_status_update", &TaskManager::HumanStatusUpdater,this);
     ObsUpdateService = nh.advertiseService("/task_manager/observation_update", &TaskManager::ObsUpdater, this);
     RobotUpdateService = nh.advertiseService("/task_manager/robot_status_update", &TaskManager::RobotStatusUpdater, this);
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
@@ -497,7 +497,7 @@ bool TaskManager::ResetTask(std_srvs::TriggerRequest &req,
     res.success = true;
     return true;
 }
-
+/*
 bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res){
 
     hrc_ros::TaskStateIE taskState_msg;
@@ -531,12 +531,12 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
     ros::param::set("/robot_interfered_count", robot_interfered_number);
 
     // Information below are for observation and robot status updates. Otherwise leave empty
-    /*taskState_msg.obs_received = "NONE";
-        taskState_msg.task_status = "ONGOING";
-        taskState_msg.who_succeeded = "NONE";
+    //taskState_msg.obs_received = "NONE";
+    //    taskState_msg.task_status = "ONGOING";
+    //    taskState_msg.who_succeeded = "NONE";
 
-        taskState_msg.immediate_reward = 0.0;
-        taskState_msg.total_disc_reward = 0.0;*/
+    //    taskState_msg.immediate_reward = 0.0;
+    //    taskState_msg.total_disc_reward = 0.0;
 
     taskStatusPublisher.publish(taskState_msg);
 
@@ -546,22 +546,22 @@ bool TaskManager::HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req,
     }
 
     step_counter += 1;
-    /*if (step_counter > 20){
+    //if (step_counter > 20){
       // TODO: a bug in the system that sometimes human wont receive success. That causes to iterate forever.
       // This is a temporary solution to hard stop the task on the human's side.
-      ros::param::set("/human_observable_state", 1);
-      task_stuck_flag = true;
-    }*/
+    //  ros::param::set("/human_observable_state", 1);
+    //  task_stuck_flag = true;
+    //}
     res.task_number = task_number; // informing human about the ID (task number of the current task)
     res.success = true;
     return res.success;
-}
+}*/
 
 // TODO throw from observation agent
 //TODO: TASK STATE MSG STRUCTURE HAS BEEN CHANGED
 bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros::InformObsToTaskMangIEResponse &res){
 
-
+    step_counter += 1;
 
     hrc_ros::TaskStateIE taskState_msg;
 

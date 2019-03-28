@@ -28,7 +28,7 @@
 #include <hrc_ros/SelectPolicy.h>
 #include <hrc_ros/PolicySelectorBPR.h>
 #include <hrc_ros/SuccessStatusObserved.h>
-#include <hrc_ros/TaskStateIE.h> 
+#include <hrc_ros/TaskStateIE.h>
 
 #include <hrc_ros/TraySensor.h>
 
@@ -60,7 +60,7 @@ private:
 	 * Rosservice is called /task_manager_IE/new_scenario_request
 	 * This service is manually called from the terminal to initiate a new scenario: human, robot and obs agents are reset,
 	 * a package arrives conveyor runs and stops in the middle of the human and the robot. After a task has been executed the task manager
-	 * node will call this function again. A whole task set (consisting of multiple individual placing tasks) is implemented here. 
+	 * node will call this function again. A whole task set (consisting of multiple individual placing tasks) is implemented here.
 	 */
 	bool initiateScenario(hrc_ros::InitiateScenarioRequest &req, hrc_ros::InitiateScenarioResponse &res);
 
@@ -82,7 +82,7 @@ private:
 	 * Rosservice call: /task_manager/human_status_update
 	 * It is called by the human_agent to provide last information
 	 */
-	bool HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res);
+	//bool HumanStatusUpdater(hrc_ros::InformHumanToTaskMangRequest &req, hrc_ros::InformHumanToTaskMangResponse &res);
 
 	/**
 	 * Rosservice call: /task_manager/observation_update
@@ -203,11 +203,11 @@ private:
 
 
 	/// Counts the sub_task within task(set). Each subtask is an individual placing tasks
-	/// Note: The counter starts at 1!!! 
-	int subtask_counter = 1; 
-	/// Counts the task number that should currently be executed | note: the first task is taks 1!!! 
-	
-	int task_counter = 1; 
+	/// Note: The counter starts at 1!!!
+	int subtask_counter = 1;
+	/// Counts the task number that should currently be executed | note: the first task is taks 1!!!
+
+	int task_counter = 1;
 	/// Counts the steps taken by either human or robot within one task (each action decision is a step)
 	int step_counter = 0;
 	/// The time a task takes. This is counted by the ros timer event, increased in every second
@@ -226,18 +226,18 @@ private:
 	bool task_stuck_flag = false; // This is to save the system if a task is stuck (despot models are not informed somehow)
 
 
-	int subtask_number_current_task = 100; 
+	int subtask_number_current_task = 100;
 	boost::property_tree::ptree testscenario_pt;
 	task_set current_task_set;
-	global_task_config current_global_task_config; 
-	int task_quantity_scenario = 5; 
+	global_task_config current_global_task_config;
+	int task_quantity_scenario = 5;
 
-	// variables for statistic 
-	int task_fail_statisctics = 0; 
+	// variables for statistic
+	int task_fail_statisctics = 0;
 	int task_success_statistics = 0;
-	int subtask_success_statistics = 0; 
-	int subtask_fail_statistics	   = 0; 
-	std::string final_state_statistics = "uninitialized"; 
+	int subtask_success_statistics = 0;
+	int subtask_fail_statistics	   = 0;
+	std::string final_state_statistics = "uninitialized";
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */

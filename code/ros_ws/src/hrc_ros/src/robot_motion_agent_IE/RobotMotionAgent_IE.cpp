@@ -328,7 +328,7 @@ void RobotMotionAgent::update() {
 			// publish robot action here:
 			hrc_ros::RobotUpdateMsg action_update_msg;
 
-			// TODO REMOVE this action_update message below
+			// TODO For debugging purposes. REMOVE this action_update message below
 			action_update_msg.stamp_robot_update = ros::Time::now();
 			action_update_msg.action_taken_time = action_taken_time;
 			action_update_msg.robot_action_taken = robot_action_taken; // took action in the belief state
