@@ -537,6 +537,13 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		cout << endl << " => In cancel thread " << endl;
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		warning_received_flag = true; 
+		
+		// reset all flags 
+		grasp_is_planned_flag = false; 
+		bool planning_in_progress  = false;
+		bool grasp_in_progress = false; 
+		bool point_in_progress = false; 
+
 		if (no_Dobot_flag == false){ // call dobot api service
 			cout << " - calling services" << endl;  
 			hrc_ros::SetQueuedCmdForceStopExec::Request 	forceStopQueue_req; 
@@ -738,9 +745,9 @@ void returnHomeCallback(const std_msgs::Bool::ConstPtr&msg)
 			hrc_ros::SetPTPCmdRequest		gotoStart_resp; 
 
 			// Standard position for the dobot arm 
-			gotoStart_req.x = 215;   
-			gotoStart_req.y = 45; 
-			gotoStart_req.z = 30; 
+			gotoStart_req.x = x_idle;   
+			gotoStart_req.y = y_idle; 
+			gotoStart_req.z = z_idle; 
 
 			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 		} else { // dobot not present - wait only 
