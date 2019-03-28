@@ -113,6 +113,11 @@ float x_grasp_pick = 282; // // before x=278, y=50, z= 12
 float y_grasp_pick =  40; 
 float z_grasp_pick =  12;
 
+// drop place on conveyor -> package will be dropped if cancel is issued while dobot grasps
+float x_conveyor_drop = 280;
+float y_conveyor_drop = -69; 
+float z_conveyor_drop =  16;
+
 // attention postion for rearing up and pointing
 float x_attention = 201; 
 float y_attention =   0; 
@@ -548,7 +553,6 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		// reset all flags 
 		grasp_is_planned_flag = false; 
 		bool planning_in_progress  = false;
-		bool grasp_in_progress = false; 
 		bool point_in_progress = false; 
 
 		if (no_Dobot_flag == false){ // call dobot api service
@@ -577,12 +581,35 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 			gotoStart_req.y = y_idle;  
 			gotoStart_req.z = z_idle; 
 
-			Dobot_SetQueuedCmdForceStopExec.call(forceStopQueue_req,forceSTopQueue_resp);
-			Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
-			Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
-			Dobot_SetEndEffectorSuctionCup.call(suctionCup_req,suctionCup_resp); // turn off suctionCup -> Dobot will drop the object 
-			Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
-		
+			if (grasp_in_progress == true) { // if grasping: put package back on conveyor 
+				Dobot_SetQueuedCmdForceStopExec.call(forceStopQueue_req,forceSTopQueue_resp);
+				Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
+				Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
+			
+				hrc_ros::SetPTPCmd::Request goto_conveyor_drop_req; 
+				hrc_ros::SetPTPCmd::Response goto_conveyor_drop_resp; 
+
+				goto_conveyor_drop_req.x = x_conveyor_drop; 
+				goto_conveyor_drop_req.y = y_conveyor_drop; 
+				goto_conveyor_drop_req.z = z_conveyor_drop; 
+				
+				// drop object onto conveyor 
+				Dobot_gotoPoint.call(goto_conveyor_drop_req, goto_conveyor_drop_resp);
+				ros::Duration(4).sleep(); 
+				Dobot_SetEndEffectorSuctionCup.call(suctionCup_req,suctionCup_resp);
+
+				// goback to idle position 
+				Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+
+			
+			} else { // go back to idle straight 
+			
+				Dobot_SetQueuedCmdForceStopExec.call(forceStopQueue_req,forceSTopQueue_resp);
+				Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
+				Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
+				Dobot_SetEndEffectorSuctionCup.call(suctionCup_req,suctionCup_resp); // turn off suctionCup -> Dobot will drop the object 
+				Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+			}
 		} else { 
 			cout << " ~ sleeping " << endl;
 			ros::Duration(wait_time).sleep(); 

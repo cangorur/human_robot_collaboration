@@ -159,5 +159,16 @@ z: 55
 
 stay there 
 
+_________________________________
+
+Putting object back to conveyor after cancel 
+
+x: 280
+y: -69
+z:  16
+
+
+
+
 
 
