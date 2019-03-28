@@ -675,6 +675,7 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 void idleCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  ros::param::get("/noDobot", no_Dobot_flag);	
 	  cout << " In IDLE thread" << endl;
+	  grasp_is_planned_flag = false; 
 	   
 	  while(point_in_progress == true){ cout << " point_in_progress " << point_in_progress; } // wait until pointing is done 
 	  
