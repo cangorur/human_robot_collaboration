@@ -276,10 +276,10 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 	client.start();
 
 	// Delay next decision making if human is grasping
-	if (o5_a0 == true){
+	/*if (o5_a0 == true){
 		ros::Duration(1).sleep(); 
 		ROS_WARN("\nhuman grasping -> delay next decision for 4s \n");
-	}
+	} */ 
 
 	return true;
 }   
