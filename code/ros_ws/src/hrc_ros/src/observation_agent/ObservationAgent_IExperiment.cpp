@@ -2,6 +2,8 @@
  *  Created on: 19.04.2018
  *      Author: Orhan Can Görür
  *      Email: orhan-can.goeruer@dai-labor.de
+ *  Modified on: 27.03.2019
+ * 			Author: Elia Kargruber and Orhan Can Görür
  */
 
 #include <ros/ros.h>
@@ -65,7 +67,7 @@ void ObservationAgent::initialize(){
 
 	ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Warn);
 	ros::console::notifyLoggerLevelsChanged();
-	ROS_INFO("Observation Agent is created !");
+	ROS_INFO("[Observation Agent] is created !");
 	ros::spin();
 }
 
@@ -176,13 +178,19 @@ void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
 	 ROS_WARN("XXXXXX  DecisionTimer Event because Timeout reached after   : %f  seconds \n\n" , seconds_real);
 
 	 // trigger a decision 
-	 bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+	 // bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+	 hrc_ros::InformActionRecognized::Request req;
+	 hrc_ros::InformActionRecognized::Response res;
+	 req.human_detected = false;
+	 req.stamp = ros::Time::now();
+	 // req.human_looking_around = true;
+	 ObservationAgent::IE_receive_actionrecognition_update(req, res);
 	 } else { ROS_WARN("\nOBSERVATION ROS:  Decission timer is running but experiment not started yet -> no decision will be taken \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
   
 }
 
 
-// TODO: change here, that only the communication to the despot is triggered
+
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
 // HUMAN ACTION IS RECEIVED in Experiment setup !!!
 bool ObservationAgent::IEaction_to_obs_Map(void) {
@@ -193,9 +201,6 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 	client.on_open=[&]() {
 
-	ROS_INFO("client opened");
-
-
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
 		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd,int_subtask_status);
 
@@ -205,15 +210,18 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
 
-		ROS_INFO("OBSERVATION ROS: real_observable: %s, mapped observation: %s",
+		ROS_INFO("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
 				robot_observation_real.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
-		// ############ Calculating reward for interaction experiment ################### 
-
+		// ############ Calculating reward for interaction experiment ###################
 	  calculate_reward_IE(observation, immediate_reward_IE, discounted_reward_IE);
-		cout << "immediate_reward " <<  immediate_reward_IE << "   discounted_reward "<< discounted_reward_IE << endl; 
-
+		cout << "immediate_reward " <<  immediate_reward_IE << "   discounted_reward "<< discounted_reward_IE << endl;
+		// TODO: TEST THIS! Informing robot agent about the reward
+		string reward_ = std::to_string(immediate_reward_IE);
+		ros::param::set("/robot_immediate_reward", reward_);
+		reward_= std::to_string(discounted_reward_IE);
+		ros::param::set("/robot_total_disc_reward", reward_);
 
 		// ############ SENDING OBSERVATIONS TO TASK MANAGER ############
 
@@ -238,12 +246,13 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		//real_obs_received.push_back(o5_a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
 
 
-  
 		obs_update.real_obs_received = real_obs_received;
-		obs_update.mapped_observation_pomdp = std::stoi(observation); 
-		obs_update.mapped_observation_raw   = std::stoi(robot_observation_real); 
-		obs_update.immediate_reward_IE = immediate_reward_IE; 
-		obs_update.discounted_reward_IE = discounted_reward_IE; 
+		obs_update.mapped_observation_pomdp = std::stoi(observation);
+		obs_update.mapped_observation_raw   = std::stoi(robot_observation_real);
+		// TODO TEST this as now it is sent by robot agent
+		// TODO Remove these two below from obs_update msg
+		// obs_update.immediate_reward_IE = immediate_reward_IE;
+		// obs_update.discounted_reward_IE = discounted_reward_IE;
 
 		obs_update.who_succeeded = whoSucceeded;
 
@@ -260,13 +269,6 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
-
-
-		 
-
-		
-
-
 	};
 
 	client.on_message=[&client](shared_ptr<WsClient::Message> message) {
@@ -402,6 +404,15 @@ void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_
 		case 13:  // subtask_fail
 			tmp_immediate_rew  = -6; 
 			break;
+	}
+
+	// TODO: check if this rewarding mechanism is ok for the cases when robot succeeds or somehow failed in placement
+	if (isRobotSucceed){ // this variable set after robot's successfull grasp action, which is not informed within obs received
+		tmp_immediate_rew += 6;
+		isRobotSucceed = false; // it is processed so being removed
+	} else if (isRobotFailed){
+		tmp_immediate_rew -= 6;
+		isRobotFailed = false; // it is processed so being removed
 	}
 
 	tmp_discounted_rew += pow(discount_factor,(subtask_counter -1) ) * tmp_immediate_rew;
@@ -584,7 +595,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 }
 
 
-// *** Service handler that receives a classified action and calculates the observables 
+// *** Service handler that receives a classified action and calculates the observables and triggers the new decision-making process
 bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
 	
 	if (experiment_started) {
@@ -617,7 +628,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		o3_oir = req.human_detected;            // O_3  Human is detected 
 		o4_ov  = not(notO4_human_looking_around);  // O_4  Human is not looking around (=> global variable received by head_gesture sub) | o4_ov is only updated for decision making when new observation is detected
 
-		ROS_INFO("\n\nOBSERVATION ROS: ##### ActionRecognition update received  RECEIVED #####");
+		ROS_INFO("[OBSERVATION AGENT] ##### ActionRecognition update received  RECEIVED #####");
 		ROS_INFO(" Action %s     			| warning = O6 | Idle = O7",req.action.c_str());
 		ROS_INFO("Human detected (O3) =  %d", o3_oir);
 		ROS_INFO("Human NOT looking around (!O4) = %d", o4_ov);
@@ -627,7 +638,41 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 		ROS_INFO("XXXXXX  Time_passed_since_new_action   : %f \n\n" , (req.stamp - former_time_stamp).toSec() );
 
-		if (  (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout))  ) {
+		// ==== CHECKING THE ROBOT ACTION BEFORE TRIGERRING NEW DECISION ====
+		// TODO: Work in progress for syncing of decision-making
+		// Rules:
+		// *  if robot has received a warning no matter what --> allow new decision AND increase subtask count
+		// * 	if robot is grasping and no warnings received --> ignore new obs
+		// *  if robot has succeeded in grasp, increase the subtask_count
+		// *
+		allowDecisionMaking = true;
+		int dobot_grasp_state = -2; // -2= initial -1= grasp_planning | 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor
+		ros::param::get("/robot_grasping_state", dobot_grasp_state);
+		//cout << "grasp_state: " << dobot_grasp_state << endl;
+		// TODO: WARNING WONT BE RECEIVED AT ALL AS LONG AS WE WONT LET DECISION-MAKING DECIDE.
+		// see the warning_received_flag set in DobotWorkerNode which is set after cancellCallback. That is why I added o6_a4 check as well
+		if (dobot_grasp_state == 3 || o6_a4) { // warning received during grasp
+			//subtask_counter += 1; // TODO: should we assume this as a subtask failure?
+			cout << "warning received during grasp" << endl;
+			allowDecisionMaking = true;
+		}/*else if (dobot_grasp_state == -1){ // grasp planning is ongoing
+			cout << "robot is planning for grasp, core is busy ..." << endl;
+			allowDecisionMaking = false; } */
+		else if(dobot_grasp_state == 0){ // robot's grasping and placing is in progress
+			cout << "robot grasping in progress" << endl;
+			allowDecisionMaking = false;
+		} else if(dobot_grasp_state == 1){ // robot succeeded -> grasp success
+			cout << "robot grasped successfully" << endl;
+			subtask_counter += 1;
+			isRobotSucceed = true;
+		} else if(dobot_grasp_state == 4) { // timeout or other error
+			// grasp_error_cnt ++; TODO: what did you want to do with this?
+			subtask_counter += 1;
+			isRobotFailed = true;
+			cout << "a problem with robot led to a subtask failure" << endl;
+		}
+		// THIS CHECK OF RECEIVED THE SAME OBS IS TO PREVENT DECISION UPDATE WITH HAR AGENT UPDATE
+		if ( allowDecisionMaking && ( (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout)) ) ) {
 			
 			former_time_stamp = req.stamp;
 			// send real_state to DESPOT -> this is not used anymore but remains for synchronisation purposes 
@@ -635,9 +680,9 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 			// trigger DESPOT Decision 
 			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
-			ROS_WARN(" \n \n XXXXXX  New Observation detected -> issue despot decision making    : %d" ,mapping_success);
-			ROS_WARN("XXXXXX  Time_passed_since_new_action   : %f \n\n" , (req.stamp - former_time_stamp).toSec() );
-		}
+			ROS_WARN("[OBSERVATION_AGENT] Issuing a despot decision making: %d, time passed since prev action: %f" ,mapping_success, (req.stamp - former_time_stamp).toSec());
+		} else
+			ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");
 
 
 		o6_former = o6_a4; 	// Assign former values -> used to check if update ocurred
@@ -648,7 +693,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 
 		res.success = true;
-	} else { ROS_WARN("\nOBSERVATION ROS:  Action received but experiment not started yet -> action is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
+	} else { ROS_WARN("[OBSERVATION AGENT]  Action received but experiment not started yet -> action is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
 
 	return true; 
 }
