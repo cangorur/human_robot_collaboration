@@ -17,12 +17,12 @@
 
 #### on one terminal:
  
- - source hrc_integration/devel/setup.bash && roslaunch dobot_arm_lower dobot.launch
+ - source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch
  - Note: dobot will drive to a calibration position on the far left 
 
-#### wait until dobot stops moving then in another terminal:
+#### wait until dobot stops moving then in another terminal ( can also be launched locally on PC):
  
- - source hrc_integration/devel/setup.bash && roslaunch dobot_chariot app.launch
+ - source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
 
 
 ### RaspberryPi2 conveyor belt:
@@ -30,7 +30,8 @@
  - password:ubuntu
 
 #### one terminal:
-- source dobot_conveyor_unit_polishing/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
+- source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
+
 
 - in a second terminal:  ONLY run if you are not running dobot as well 
 - source dobot_conveyor_unit_polishing/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
