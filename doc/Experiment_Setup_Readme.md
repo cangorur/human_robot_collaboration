@@ -15,12 +15,12 @@
  - Turn on the Raspberry pi of the dobot and turn on the dobot arm. 
  - wait until dobot beeps
 
-#### on one terminal:
+#### on one terminal - launch dobot physical layer and middle layer:
  
  - source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch
  - Note: dobot will drive to a calibration position on the far left 
 
-#### wait until dobot stops moving then in another terminal ( can also be launched locally on PC):
+#### wait until dobot stops moving then in another terminal ( can also be launched locally on PC) - launch dobot and conveyor app layer:
  
  - source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
 
@@ -29,7 +29,7 @@
  - ssh ubuntu@10.0.8.193
  - password:ubuntu
 
-#### one terminal:
+#### one terminal - launch conveyor physical layer and middle layer:
 - source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
 
 
