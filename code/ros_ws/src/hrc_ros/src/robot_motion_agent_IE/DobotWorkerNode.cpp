@@ -804,6 +804,8 @@ void receiveObjectToGraspCallback(const hrc_ros::ObjectGraspColourMsg &msg ){
 // use to receive action by action recognition and issue cancel action faster by circumventing DESPOT 
 void actionRecognizedCallback(const hrc_ros::PublishActionRecognisedMsg &msg){
 
+	ros::param::get("/dobot_interrupt_immediately",interrupt_immediately_flag);
+
 	if (msg.action.compare("warning") == 0 && (interrupt_immediately_flag == true) ){
 		ROS_WARN("\n Warning received & interrupt_immediately_flag is set - will cancel \n"); 
 		std_msgs::Bool::ConstPtr msg;
