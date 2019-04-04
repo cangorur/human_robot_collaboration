@@ -6,7 +6,7 @@
  */
 
 #include <ros/ros.h>
-#include <observation_agent/ObservationAgent.h>
+#include <observation_agent/ObservationAgent_IExperiment.h>
 
 int main(int argc, char **argv) {
 	

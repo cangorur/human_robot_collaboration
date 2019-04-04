@@ -61,6 +61,10 @@ void ObservationAgent::initialize(){
 	decision_timer = nh.createTimer(ros::Duration(10.0),&ObservationAgent::DecisionTimer,this);
 	decision_timer.stop(); 
 
+	/// subtask_timer measuring how long human // robot takes to finish a subtask -> used for reward calculation 
+	subtask_timer = nh.createTimer(ros::Duration(1.0),&ObservationAgent::SubTaskTimer,this);
+	subtask_timer.stop(); 
+
 	/// making sure that experiment_started is set to false -> tray_status and observations are not considered until the task manager initiates the experiment
 	experiment_started = false; 
 	
@@ -96,7 +100,8 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	o2_upd = false; // O_2	failure
 
 	immediate_reward_IE = 0.0; 
-	discounted_reward_IE = 0.0; 
+	discounted_reward_IE = 0.0;
+  subtask_timer_tick = 0; 
 
 	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;
 
@@ -145,9 +150,15 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	humanidle_counter = 0;
 	humanfail_counter = 0;
 
+	// start timers 
 	decision_timer.stop(); 
 	decision_timer.setPeriod(ros::Duration(global_task_configuration_read.decision_timer_periode));
 	decision_timer.start(); 
+
+	cout << "Subtask Counter started now " << endl; 
+	subtask_start_time = ros::Time::now();
+	subtask_timer.stop(); 
+	subtask_timer.start(); 
 
 	ipd_sensor = false;	// inspected product detector sensor
 	upd_sensor = false;	// uninspected product detector sensor
@@ -188,7 +199,12 @@ void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
 	 } else { ROS_WARN("\nOBSERVATION ROS:  Decission timer is running but experiment not started yet -> no decision will be taken \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
   
 }
+void ObservationAgent::SubTaskTimer(const ros::TimerEvent&){
 
+	subtask_timer_tick ++;
+	cout << "subtask_timer_tick " << subtask_timer_tick << endl;  
+
+}
 
 
 // ********* WEB CLIENTS TO COMMUNICATE WITH DESPOT *********** //
@@ -344,6 +360,7 @@ void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_
 	float tmp_immediate_rew = 0.0;
 	float tmp_discounted_rew = discounted_reward_out;  
 
+	int discount_tick = subtask_timer_tick; // it is either subtask_counter_tick or the last_tick before reset in subtask_success or subtask_fail_case 
 	cout << "calculating_reward :: obs_int= " << obs_int <<" Raw string  " << obs << endl; 
 
 	// TODO check if other rewards need to be given as well 
@@ -399,10 +416,12 @@ void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_
 
 		case 12:  // subtask_success 
 			tmp_immediate_rew  = 6; 
+			discount_tick = before_subtask_reset_tick; 
 			break;
 
 		case 13:  // subtask_fail
 			tmp_immediate_rew  = -6; 
+			discount_tick = before_subtask_reset_tick; 
 			break;
 	}
 
@@ -415,7 +434,9 @@ void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_
 		isRobotFailed = false; // it is processed so being removed
 	}
 
-	tmp_discounted_rew += pow(discount_factor,(subtask_counter -1) ) * tmp_immediate_rew;
+	//tmp_discounted_rew += pow(discount_factor,(subtask_counter -1) ) * tmp_immediate_rew;  // former reward calculation -> discounting per subtask step 
+	cout << " Calculating reward : tick_is   " << discount_tick << endl; 
+	tmp_discounted_rew += pow(discount_factor,(discount_tick) ) * tmp_immediate_rew;
 	
 	// returns by reference 
 	immediate_reward_out  = tmp_immediate_rew;
@@ -463,8 +484,18 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	if (experiment_started) {
 		// Reset decision timer ( timer only triggers if system is stuck )
 		decision_timer.stop(); 
-		decision_timer.start(); 
+		decision_timer.start();
+		subtask_timer.stop();
+		before_subtask_reset_tick = subtask_timer_tick; 
+		subtask_timer_tick = 0; 
+		ros::Time subtask_stop_time = ros::Time::now(); 
+		subtask_duration = subtask_stop_time - subtask_start_time; 
+		cout << " last subtask took "  << subtask_duration <<  "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl; 
 		
+		// start timers and counters for new subtask
+		subtask_start_time = ros::Time::now(); 
+		subtask_timer.start(); 
+
 
 		// #### mapping tray status to observables ( o1 = success | o2 = failure ) ####
 		current_object = req.current_object;
@@ -523,18 +554,25 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 				task_success_state = "success"; // global success 
 				o1_ipd = true; //  O_1  task successs (processed product detected)
 				o2_upd = false; // O_2	failure
+				decision_timer.stop(); 
+				subtask_timer.stop();
+				subtask_timer_tick = 0;
 				//TODO remove 
 				cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
 			} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
 				task_success_state = "fail"; // global fail
 				o1_ipd = false; //  O_1  task successs (processed product detected)
 				o2_upd = true; // O_2	failure 
+				decision_timer.stop(); 
+				subtask_timer.stop();
+				subtask_timer_tick = 0;
 				// TODO remove 
 				cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl; 
 			}
 
 		}
 
+		// TODO add task time to success_status_msg and publish by task manager 
 		// ## Compose success_status_msg
 		success_status_msg.stamp = ros::Time::now();
 		success_status_msg.subtask_success_status = subtask_success_state;
@@ -671,6 +709,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			isRobotFailed = true;
 			cout << "a problem with robot led to a subtask failure" << endl;
 		}
+		// TODO -> check if each warning leads to a negative reward in real setup. If not the allowDecisionMaking && might be changed to || 
 		// THIS CHECK OF RECEIVED THE SAME OBS IS TO PREVENT DECISION UPDATE WITH HAR AGENT UPDATE
 		if ( allowDecisionMaking && ( (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout)) ) ) {
 			

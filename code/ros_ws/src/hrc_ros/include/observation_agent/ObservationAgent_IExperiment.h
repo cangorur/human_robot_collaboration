@@ -62,6 +62,11 @@ private:
 	void HumanTaskTimer(const ros::TimerEvent&);
 
 	/**
+	 * Timer event to track the subtask duration. Used to calculate discounted rewards 
+	 */
+	void SubTaskTimer(const ros::TimerEvent&);
+
+	/**
 	 * Timer event created to trigger a decision even if no action has been received for a long time
 	 */
 	void DecisionTimer(const ros::TimerEvent&);
@@ -258,6 +263,11 @@ private:
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario
 	ros::Time tray_msg_stamp;
 
+	/// A ROS timer to track the time of a subtask 
+	ros::Timer subtask_timer; 
+	int subtask_timer_tick =0; // counts the ticks of the subtask_timer -> used for discounted reward calculation
+	int before_subtask_reset_tick = 0; 
+
 	/// A ROS timer to track human task !
 	ros::Timer task_timer;
 	/// A Timer that will trigger a decision if no action has been recognised for a certain amount of time
@@ -370,6 +380,10 @@ private:
 
 	int task_counter = 1;
 	int subtask_counter = 1;
+
+	/// times and metrics for experiment 
+	ros::Time subtask_start_time; 
+	ros::Duration subtask_duration; 
 
 	// counters that count the successes and failures during a task -> used to determine global_success and global_fail
 	int successful_subtasks = 0;
