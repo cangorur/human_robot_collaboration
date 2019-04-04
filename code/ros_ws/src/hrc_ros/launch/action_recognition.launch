@@ -23,7 +23,7 @@
 </include> -->
 
 <!-- Enable the conveyor belt - automatically stops with the IR sensor --> 
-<!-- <node pkg="rosservice" type="rosservice" name="enble_conveyor" args="call /conveyor_control_app/inOprConveyorControl 'isEnabled: true speed: 25' "/> -->
+<node pkg="rosservice" type="rosservice" name="enble_conveyor" args="call /conveyor_control_app/inOprConveyorControl 'isEnabled: true speed: 25' "/> 
 
 
 

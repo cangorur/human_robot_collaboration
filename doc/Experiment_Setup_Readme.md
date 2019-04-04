@@ -33,8 +33,8 @@
 - source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
 
 
-- in a second terminal:  ONLY run if you are not running dobot as well 
-- source dobot_conveyor_unit_polishing/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
+### in a second terminal - launch the conveyor_control app layer :   
+- source dobot-conveyor-unit_/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
 
 
 ## Launch all nodes 
@@ -70,7 +70,18 @@ To monitor which observations are sent to the DESPOT and wich action is taken by
 All relevant information is also available in a combined topic: 
 - /task_manager/task_status			| published by /task_manager		  | combined topic that includes all relevant information 
 
+------------------------------------------------------------------------------------
 
+
+## Parameters to configure the experiment and dobot dynamically 
+
+### rosparameters 
+Can be set by 
+`` rosparam set /parameter_name ``
+
+- **/dobot_interrupt_immediately: default=false** If set to true, dobot will react to human warnings directly, this will circumvent the DESPOT decision making in the case of a human warning (all other observations will still go to DESPOT first) 
+- **/noDobot: default=false** if set true, the dobot services will not be called. Instead a time delay will simulate the dobot behaviour. This can be used to test the system even if dobot is not connected/available. 
+- **/dobot_expression_version: default=2** Valid values are 1 and 2. This can be used to switch between two different robot expressiveness versions. V1 = without shared attention and quite simple gesture | V2 = based on shared/joint attention and more elaborate gestures. Point and Planning action are affected. 
 
 ____________________________________________________________________________________
 
