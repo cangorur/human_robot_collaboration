@@ -150,6 +150,14 @@ private:
 	 */
 	void humanStCounter(string humanState);
 
+
+	/**
+	 * This function checks if a global success is reached, compiles the tray_status message for the task manager and publishes it. 
+	 * It is only called if the robot is grasping an object and informing a grasping_status. 
+	 */
+	void inform_trayupdate_to_taskmanager(void);
+
+
 	/**
 	 * This function gets the actual human state and maps them to the POMDP robot states
 	 * E.g. FailedGrasp state of human may correspond to MayNotBeCapable or NeedsHelp. The goal is to calcuate how accurate the robot

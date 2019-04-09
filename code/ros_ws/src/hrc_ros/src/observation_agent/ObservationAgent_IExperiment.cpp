@@ -636,6 +636,8 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 // *** Service handler that receives a classified action and calculates the observables and triggers the new decision-making process
 bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformActionRecognized::Request &req, hrc_ros::InformActionRecognized::Response &res){
 	
+	bool informTrayupdateTaskmanager = false; 
+
 	if (experiment_started) {
 		
 		// Reset decision timer ( timer only triggers if system is stuck )
@@ -703,13 +705,15 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		} else if(dobot_grasp_state == 1){ // robot succeeded -> grasp success
 			cout << "robot grasped successfully" << endl;
 			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
-			subtask_counter += 1;
 			isRobotSucceed = true;
+			successful_subtasks ++; 
+			informTrayupdateTaskmanager = true; // will inform success after decision making 
 		} else if(dobot_grasp_state == 4) { // timeout or other error
 			// grasp_error_cnt ++; TODO: what did you want to do with this?
 			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
-			subtask_counter += 1;
 			isRobotFailed = true;
+			failed_subtasks ++;
+			informTrayupdateTaskmanager = true; 
 			cout << "a problem with robot led to a subtask failure" << endl;
 		}
 		// TODO -> check if each warning leads to a negative reward in real setup. If not the allowDecisionMaking && might be changed to || 
@@ -723,6 +727,9 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			// trigger DESPOT Decision 
 			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 			ROS_WARN("[OBSERVATION_AGENT] Issuing a despot decision making: %d, time passed since prev action: %f" ,mapping_success, (req.stamp - former_time_stamp).toSec());
+			if(informTrayupdateTaskmanager){
+				inform_trayupdate_to_taskmanager();
+			}
 		} else
 			ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");
 
@@ -738,6 +745,90 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	} else { ROS_WARN("[OBSERVATION AGENT]  Action received but experiment not started yet -> action is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
 
 	return true; 
+}
+
+
+void ObservationAgent::inform_trayupdate_to_taskmanager(void){
+	hrc_ros::SuccessStatusObserved success_status_msg;
+	string task_success_state = "ongoing";
+	string subtask_success_state = "ongoing";
+
+	// determine global success state 
+	// ## determine global success state -> it is only set once all subtasks are finished
+	if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done 
+		
+		ROS_WARN("Global Success state is calculated");
+		if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
+			task_success_state = "success"; // global success 
+			o1_ipd = true; //  O_1  task successs (processed product detected)
+			o2_upd = false; // O_2	failure
+			decision_timer.stop(); 
+			subtask_timer.stop();
+			subtask_timer_tick = 0;
+			//TODO remove 
+			cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
+		} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
+			task_success_state = "fail"; // global fail
+			o1_ipd = false; //  O_1  task successs (processed product detected)
+			o2_upd = true; // O_2	failure 
+			decision_timer.stop(); 
+			subtask_timer.stop();
+			subtask_timer_tick = 0;
+			// TODO remove 
+			cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl; 
+		}
+
+	}
+
+	// compose message 
+
+		// TODO add task time to success_status_msg and publish by task manager 
+		// ## Compose success_status_msg
+		success_status_msg.stamp = ros::Time::now();
+		success_status_msg.subtask_success_status = subtask_success_state;
+		success_status_msg.task_success_status = task_success_state;
+		
+		// ## fields for debugging
+		success_status_msg.current_object = current_object; 
+		success_status_msg.current_tray = 0; 
+		success_status_msg.success_tray = success_criteria_read.tray;
+		success_status_msg.task_counter = task_counter;
+		success_status_msg.subtask_counter = subtask_counter; 
+
+		// ## fields for statistics 
+		success_status_msg.failed_subtasks = failed_subtasks; 
+		success_status_msg.successful_subtasks = successful_subtasks;
+
+	// if global state reached send it to despot as well 
+	// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
+		if (task_success_state.compare("success") ==0 ){
+			cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl; 
+			IE_humanSt_to_robotSt_Map("GlobalSuccess");
+		} else if (task_success_state.compare("fail")==0) {
+			cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl; 
+			IE_humanSt_to_robotSt_Map("GlobalFail");
+		}
+
+
+	// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
+	traySensor_success_pub.publish(success_status_msg);
+
+	// ## increment subtask counter
+	subtask_counter += 1; 
+
+	ROS_INFO("\n\n");
+	ROS_WARN("OBSERVATION ROS: #### ROBOT TRAY-UPDATE  RECEIVED #### \n\n");
+	ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
+	ROS_INFO("task_success_state = %s \n ",task_success_state.c_str());
+	ROS_INFO("Failed_subtasks = %d  ",failed_subtasks);
+	ROS_INFO("successful_subtasks = %d  ",successful_subtasks);
+	ROS_INFO("********\n\n\n");
+
+	cout << endl << " ###############  Current task counters and success states ######################## " << endl << endl; 
+	cout << "task_counter = " << task_counter << "  subtask_counter = " << subtask_counter << " subtask_success_state = " << subtask_success_state << endl << endl;
+
+	ros::Duration(4).sleep();
+
 }
 
 
