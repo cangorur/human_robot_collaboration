@@ -34,7 +34,7 @@
 
 
 ### in a second terminal - launch the conveyor_control app layer :   
-- source dobot-conveyor-unit_/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
+- source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
 
 
 ## Launch all nodes 
