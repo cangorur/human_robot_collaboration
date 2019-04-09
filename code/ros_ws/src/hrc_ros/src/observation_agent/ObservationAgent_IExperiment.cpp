@@ -692,6 +692,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		if (dobot_grasp_state == 3 || o6_a4) { // warning received during grasp
 			//subtask_counter += 1; // TODO: should we assume this as a subtask failure?
 			cout << "warning received during grasp" << endl;
+			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received 
 			allowDecisionMaking = true;
 		}/*else if (dobot_grasp_state == -1){ // grasp planning is ongoing
 			cout << "robot is planning for grasp, core is busy ..." << endl;
@@ -701,10 +702,12 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			allowDecisionMaking = false;
 		} else if(dobot_grasp_state == 1){ // robot succeeded -> grasp success
 			cout << "robot grasped successfully" << endl;
+			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
 			subtask_counter += 1;
 			isRobotSucceed = true;
 		} else if(dobot_grasp_state == 4) { // timeout or other error
 			// grasp_error_cnt ++; TODO: what did you want to do with this?
+			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
 			subtask_counter += 1;
 			isRobotFailed = true;
 			cout << "a problem with robot led to a subtask failure" << endl;
