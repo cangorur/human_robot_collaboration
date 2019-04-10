@@ -35,7 +35,5 @@ string immediate_reward
 string total_disc_reward
 float32[] robot_belief
 #ADDED for interaction experiment 
-float32 immediate_reward_IE
-float32 discounted_reward_IE 
 
 

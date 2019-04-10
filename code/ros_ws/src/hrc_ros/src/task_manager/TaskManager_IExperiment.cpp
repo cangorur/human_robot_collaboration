@@ -503,8 +503,6 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     hrc_ros::TaskStateIE taskState_msg;
     
     // Additional fields for interaction experiment 
-    taskState_msg.discounted_reward_IE = req.obs_update.discounted_reward_IE; 
-    taskState_msg.immediate_reward_IE  = req.obs_update.immediate_reward_IE; 
     taskState_msg.mapped_observation_pomdp = req.obs_update.mapped_observation_pomdp; 
     taskState_msg.mapped_observation_raw   = req.obs_update.mapped_observation_raw; 
 
@@ -546,6 +544,7 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     human_obs.push_back(real_obs_msg[7]); human_obs.push_back(real_obs_msg[4]); human_obs.push_back(real_obs_msg[5]);
     taskState_msg.human_observables = human_obs;
 
+    // TODO remove and send from observation agent 
     if (real_obs_msg[3]){
         //TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
         //this is done after receiving traysensor data directly by calling own service
@@ -595,6 +594,8 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
         taskState_msg.task_status = "ONGOING";
         taskState_msg.who_succeeded = "NONE";
         */
+
+    // TODO Elia - introduce global var 
     taskState_msg.robot_model = robot_model;
     taskState_msg.immediate_reward = req.robot_update.immediate_reward;
     taskState_msg.total_disc_reward = req.robot_update.total_disc_reward;
@@ -603,6 +604,7 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
     
     taskStatusPublisher.publish(taskState_msg);
 
+    // TODO CAN check 
     // TODO double check which robot state should be elaborated (real_state or belief_state [ real state is only delayed version of belief_state currently])  (was robot_real_state before) -> how to get the real state -> currently it equals  the detected state 
     if (req.robot_update.robot_real_state == "GlobalSuccess" || req.robot_update.robot_real_state == "GlobalFail"){
         // checked when the task is finished to start a new one (all agents need to inform)
@@ -672,6 +674,14 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
         task_success_statistics += 1;
         subtask_success_statistics = msg.successful_subtasks;
         final_state_statistics = "GlobalSuccess";
+
+        //  TODO publish final task statistics 
+        //  task_counter 
+        //  percentage
+        //  global_status 
+        //  rewards -> put all of them here  
+
+
         // TODO remove 
         cout << endl << endl << " Global success received " << endl; 
     } else if ( (msg.task_success_status.compare("fail") == 0) ) {
