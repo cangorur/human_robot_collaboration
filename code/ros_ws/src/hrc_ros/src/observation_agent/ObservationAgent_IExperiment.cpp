@@ -716,6 +716,12 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			informTrayupdateTaskmanager = true; 
 			cout << "a problem with robot led to a subtask failure" << endl;
 		}
+
+		// informTrayUpdate to taskmanager if a robot tray update occured, this will also calculate global success/fail and will send it to despot 
+		if(informTrayupdateTaskmanager){
+			inform_trayupdate_to_taskmanager();
+		}
+
 		// TODO -> check if each warning leads to a negative reward in real setup. If not the allowDecisionMaking && might be changed to || 
 		// THIS CHECK OF RECEIVED THE SAME OBS IS TO PREVENT DECISION UPDATE WITH HAR AGENT UPDATE
 		if ( allowDecisionMaking && ( (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout)) ) ) {
@@ -727,12 +733,10 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 			// trigger DESPOT Decision 
 			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 			ROS_WARN("[OBSERVATION_AGENT] Issuing a despot decision making: %d, time passed since prev action: %f" ,mapping_success, (req.stamp - former_time_stamp).toSec());
-			if(informTrayupdateTaskmanager){
-				inform_trayupdate_to_taskmanager();
-			}
-		} else
-			ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");
 
+		} else
+			ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");		
+		
 
 		o6_former = o6_a4; 	// Assign former values -> used to check if update ocurred
 		o7_former = o7_a2;
@@ -804,15 +808,17 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		if (task_success_state.compare("success") ==0 ){
 			cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl; 
 			IE_humanSt_to_robotSt_Map("GlobalSuccess");
+			ObservationAgent::IEaction_to_obs_Map(); // trigger decision -> this will terminate despot 
 		} else if (task_success_state.compare("fail")==0) {
 			cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl; 
 			IE_humanSt_to_robotSt_Map("GlobalFail");
+			ObservationAgent::IEaction_to_obs_Map(); // trigger decision -> this will terminate despot 
 		}
 
 
 	// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
-	traySensor_success_pub.publish(success_status_msg);
-
+	traySensor_success_pub.publish(success_status_msg);	
+	
 	// ## increment subtask counter
 	subtask_counter += 1; 
 

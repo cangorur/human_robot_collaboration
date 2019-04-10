@@ -41,7 +41,7 @@ void TaskManager::initialize(){
     /*
     * Initializing counters for the task and subtask control   
     */
-    task_counter = 1; 
+    task_counter = 0; // incremented before experiment starts 
     subtask_counter = 1; 
 
     //here set the parameter of conveyor belt to "init" so it automatically starts
@@ -130,6 +130,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
  
         cout << "# task_counter: " << task_counter << endl << endl; 
     
+    subtask_counter = 1; 
+    task_counter += 1; 
 
     // ####################  sending current task rules to the observation agent #####################
     
@@ -338,6 +340,11 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     }else{
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
+   
+    // kill all open despots before starting a new one 
+    string kill_pomdpx_str = "killall despot_pomdpx"; 
+    const char * c_kill_pomdpx = kill_pomdpx_str.c_str();
+    system(c_kill_pomdpx);
 
     const char * c_robot_shell = robot_shell.c_str();
     system(c_robot_shell);
@@ -766,7 +773,7 @@ void TaskManager::CheckToStartNewTask(void){
 
         // increment task counters here!!!
         subtask_counter = 1; 
-        task_counter += 1; 
+        //task_counter += 1; 
 
         
         // ###### Reset all subtask relevant variables 
@@ -780,7 +787,7 @@ void TaskManager::CheckToStartNewTask(void){
         subtask_fail_statistics    = 0;
         final_state_statistics     = "Reset"; 
 
-        if (task_counter > (current_global_task_config.task_max) ){
+        if (task_counter + 1 > (current_global_task_config.task_max) ){
             cout << endl << endl << " All tests are done - :-) " << endl << endl; 
         } else { 
             cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 

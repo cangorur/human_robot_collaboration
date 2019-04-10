@@ -386,7 +386,7 @@ private:
 	// counter that counts the subtasks that have been executed.
 	/// Note: counter starts at 1!!!
 
-	int task_counter = 1;
+	int task_counter = 0; // will be incremented to 1 when experiment starts
 	int subtask_counter = 1;
 
 	/// times and metrics for experiment 
