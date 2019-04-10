@@ -686,11 +686,11 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		// *  if robot has succeeded in grasp, increase the subtask_count
 		// *
 		allowDecisionMaking = true;
-		int dobot_grasp_state = -2; // -2= initial -1= grasp_planning | 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor
+		int dobot_grasp_state = -2; // -2= initial -1= grasp_planning | 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor | 6 = warning in progress 
 		ros::param::get("/robot_grasping_state", dobot_grasp_state);
 		//cout << "grasp_state: " << dobot_grasp_state << endl;
 		// TODO: WARNING WONT BE RECEIVED AT ALL AS LONG AS WE WONT LET DECISION-MAKING DECIDE.
-		// see the warning_received_flag set in DobotWorkerNode which is set after cancellCallback. That is why I added o6_a4 check as well
+		// see the warning_received_flag set in DobotWorkerNode which is set after cancellCallback. That is why I added o6_a4 check as well	
 		if (dobot_grasp_state == 3 || o6_a4) { // warning received during grasp
 			//subtask_counter += 1; // TODO: should we assume this as a subtask failure?
 			cout << "warning received during grasp" << endl;
@@ -699,6 +699,9 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		}/*else if (dobot_grasp_state == -1){ // grasp planning is ongoing
 			cout << "robot is planning for grasp, core is busy ..." << endl;
 			allowDecisionMaking = false; } */
+		else if (dobot_grasp_state == 6) { //cancel action is ongoing 
+			allowDecisionMaking = false; 
+		}
 		else if(dobot_grasp_state == 0){ // robot's grasping and placing is in progress
 			cout << "robot grasping in progress" << endl;
 			allowDecisionMaking = false;

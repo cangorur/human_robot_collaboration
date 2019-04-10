@@ -24,6 +24,9 @@ RobotMotionAgent::~RobotMotionAgent() {
 	cout << " In destructor " << endl;
 }
 
+ros::Time cancel_now_time; 
+ros::Time cancel_latest_time; 
+
 void RobotMotionAgent::initialize() {
 	ros::NodeHandle nh("~");
 
@@ -281,18 +284,25 @@ void RobotMotionAgent::update() {
 			}
 			else if (robot_action == "2") {	// cancel all actions
 				// Global variables are set below to be sent to task manager
-				robot_action_taken = "cancel all actions";
-				//success = cancelAction.call(req, resp);
+				cancel_now_time = ros::Time::now(); 
 
-				std_msgs::Bool msg;
-				msg.data = bool(true);
-				dobot_cancel_pub.publish(msg);
+				if(cancel_now_time - cancel_latest_time >= ros::Duration(15)){
+					robot_action_taken = "cancel all actions";
+					//success = cancelAction.call(req, resp);
 
-				std_srvs::SetBool is_warned;
-				is_warned.request.data = true;
-				ros::ServiceClient informHuman = nh.serviceClient<std_srvs::SetBool>("/human_mc_sampler/robot_is_warned");
-				informHuman.call(is_warned);
-				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot canceling all actions...");
+					std_msgs::Bool msg;
+					msg.data = bool(true);
+					dobot_cancel_pub.publish(msg);
+					
+					cancel_latest_time = ros::Time::now(); 
+					
+					std_srvs::SetBool is_warned;
+					is_warned.request.data = true;
+					ros::ServiceClient informHuman = nh.serviceClient<std_srvs::SetBool>("/human_mc_sampler/robot_is_warned");
+					informHuman.call(is_warned);
+					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot canceling all actions...");
+				} else { cout << "skipping cancel, already issued " << endl; }
+
 			}
 			else if (robot_action == "3") {	// point to object
 				// Global variables are set below to be sent to task manager

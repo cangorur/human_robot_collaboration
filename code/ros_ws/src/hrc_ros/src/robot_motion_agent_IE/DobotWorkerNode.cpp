@@ -74,7 +74,7 @@ int dobot_expression_version = 2;   // values can be: 1= version 1 | 2= version 
 bool warning_received_flag = false; // flag that indicates that a warning has been received, this is relevant for the grasping action, it is set to false at the beginning of the grasp and checked wether it is set true during the grasp
 bool grasp_is_planned_flag = false; // set true after a grasp has been planned  and set false in grasCallback after successful grasp
 bool planning_in_progress  = false; // set true during a planning of a path and set false when planning is done -> subsequent calls of planCallback will skip planning while another planning is in progress 
-
+bool dobot_dropped_package = false; 
 
 // Struct to hold the package drop place 
 struct package_drop_loc {
@@ -130,7 +130,7 @@ float z_point_briefly = 158;
 
 //########### times and flags for physical hrc 
 int planning_time = 6; // time the robot waits above the object to simulate the grasp path planning 
-int warning_time = 8; // Time the cancel action will block other actions from being executed -> should be bigger than the planning time! 
+int warning_time = 6.1; // Time the cancel action will block other actions from being executed -> should be bigger than the planning time! 
 bool grasp_in_progress = false; // used to block pointing while grasp is in progress 
 bool point_in_progress = false; // used to wait in grasping until pointing is done 
 bool interrupt_immediately_flag = false; // is set true, then dobot will cancel immediately if warning is recognized - even before DESPOT decided to cancel 
@@ -305,233 +305,239 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor 
 		bool grasp_done_in_time = false;
 		bool conveyor_empty_flag = false; 
-		grasp_in_progress = true; 
+		grasp_in_progress = true;
+		dobot_dropped_package = false;
 
 		ros::param::get("/noDobot", no_Dobot_flag);
-		if (no_Dobot_flag == false ) { // call dobot api services if available otherwise wait only 
+		if ( (no_Dobot_flag == false) ) { // call dobot api services if available otherwise wait only 
 
-			//set grasping state parameter before grasping => always 0
-			ros::param::set("/robot_grasping_state", grasping_state);
+			if(warning_received_flag == false ) { // skip if cancel is in progress 
 
-			while(point_in_progress == true ) { cout << "point in grogress = " << point_in_progress << endl;  } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
+				//set grasping state parameter before grasping => always 0
+				ros::param::set("/robot_grasping_state", grasping_state);
 
-			// conveyor empty flag that will skip grasping and planning 
-			if (object_to_grasp_colour == 4){
-				conveyor_empty_flag = true; 
-				cout << "conveyor is empty " <<endl; 
-			}
+				while(point_in_progress == true ) { cout << "point in grogress = " << point_in_progress << endl;  } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
 
-
-			// 1. check if grasp has been planned, if not plan grasp path first
-			while((grasp_is_planned_flag == false) && (warning_received_flag == false) && (conveyor_empty_flag==false)) {  
-				std_msgs::Bool::ConstPtr msg; 
-				cout << "planning is issued    conveyor_empty_flag = " << conveyor_empty_flag << endl; 
-				planCallback(msg); // call planningCallback to do planning
-			}
-
-
-			if (conveyor_empty_flag == false){
-				// drive to planning position (v1) directly above the object if it has not been reached yet 
-				hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
-				hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
-				ensure_plan_loc_req.ptpMode = 1; // moveJ 
-				ensure_plan_loc_req.x = x_planning_v1; 
-				ensure_plan_loc_req.y = y_planning_v1; 
-				ensure_plan_loc_req.z = z_planning_v1;
-				Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
-				ros::Duration(0.2).sleep();
-			}
-
-			
-
-			cout << " - calling services" << endl; 
-			hrc_ros::SimplePickAndPlace::Request spp_request;
-			hrc_ros::SimplePickAndPlace::Response spp_resp; 
-
-			hrc_ros::RequestSuccessCriteria::Request success_req; 
-			hrc_ros::RequestSuccessCriteria::Response success_resp;
-
-			// 2. request success criteria 
-			if (object_to_grasp_colour < 4) {// if colour is red, green or blue 
-				success_req.current_object = object_to_grasp_colour; // object_colour is received by action recognition, object on conveyor in front of IR sensor is published
-				 
-			} else { // default is 1=red 
-				success_req.current_object = 1; 
-			}
-			cout << "Grasping now -> will use object colour " << success_req.current_object << endl; 
-
-			
-
-			// get success tray from observation agent 
-			request_success_criteria.call(success_req, success_resp);
-			
-			int tray   = success_resp.tray;
-			
-			// assign default tray as red tray in case wrong tray information received 
-			if (tray >4 || tray < 1){
-				tray = 1; 
-				cout << " received tray info out of range -> will set to red =1 now" << endl; 
-			}
-			cout << "Requested succes_criteria from observation_agent -  object: " << success_req.current_object << "  tray: " << tray << endl;  
-
-			// 3. map tray to placement positions here
-			if(tray == 1){ // red container
-				double x_incr = 0.0; 
-				double y_incr = 0.0; 
-				// calculate offset for placement based on first object
-				if (red_placed_cnt == 1){ // second placement 
-					x_incr = 0.0; 
-					y_incr = 35.0;  
-				} else if (red_placed_cnt == 2) {
-					x_incr = 0.0; 
-					y_incr = 70.0; 
-				} else if (red_placed_cnt == 3){
-					x_incr = 35.0; 
-					y_incr = 35.0;
-				} else if (red_placed_cnt == 4){
-					x_incr = 35.0;
-					y_incr = 70.0; 
+				// conveyor empty flag that will skip grasping and planning 
+				if (object_to_grasp_colour == 4){
+					conveyor_empty_flag = true; 
+					cout << "conveyor is empty " <<endl; 
 				}
 
-				spp_request.placeX = red_package_drop_loc.x + x_incr;
-				spp_request.placeY = red_package_drop_loc.y + y_incr; 
-				spp_request.placeZ = red_package_drop_loc.z; 
-				red_placed_cnt +=1;
 
-			} else if (tray == 2){ // green container
-
-				double x_incr = 0.0; 
-				double y_incr = 0.0; 
-				// calculate offset for placement based on first object
-				if (green_placed_cnt == 1){ // second placement 
-					x_incr = 0.0; 
-					y_incr = 35.0;  
-				} else if (green_placed_cnt == 2) {
-					x_incr = 0.0; 
-					y_incr = 70.0; 
-				} else if (green_placed_cnt == 3){
-					x_incr = 35.0; 
-					y_incr = 0.0;
-				} else if (green_placed_cnt == 4){
-					x_incr = 35.0;
-					y_incr = 35.0; 
+				// 1. check if grasp has been planned, if not plan grasp path first
+				while((grasp_is_planned_flag == false) && (warning_received_flag == false) && (conveyor_empty_flag==false)) {  
+					std_msgs::Bool::ConstPtr msg; 
+					cout << "planning is issued    conveyor_empty_flag = " << conveyor_empty_flag << endl; 
+					planCallback(msg); // call planningCallback to do planning
 				}
 
-				spp_request.placeX = green_package_drop_loc.x + x_incr;
-				spp_request.placeY = green_package_drop_loc.y + y_incr; 
-				spp_request.placeZ = green_package_drop_loc.z; 
-				green_placed_cnt +=1;
 
-			} else if (tray == 3){ // blue container 
-
-				double x_incr = 0.0; 
-				double y_incr = 0.0; 
-				// calculate offset for placement based on first object
-				if (blue_placed_cnt == 1){ // second placement 
-					x_incr = 0.0; 
-					y_incr = 35.0;  
-				} else if (blue_placed_cnt == 2) {
-					x_incr = 0.0; 
-					y_incr = 70.0; 
-				} else if (blue_placed_cnt == 3){
-					x_incr = 35.0; 
-					y_incr = 0.0;
-				} else if (blue_placed_cnt == 4){
-					x_incr = 35.0;
-					y_incr = 35.0; 
+				if (conveyor_empty_flag == false){
+					// drive to planning position (v1) directly above the object if it has not been reached yet 
+					hrc_ros::SetPTPCmd::Request	 ensure_plan_loc_req; 
+					hrc_ros::SetPTPCmd::Response ensure_plan_loc_resp; 
+					ensure_plan_loc_req.ptpMode = 1; // moveJ 
+					ensure_plan_loc_req.x = x_planning_v1; 
+					ensure_plan_loc_req.y = y_planning_v1; 
+					ensure_plan_loc_req.z = z_planning_v1;
+					Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
+					ros::Duration(0.2).sleep();
 				}
 
-				spp_request.placeX = blue_package_drop_loc.x + x_incr;
-				spp_request.placeY = blue_package_drop_loc.y + y_incr; 
-				spp_request.placeZ = blue_package_drop_loc.z;
-				blue_placed_cnt +=1; 
-			}
-		
-
-			spp_request.pickX = x_grasp_pick; 
-			spp_request.pickY = y_grasp_pick;  
-			spp_request.pickZ = z_grasp_pick;  
-			spp_request.isLocConfigEnabled = true; // override default drop locations
-			
-
-			cout << "place_x : " << spp_request.placeX << "place_y " << spp_request.placeY << "place_z " << spp_request.placeZ << endl; 
-
-		
-			// 4. get Dobots CommanQueuIndex before calling the grasp service, service is comprised of 5 dobot API services, so when the grasp is finished the index should have incremented by 5 (4 would be when dobot drops object)
-			hrc_ros::GetQueuedCmdCurrentIndex::Request cmd_index_req; 
-			hrc_ros::GetQueuedCmdCurrentIndex::Response cmd_index_resp; 
-			Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);  
-			int before_grasp_index =  cmd_index_resp.queuedCmdIndex; 
-			int after_grasp_index = before_grasp_index + 4 ;
-
-
-			ros::Time stop_grasp_time;
-			ros::Duration grasp_duration; 
-			ros::Duration drop_duration; 
-			ros::Time start_grasp_time; 
-			ros::Time drop_time; 
-			if (warning_received_flag == false && (conveyor_empty_flag == false) ){ // skip grasping if warning has been received or conveyor is empty 
-				Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
-			
-			//set grasping state parameter before grasping => always 0
-			ros::param::set("/robot_grasping_state", grasping_state);
-			
-			// 5. check if grasping is done in time and without interruption of warning 
-			int grasp_time = 0;
-			start_grasp_time = ros::Time::now(); 
-			drop_time =ros::Time::now(); 
-
-
-			while(grasp_time < 30 ){ // the time is only accurate if services are not available
-				grasp_done_in_time = false; 
-				Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);
-				int current_queue_index = cmd_index_resp.queuedCmdIndex;
-				cout << "current_queue_index: " << current_queue_index << "   grasp_time(1/100sec): " << grasp_time << endl;
-				if (current_queue_index >= after_grasp_index){
-					grasp_done_in_time = true; 
-					break;
-				}
-				// TODO might be removed - used to measure timing behaviour of robot 
-				if (current_queue_index >= before_grasp_index +4){
-					drop_time = ros::Time::now(); 
-				}
-
-					ros::Duration(0.01).sleep();   
-					grasp_time ++; 
-				}
-				stop_grasp_time = ros::Time::now();
-				grasp_duration = stop_grasp_time - start_grasp_time;
-				drop_duration = drop_time - start_grasp_time;   
-			} else { cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
-
-			// 6. set grasping_state via parameter
-			cout << "-----" << endl << "grasp_state:   " << endl; 
-			if(warning_received_flag == true ){
-				grasping_state = 3; // grasping interrupted, since warning received 
-				cout << "warning_received_during_grasp   grasp_state= " << grasping_state << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
-			} else if ( (warning_received_flag == false) && (grasp_done_in_time == true) ){
-				grasping_state = 1; // grasping successfully finished in time 
-				cout << "grasp_done_in_time = " << grasp_done_in_time << "  grasp_state = " << grasping_state  << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
-			} else if ( conveyor_empty_flag == true ) { // timeout or other error grasping_state = 4 
-
-				grasping_state = 5; 
-				cout << "grasp not executed -> conveyor is empty     grasp_state = " << grasping_state << endl; 	
-			} else {
 				
-				grasping_state = 4; 
-				cout << "Grasp_not_successfull - is dobot running?   grasp_state=  " << grasping_state << endl; 
-			}
+
+				cout << " - calling services" << endl; 
+				hrc_ros::SimplePickAndPlace::Request spp_request;
+				hrc_ros::SimplePickAndPlace::Response spp_resp; 
+
+				hrc_ros::RequestSuccessCriteria::Request success_req; 
+				hrc_ros::RequestSuccessCriteria::Response success_resp;
+
+				// 2. request success criteria 
+				if (object_to_grasp_colour < 4) {// if colour is red, green or blue 
+					success_req.current_object = object_to_grasp_colour; // object_colour is received by action recognition, object on conveyor in front of IR sensor is published
+					
+				} else { // default is 1=red 
+					success_req.current_object = 1; 
+				}
+				cout << "Grasping now -> will use object colour " << success_req.current_object << endl; 
+
+				
+
+				// get success tray from observation agent 
+				request_success_criteria.call(success_req, success_resp);
+				
+				int tray   = success_resp.tray;
+				
+				// assign default tray as red tray in case wrong tray information received 
+				if (tray >4 || tray < 1){
+					tray = 1; 
+					cout << " received tray info out of range -> will set to red =1 now" << endl; 
+				}
+				cout << "Requested succes_criteria from observation_agent -  object: " << success_req.current_object << "  tray: " << tray << endl;  
+
+				// 3. map tray to placement positions here
+				if(tray == 1){ // red container
+					double x_incr = 0.0; 
+					double y_incr = 0.0; 
+					// calculate offset for placement based on first object
+					if (red_placed_cnt == 1){ // second placement 
+						x_incr = 0.0; 
+						y_incr = 35.0;  
+					} else if (red_placed_cnt == 2) {
+						x_incr = 0.0; 
+						y_incr = 70.0; 
+					} else if (red_placed_cnt == 3){
+						x_incr = 35.0; 
+						y_incr = 35.0;
+					} else if (red_placed_cnt == 4){
+						x_incr = 35.0;
+						y_incr = 70.0; 
+					}
+
+					spp_request.placeX = red_package_drop_loc.x + x_incr;
+					spp_request.placeY = red_package_drop_loc.y + y_incr; 
+					spp_request.placeZ = red_package_drop_loc.z; 
+					red_placed_cnt +=1;
+
+				} else if (tray == 2){ // green container
+
+					double x_incr = 0.0; 
+					double y_incr = 0.0; 
+					// calculate offset for placement based on first object
+					if (green_placed_cnt == 1){ // second placement 
+						x_incr = 0.0; 
+						y_incr = 35.0;  
+					} else if (green_placed_cnt == 2) {
+						x_incr = 0.0; 
+						y_incr = 70.0; 
+					} else if (green_placed_cnt == 3){
+						x_incr = 35.0; 
+						y_incr = 0.0;
+					} else if (green_placed_cnt == 4){
+						x_incr = 35.0;
+						y_incr = 35.0; 
+					}
+
+					spp_request.placeX = green_package_drop_loc.x + x_incr;
+					spp_request.placeY = green_package_drop_loc.y + y_incr; 
+					spp_request.placeZ = green_package_drop_loc.z; 
+					green_placed_cnt +=1;
+
+				} else if (tray == 3){ // blue container 
+
+					double x_incr = 0.0; 
+					double y_incr = 0.0; 
+					// calculate offset for placement based on first object
+					if (blue_placed_cnt == 1){ // second placement 
+						x_incr = 0.0; 
+						y_incr = 35.0;  
+					} else if (blue_placed_cnt == 2) {
+						x_incr = 0.0; 
+						y_incr = 70.0; 
+					} else if (blue_placed_cnt == 3){
+						x_incr = 35.0; 
+						y_incr = 0.0;
+					} else if (blue_placed_cnt == 4){
+						x_incr = 35.0;
+						y_incr = 35.0; 
+					}
+
+					spp_request.placeX = blue_package_drop_loc.x + x_incr;
+					spp_request.placeY = blue_package_drop_loc.y + y_incr; 
+					spp_request.placeZ = blue_package_drop_loc.z;
+					blue_placed_cnt +=1; 
+				}
+			
+
+				spp_request.pickX = x_grasp_pick; 
+				spp_request.pickY = y_grasp_pick;  
+				spp_request.pickZ = z_grasp_pick;  
+				spp_request.isLocConfigEnabled = true; // override default drop locations
+				
+
+				cout << "place_x : " << spp_request.placeX << "place_y " << spp_request.placeY << "place_z " << spp_request.placeZ << endl; 
 
 			
-			
+				// 4. get Dobots CommanQueuIndex before calling the grasp service, service is comprised of 5 dobot API services, so when the grasp is finished the index should have incremented by 5 (4 would be when dobot drops object)
+				hrc_ros::GetQueuedCmdCurrentIndex::Request cmd_index_req; 
+				hrc_ros::GetQueuedCmdCurrentIndex::Response cmd_index_resp; 
+				Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);  
+				int before_grasp_index =  cmd_index_resp.queuedCmdIndex; 
+				int after_grasp_index = before_grasp_index + 4 ;
 
-			ros::param::set("/robot_grasping_state", grasping_state);	// set grasping_state parameter -> checked by observation agent to block decision making while grasping
 
-			// insert wait time if after_grasp_index is only 4 bigger than before_grasp_index 
-			ros::Duration(5).sleep();
-			 
-			// TODO remove when not testing with setup 
-			//ros::Duration(10).sleep(); 
+				ros::Time stop_grasp_time;
+				ros::Duration grasp_duration; 
+				ros::Duration drop_duration; 
+				ros::Time start_grasp_time; 
+				ros::Time drop_time; 
+				if (warning_received_flag == false && (conveyor_empty_flag == false) ){ // skip grasping if warning has been received or conveyor is empty 
+					Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
+				
+				//set grasping state parameter before grasping => always 0
+				ros::param::set("/robot_grasping_state", grasping_state);
+				
+				// 5. check if grasping is done in time and without interruption of warning 
+				int grasp_time = 0;
+				start_grasp_time = ros::Time::now(); 
+				drop_time =ros::Time::now(); 
+
+
+				while(grasp_time < 30 ){ // the time is only accurate if services are not available
+					grasp_done_in_time = false; 
+					Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);
+					int current_queue_index = cmd_index_resp.queuedCmdIndex;
+					cout << "current_queue_index: " << current_queue_index << "   grasp_time(1/100sec): " << grasp_time << endl;
+					if (current_queue_index >= after_grasp_index){
+						grasp_done_in_time = true; 
+						dobot_dropped_package = true;
+						break;
+					}
+					// TODO might be removed - used to measure timing behaviour of robot 
+					if (current_queue_index >= before_grasp_index +4){
+						drop_time = ros::Time::now(); 
+					}
+
+						ros::Duration(0.01).sleep();   
+						grasp_time ++; 
+					}
+					stop_grasp_time = ros::Time::now();
+					grasp_duration = stop_grasp_time - start_grasp_time;
+					drop_duration = drop_time - start_grasp_time;   
+				} else { cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
+
+				// 6. set grasping_state via parameter
+				cout << "-----" << endl << "grasp_state:   " << endl; 
+				if(warning_received_flag == true ){
+					grasping_state = 3; // grasping interrupted, since warning received 
+					cout << "warning_received_during_grasp   grasp_state= " << grasping_state << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
+				} else if ( (warning_received_flag == false) && (grasp_done_in_time == true) ){
+					grasping_state = 1; // grasping successfully finished in time 
+					cout << "grasp_done_in_time = " << grasp_done_in_time << "  grasp_state = " << grasping_state  << "  took  : " << grasp_duration << " Time till droping the object  " << drop_duration << endl;
+				} else if ( conveyor_empty_flag == true ) { // timeout or other error grasping_state = 4 
+
+					grasping_state = 5; 
+					cout << "grasp not executed -> conveyor is empty     grasp_state = " << grasping_state << endl; 	
+				} else {
+					
+					grasping_state = 4; 
+					cout << "Grasp_not_successfull - is dobot running?   grasp_state=  " << grasping_state << endl; 
+				}
+
+				
+				
+
+				ros::param::set("/robot_grasping_state", grasping_state);	// set grasping_state parameter -> checked by observation agent to block decision making while grasping
+
+				// insert wait time if after_grasp_index is only 4 bigger than before_grasp_index 
+				
+
+				ros::Duration(5).sleep();
+			}	
+				// TODO remove when not testing with setup 
+				//ros::Duration(10).sleep(); 
 		} else { // only wait - do not call dobot services 
 		  cout << " ~ sleeping " << endl;
 		  ros::Duration(wait_time).sleep();
@@ -550,10 +556,12 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		warning_received_flag = true; 
 		
+		ros::param::set("/robot_grasping_state",6); // set to cancel action in progress -> will block despot decision making 
+		
 		// reset all flags 
 		grasp_is_planned_flag = false; 
-		bool planning_in_progress  = false;
-		bool point_in_progress = false; 
+		planning_in_progress  = false;
+		point_in_progress = false; 
 
 		if (no_Dobot_flag == false){ // call dobot api service
 			cout << " - calling services" << endl;  
@@ -581,7 +589,7 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 			gotoStart_req.y = y_idle;  
 			gotoStart_req.z = z_idle; 
 
-			if (grasp_in_progress == true) { // if grasping: put package back on conveyor 
+			if (grasp_in_progress == true && dobot_dropped_package == false) { // if grasping: put package back on conveyor 
 				Dobot_SetQueuedCmdForceStopExec.call(forceStopQueue_req,forceSTopQueue_resp);
 				Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
 				Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
@@ -615,9 +623,32 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 			ros::Duration(wait_time).sleep(); 
 		}
 		
-		ros::Duration(warning_time).sleep(); 
+				// Flush command queue again 
+		hrc_ros::SetQueuedCmdStopExec::Request 		StopQueue_req; 
+		hrc_ros::SetQueuedCmdStopExec::Response  	STopQueue_resp; 
+		Dobot_SetQueuedCmdStopExec.call(StopQueue_req,STopQueue_resp);
+		
+		ros::param::set("/robot_grasping_state",6);
+
+		ros::Duration(warning_time).sleep();
+
+		hrc_ros::SetQueuedCmdClear::Request		   	clearQueue_req;
+		hrc_ros::SetQueuedCmdClear::Response		clearQueue_resp;
+		Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
+		// Restart execution of command queue after waiting time
+		hrc_ros::SetQueuedCmdStartExec::Request     	startQueue_req;
+		hrc_ros::SetQueuedCmdStartExec::Response     	startQueue_resp;
+		Dobot_SetQueuedCmdStartExec.call(startQueue_req, startQueue_resp);
+
+		// reset all flags 
+		grasp_is_planned_flag = false; 
+		planning_in_progress  = false;
+		point_in_progress = false; 
+
+		ros::param::set("/robot_grasping_state",-2); // set to initial
+		
 		warning_received_flag = false; // reset warning received flag -> new commands can be issued again 
-		cout << " <= finished cancel action" << endl; 
+		cout << endl << " <= finished cancel action" << endl; 
 		ros::param::get("/noDobot", no_Dobot_flag);	
 }
 
@@ -653,7 +684,7 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 	  cout << "grasp_is_planned = " << grasp_is_planned_flag << "  planning_in_progress = " << planning_in_progress << "  no_Dobot_flag = " << no_Dobot_flag << endl; 
 	  // 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
-	  if (grasp_is_planned_flag == false && (planning_in_progress==false) && (conveyor_empty == false) )  { // flag reset to false after each grasp
+	  if (grasp_is_planned_flag == false && (planning_in_progress==false) && (conveyor_empty == false) && (warning_received_flag == false) )  { // flag reset to false after each grasp
 	  	  planning_in_progress = true;  
 		if (no_Dobot_flag == false  ){ // call dobot api service
 
@@ -699,7 +730,7 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  
 
 	} else if (conveyor_empty == true) {
-		cout << " conveyor is empty -> planning skipped " << endl; 
+		cout << " conveyor is empty or warning received -> planning skipped " << endl; 
 	} else { 
 		cout << " planning finished or currently in progress " << endl; 
 	}
@@ -739,8 +770,9 @@ void idleCallback(const std_msgs::Bool::ConstPtr& msg) {
 			ros::Duration(wait_time).sleep(); 
 	  	}
 	}
-
-
+	
+	  planning_in_progress = false; 
+	  grasp_is_planned_flag = false; 
 	  cout << " <= finished Idle thread" << endl; 
 	  ros::param::get("/noDobot", no_Dobot_flag); 
 }
@@ -895,11 +927,11 @@ bool resetScenario(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res)
 	blue_placed_cnt = 0;
 
 	// reset flags 
-	bool warning_received_flag = false;
-	bool grasp_is_planned_flag = false;
-	bool planning_in_progress  = false;
-	bool grasp_in_progress = false; 
-	bool point_in_progress = false; 
+ 	warning_received_flag = false;
+	grasp_is_planned_flag = false;
+	planning_in_progress  = false;
+	grasp_in_progress = false; 
+	point_in_progress = false; 
 
 
 
