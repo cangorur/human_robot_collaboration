@@ -7,7 +7,7 @@
  */
 
 #include <ros/ros.h>
-#include <task_manager/TaskManager.h>
+#include <task_manager/TaskManager_IExperiment.h>
 
 int main(int argc, char **argv) {
 
