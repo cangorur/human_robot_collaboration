@@ -50,6 +50,10 @@ private:
 
 	/**
 	 * Control service to reset observation agent (task manager calls during the operation).
+	 * This Function is called at the beginning of each task. 
+	 * Main functions are 
+	 * 1) Reset global variables ( statistics , counters, start and reset timers 
+	 * 2) Read in TaskConfiguration -> new task rules needed to calculate success and failure 
 	 * @param req ResetHumanROS Request object
 	 * @param res ResetHumanROS Response object
 	 * @return True if initialization was successful
@@ -392,20 +396,30 @@ private:
 	/// times and metrics for experiment 
 	ros::Time subtask_start_time; 
 	ros::Duration subtask_duration; 
+	double task_time_sumOfSubtasks_sec = 0.0; // seconds precision, this variable holds the sum of all measured subtask durations of a task in seconds precision 
 
-	// counters that count the successes and failures during a task -> used to determine global_success and global_fail
-	int successful_subtasks = 0;
-	int failed_subtasks 	= 0;
+
 
 	// property tree to hold the testscenario information
 	boost::property_tree::ptree testscenario_pt;
 	global_task_config global_task_configuration_read;
 	int current_subtask_quantity = 0;
 
+	// ############# Variables used for experiment statistics and the calculation thereof ######## 
 	// variables to calculate rewards in the interaction experiment
 	float immediate_reward_IE = 0.0;
 	float discounted_reward_IE = 0.0;
 	float discount_factor = 0.98;
+	double percentage_successfull_subtasks = 0.0; 
+	// counters that count the successes and failures during a task -> used to determine global_success and global_fail
+	int successful_subtasks = 0;
+	int failed_subtasks 	= 0;
+	int warnings_received_task = 0;
+	double subtask_time_seconds = 0.0;
+	string who_succeeded = "NOBODY"; // NOBODY, ROBOT, HUMAN 
+	int successful_tasks_cnt = 0;
+	int failed_tasks_cnt = 0; 
+	double percentage_successfull_tasks = 0.0; 
 
 	// global variables for interaction experiment
 	bool experiment_started = false; //variable that is set true, once the experiment started. Some data will only be evaluated aftewards (e.g. tray updates and actions)

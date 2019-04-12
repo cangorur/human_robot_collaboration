@@ -544,6 +544,7 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     human_obs.push_back(real_obs_msg[7]); human_obs.push_back(real_obs_msg[4]); human_obs.push_back(real_obs_msg[5]);
     taskState_msg.human_observables = human_obs;
 
+/*
     // TODO remove and send from observation agent 
     if (real_obs_msg[3]){
         //TODO: terminate the task and assign a new one ! --> HOW TO? Calling own service?
@@ -559,6 +560,9 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     }else if (not(real_obs_msg[6] || real_obs_msg[3])){
         taskState_msg.task_status = "ONGOING";
     }
+*/
+
+
 
     taskStatusPublisher.publish(taskState_msg);
 
@@ -656,7 +660,7 @@ void TaskManager::TaskFinishTimer(const ros::TimerEvent&){
 }
 
 
-// TODO instead of this function, the observation agent should inform 
+// Observation agent informs about trayupdate and task und subtask statistics 
 void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved &msg){
 
     string subtaskStatus = "ONGOING";
@@ -674,14 +678,6 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
         task_success_statistics += 1;
         subtask_success_statistics = msg.successful_subtasks;
         final_state_statistics = "GlobalSuccess";
-
-        //  TODO publish final task statistics 
-        //  task_counter 
-        //  percentage
-        //  global_status 
-        //  rewards -> put all of them here  
-
-
         // TODO remove 
         cout << endl << endl << " Global success received " << endl; 
     } else if ( (msg.task_success_status.compare("fail") == 0) ) {
@@ -691,6 +687,10 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
         final_state_statistics = "GlobalFail";
         cout << endl << endl << " Global fail received " << endl;  
     }
+
+    // TODO  assign global variables for statistics -> will be published with task_status topic 
+
+    // - who_succeeded
 
 
     subtask_counter += 1; 
@@ -778,14 +778,16 @@ void TaskManager::CheckToStartNewTask(void){
         robot_has_informed = false;
         task_stuck_flag = false;
 
-        hrc_ros::InitiateScenario::Request req_init;
-        hrc_ros::InitiateScenario::Response res_init;
-
-        // increment task counters here!!!
-        subtask_counter = 1; 
-        //task_counter += 1; 
-
         
+        // #######  TODO publish final statistics before starting new task ###########
+        //  task_counter 
+        //  percentage
+        //  global_status 
+        //  rewards -> put all of them here 
+
+
+
+
         // ###### Reset all subtask relevant variables 
         // TODO : save all relevant statistics to file -> afterwards savely reset all variables
         //std::ofstream StatisticFile; 
@@ -797,34 +799,25 @@ void TaskManager::CheckToStartNewTask(void){
         subtask_fail_statistics    = 0;
         final_state_statistics     = "Reset"; 
 
+
+
+        // increment subtask_counter -> task_counter is incremented when new scanario is triggered !!!
+        subtask_counter = 1; 
+
+
         if (task_counter + 1 > (current_global_task_config.task_max) ){
             cout << endl << endl << " All tests are done - :-) " << endl << endl; 
         } else { 
             cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
             
+            // TODO remove if manual staring of scenario is ok 
+            hrc_ros::InitiateScenario::Request req_init;
+            hrc_ros::InitiateScenario::Response res_init;
             //initiateScenario(req_init, res_init); // uncomment if next task should be started automatically
             ROS_WARN("Task is done - please start a new one by calling   /task_manager_IE/new_scenario_request   service  \n");  
 
         }
 
-
-        // initiate new scenario if whole task is finished -> also new set of rules are relevant 
-        /*if ( (subtask_counter >= subtask_number) || task_stuck_flag){ 
-            // Task status informers reset
-            task_has_finished = false;
-            human_has_informed = false;
-            robot_has_informed = false;
-            task_stuck_flag = false;
-
-            hrc_ros::InitiateScenario::Request req_init;
-            hrc_ros::InitiateScenario::Response res_init;
-
-            // increment task counters here!!!
-            subtask_counter = 0; 
-            task_counter += 1; 
-            cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl; 
-            initiateScenario(req_init, res_init);
-        } */
          
     }
 

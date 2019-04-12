@@ -56,6 +56,28 @@ void ObservationAgent::initialize(){
 	successful_subtasks = 0; 
 	failed_subtasks = 0; 
 
+	// ######### Reset variables for staticstics ################ 
+	// statistics that are sent to taskmanager 
+	failed_subtasks = 0;
+	successful_subtasks = 0; 
+	subtask_time_seconds = 0.0; 
+	task_time_sumOfSubtasks_sec = 0.0; // task_combinded_subtask_time_seconds in message
+	percentage_successfull_subtasks = 0.0; 
+	who_succeeded = "NOBODY"; 
+	warnings_received_task = 0;
+	successful_tasks_cnt = 0; 
+	failed_tasks_cnt = 0;
+	percentage_successfull_tasks = 0.0; 
+	
+
+	// other variables 
+	o1_ipd = false; //  O_1  task successs (processed product detected)
+	o2_upd = false; // O_2	failure
+	immediate_reward_IE = 0.0; 
+	discounted_reward_IE = 0.0;
+  subtask_timer_tick = 0; 
+
+
 	/// A ROS timer for the duration of a task assigned to the human
 	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
 	decision_timer = nh.createTimer(ros::Duration(10.0),&ObservationAgent::DecisionTimer,this);
@@ -75,6 +97,8 @@ void ObservationAgent::initialize(){
 	ros::spin();
 }
 
+
+// called at beginning of new task by task manager 
 bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 		hrc_ros::ResetObsROSResponse &res) {
 	if (req.assignedTo == "human"){
@@ -93,15 +117,22 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	task_counter = req.task_cnt; 
 	subtask_counter = 1;
 
-	// reset successful_subtasks and failed_subtasks counters 
+	// ######### Reset variables for staticstics ################ 
+	// statistics that are sent to taskmanager 
+	failed_subtasks = 0;
 	successful_subtasks = 0; 
-	failed_subtasks = 0; 
+	subtask_time_seconds = 0.0; 
+	task_time_sumOfSubtasks_sec = 0.0; // task_combinded_subtask_time_seconds in message
+	percentage_successfull_subtasks = 0.0; 
+	who_succeeded = "NOBODY"; 
+	warnings_received_task = 0;
+	// other variables 
 	o1_ipd = false; //  O_1  task successs (processed product detected)
 	o2_upd = false; // O_2	failure
-
 	immediate_reward_IE = 0.0; 
 	discounted_reward_IE = 0.0;
   subtask_timer_tick = 0; 
+	 
 
 	cout << endl << endl << " ###################  task_counter received: =  " << task_counter << "  subtask_counter  = " << subtask_counter <<  endl << endl;
 
@@ -157,6 +188,7 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 
 	cout << "Subtask Counter started now " << endl; 
 	subtask_start_time = ros::Time::now();
+	task_time_sumOfSubtasks_sec = 0.0; 
 	subtask_timer.stop(); 
 	subtask_timer.start(); 
 
@@ -220,6 +252,11 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
 		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd,int_subtask_status);
 
+		// track number of warnings received for statistics 
+		if ( o6_a4 == true){
+			warnings_received_task ++; 
+		}
+
 		if (robotType == "reactive"){
 			observation = MapObservationsToMDP(robot_observation_real); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
@@ -233,7 +270,6 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		// ############ Calculating reward for interaction experiment ###################
 	  calculate_reward_IE(observation, immediate_reward_IE, discounted_reward_IE);
 		cout << "immediate_reward " <<  immediate_reward_IE << "   discounted_reward "<< discounted_reward_IE << endl;
-		// TODO: TEST THIS! Informing robot agent about the reward
 		string reward_ = std::to_string(immediate_reward_IE);
 		ros::param::set("/robot_immediate_reward", reward_);
 		reward_= std::to_string(discounted_reward_IE);
@@ -266,11 +302,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		obs_update.mapped_observation_pomdp = std::stoi(observation);
 		obs_update.mapped_observation_raw   = std::stoi(robot_observation_real);
 		// TODO TEST this as now it is sent by robot agent
-		// TODO Remove these two below from obs_update msg
-		// obs_update.immediate_reward_IE = immediate_reward_IE;
-		// obs_update.discounted_reward_IE = discounted_reward_IE;
 
-		obs_update.who_succeeded = whoSucceeded;
 
 		// assign obs_update message to InformObsToTaskMang service 
 		reqForUpdate.obs_update = obs_update;
@@ -489,8 +521,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		before_subtask_reset_tick = subtask_timer_tick; 
 		subtask_timer_tick = 0; 
 		ros::Time subtask_stop_time = ros::Time::now(); 
-		subtask_duration = subtask_stop_time - subtask_start_time; 
-		cout << " last subtask took "  << subtask_duration <<  "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl; 
+		subtask_duration = subtask_stop_time - subtask_start_time;
+		task_time_sumOfSubtasks_sec +=  subtask_duration.toNSec() * std::pow(10.0, (-9.0) ); 
+		//cout << " last subtask took "  <<  subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) ) <<  "  Combined task time in sec: " << task_time_sumOfSubtasks_sec << "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl; 
 		
 		// start timers and counters for new subtask
 		subtask_start_time = ros::Time::now(); 
@@ -552,6 +585,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			ROS_WARN("Global Success state is calculated");
 			if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
 				task_success_state = "success"; // global success 
+				successful_tasks_cnt ++;
 				o1_ipd = true; //  O_1  task successs (processed product detected)
 				o2_upd = false; // O_2	failure
 				decision_timer.stop(); 
@@ -561,6 +595,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 				cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
 			} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
 				task_success_state = "fail"; // global fail
+				failed_tasks_cnt ++;
 				o1_ipd = false; //  O_1  task successs (processed product detected)
 				o2_upd = true; // O_2	failure 
 				decision_timer.stop(); 
@@ -587,8 +622,18 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		// ## fields for statistics 
 		success_status_msg.failed_subtasks = failed_subtasks; 
-		success_status_msg.successful_subtasks = successful_subtasks; 
-		
+		success_status_msg.successful_subtasks = successful_subtasks;
+			subtask_time_seconds = subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) ); 
+		success_status_msg.subtask_time_seconds = subtask_time_seconds; 
+		success_status_msg.task_combinded_subtask_time_seconds = task_time_sumOfSubtasks_sec; 
+			percentage_successfull_subtasks = ( double(successful_subtasks) / double(subtask_counter) ) * double(100.0) ; 
+		success_status_msg.percentage_successfull_subtasks = percentage_successfull_subtasks; 
+		success_status_msg.who_succeeded = "HUMAN";
+		success_status_msg.task_warnings_received = warnings_received_task;
+		success_status_msg.successful_tasks_cnt = successful_tasks_cnt; 
+		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
+			percentage_successfull_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0); 	  
+		success_status_msg.percentage_successfull_tasks = percentage_successfull_tasks;  
 
 		// ## Trigger a decision 
 		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
@@ -760,13 +805,29 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	string task_success_state = "ongoing";
 	string subtask_success_state = "ongoing";
 
+	// calculate time of last subtask and restart/reset timers 
+	decision_timer.stop(); 
+	decision_timer.start();
+	subtask_timer.stop();
+	before_subtask_reset_tick = subtask_timer_tick; 
+	subtask_timer_tick = 0; 
+	ros::Time subtask_stop_time = ros::Time::now(); 
+	subtask_duration = subtask_stop_time - subtask_start_time;
+	task_time_sumOfSubtasks_sec +=  subtask_duration.toNSec() * std::pow(10.0, (-9.0) ); 
+	//cout << " last subtask took "  <<  subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) ) <<  "  Combined task time in sec: " << task_time_sumOfSubtasks_sec << "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl; 
+	
+	// start timers and counters for new subtask
+	subtask_start_time = ros::Time::now(); 
+	subtask_timer.start(); 
+
 	// determine global success state 
 	// ## determine global success state -> it is only set once all subtasks are finished
 	if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done 
 		
 		ROS_WARN("Global Success state is calculated");
 		if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
-			task_success_state = "success"; // global success 
+			task_success_state = "success"; // global success
+			successful_tasks_cnt ++;  
 			o1_ipd = true; //  O_1  task successs (processed product detected)
 			o2_upd = false; // O_2	failure
 			decision_timer.stop(); 
@@ -776,6 +837,7 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 			cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;  
 		} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
 			task_success_state = "fail"; // global fail
+			failed_tasks_cnt ++; 
 			o1_ipd = false; //  O_1  task successs (processed product detected)
 			o2_upd = true; // O_2	failure 
 			decision_timer.stop(); 
@@ -802,9 +864,25 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		success_status_msg.task_counter = task_counter;
 		success_status_msg.subtask_counter = subtask_counter; 
 
+		
 		// ## fields for statistics 
 		success_status_msg.failed_subtasks = failed_subtasks; 
-		success_status_msg.successful_subtasks = successful_subtasks;
+		success_status_msg.successful_subtasks = successful_subtasks; 
+			subtask_time_seconds = subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) );
+		success_status_msg.subtask_time_seconds = subtask_time_seconds; 
+		success_status_msg.task_combinded_subtask_time_seconds = task_time_sumOfSubtasks_sec; 
+			percentage_successfull_subtasks = ( double(successful_subtasks) / double(subtask_counter) ) * double(100.0) ; 
+		success_status_msg.percentage_successfull_subtasks = percentage_successfull_subtasks;
+		success_status_msg.who_succeeded = "ROBOT"; 
+		success_status_msg.task_warnings_received = warnings_received_task; 
+		success_status_msg.successful_tasks_cnt = successful_tasks_cnt; 
+		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
+			percentage_successfull_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0); 	  
+		success_status_msg.percentage_successfull_tasks = percentage_successfull_tasks; 
+		
+			
+			
+	
 
 	// if global state reached send it to despot as well 
 	// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards

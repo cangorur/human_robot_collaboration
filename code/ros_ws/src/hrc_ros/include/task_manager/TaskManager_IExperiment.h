@@ -238,7 +238,10 @@ private:
 	int task_success_statistics = 0;
 	int subtask_success_statistics = 0;
 	int subtask_fail_statistics	   = 0;
-	std::string final_state_statistics = "uninitialized";
+	std::string final_state_statistics   = "uninitialized";
+	std::string global_immediate_reward  = "uninitialized";
+	std::string global_total_disc_reward = "uninitialized"; 
+
 };
 
 #endif /* HRC_ROS_SRC_TASKMANAGER_H */
