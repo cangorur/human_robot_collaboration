@@ -519,15 +519,16 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     //                                          SUCCESS = Has task reached to success?,
     //                                          WARN = Has human warned?,
     //                                          IDLE = Is human idling?,
-    //                                          FAIL = Has the task failed?]
+    //                                          FAIL = Has the task failed?
+    //                                          SUBTASKST. = Is subtask successful 1 | failed 3 | ongoing 0 ]
 
-
+ 
     string real_observation_array = "LA: " + to_string(real_obs_msg[0]) + " || H.DET: " + to_string(real_obs_msg[1]) +
             " || GRASP: " + to_string(real_obs_msg[2]) + " || SUCCESS: " + to_string(real_obs_msg[3]) + " || WARN: " + to_string(real_obs_msg[4]) +
-            " || IDLE: " + to_string(real_obs_msg[5]) + " || FAIL: " + to_string(real_obs_msg[6]);
+            " || IDLE: " + to_string(real_obs_msg[5]) + " || FAIL: " + to_string(real_obs_msg[6]) + " || SUBTASKST: " + to_string(real_obs_msg[6]) ;
     ROS_INFO("[TASK_MANAGER]: Real Observables: %s", real_observation_array.c_str());
     taskState_msg.real_obs_received = real_observation_array;
-
+    taskState_msg.real_obs_received_array = real_obs_msg; 
 
     // Human observables are the observation vector only related to the human actions and situation:
     // human_obs as vector<bool> =                  [Human Detected?,
@@ -536,6 +537,8 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     //                                               Human has failed in grasping?,
     //                                               Human is warning?,
     //                                               Human is staying idle?]
+    
+    // TODO CAN decide what to do with the human_state. Especially grasp_success is not present anymore 
     bool human_grasp_success = false;
     if (real_obs_msg[2] && !real_obs_msg[7]) // real_obs_msg[7] holds the grasp failed info
         human_grasp_success = true;
@@ -689,7 +692,30 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     }
 
     // TODO  assign global variables for statistics -> will be published with task_status topic 
+    /*time stamp
+    string subtask_success_status
+    string task_success_status
 
+
+    ## Debug values | also for statistics 
+    uint32 current_object
+    uint32 current_tray
+    uint32 success_tray 
+    uint32 task_counter 
+    uint32 subtask_counter 
+
+    ## mainly used for statistics 
+    uint32  failed_subtasks
+    uint32  successful_subtasks
+    float64 subtask_time_seconds 
+    float64 task_combinded_subtask_time_seconds
+    float64 percentage_successfull_subtasks
+    string  who_succeeded
+    uint32  task_warnings_received
+    uint32  successful_tasks_cnt
+    uint32  failed_tasks_cnt 
+    float64 percentage_successfull_tasks
+    */
     // - who_succeeded
 
 

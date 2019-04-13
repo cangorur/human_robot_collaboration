@@ -287,13 +287,14 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		// ********* NOTE Real observations and noisy observations are the same in IE. The received ones are 
 		// Real observation is for the task manager to record statistics on running human models
 		std::vector<uint8_t> real_obs_received;
-		real_obs_received.push_back(not o4_ov);  // O_4  Human is not looking around
-		real_obs_received.push_back(o3_oir); // O_3  Human is detected
-		real_obs_received.push_back(o5_a0);  // O_5  grasping attempt
- 		real_obs_received.push_back(o1_ipd); // O_1  task successs (processed product detected)
-		real_obs_received.push_back(o6_a4);  // O_6  warning received
-		real_obs_received.push_back(o7_a2);  // O_7  Idle
-		real_obs_received.push_back(o2_upd); // O_2	failure
+		real_obs_received.push_back( uint8_t(not o4_ov) ); // O_4  Human is not looking around
+		real_obs_received.push_back( uint8_t(o3_oir) 		); // O_3  Human is detected
+		real_obs_received.push_back( uint8_t(o5_a0) 		); // O_5  grasping attempt
+ 		real_obs_received.push_back( uint8_t(o1_ipd) 		); // O_1  task successs (processed product detected)
+		real_obs_received.push_back( uint8_t(o6_a4)     ); // O_6  warning received
+		real_obs_received.push_back( uint8_t(o7_a2)			); // O_7  Idle
+		real_obs_received.push_back( uint8_t(o2_upd)		); // O_2	failure
+		real_obs_received.push_back( uint8_t(((char)int_subtask_status)) ); // subtask-status --- 0 = ongoing | 1 = success | 3 = fail
 		// TODO how to gain grasp attempt failed ?? 
 		//real_obs_received.push_back(o5_a0_failed); // This information for recording human observable history. Processed and saved under TaskManager
 

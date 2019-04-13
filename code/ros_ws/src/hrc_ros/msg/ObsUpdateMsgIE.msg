@@ -2,7 +2,7 @@ time stamp_obs_update
 
 
 # +++++++ observations +++++++++
-bool[] real_obs_received
+uint8[] real_obs_received
 uint32 mapped_observation_pomdp
 uint32 mapped_observation_raw 
 

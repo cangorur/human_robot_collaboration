@@ -19,8 +19,8 @@ uint32 warnings_count # number of warnings from human
 
 
 # below is only for observations
-string real_obs_received
-string obs_with_noise
+string  real_obs_received
+uint8[] real_obs_received_array 
 bool[] human_observables # this is for creating training set for type estimation
 string task_status # success, fail or ongoing
 string who_succeeded # if the task has been succeeded who did then
