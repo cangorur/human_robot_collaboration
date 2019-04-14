@@ -502,16 +502,19 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
 
     hrc_ros::TaskStateIE taskState_msg;
     
-    // Additional fields for interaction experiment 
-    taskState_msg.mapped_observation_pomdp = req.obs_update.mapped_observation_pomdp; 
-    taskState_msg.mapped_observation_raw   = req.obs_update.mapped_observation_raw; 
+    // Additional fields for interaction experiment & assigning global variables 
+        global_obs_mapped_observation_pomdp = req.obs_update.mapped_observation_pomdp;
+    taskState_msg.mapped_observation_pomdp = global_obs_mapped_observation_pomdp;
+        global_obs_mapped_observation_raw = req.obs_update.mapped_observation_raw; 
+    taskState_msg.mapped_observation_raw   = global_obs_mapped_observation_raw; 
 
     taskState_msg.task_id = task_number;
     taskState_msg.step_count = step_counter;
     taskState_msg.who_reports = "OBSERVATION";
 
     taskState_msg.update_received_time = req.obs_update.stamp_obs_update;
-    std::vector<uint8_t> real_obs_msg = req.obs_update.real_obs_received;
+        global_obs_real_obs_received = req.obs_update.real_obs_received;
+    std::vector<uint8_t> real_obs_msg = global_obs_real_obs_received; 
 
     // Observation array =                     [LA = Is human Looking Around?,
     //                                          H.DET = Is human detected?,
@@ -604,8 +607,10 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
 
     // TODO Elia - introduce global var 
     taskState_msg.robot_model = robot_model;
-    taskState_msg.immediate_reward = req.robot_update.immediate_reward;
-    taskState_msg.total_disc_reward = req.robot_update.total_disc_reward;
+        global_immediate_reward = req.robot_update.immediate_reward;
+    taskState_msg.immediate_reward = global_immediate_reward;
+        global_total_disc_reward = req.robot_update.total_disc_reward;
+    taskState_msg.total_disc_reward = global_total_disc_reward;
     taskState_msg.robot_belief = robot_belief;
 
     
@@ -679,45 +684,43 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     if( (msg.task_success_status.compare("success") == 0) ) {
         task_has_finished = true; 
         task_success_statistics += 1;
-        subtask_success_statistics = msg.successful_subtasks;
-        final_state_statistics = "GlobalSuccess";
+        //subtask_success_statistics = msg.successful_subtasks;
+        //final_state_statistics = "GlobalSuccess";
         // TODO remove 
         cout << endl << endl << " Global success received " << endl; 
     } else if ( (msg.task_success_status.compare("fail") == 0) ) {
         task_has_finished = true; 
         task_fail_statisctics += 1; 
-        subtask_success_statistics = msg.failed_subtasks; 
-        final_state_statistics = "GlobalFail";
+        //subtask_fail_statistics = msg.failed_subtasks; 
+        //final_state_statistics = "GlobalFail";
         cout << endl << endl << " Global fail received " << endl;  
     }
 
-    // TODO  assign global variables for statistics -> will be published with task_status topic 
-    /*time stamp
-    string subtask_success_status
-    string task_success_status
 
+    // not used global_stat_stamp = msg.stamp;
+    global_stat_subtask_success_status = msg.subtask_success_status;
+    global_stat_task_success_status = msg.task_success_status; 
 
-    ## Debug values | also for statistics 
-    uint32 current_object
-    uint32 current_tray
-    uint32 success_tray 
-    uint32 task_counter 
-    uint32 subtask_counter 
+    //## Debug values | also for statistics 
+    // uint32 current_object
+    // uint32 current_tray
+    // uint32 success_tray
+    global_stat_task_counter = msg.task_counter;
+    global_stat_subtask_counter = msg.subtask_counter; 
 
-    ## mainly used for statistics 
-    uint32  failed_subtasks
-    uint32  successful_subtasks
-    float64 subtask_time_seconds 
-    float64 task_combinded_subtask_time_seconds
-    float64 percentage_successfull_subtasks
-    string  who_succeeded
-    uint32  task_warnings_received
-    uint32  successful_tasks_cnt
-    uint32  failed_tasks_cnt 
-    float64 percentage_successfull_tasks
-    */
-    // - who_succeeded
-
+    //## values mainly used for statistics 
+    global_stat_failed_subtasks = msg.failed_subtasks; 
+    global_stat_successful_subtasks = msg.successful_subtasks; 
+    global_stat_subtask_time_seconds = msg.subtask_time_seconds; 
+    global_stat_task_combinded_subtask_time_seconds = msg.task_combinded_subtask_time_seconds;
+    global_stat_percentage_successfull_subtasks = msg.percentage_successfull_subtasks; 
+    global_stat_who_succeeded = msg.who_succeeded; 
+    global_stat_task_warnings_received = msg.task_warnings_received;
+    global_stat_successful_tasks_cnt = msg.successful_tasks_cnt;
+    global_stat_failed_tasks_cnt = msg.failed_tasks_cnt; 
+    global_stat_percentage_successfull_tasks = msg.percentage_successfull_tasks;
+    
+    
 
     subtask_counter += 1; 
     // TODO remove after debugging 
@@ -804,12 +807,61 @@ void TaskManager::CheckToStartNewTask(void){
         robot_has_informed = false;
         task_stuck_flag = false;
 
+        // Publish final statistics with task_status topic 
+        hrc_ros::TaskStateIE taskState_msg;
         
-        // #######  TODO publish final statistics before starting new task ###########
-        //  task_counter 
-        //  percentage
-        //  global_status 
-        //  rewards -> put all of them here 
+        taskState_msg.task_id = task_number;
+        taskState_msg.step_count = step_counter;
+        taskState_msg.who_reports = "ROBOT";
+
+        // TODO which timestamp and how to get those 
+        /*taskState_msg.update_received_time = req.robot_update.stamp_robot_update;
+        taskState_msg.action_taken_time = req.robot_update.action_taken_time;
+        taskState_msg.taken_action = req.robot_update.robot_action_taken;
+        taskState_msg.belief_state = req.robot_update.robot_belief_state;
+        taskState_msg.real_state = req.robot_update.robot_real_state;    
+        */
+
+        /*# below is only for observations
+        string  real_obs_received
+        uint8[] real_obs_received_array 
+        bool[] human_observables # this is for creating training set for type estimation
+        string task_status # success, fail or ongoing
+        # this var is doubel TODO decide which one to remove 
+        string who_succeeded # if the task has been succeeded who did then
+        #ADDED for interaction experiment
+        uint32 mapped_observation_pomdp
+        uint32 mapped_observation_raw
+
+
+        # below are specific to robot status update
+        string robot_model
+        string immediate_reward
+        string total_disc_reward
+        float32[] robot_belief
+
+        */
+
+        // #######  publish final statistics before starting new task -> those are mainly received by tray_update ###########
+
+        taskState_msg.subtask_success_status = global_stat_subtask_success_status;
+        taskState_msg.task_success_status = global_stat_task_success_status; 
+        taskState_msg.task_counter = global_stat_task_counter; 
+        taskState_msg.subtask_counter = global_stat_subtask_counter;  
+        taskState_msg.failed_subtasks = global_stat_failed_subtasks;
+        taskState_msg.successful_subtasks = global_stat_successful_subtasks;
+        taskState_msg.subtask_time_seconds = global_stat_subtask_time_seconds;  
+        taskState_msg.task_combinded_subtask_time_seconds = global_stat_task_combinded_subtask_time_seconds; 
+        taskState_msg.percentage_successfull_subtasks = global_stat_percentage_successfull_subtasks; 
+        taskState_msg.who_succeeded =  global_stat_who_succeeded; 
+        taskState_msg.task_warnings_received = global_stat_task_warnings_received;
+        taskState_msg.successful_tasks_cnt = global_stat_successful_tasks_cnt; 
+        taskState_msg.failed_tasks_cnt = global_stat_failed_tasks_cnt;  
+        taskState_msg.percentage_successfull_tasks = global_stat_percentage_successfull_tasks;
+        // ++ rewards 
+
+
+
 
 
 
@@ -823,7 +875,7 @@ void TaskManager::CheckToStartNewTask(void){
         //StatisticFile.close();
         subtask_success_statistics = 0; 
         subtask_fail_statistics    = 0;
-        final_state_statistics     = "Reset"; 
+        // TODO remove after statistics test -> not used anymore final_state_statistics     = "Reset"; 
 
 
 
