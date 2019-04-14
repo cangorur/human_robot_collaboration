@@ -582,6 +582,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		// ## determine global success state -> it is only set once all subtasks are finished
 		if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done 
+
+			// reset experiment started -> will be set again when new experiment is started 
+			experiment_started = false; 
 			
 			ROS_WARN("Global Success state is calculated");
 			if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
