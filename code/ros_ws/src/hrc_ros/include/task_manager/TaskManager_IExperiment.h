@@ -252,6 +252,7 @@ private:
 	
 	// statistics received by tray_update of ObsManager 
 	// not used time stamp
+	ros::Time global_stat_tray_update_stamp; 
 	std::string global_stat_subtask_success_status = "uninitialized";
 	std::string global_stat_task_success_status = "uninitialized";
 	//## Debug values | also for statistics 

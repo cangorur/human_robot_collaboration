@@ -19,7 +19,7 @@ bool isEstimationCorrect
 uint32 warnings_count # number of warnings from human
 
 
-# below is only for observations
+# below is only for observations - received after observation update by observationManager
 string  real_obs_received
 uint8[] real_obs_received_array 
 bool[] human_observables # this is for creating training set for type estimation
@@ -37,7 +37,8 @@ string immediate_reward
 string total_disc_reward
 float32[] robot_belief
 
-#ADDED statistics for interaction experiment 
+#ADDED SuccessStatusObserved statistics for interaction experiment - collected after tray update is received - see SuccessStatusObserved.msg  
+time tray_update_received_time
 string subtask_success_status
 string task_success_status
 uint32 task_counter 
@@ -52,4 +53,5 @@ uint32  task_warnings_received
 uint32  successful_tasks_cnt
 uint32  failed_tasks_cnt 
 float64 percentage_successfull_tasks
+
 
