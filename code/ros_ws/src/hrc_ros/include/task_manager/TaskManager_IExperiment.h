@@ -29,6 +29,7 @@
 #include <hrc_ros/PolicySelectorBPR.h>
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/TaskStateIE.h>
+#include <hrc_ros/DisplayTaskRule.h> 
 
 #include <hrc_ros/TraySensor.h>
 
@@ -151,6 +152,8 @@ private:
 	ros::ServiceClient cmab_call;
 	/// Bayesian Policy Selector Client
 	ros::ServiceClient bpr_call;
+	/// Client to issue a displaying of task rules 
+	ros::ServiceClient display_task_rule_client; 
 
 
 

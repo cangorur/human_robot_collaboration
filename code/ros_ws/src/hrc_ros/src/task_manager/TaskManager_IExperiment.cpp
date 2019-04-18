@@ -63,6 +63,8 @@ void TaskManager::initialize(){
 
     policyRetrieve = nh.serviceClient<std_srvs::Trigger>("/policy_evaluator/retrieve_policies");
 
+    display_task_rule_client = nh.serviceClient<hrc_ros::DisplayTaskRule>("/rule_monitor/display_task_rule");
+
     // Initialize Contextual MAB service and if you want to use it
     cmab_call = nh.serviceClient<hrc_ros::SelectPolicy>("/cmab/select_policy");
     // Client for Bayesian Policy Selector service
@@ -147,7 +149,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
   
 
     ROS_INFO("[TASK_MANAGER]: Initiating started");
-    ros::Duration(3, 0).sleep();
+
 
     string pkg_path = ros::package::getPath("hrc_ros");
     boost::property_tree::ptree config_pt; // json ptree object
@@ -346,6 +348,15 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     const char * c_kill_pomdpx = kill_pomdpx_str.c_str();
     system(c_kill_pomdpx);
 
+    //############  Issuing to display taskrules before experiment is started 
+    hrc_ros::DisplayTaskRule::Request   req_task_rule_display;
+    hrc_ros::DisplayTaskRule::Response  resp_task_rule_display;
+
+    req_task_rule_display.task_counter = task_counter;
+    display_task_rule_client.call(req_task_rule_display, resp_task_rule_display); 
+
+
+    //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
     system(c_robot_shell);
     cout << "Robot shell script path: " << robot_shell << endl;
