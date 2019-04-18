@@ -172,7 +172,8 @@ add_dependencies(dobot_worker_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(dobot_worker_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(rule_monitor_agent
-  src/rule_monitor/ruleMonitorNode.cpp)
+  src/rule_monitor/ruleMonitorNode.cpp
+  src/helper_functions/Json_parser.cpp)
 add_dependencies(rule_monitor_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(rule_monitor_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
