@@ -29,7 +29,7 @@
 #include <hrc_ros/PolicySelectorBPR.h>
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/TaskStateIE.h>
-#include <hrc_ros/DisplayTaskRule.h> 
+#include <hrc_ros/DisplayTaskRule.h>
 
 #include <hrc_ros/TraySensor.h>
 
@@ -127,7 +127,7 @@ private:
 private:
 
 	/// Below are the client objects for the ros services called
-	ros::ServiceClient dobotWorkerReset;	
+	ros::ServiceClient dobotWorkerReset;
 	/// Below are the client objects for the ros services called
 	ros::ServiceClient humanReset;
 	/// Below are the client objects for the ros services called
@@ -152,8 +152,8 @@ private:
 	ros::ServiceClient cmab_call;
 	/// Bayesian Policy Selector Client
 	ros::ServiceClient bpr_call;
-	/// Client to issue a displaying of task rules 
-	ros::ServiceClient display_task_rule_client; 
+	/// Client to issue a displaying of task rules
+	ros::ServiceClient display_task_rule_client;
 
 
 
@@ -237,11 +237,11 @@ private:
 	int task_quantity_scenario = 5;
 
 //-> global Values used to comprise the task_status message -> received by observation agent (tray + obs update) & robot_agent
-	
+
 	// observation statistics -> received after observation update issued by observation_agent
-	std::vector<uint8_t> global_obs_real_obs_received; 
-	int global_obs_mapped_observation_pomdp = -1; 
-	int global_obs_mapped_observation_raw   = -1; 
+	std::vector<uint8_t> global_obs_real_obs_received;
+	int global_obs_mapped_observation_pomdp = -1;
+	int global_obs_mapped_observation_raw   = -1;
 
 
 	// variables for statistic
@@ -251,32 +251,32 @@ private:
 	int subtask_fail_statistics	   = 0;
 	std::string final_state_statistics   = "uninitialized";
 	std::string global_immediate_reward  = "uninitialized";
-	std::string global_total_disc_reward = "uninitialized"; 
-	
-	// statistics received by tray_update of ObsManager 
+	std::string global_total_disc_reward = "uninitialized";
+
+	// statistics received by tray_update of ObsManager
 	// not used time stamp
-	ros::Time global_stat_tray_update_stamp; 
+	ros::Time global_stat_tray_update_stamp;
 	std::string global_stat_subtask_success_status = "uninitialized";
 	std::string global_stat_task_success_status = "uninitialized";
-	//## Debug values | also for statistics 
+	//## Debug values | also for statistics
 	// not used uint32 current_object
 	// not used uint32 current_tray
-	// not used uint32 success_tray 
-	int global_stat_task_counter = 0;  
-	int global_stat_subtask_counter = 0;  
+	// not used uint32 success_tray
+	int global_stat_task_counter = 0;
+	int global_stat_subtask_counter = 0;
 
-	//## mainly used for statistics 
-	int global_stat_failed_subtasks = 0; 
-	int global_stat_successful_subtasks = 0; 
-	double global_stat_subtask_time_seconds = 0.0;  
-	double global_stat_task_combinded_subtask_time_seconds = 0.0; 
-	double global_stat_percentage_successfull_subtasks = 0.0; 
+	//## mainly used for statistics
+	int global_stat_failed_subtasks = 0;
+	int global_stat_successful_subtasks = 0;
+	double global_stat_subtask_time_seconds = 0.0;
+	double global_stat_task_combined_subtask_time_seconds = 0.0;
+	double global_stat_percentage_successful_subtasks = 0.0;
 	std::string  global_stat_who_succeeded = "uninitialized";
 	int global_stat_task_warnings_received = 0;
-	int global_stat_successful_tasks_cnt = 0; 
-	int global_stat_failed_tasks_cnt = 0; 
-	double global_stat_percentage_successfull_tasks = 0.0; 
-// <-End of task_status 
+	int global_stat_successful_tasks_cnt = 0;
+	int global_stat_failed_tasks_cnt = 0;
+	double global_stat_percentage_successful_tasks = 0.0; 
+// <-End of task_status
 
 };
 

@@ -50,10 +50,10 @@ private:
 
 	/**
 	 * Control service to reset observation agent (task manager calls during the operation).
-	 * This Function is called at the beginning of each task. 
-	 * Main functions are 
-	 * 1) Reset global variables ( statistics , counters, start and reset timers 
-	 * 2) Read in TaskConfiguration -> new task rules needed to calculate success and failure 
+	 * This Function is called at the beginning of each task.
+	 * Main functions are
+	 * 1) Reset global variables ( statistics , counters, start and reset timers
+	 * 2) Read in TaskConfiguration -> new task rules needed to calculate success and failure
 	 * @param req ResetHumanROS Request object
 	 * @param res ResetHumanROS Response object
 	 * @return True if initialization was successful
@@ -66,7 +66,7 @@ private:
 	void HumanTaskTimer(const ros::TimerEvent&);
 
 	/**
-	 * Timer event to track the subtask duration. Used to calculate discounted rewards 
+	 * Timer event to track the subtask duration. Used to calculate discounted rewards
 	 */
 	void SubTaskTimer(const ros::TimerEvent&);
 
@@ -156,8 +156,8 @@ private:
 
 
 	/**
-	 * This function checks if a global success is reached, compiles the tray_status message for the task manager and publishes it. 
-	 * It is only called if the robot is grasping an object and informing a grasping_status. 
+	 * This function checks if a global success is reached, compiles the tray_status message for the task manager and publishes it.
+	 * It is only called if the robot is grasping an object and informing a grasping_status.
 	 */
 	void inform_trayupdate_to_taskmanager(void);
 
@@ -275,10 +275,10 @@ private:
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario
 	ros::Time tray_msg_stamp;
 
-	/// A ROS timer to track the time of a subtask 
-	ros::Timer subtask_timer; 
+	/// A ROS timer to track the time of a subtask
+	ros::Timer subtask_timer;
 	int subtask_timer_tick =0; // counts the ticks of the subtask_timer -> used for discounted reward calculation
-	int before_subtask_reset_tick = 0; 
+	int before_subtask_reset_tick = 0;
 
 	/// A ROS timer to track human task !
 	ros::Timer task_timer;
@@ -393,10 +393,10 @@ private:
 	int task_counter = 0; // will be incremented to 1 when experiment starts
 	int subtask_counter = 1;
 
-	/// times and metrics for experiment 
-	ros::Time subtask_start_time; 
-	ros::Duration subtask_duration; 
-	double task_time_sumOfSubtasks_sec = 0.0; // seconds precision, this variable holds the sum of all measured subtask durations of a task in seconds precision 
+	/// times and metrics for experiment
+	ros::Time subtask_start_time;
+	ros::Duration subtask_duration;
+	double task_time_sumOfSubtasks_sec = 0.0; // seconds precision, this variable holds the sum of all measured subtask durations of a task in seconds precision
 
 
 
@@ -405,21 +405,21 @@ private:
 	global_task_config global_task_configuration_read;
 	int current_subtask_quantity = 0;
 
-	// ############# Variables used for experiment statistics and the calculation thereof ######## 
+	// ############# Variables used for experiment statistics and the calculation thereof ########
 	// variables to calculate rewards in the interaction experiment
 	float immediate_reward_IE = 0.0;
 	float discounted_reward_IE = 0.0;
 	float discount_factor = 0.98;
-	double percentage_successfull_subtasks = 0.0; 
+	double percentage_successful_subtasks = 0.0;
 	// counters that count the successes and failures during a task -> used to determine global_success and global_fail
 	int successful_subtasks = 0;
 	int failed_subtasks 	= 0;
 	int warnings_received_task = 0;
 	double subtask_time_seconds = 0.0;
-	string who_succeeded = "NOBODY"; // NOBODY, ROBOT, HUMAN 
+	string who_succeeded = "NOBODY"; // NOBODY, ROBOT, HUMAN
 	int successful_tasks_cnt = 0;
-	int failed_tasks_cnt = 0; 
-	double percentage_successfull_tasks = 0.0; 
+	int failed_tasks_cnt = 0;
+	double percentage_successful_tasks = 0.0;
 
 	// global variables for interaction experiment
 	bool experiment_started = false; //variable that is set true, once the experiment started. Some data will only be evaluated aftewards (e.g. tray updates and actions)
