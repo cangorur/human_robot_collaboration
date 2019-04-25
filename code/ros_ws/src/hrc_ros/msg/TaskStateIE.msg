@@ -1,4 +1,5 @@
 uint32 task_id
+uint32 subtask_id # prev: subtask_counter
 
 # next step is passed when human took a new action
 uint32 step_count
@@ -16,16 +17,14 @@ string belief_state
 string real_state
 bool isEstimationCorrect
 # this var is double TODO decide which to remove
-uint32 warnings_count # number of warnings from human
-
+uint32 warnings_count_subtask # number of warnings from human per subtask
 
 # below is only for observations - received after observation update by observationManager
 string  real_obs_received
 uint8[] real_obs_received_array
+string obs_with_noise # this is simulation specific
 bool[] human_observables # this is for creating training set for type estimation
-string task_status # success, fail or ongoing
 # this var is double TODO decide which one to remove
-#string who_succeeded # if the task has been succeeded who did then
 #ADDED for interaction experiment
 uint32 mapped_observation_pomdp
 uint32 mapped_observation_raw
@@ -37,19 +36,21 @@ string immediate_reward
 string total_disc_reward
 float32[] robot_belief
 
+# below is only informed when tray is updated
 #ADDED SuccessStatusObserved statistics for interaction experiment - collected after tray update is received - see SuccessStatusObserved.msg
 time tray_update_received_time
-string subtask_success_status
-string task_success_status
-uint32 task_counter
-uint32 subtask_counter
+string subtask_status
+string  who_succeeded_subtask
+float64 subtask_duration
+
+# below is only for manager reporting after each task
 uint32  failed_subtasks
 uint32  successful_subtasks
-float64 subtask_time_seconds
-float64 task_combined_subtask_time_seconds
 float64 percentage_successful_subtasks
-string  who_succeeded
-uint32  task_warnings_received
+string task_status # success, fail or ongoing
+float64 task_duration
+string  who_succeeded_task # if the task has been succeeded, who did it? In simu. if task is a success, AND human_achieves_subtasks > 5 then it is human, or else it is robot
+uint32  warnings_count_task
 uint32  successful_tasks_cnt
 uint32  failed_tasks_cnt
 float64 percentage_successful_tasks
