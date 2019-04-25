@@ -34,12 +34,16 @@
 <!-- <include file="$(find object_tracking)/launch/tracking.launch">
 </include> -->
 
-<!-- Enable the conveyor belt - automatically stops with the IR sensor --> 
+<!-- Enable the conveyor belt - automatically stops with the IR sensor THROWS errors  --> 
 <!-- <node pkg="rosservice" type="rosservice" name="enble_conveyor" args="call /conveyor_control_app/inOprConveyorControl 'isEnabled: true speed: 25' "/> -->
 
 
 
 <!-- ################### optionally: start the experiment and record video data ############# --> 
+
+<!-- Record the task_status message --> 
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/>
+
 <!-- start the experiment -->  
 <!-- <node pkg="rosservice" type="rosservice" name="start_experiment" args="call wait /task_manager_IE/new_scenario_request"/> -->
 
@@ -50,5 +54,7 @@
 <!--  /camera/depth_registered/image_raw /camera/depth_registered/camera_info /camera/rgb/image_raw /camera/rgb/camera_info --> 
 <!-- <node pkg="rosbag" type="record" name="rosbag_minium_IE" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_minimum /camera/depth_registered/image_raw /camera/depth_registered/camera_info /camera/rgb/image_raw /camera/rgb/camera_info /observation_agent/observation_update /experiment_monitoring/robot_action_taken_pub 
 /task_manager/task_status"/> -->
+
+
 
 </launch>
