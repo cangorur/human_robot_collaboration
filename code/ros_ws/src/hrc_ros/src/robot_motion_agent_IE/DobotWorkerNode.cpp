@@ -124,9 +124,9 @@ float y_attention =   0;
 float z_attention = 170;
 
 // attention postion for rearing up and pointing
-float x_point_briefly = 218; 
-float y_point_briefly =  16; 
-float z_point_briefly = 158;
+float x_point_briefly = 240;//218; 
+float y_point_briefly =  25;//16; 
+float z_point_briefly = 140;//158;
 
 //########### times and flags for physical hrc 
 int planning_time = 6; // time the robot waits above the object to simulate the grasp path planning 
@@ -259,7 +259,32 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 									Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 								}
 
-								ros::Duration(0.3).sleep();
+								ros::Duration(0.4).sleep();
+
+
+																// going back to rear up position 
+								if(grasp_in_progress == false && planning_in_progress == false ) {
+								
+									// Point position 
+									gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+									gotoStart_req.x = x_attention; 
+									gotoStart_req.y = y_attention; 
+									gotoStart_req.z = z_attention; 
+									Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+								} 
+
+								ros::Duration(0.8).sleep();
+
+								// waiving towards the package the second time -> pointing briefly 
+								if(grasp_in_progress == false && planning_in_progress == false){
+									gotoStart_req.ptpMode = 1; // MoveJ move all joints independently -> max speed 
+									gotoStart_req.x = x_point_briefly;    
+									gotoStart_req.y = y_point_briefly; 
+									gotoStart_req.z = z_point_briefly; 
+									Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
+								}
+
+								ros::Duration(0.4).sleep();
 
 								// going back to rear up position 
 								if(grasp_in_progress == false && planning_in_progress == false ) {
@@ -567,6 +592,7 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 			cout << " - calling services" << endl;  
 			hrc_ros::SetQueuedCmdForceStopExec::Request 	forceStopQueue_req; 
 			hrc_ros::SetQueuedCmdForceStopExec::Response  forceSTopQueue_resp; 
+
 
 			hrc_ros::SetQueuedCmdClear::Request		   	clearQueue_req;
 			hrc_ros::SetQueuedCmdClear::Response		   	clearQueue_resp;
