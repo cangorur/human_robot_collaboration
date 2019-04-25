@@ -1,15 +1,39 @@
-## Starting the Experiment setup:
+## Building the project 
+
+* Before checking out the project you should create a catkin workspace. 
+
+```
+ mkdir -p ~/catkin_ws/src
+ cd ~/catkin_ws/
+ catkin_make
+```
+
+* Navigate to the catkin_ws/src directory and clone the following two ros packages:  
+	* **objectTracking_ROS:** ```git clone https://gitlab.tubit.tu-berlin.de/f308910/objectTracking_ROS.git```
+		* after that checkout the **publish_actions_POMDP_test** branch: git checkout ```git checkout publish_actions_POMDP_test``` 
+	* **hrc_industry**: ```git clone https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry.git```
+		* after that checkout the **interaction_experiment_v2** branch: ```git checkout interaction_experiment_v2```
+
+* Navigate to the *catkin_ws/* directory and build the packages. You can either: 
+	* Build both packages at once: ``` catkin_make ```
+	* Build the packages separately: ```catkin_make --pkg hrc_industry ``` OR ```catkin_make --pkg object_tracking```
+
+=========================================================================
+## Starting Dobot and the conveyor belt:
 
 ### on pc:
  - minh@minh-ThinkPad-W530:~/ba/catkin_ws$ 
- - source devel/setup.bash
- - export ROS_MASTER_URI=http://130.149.232.237:11311
- - export ROS_HOSTNAME=130.149.232.210
-
- - Or use the alias remote_ros_master 
+ - ```source devel/setup.bash```
+ 
+ - setup the remote ros master:
+```
+ export ROS_MASTER_URI=http://130.149.232.237:11311
+ export ROS_HOSTNAME=130.149.232.210
+```
+ - Or use the alias **remote_ros_master**  
 
 ### RaspberryPi1 dobot arm control: 
- - ssh ubuntu@130.149.232.237   in 2 terminals 
+ - ```ssh ubuntu@130.149.232.237```   in 2 terminals  
  - password: ubuntu
 
  - Turn on the Raspberry pi of the dobot and turn on the dobot arm. 
@@ -17,40 +41,74 @@
 
 #### on one terminal - launch dobot physical layer and middle layer:
  
- - source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch
+ - ```source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch```
  - Note: dobot will drive to a calibration position on the far left 
 
 #### wait until dobot stops moving then in another terminal ( can also be launched locally on PC) - launch dobot and conveyor app layer:
  
- - source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
+ - ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch```
 
 
 ### RaspberryPi2 conveyor belt:
- - ssh ubuntu@10.0.8.193
+ - ```ssh ubuntu@10.0.8.193```
  - password:ubuntu
 
  - turn on the conveyor belt Raspberry Pi and also switch on the power supply for the conveyor motor
 
 #### one terminal - launch conveyor physical layer and middle layer:
-- source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch
+- ```source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch```
 
 
-### in a second terminal - launch the conveyor_control app layer :   
-- source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch
+#### in a second terminal - launch the conveyor_control app layer :   
+- ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch```
 
-
+=========================================================================
 ## Launch all nodes 
-- there is a toplevel launch file that you can launch like this 
+
+**NOTE:** In each terminal that launches nodes, the remote rosmaster should be configured as follows: 
+```
+export ROS_MASTER_URI=http://130.149.232.237:11311 && export ROS_HOSTNAME=130.149.232.210
+```
+
+* Launch the **rule_monitor_agent** on a PC that is connected to a big screen. This node should be run in a maximised terminal and should be always in the foreground, as it will display the current task rules. Make sure you configure the remote ros master as described above.
+```
+rosrun hrc_ros rule_monitor_agent
+```
+
+* There is a **toplevel launch file** that you can launch like this 
 ```
 roslaunch hrc_ros IE_experiment.launch
 ```
-- this launches the **openni2 driver**, all nodes of the **object_tracking** package as well as the **hrc_ros** packages
-- the launch file makes use of the timed_roslaunch package, if you get an error install it by 
+* this launches the **openni2 driver**, all nodes of the **object_tracking** package as well as the **hrc_ros** packages. The exact nodes are: 
+	* openni2 driver and the respective nodes
+	* object_tracking nodes: 
+		* /activitiy_recognition_continousHMM
+		* /obj_track
+		* /tray_observer
+	* hrc_ros nodes: 
+		* /dobot_worker_agent
+		* /observation_agent_IE
+		* /robot_motion_agent 
+		* /task_manager_IE
+	
+
+* the launch file makes use of the timed_roslaunch package, if you get an error install it by 
 ```
 sudo apt install ros-kinetic-timed-roslaunch
 source /opt/ros/kinetic/setup.bash
 ```
-- start the experiment: 
+
+* If you want to have **more control** over the nodes you can also launch them manually. Additionally there are 2 launchfiles that will either launch the hrc_nodes or the object_tracking nodes 
+
+	* **hrc_industry nodes:** ``` roslaunch hrc_ros hrc_nodes.launch ```
+
+	* **object_tracking nodes** ``` roslaunch hrc_ros object_tracking_nodes.launch ``` 
+
+
+=========================================================================
+## Start the experiment: 
+Call the following service to start an experiment. If the **rule_monitor_node** is running it will show the current task rules for a certain amount of time ad will turn blank afterwards, this indicates that the human can start with the experiment and the DESPOT will be started at the same time. 
+
 ```
 rosservice call /task_manager_IE/new_scenario_request
 ```
