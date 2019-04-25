@@ -41,7 +41,7 @@ void TaskManager::initialize(){
     /*
     * Initializing counters for the task and subtask control
     */
-    task_counter = 0; // incremented before experiment starts
+    task_number = 0; // incremented before experiment starts
     subtask_counter = 1;
 
     //here set the parameter of conveyor belt to "init" so it automatically starts
@@ -113,7 +113,7 @@ void TaskManager::initialize(){
 bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                                    hrc_ros::InitiateScenarioResponse &res) {
     /*
-    * read in task scenario definitions at start (task_counter = 1)
+    * read in task scenario definitions at start (task_number = 1)
     */
 
         ROS_INFO("[TASK_MANAGER]: Parsing task scenario definition file @initialisation");
@@ -130,16 +130,27 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                 return false;
             }
 
-        cout << "# task_counter: " << task_counter << endl << endl;
+        cout << "# task_counter: " << task_number << endl << endl;
 
     subtask_counter = 1;
-    task_counter += 1;
+    //task_counter += 1;
+
+    // ==== Timers set =====
+    step_counter = 0;
+    task_time = 0;
+    // Allowing to manually update the task_number
+    ros::param::get("/task_count", task_number);
+    task_number += 1;
+    ros::param::set("/task_count", task_number);
+    // TODO Whether reset warnings_count is required?
+    warning_number = 0;
+    // =======================
 
     // ####################  sending current task rules to the observation agent #####################
 
     string task_counter_str;
     stringstream ss;
-    ss << task_counter;
+    ss << task_number;
     string task_str = ss.str();
 
 
@@ -202,16 +213,6 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 
 
 
-        // ==== Timers set =====
-        step_counter = 0;
-        task_time = 0;
-        // Allowing to manually update the task_number
-        ros::param::get("/task_count", task_number);
-        task_number += 1;
-        ros::param::set("/task_count", task_number);
-        // TODO Whether reset warnings_count is required?
-        warning_number = 0;
-        // =======================
 
 /*
     // ================== START HUMAN AND ROBOT POLICIES ===================
@@ -352,7 +353,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     hrc_ros::DisplayTaskRule::Request   req_task_rule_display;
     hrc_ros::DisplayTaskRule::Response  resp_task_rule_display;
 
-    req_task_rule_display.task_counter = task_counter;
+    req_task_rule_display.task_counter = task_number;
     display_task_rule_client.call(req_task_rule_display, resp_task_rule_display);
 
 
@@ -382,7 +383,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //req_obs.humanMood = human_mood;
     req_robot.assignedTo = task_assigned;
     req_obs.robotType = robot_AItype;
-    req_obs.task_cnt = task_counter;
+    req_obs.task_cnt = task_number;
 //    humanROSReset.call(req_human, res_human);
     obsROSReset.call(req_obs, res_obs);
     //robotROSReset.call(req_robot, res_robot);
@@ -391,7 +392,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     ROS_INFO("[TASK MANAGER] ======= CURRENT TASK INFORMATION ======");
     ROS_INFO("[TASK MANAGER] Task is initiated!");
     ROS_INFO("[TASK_MANAGER]: Task #%d is assigned to: %s", task_number, task_assigned.c_str());
-    ROS_INFO("[TASK MANAGER]: Task counter is: %d  | subtask_counter is:  %d", task_counter, subtask_counter);
+    ROS_INFO("[TASK MANAGER]: Task counter is: %d  | subtask_counter is:  %d", task_number, subtask_counter);
     ROS_INFO("[TASK_MANAGER]: Evaluator mode is on?: %d", useEvaluator);
     ROS_INFO("[TASK_MANAGER]: HRI interaction # for each policy pair: %d", interactionSampleNumber);
     ROS_INFO("[TASK MANAGER] ======= HUMAN INFORMATION ======");
@@ -410,7 +411,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     taskState_msg.update_received_time = ros::Time::now();
     //taskState_msg.human_model = human_type;
     taskState_msg.task_status = "START";
-    taskState_msg.warnings_count = warning_number;
+    //taskState_msg.warnings_count = warning_number;
     taskState_msg.robot_model = robot_model;
 
     taskStatusPublisher.publish(taskState_msg);
@@ -737,20 +738,18 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
 
     taskState_msg.task_id = task_number;
     taskState_msg.step_count = step_counter;
+    taskState_msg.update_received_time = ros::Time::now();
     taskState_msg.who_reports = "SENSOR"; // was Observation-Tray-update before.
 
     taskState_msg.tray_update_received_time = global_stat_tray_update_stamp;
-    taskState_msg.subtask_success_status = global_stat_subtask_success_status;
-    taskState_msg.task_success_status = global_stat_task_success_status;
-    taskState_msg.task_counter = global_stat_task_counter;
-    taskState_msg.subtask_counter = global_stat_subtask_counter;
+    taskState_msg.subtask_status = global_stat_subtask_success_status;
+    taskState_msg.subtask_id = global_stat_subtask_counter;
     taskState_msg.failed_subtasks = global_stat_failed_subtasks;
     taskState_msg.successful_subtasks = global_stat_successful_subtasks;
-    taskState_msg.subtask_time_seconds = global_stat_subtask_time_seconds;
-    taskState_msg.task_combined_subtask_time_seconds = global_stat_task_combined_subtask_time_seconds;
+    taskState_msg.subtask_duration = global_stat_subtask_time_seconds;
     taskState_msg.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
-    taskState_msg.who_succeeded =  global_stat_who_succeeded;
-    taskState_msg.task_warnings_received = global_stat_task_warnings_received;
+    taskState_msg.who_succeeded_subtask =  global_stat_who_succeeded;
+    // taskState_msg.task_warnings_received = global_stat_task_warnings_received;
     taskState_msg.successful_tasks_cnt = global_stat_successful_tasks_cnt;
     taskState_msg.failed_tasks_cnt = global_stat_failed_tasks_cnt;
     taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
@@ -834,7 +833,7 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
 void TaskManager::CheckToStartNewTask(void){
 
     cout << "#CheckToStartNewTask:   task_has_finished: " << task_has_finished << "   robot_has_informed:   " << robot_has_informed << endl;
-    cout << "#CheckToStartNewTask:   task_counter: " << task_counter << "   subtask_counter:  " << subtask_counter << endl;
+    cout << "#CheckToStartNewTask:   task_counter: " << task_number << "   subtask_counter:  " << subtask_counter << endl;
     // TODO: check if task_has_finished && robot_hs_informed is stil relevant
     if ( (task_has_finished && robot_has_informed ) || task_stuck_flag || (subtask_counter > subtask_number_current_task)){
 
@@ -885,17 +884,13 @@ void TaskManager::CheckToStartNewTask(void){
 
         // #######  publish final statistics before starting new task -> those are received by tray_update ###########
         taskState_msg.tray_update_received_time = global_stat_tray_update_stamp;
-        taskState_msg.subtask_success_status = global_stat_subtask_success_status;
-        taskState_msg.task_success_status = global_stat_task_success_status;
-        taskState_msg.task_counter = global_stat_task_counter;
-        taskState_msg.subtask_counter = global_stat_subtask_counter;
+        taskState_msg.task_status = global_stat_task_success_status;
+        taskState_msg.subtask_id = global_stat_subtask_counter;
         taskState_msg.failed_subtasks = global_stat_failed_subtasks;
         taskState_msg.successful_subtasks = global_stat_successful_subtasks;
-        taskState_msg.subtask_time_seconds = global_stat_subtask_time_seconds;
-        taskState_msg.task_combined_subtask_time_seconds = global_stat_task_combined_subtask_time_seconds;
+        taskState_msg.task_duration = global_stat_task_combined_subtask_time_seconds;
         taskState_msg.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
-        taskState_msg.who_succeeded =  global_stat_who_succeeded;
-        taskState_msg.task_warnings_received = global_stat_task_warnings_received;
+        taskState_msg.warnings_count_task = global_stat_task_warnings_received;
         taskState_msg.successful_tasks_cnt = global_stat_successful_tasks_cnt;
         taskState_msg.failed_tasks_cnt = global_stat_failed_tasks_cnt;
         taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
@@ -928,10 +923,10 @@ void TaskManager::CheckToStartNewTask(void){
         subtask_counter = 1;
 
 
-        if (task_counter + 1 > (current_global_task_config.task_max) ){
+        if (task_number + 1 > (current_global_task_config.task_max) ){
             cout << endl << endl << " All tests are done - :-) " << endl << endl;
         } else {
-            cout << "#CheckToStartNewTask:   task_counter:   " << task_counter << "     => call initiateScenario" << endl;
+            cout << "#CheckToStartNewTask:   task_counter:   " << task_number << "     => call initiateScenario" << endl;
 
             // TODO remove if manual staring of scenario is ok
             hrc_ros::InitiateScenario::Request req_init;
