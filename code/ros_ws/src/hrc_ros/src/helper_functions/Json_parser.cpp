@@ -182,10 +182,21 @@ task_set read_task_set(string str_task,boost::property_tree::ptree config_pt){
         return task_set_read; 
 }
 
+
+std::string get_subtask_type(string str_task,boost::property_tree::ptree config_pt){
+    string path = "task." + str_task + ".subtask_type";
+    string subtask_type = " "; 
+
+    subtask_type = (config_pt.get<string>(path));
+
+    return subtask_type; 
+}
+
+
 int get_subtask_quantity(string str_task,boost::property_tree::ptree config_pt){
 
     string path = "task." + str_task + ".subtask_quantity"; 
-    int subtask_quantity = 0; 
+    int subtask_quantity = 0;     
 
     subtask_quantity = stoi(config_pt.get<string>(path));
     return subtask_quantity; 

@@ -49,6 +49,7 @@ global_task_config read_global_task_config(boost::property_tree::ptree config_pt
 // getting a single success_criteria (right tray) according to the current task rules 
 success_combo get_success_criteria(std::string str_task,std::string subtask_str,std::string object_str, boost::property_tree::ptree config_pt);
 int get_subtask_quantity(std::string str_task,boost::property_tree::ptree config_pt);
+std::string get_subtask_type(std::string str_task,boost::property_tree::ptree config_pt);
 
 // Helper functions for string to int conversion and vice versa 
 int object_str_to_int(std::string string_in);

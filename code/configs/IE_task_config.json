@@ -5,7 +5,10 @@
 	"global_success" 	 : "2",
 	"global_fail"    	 : "2",
 	"same_action_timeout"	 : "3.0",
-	"decision_timer_periode" : "20.0"
+	"decision_timer_periode" : "20.0",
+	"red_subtasks_order"     : ["1","4","7","10"],
+	"green_subtasks_order"   : ["2","6","8"],
+	"blue_subtasks_order"    : ["3","5","9"]
     },
 
 
@@ -15,7 +18,9 @@
         "1" :
 	{
 
-	   "subtask_quantity" : "10",			
+	   "subtask_quantity" : "10",
+
+	   "subtask_type" : "1_all_rules_same",			
 
 	   "subtask" : 
 	   {
@@ -37,13 +42,16 @@
 	 "2" :
 	{
 
-	   "subtask_quantity" : "10",
+	   "subtask_quantity" : "8",
+
+	   "subtask_type" : "2_same_tray_order", 
+	
 
 	   "subtask" : 
 	   {
 		"1": 
                 {
-			"object_1": { "tray": "1"},
+			"object_1": { "tray": "3"},
 			"object_2": { "tray": "1"},
 			"object_3": { "tray": "1"}
 		},
@@ -51,14 +59,14 @@
 
 		"2": 
                 {
-			"object_1": { "tray": "2"},
+			"object_1": { "tray": "1"},
 			"object_2": { "tray": "2"},
 			"object_3": { "tray": "2"}
 		},
 
 		"3": 
                 {
-			"object_1": { "tray": "3"},
+			"object_1": { "tray": "2"},
 			"object_2": { "tray": "3"},
 			"object_3": { "tray": "3"}
 		},
@@ -122,6 +130,8 @@
 
 	   "subtask_quantity" : "10",
 
+	   "subtask_type" : "3_mixed_fixed_sequence",
+
 	   "subtask" : 
 	   {
 		"1": 
@@ -169,23 +179,23 @@
 
 		"7": 
                 {
-			"object_1": { "tray": "1"},
-			"object_2": { "tray": "1"},
-			"object_3": { "tray": "1"}
+			"object_1": { "tray": "2"},
+			"object_2": { "tray": "2"},
+			"object_3": { "tray": "2"}
 		},
 
 		"8": 
                 {
-			"object_1": { "tray": "3"},
-			"object_2": { "tray": "3"},
-			"object_3": { "tray": "3"}
+			"object_1": { "tray": "1"},
+			"object_2": { "tray": "1"},
+			"object_3": { "tray": "1"}
 		},
 
 		"9": 
                 {
 			"object_1": { "tray": "2"},
 			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
+			"object_3": { "tray": "3"}
 		},
 
 		"10": 
