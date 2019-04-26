@@ -12,7 +12,7 @@
 #include <string>
 
 struct global_task_config {
-    int subtask_max; 
+    //int subtask_max;  -- not used anymore - define on task level 
     int task_max; 
     int global_success_assert; 
     int global_fail_assert; 

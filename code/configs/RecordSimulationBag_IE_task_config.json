@@ -15,7 +15,7 @@
         "1" :
 	{
 
-	   "subtask_quantity" : "10",			
+	   "subtask_quantity" : "6",			
 
 	   "subtask" : 
 	   {
@@ -37,7 +37,7 @@
 	 "2" :
 	{
 
-	   "subtask_quantity" : "10",
+	   "subtask_quantity" : "6",
 
 	   "subtask" : 
 	   {
@@ -120,7 +120,7 @@
 	 "3" :
 	{
 
-	   "subtask_quantity" : "10",
+	   "subtask_quantity" : "6",
 
 	   "subtask" : 
 	   {
@@ -203,7 +203,7 @@
 	"4" :
 	{
 
-	   "subtask_quantity" : "10",			
+	   "subtask_quantity" : "6",			
 
 	   "subtask" : 
 	   {
