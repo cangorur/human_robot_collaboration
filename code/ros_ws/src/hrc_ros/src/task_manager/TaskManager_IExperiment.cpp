@@ -755,7 +755,7 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
 
     // add statistics rewards (informed by robot agent)
-    taskState_msg.immediate_reward  = global_immediate_reward;
+    // taskState_msg.immediate_reward  = global_immediate_reward;
     taskState_msg.total_disc_reward = global_total_disc_reward;
 
 
@@ -896,7 +896,7 @@ void TaskManager::CheckToStartNewTask(void){
         taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
 
         // add statistics rewards (informed by robot agent)
-        taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
+        // taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
         taskState_msg.total_disc_reward = global_total_disc_reward;
 
 
