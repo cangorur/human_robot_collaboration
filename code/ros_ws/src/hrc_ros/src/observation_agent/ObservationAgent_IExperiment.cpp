@@ -38,7 +38,7 @@ void ObservationAgent::initialize(){
 	 */
 	traySensor_success_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/observedsuccess_status", 1);
 	//subscriber for the headGesture
-	headGesture_subs = nh.subscribe("/headGestureAgent/head_gesture_pub/", 100 , &ObservationAgent::ReceiveHeadGesture,this);
+	headGesture_subs = nh.subscribe("/headTrackingAgent/head_gesture_pub/", 1 , &ObservationAgent::ReceiveHeadGesture,this);
 	ObsUpdaterPub = nh.advertise<hrc_ros::ObsUpdateMsgIE>("/observation_agent/observation_update",1);
 
 	/*
@@ -382,7 +382,7 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
     // TOCONSIDER currently the head_gesture is only updated for the decision making if a new observation is received. In case it should always be up-to date, independent of a observation update then: o4_ov should be used instead
 		notO4_human_looking_around = msg.humanLookingAround;
 
-		cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl;
+		//cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl;
 
 }
 

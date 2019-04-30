@@ -37,6 +37,7 @@ find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 find_package(Threads REQUIRED)
+find_package(OpenCV REQUIRED)
 
 include_directories(.)
 
@@ -187,6 +188,11 @@ add_executable(observation_agent_IE
 add_dependencies(observation_agent_IE ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(observation_agent_IE ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(HeadTracking_agent
+  src/observation_agent/head_gesture_tracker/HeadTrackingAgent.cpp)
+  #src/observation_agent/head_gesture_tracker/HeadTrackingAgentNode.cpp)
+add_dependencies(HeadTracking_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(HeadTracking_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
 add_executable(test_decision_trigger
   src/test_agents_IE/test_decision_trigger.cpp)
