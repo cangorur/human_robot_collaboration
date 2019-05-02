@@ -54,13 +54,14 @@ the use of this software, even if advised of the possibility of such damage.
 #include <string>
 #include <hrc_ros/HeadGestureMsg.h>
 
+#include <sound_play/sound_play.h>
+
 
 
 using namespace std;
 using namespace cv;
 
 int global_former_id = 0; // 5= left | 6= middle | 7= right
-bool show_image_flag = false; 
 
 namespace {
 const char* about = "Basic marker detection";
@@ -76,6 +77,8 @@ const char* keys  =
         "{l        | 0.1   | Marker side lenght (in meters). Needed for correct scale in camera pose }"
         "{dp       |       | File of marker detector parameters }"
         "{r        |       | show rejected candidates too }"
+		"{imgshow  | 0     | show image in window }"
+		"{printdebug    | 0     | print debug messages }"
         "{refine   |       | Corner refinement: CORNER_REFINE_NONE=0, CORNER_REFINE_SUBPIX=1,"
         "CORNER_REFINE_CONTOUR=2, CORNER_REFINE_APRILTAG=3}";
 }
@@ -180,12 +183,16 @@ void detectMarkers(int argc, char *argv[]){
 
 	ros::init(argc,argv, "HeadTrackingNode");
 	ros::NodeHandle nh;
+	sound_play::SoundClient sc;
 	//ros::CallbackQueue my_queue;  
 
 	//ros::AsyncSpinner spinner(12 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
 	
 	// bind the queue to the node handle
 	//nh.setCallbackQueue( &my_queue );
+
+	int debug_print_flag = 3;  // 0 = false, 1= true, 3= uninitialized 
+	int img_show_flag    = 3; 
 
 	// ################# Services, subscribers publishers ... 
 
@@ -221,6 +228,14 @@ void detectMarkers(int argc, char *argv[]){
 	std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
 
 	int camId = parser.get<int>("ci");
+
+	try{
+		debug_print_flag = parser.get<int>("printdebug");
+	} catch(...){}
+
+	try{
+		img_show_flag = parser.get<int>("imgshow");
+	} catch(...){}
 
 	String video;
 	if(parser.has("v")) {
@@ -284,7 +299,7 @@ void detectMarkers(int argc, char *argv[]){
 				// << "(Mean = " << 1000 * totalTime / double(totalIterations) << " ms)" << endl;
 		}
 
-		if ( show_image_flag == true){ 
+		if ( img_show_flag == 1){ 
 			// draw results
 			image.copyTo(imageCopy);
 			if(ids.size() > 0) {
@@ -309,13 +324,12 @@ void detectMarkers(int argc, char *argv[]){
 		
 
 		// publish what has been detected 
-
+		hrc_ros::HeadGestureMsg hg_msg; 
 		if(ids.size() > 0){ // if an ID has been detected 
 			
 			if (ids.at(0) != global_former_id){
 				global_former_id = ids.at(0); 
-				 
-				hrc_ros::HeadGestureMsg hg_msg; 
+	 
 				
 				// assign human looking around 
 				if(ids.at(0)==5 || ids.at(0)==7){ // one of the side markers is detected -> looking around 
@@ -327,12 +341,23 @@ void detectMarkers(int argc, char *argv[]){
 					} else if (ids.at(0) == 7){
 						hg_msg.headGestureDetails = string("right");
 					}
-					//cout << "Human looking around" << endl; 
+					if (debug_print_flag == 1){
+						int ms = 5000;
+						int freq = 440;
+						int fd = 1; 
+						cout << "Human looking around" << endl;
+						
+						sc.play(1);
+						cout << '\a' << endl; 
+					} 
 				} else { 
 					hg_msg.humanLookingAround = false; 
 					hg_msg.headGestureDetails = string("center");
-					//cout << "NOT looking around" << endl;
-				}
+					if(debug_print_flag == 1){
+						cout << "NOT looking around" << endl;
+						sc.play(2);
+					} 
+				 } 
 
 				hg_msg.stamp = ros::Time::now(); 
 				headGesture_pub.publish(hg_msg);
@@ -341,7 +366,16 @@ void detectMarkers(int argc, char *argv[]){
 			} else { //cout << "same ID as before"; 
 			}
 
-		}
+		} /*else { // if no ID is detected, set it to notLookingAround  
+			hg_msg.humanLookingAround = false; 
+			hg_msg.headGestureDetails = string("center");
+			if(debug_print_flag == 1){
+				cout << "Default --- NOT looking around" << endl;
+				sc.play(3);
+				hg_msg.stamp = ros::Time::now(); 
+				headGesture_pub.publish(hg_msg);
+			} 
+		} */
 		
 		ros::spinOnce();
 	}
