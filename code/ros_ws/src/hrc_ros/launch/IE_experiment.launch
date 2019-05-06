@@ -17,8 +17,12 @@
 <!--Configure lower resolution for RGB video 8=QVGA@30Hz --> 
 <!-- <param name="camera/driver/color_mode" value="8" /> --> 
 
+<!-- Start HeadTracking node --> 
+<node pkg="hrc_ros" type="HeadTracking_agent" name="HeadTracking_agent" args="-d=4 -l=0.05 --refine=2 --ci=1 --imgshow=0 --printdebug=0" />
+
 <!-- Drive Dobot to calibration position && start the conveyor belt -->
 <node pkg="rosservice" type="rosservice" name="calibrate_dobot" args="call --wait /dobot_worker/calibrate "/>
+
 
 
 
