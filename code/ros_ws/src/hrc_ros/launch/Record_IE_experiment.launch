@@ -42,10 +42,10 @@
 <!-- ################### optionally: start the experiment and record video data ############# --> 
 
 <!-- Record the task_status message --> 
-<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/>
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/task_status /task_manager/task_status"/>
 
 <!-- Record /observation_agent/observation_update message --> 
-<node pkg="rosbag" type="record" name="rosbag_record_observation_pomdp" args="-o $(find hrc_ros)/../../../results/tests /observation_agent/observation_update"/>
+<node pkg="rosbag" type="record" name="rosbag_record_observation_pomdp" args="-o $(find hrc_ros)/../../../results/observations /observation_agent/observation_update"/>
 
 <!-- start the experiment -->  
 <!-- <node pkg="rosservice" type="rosservice" name="start_experiment" args="call wait /task_manager_IE/new_scenario_request"/> -->
