@@ -13,8 +13,18 @@ change ci for different cameras. For ubuntu embedded it is 0 , for lab PC W530 i
 # To run as a ROS node 
 rosrun hrc_ros HeadTracking_agent -d=4 -l=0.05 --refine=2 --ci=1 --imgshow=0 --printdebug=0
 
+# Using sound to debug 
+There is a version that uses the ros **sound_play** package to play different sounds. 
+The package can be installed like this: 
+'''
+sudo apt-get install ros-kinetic-sound-play 
+'''
+* Then build the HeadTrackingAgentwithSound.cpp  
+
+
 # Degubbing 
 The node can be debugged by setting --printdebug=1 
 * head_gesture status will be printed 
 * If you run **rosrun sound_play soundplay_node.py** a different sound will be played when notlooking around and lookingaround is detected. You can now turn around your head and see at which angles the looking around will be detected. 
+
 

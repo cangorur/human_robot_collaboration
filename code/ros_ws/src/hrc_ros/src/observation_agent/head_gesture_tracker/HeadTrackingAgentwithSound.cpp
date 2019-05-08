@@ -54,7 +54,7 @@ the use of this software, even if advised of the possibility of such damage.
 #include <string>
 #include <hrc_ros/HeadGestureMsg.h>
 
-//#include <sound_play/sound_play.h>  // depends on sound_play ros package 
+#include <sound_play/sound_play.h>
 
 
 
@@ -183,7 +183,7 @@ void detectMarkers(int argc, char *argv[]){
 
 	ros::init(argc,argv, "HeadTrackingNode");
 	ros::NodeHandle nh;
-	//sound_play::SoundClient sc;  // depends on sound_play package 
+	sound_play::SoundClient sc;
 	//ros::CallbackQueue my_queue;  
 
 	//ros::AsyncSpinner spinner(12 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
@@ -347,7 +347,7 @@ void detectMarkers(int argc, char *argv[]){
 						int fd = 1; 
 						cout << "Human looking around" << endl;
 						
-						//sc.play(1);  // depends on sound_play package
+						sc.play(1);
 						cout << '\a' << endl; 
 					} 
 				} else { 
@@ -355,7 +355,7 @@ void detectMarkers(int argc, char *argv[]){
 					hg_msg.headGestureDetails = string("center");
 					if(debug_print_flag == 1){
 						cout << "NOT looking around" << endl;
-						//sc.play(2);  // depends on sound_play package 
+						sc.play(2);
 					} 
 				 } 
 
