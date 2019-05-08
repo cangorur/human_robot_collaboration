@@ -15,6 +15,7 @@
 #include<ros/callback_queue.h>
 #include<std_msgs/Bool.h>
 #include <hrc_ros/DisplayTaskRule.h> 
+#include <hrc_ros/DisplayScoring.h> 
 
 // generic service includes 
 #include <std_srvs/Trigger.h>
@@ -31,7 +32,9 @@ using boost::property_tree::ptree;
 
 // All of this could go into a header 
 	
-ros::ServiceServer display_task_rules; 
+ros::ServiceServer display_task_rules;
+ros::ServiceServer display_scoring_server; 
+ros::ServiceServer distract_participants_server; 
 
 // define colours for coloured prints 
 const std::string red("\033[1;31m");
@@ -330,9 +333,6 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 		clear_screen();
 	}
 
-
-
-
    res.success = true;
    return true;
 }
@@ -341,6 +341,46 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H" << std::flush;
 }
+
+
+
+// ###################
+
+bool display_scoring(hrc_ros::DisplayScoring::Request &req, hrc_ros::DisplayScoring::Response &res ){
+
+	clear_screen(); 
+
+	cout << blue << "############################################" << endl; 
+
+	cout << normal << endl << endl << "     You scored "  << red << req.reward_scoring_task  << normal << "  points" << endl << endl; 
+
+	cout << normal << "     Task duration: " << blue << req.task_duration << normal << " seconds" << endl << endl; 
+
+	cout << normal << "     Correct subtasks: " << green << req.percentage_successful_subtasks << " %" << endl << endl;  
+
+
+	cout << blue << "############################################" << endl; 
+
+	res.success=true;
+	return true; 
+}
+
+
+bool distract_participants(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+
+	clear_screen(); 
+	cout << endl << endl << blue << "###########################################################" << endl << endl; 
+	cout << red << "Tonight: " << normal << " Light " << blue << "rain showers and a " << green << " moderate breeze." << endl << endl; 
+	cout << red << "Tomorrow: " << " Sunny intervals " << normal << "and a" << green << " gentle breeze. " << endl << endl;
+	cout << red << "Weekend: "  << blue << "Partly cloudy" << normal << " and " << green << "light winds." << endl << endl; 
+	cout << endl << endl << blue << "###########################################################" << endl << endl;
+
+	res.success=true; 	
+	return true; 
+}
+
+
+
 
 int main(int argc, char **argv) {
 
@@ -364,6 +404,8 @@ int main(int argc, char **argv) {
 
 	// Services 
 	display_task_rules = nh.advertiseService("/rule_monitor/display_task_rule", display_task_rules_server);
+	display_scoring_server = nh.advertiseService("/rule_monitor/display_scoring", display_scoring);
+	distract_participants_server = nh.advertiseService("/rule_monitor/distract_participants",distract_participants);
 	
 
 	// starting spinners with multiple threads 

@@ -64,6 +64,8 @@ void TaskManager::initialize(){
     policyRetrieve = nh.serviceClient<std_srvs::Trigger>("/policy_evaluator/retrieve_policies");
 
     display_task_rule_client = nh.serviceClient<hrc_ros::DisplayTaskRule>("/rule_monitor/display_task_rule");
+    display_score_client = nh.serviceClient<hrc_ros::DisplayScoring>("/rule_monitor/display_scoring");
+    distract_human_client = nh.serviceClient<std_srvs::Trigger>("/rule_monitor/distract_participants");
 
     // Initialize Contextual MAB service and if you want to use it
     cmab_call = nh.serviceClient<hrc_ros::SelectPolicy>("/cmab/select_policy");
@@ -104,6 +106,11 @@ void TaskManager::initialize(){
         robot1_battery = n.subscribe("/robot_1/battery", 1000, &TaskManager::receiveRobot1Battery, this);
         robot2_battery = n.subscribe("/robot_2/battery", 1000, &TaskManager::receiveRobot2Battery, this);
         */
+
+    // distracting of human -> not used so far   
+    //std_srvs::Trigger trigger_service; 
+    //distract_human_client.call(trigger_service.request,trigger_service.response); 
+
     ROS_INFO("Task Manager is created !");
 }
 
@@ -905,6 +912,17 @@ void TaskManager::CheckToStartNewTask(void){
         taskStatusPublisher.publish(taskState_msg);
 
 
+        // trigger displaying of score
+        hrc_ros::DisplayScoring::Request  score_display_req; 
+        hrc_ros::DisplayScoring::Response score_display_resp; 
+
+        score_display_req.task_duration = global_stat_task_combined_subtask_time_seconds; 
+        score_display_req.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
+        std::string::size_type sz;
+        score_display_req.reward_scoring_task = global_total_disc_reward; 
+        display_score_client.call(score_display_req,score_display_resp);
+        
+
 
         // ###### Reset all subtask relevant variables
         // TODO : save all relevant statistics to file -> afterwards savely reset all variables
@@ -923,8 +941,11 @@ void TaskManager::CheckToStartNewTask(void){
         subtask_counter = 1;
 
 
+
         if (task_number + 1 > (current_global_task_config.task_max) ){
             cout << endl << endl << " All tests are done - :-) " << endl << endl;
+
+
         } else {
             cout << "#CheckToStartNewTask:   task_counter:   " << task_number << "     => call initiateScenario" << endl;
 

@@ -30,6 +30,7 @@
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/TaskStateIE.h>
 #include <hrc_ros/DisplayTaskRule.h>
+#include <hrc_ros/DisplayScoring.h> 
 
 #include <hrc_ros/TraySensor.h>
 
@@ -154,6 +155,10 @@ private:
 	ros::ServiceClient bpr_call;
 	/// Client to issue a displaying of task rules
 	ros::ServiceClient display_task_rule_client;
+	/// Client to issue a displaying of the score reached by human 
+	ros::ServiceClient display_score_client; 
+	/// Client that can be used to distract the human 
+	ros::ServiceClient distract_human_client; 
 
 
 

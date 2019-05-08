@@ -1,0 +1,5 @@
+string  reward_scoring_task
+float32 percentage_successful_subtasks
+float32 task_duration
+---
+bool success
