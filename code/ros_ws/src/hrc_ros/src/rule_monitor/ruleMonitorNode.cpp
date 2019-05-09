@@ -325,6 +325,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 				}
 			}
 
+			ros::Duration(15).sleep(); 
 		}
 		
 
