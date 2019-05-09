@@ -179,6 +179,11 @@ add_executable(rule_monitor_agent
 add_dependencies(rule_monitor_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(rule_monitor_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(experiment_monitor_agent
+  src/experiment_monitor/experimentMonitor.cpp)
+add_dependencies(experiment_monitor_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(experiment_monitor_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
+
 
 add_executable(observation_agent_IE
   #src/observation_agent/ObservationAgent.cpp
