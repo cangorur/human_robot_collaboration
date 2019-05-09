@@ -15,30 +15,8 @@
     "task" :
     {
 
-     "1" :
-	{
-
-	   "subtask_quantity" : "10",
-
-	   "subtask_type" : "1_all_rules_same",			
-
-	   "subtask" : 
-	   {
-
-			
-		"all": 
-		{	
-			"object_1": {"tray": "1"}, 
-			"object_2": {"tray": "2"},
-			"object_3": {"tray": "3"}
-		}
-		
-	   }		
-
-	},
- 
 	
-	"2" :
+	"1" :
 	{
 
 	   "subtask_quantity" : "10",
@@ -61,53 +39,8 @@
 	},
 
 
-	"3" :
-	{
 
-	   "subtask_quantity" : "10",
-
-	   "subtask_type" : "1_all_rules_same",			
-
-	   "subtask" : 
-	   {
-
-			
-		"all": 
-		{	
-			"object_1": {"tray": "3"}, 
-			"object_2": {"tray": "3"},
-			"object_3": {"tray": "1"}
-		}
-		
-	   }		
-
-	},
- 
-
-	"4" :
-	{
-
-	   "subtask_quantity" : "10",
-
-	   "subtask_type" : "1_all_rules_same",			
-
-	   "subtask" : 
-	   {
-
-			
-		"all": 
-		{	
-			"object_1": {"tray": "3"}, 
-			"object_2": {"tray": "1"},
-			"object_3": {"tray": "2"}
-		}
-		
-	   }		
-
-	},
-
-
-	 "5" :
+	 "2" :
 	{
 
 	   "subtask_quantity" : "10",
@@ -193,93 +126,8 @@
 	},
 
 
-	"6" :
-	{
-
-	   "subtask_quantity" : "10",
-
-	   "subtask_type" : "2_same_tray_order", 
 	
-
-	   "subtask" : 
-	   {
-		"1": 
-                {
-			"object_1": { "tray": "2"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
-		},
-
-
-		"2": 
-                {
-			"object_1": { "tray": "3"},
-			"object_2": { "tray": "3"},
-			"object_3": { "tray": "3"}
-		},
-
-		"3": 
-                {
-			"object_1": { "tray": "1"},
-			"object_2": { "tray": "1"},
-			"object_3": { "tray": "1"}
-		},
-
-		"4": 
-                {
-			"object_1": { "tray": "2"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
-		},
-
-		"5": 
-                {
-			"object_1": { "tray": "3"},
-			"object_2": { "tray": "3"},
-			"object_3": { "tray": "3"}
-		},
-
-		"6": 
-                {
-			"object_1": { "tray": "1"},
-			"object_2": { "tray": "1"},
-			"object_3": { "tray": "1"}
-		},
-
-		"7": 
-                {
-			"object_1": { "tray": "2"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
-		},
-
-		"8": 
-                {
-			"object_1": { "tray": "3"},
-			"object_2": { "tray": "3"},
-			"object_3": { "tray": "3"}
-		},
-
-		"9": 
-                {
-			"object_1": { "tray": "1"},
-			"object_2": { "tray": "1"},
-			"object_3": { "tray": "1"}
-		},
-
-		"10": 
-                {
-			"object_1": { "tray": "2"},
-			"object_2": { "tray": "2"},
-			"object_3": { "tray": "2"}
-		}
-
-	   }
-
-	},
-
-
-	 "7" :
+	 "3" :
 	{
 
 	   "subtask_quantity" : "10",
@@ -364,7 +212,7 @@
 	},
 
 
-	"8" :
+	"4" :
 	{
 
 	   "subtask_quantity" : "10",
