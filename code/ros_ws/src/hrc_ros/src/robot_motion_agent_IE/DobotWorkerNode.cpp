@@ -109,9 +109,13 @@ float z_planning_v2 =  55;
 
 
 // grasp pickup place 
-float x_grasp_pick = 282; // // before x=278, y=50, z= 12 
-float y_grasp_pick =  40; 
+float x_grasp_pick = 281;  // In Center without card board box 282; // // before x=278, y=50, z= 12 
+float y_grasp_pick =  35;  // In Center without card board box 40; 
 float z_grasp_pick =  12;
+
+
+
+
 
 // drop place on conveyor -> package will be dropped if cancel is issued while dobot grasps
 float x_conveyor_drop = 280;
@@ -129,7 +133,7 @@ float y_point_briefly =  25;//16;
 float z_point_briefly = 140;//158;
 
 //########### times and flags for physical hrc 
-int planning_time = 6; // time the robot waits above the object to simulate the grasp path planning 
+int planning_time = 3; // was 6 before // time the robot waits above the object to simulate the grasp path planning 
 int warning_time = 6.1; // Time the cancel action will block other actions from being executed -> should be bigger than the planning time! 
 bool grasp_in_progress = false; // used to block pointing while grasp is in progress 
 bool point_in_progress = false; // used to wait in grasping until pointing is done 
@@ -326,6 +330,9 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 * 7. reset grasp_is_planned_flag to false => next time planning is triggered it will be executed again (flag is used for planninCallback control) 
 */
 void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
+	cout << "in grasping thread || grasp_in_progress = " << grasp_in_progress << endl; 
+	cout << " grasp_is_planned = " << grasp_is_planned_flag << endl; 
+	if (grasp_in_progress == false){
 		cout << endl <<" => In grasping thread " << endl; 
 		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor 
 		bool grasp_done_in_time = false;
@@ -367,7 +374,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 					ensure_plan_loc_req.y = y_planning_v1; 
 					ensure_plan_loc_req.z = z_planning_v1;
 					Dobot_gotoPoint.call(ensure_plan_loc_req,ensure_plan_loc_resp); 
-					ros::Duration(0.2).sleep();
+					ros::Duration(0.3).sleep();
 				}
 
 				
@@ -553,13 +560,26 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 				
 				
-
+				ros::Duration(1).sleep();
 				ros::param::set("/robot_grasping_state", grasping_state);	// set grasping_state parameter -> checked by observation agent to block decision making while grasping
 
 				// insert wait time if after_grasp_index is only 4 bigger than before_grasp_index 
 				
+				cout << endl  << "        !!! in grasp  waiting now !!! " << endl;
+				grasp_is_planned_flag = false; 
 
-				ros::Duration(5).sleep();
+				hrc_ros::SetQueuedCmdStopExec::Request stop_exec_req; 
+				hrc_ros::SetQueuedCmdStopExec::Response stop_exec_resp; 
+				hrc_ros::SetQueuedCmdClear::Request		   	clearQueue_req;
+				hrc_ros::SetQueuedCmdClear::Response		   	clearQueue_resp;
+				hrc_ros::SetQueuedCmdStartExec				start_exec; 
+
+				//Dobot_SetQueuedCmdStopExec.call(stop_exec_req, stop_exec_resp); 
+				
+				//ros::Duration(10).sleep();
+				//Dobot_SetQueuedCmdClear.call(clearQueue_req, clearQueue_resp);
+				//Dobot_SetQueuedCmdStartExec.call(start_exec.request, start_exec.response); 
+				cout << endl  << "        !!! done waiting    -> " << endl; 
 			}	
 				// TODO remove when not testing with setup 
 				//ros::Duration(10).sleep(); 
@@ -573,7 +593,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		grasp_in_progress = false; 
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		cout << " <= finished grasping thread" << endl;
-		
+	} else { cout << " skip grasping now - already in progress ";}
 }
 
 void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
@@ -706,7 +726,7 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 		  conveyor_empty = true; 
 	  }
 
-	  while (point_in_progress == true){ } // wait until pointing is done 
+	  while (point_in_progress == true || planning_in_progress == true){ } // wait until pointing is done 
 
 	  cout << "grasp_is_planned = " << grasp_is_planned_flag << "  planning_in_progress = " << planning_in_progress << "  no_Dobot_flag = " << no_Dobot_flag << endl; 
 	  // 1. check if grasp has already been planned(grasp_is_planned_flag) or planning is currently in progress(planning_in_progress)
