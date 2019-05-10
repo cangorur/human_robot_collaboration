@@ -133,6 +133,33 @@ All relevant information is also available in a combined topic:
 ------------------------------------------------------------------------------------
 
 
+## Experiment 1 - Robot Expressiveness 
+
+* configure the RaspberryPi1 with the dobot arm control nodes as described above. 
+* run the experiment node that is used to trigger the dobot expressions '''rosrun hrc_ros experiment_1_expressiveness.py'''
+	* you can specify numbers from 11 to 27. The numbers are compiled like this [experiment_part 1/2, expresspin from 1-7]
+	|Number for experiment1 node |Experiment part				|Expression 
+	|---			     |---					|---	 
+	|11			     | 1 - guess expression			|
+	|12			     | 1 - guess expression			|
+	|13			     | 1 - guess expression			|
+	|14			     | 1 - guess expression			|
+	|15 			     | 1 - guess expression			|
+	|16			     | 1 - guess expression			|
+	|17			     | 1 - guess expression			|
+	|--- 			     |---					|
+	|21			     | 2 - select from given expressions	|
+	|22			     | 2 - select from given expressions	|
+	|23 			     | 2 - select from given expressions	|
+	|24			     | 2 - select from given expressions	|
+	|25			     | 2 - select from given expressions	|
+	|26 			     | 2 - select from given expressions	|
+	|27			     | 2 - select from given expressions	|
+	
+	
+------------------------------------------------------------------------------------
+
+
 ## Parameters to configure the experiment and dobot dynamically 
 
 ### rosparameters 
