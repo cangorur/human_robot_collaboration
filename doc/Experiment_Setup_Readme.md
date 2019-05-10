@@ -56,11 +56,11 @@
  - turn on the conveyor belt Raspberry Pi and also switch on the power supply for the conveyor motor
 
 #### one terminal - launch conveyor physical layer and middle layer:
-- ```source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch```
+- ```source dobot-conveyor-unit/CONVEYOR_UNIT/devel/setup.bash && roslaunch dobot motor.launch```  or use the alias **setup_conveyor_physical_1** on the raspberry pi
 
 
 #### in a second terminal - launch the conveyor_control app layer :   
-- ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch```
+- ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch``` or use the alias ** setup_conveyor_app_2** on the raspberry pi 
 
 =========================================================================
 ## Launch all nodes 
