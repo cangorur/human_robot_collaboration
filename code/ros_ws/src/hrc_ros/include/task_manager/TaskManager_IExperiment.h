@@ -31,6 +31,7 @@
 #include <hrc_ros/TaskStateIE.h>
 #include <hrc_ros/DisplayTaskRule.h>
 #include <hrc_ros/DisplayScoring.h> 
+#include <hrc_ros/SetTaskNumber.h> 
 
 #include <hrc_ros/TraySensor.h>
 
@@ -72,6 +73,14 @@ private:
 	 * a package arrives conveyor runs and stops in the middle of the human and the robot.
 	 */
 	bool ResetTask(std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res);
+
+	/**
+	 * Rosservice is called /task_manager_IE/setTaskNumber
+	 * This service is called to set the tasknumber that should be executed next. 
+	 * This will kill the current running despot. 
+	 * The experiment needs to be initiated manually by callin the service /task_manager_IE/new_scenario_request
+	 */
+	bool setTaskNumber(hrc_ros::SetTaskNumberRequest &req, hrc_ros::SetTaskNumberResponse &res);
 
 	/**
 	 * Not implemented currently. In this application we only change the location of one package. No new generation.
@@ -171,8 +180,9 @@ private:
 	/// Below are the service objects for the advertised services. See "RobotStatusUpdater" above for the functionality
 	ros::ServiceServer RobotUpdateService;
 	/// Below are the service objects for the advertised services. See "ResetTask" above for the functionality
-  ros::ServiceServer resetTaskService;
-
+  	ros::ServiceServer resetTaskService;
+	/// Below are the service objects for the advertised services. See "SetTaskNumber" above for the functionality
+	ros::ServiceServer setTaskNumberService; 
 	/*
 	 * Task status update timer
 	 */

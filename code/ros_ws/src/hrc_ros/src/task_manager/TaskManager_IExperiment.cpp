@@ -86,6 +86,7 @@ void TaskManager::initialize(){
     ObsUpdateService = nh.advertiseService("/task_manager/observation_update", &TaskManager::ObsUpdater, this);
     RobotUpdateService = nh.advertiseService("/task_manager/robot_status_update", &TaskManager::RobotStatusUpdater, this);
     resetTaskService = nh.advertiseService("reset_task", &TaskManager::ResetTask, this);
+    setTaskNumberService = nh.advertiseService("/task_manager_IE/setTaskNumber", &TaskManager::setTaskNumber,this);
 
     /// Task State: human states actions, robot state actions rewards and general info are published as a ROS topic
     taskStatusPublisher = nh.advertise<hrc_ros::TaskStateIE>("/task_manager/task_status", 1);
@@ -114,6 +115,26 @@ void TaskManager::initialize(){
     ROS_INFO("Task Manager is created !");
 }
 
+bool TaskManager::setTaskNumber(hrc_ros::SetTaskNumberRequest &req, hrc_ros::SetTaskNumberResponse &res){
+    
+    // kill all open despots 
+    string kill_pomdpx_str = "killall despot_pomdpx";
+    const char * c_kill_pomdpx = kill_pomdpx_str.c_str();
+    system(c_kill_pomdpx);
+
+    task_number = req.task_number -1; 
+    ros::param::set("/task_count", task_number);
+
+    cout << "task_number " << task_number << "  ( is -1 since it will be increased when scenario is started" << endl; 
+
+    //hrc_ros::InitiateScenario::Request req_init;
+    //hrc_ros::InitiateScenario::Response res_init;
+    //initiateScenario(req_init, res_init);
+
+    res.success = true;
+    return true;
+
+}
 
 // Call this function once per every task !!!
 //================Advertised Services=======================
