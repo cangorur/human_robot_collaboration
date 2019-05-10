@@ -14,5 +14,8 @@
 
 <node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" />
 
+<!-- Start HeadTracking node --> 
+<node pkg="hrc_ros" type="HeadTracking_agent" name="HeadTracking_agent" args="-d=4 -l=0.05 --refine=2 --ci=0 --imgshow=0 --printdebug=0"
+
 
 </launch>
