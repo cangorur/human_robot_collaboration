@@ -41,12 +41,12 @@
 
 #### on one terminal - launch dobot physical layer and middle layer:
  
- - ```source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch```
+ - ```source dobot-conveyor-unit/DOBOT_UNIT/devel/setup.bash && roslaunch dobot dobot.launch```  or use the alias **setup_dobot_physical_1** on the raspberry pi
  - Note: dobot will drive to a calibration position on the far left 
 
 #### wait until dobot stops moving then in another terminal ( can also be launched locally on PC) - launch dobot and conveyor app layer:
  
- - ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch```
+ - ```source dobot-conveyor-unit/CHARIOT/devel/setup.bash && roslaunch dobot app.launch```   or use the alias **setup_dobot_app_2** on the raspberry pi 
 
 
 ### RaspberryPi2 conveyor belt:
@@ -135,7 +135,8 @@ All relevant information is also available in a combined topic:
 
 ## Experiment 1 - Robot Expressiveness 
 
-* configure the RaspberryPi1 with the dobot arm control nodes as described above. 
+* configure the RaspberryPi1 with the dobot arm control nodes as described above.
+* run the dobot_worker node ''' rosrun hrc_ros dobot_worker_agent'''  (configure the remote rosmaster in the terminal first as described above 
 * run the experiment node that is used to trigger the dobot expressions '''rosrun hrc_ros experiment_1_expressiveness.py'''
 	* you can specify numbers from 11 to 27. The numbers are compiled like this [experiment_part 1/2, expresspin from 1-7]
 

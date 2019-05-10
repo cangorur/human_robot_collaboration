@@ -41,17 +41,32 @@ def listener():
    
     pup_grasping = rospy.Publisher("/robot_motion_agent/dobot_grasp", std_msgs.msg.Bool , queue_size=1)
 
+    # publisher to publish grasp colour - this is needed because otherwise the conveyor is recognized as empty and no grasp will be done 
+    # object is set to red for now 
+    pub_object_to_grasp_colour = rospy.Publisher("/object_tracking/object_tograsp_colour", hrc_ros.msg.ObjectGraspColourMsg,queue_size=1)
+    object_grasp_msg = ObjectGraspColourMsg()
+    object_grasp_msg.object_colour = 1
+    pub_object_to_grasp_colour.publish(object_grasp_msg)
+
     rate = rospy.Rate(10) # 10 Hz
     print("Specify gesture to be displayed [11 - 27] ")
+    gesture_cnt = 0 
+
     while not rospy.is_shutdown():
+        if (gesture_cnt < 2):
+            pub_object_to_grasp_colour.publish(object_grasp_msg)
         gesture = int(raw_input('Enter gesture:'))
         print(gesture)
         
+        gesture_cnt += 1
+        if (gesture_cnt < 2):
+            pub_object_to_grasp_colour.publish(object_grasp_msg)
 
         if (gesture < int(20)):
             # set parameter to version 1 
             
             if gesture == int(11):
+                print("publish grasping")
                 pup_grasping.publish(True)
 
         elif(gesture >= int(20) ):
