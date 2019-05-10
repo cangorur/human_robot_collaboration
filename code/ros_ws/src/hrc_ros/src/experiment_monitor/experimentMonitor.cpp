@@ -17,6 +17,7 @@
 #include <hrc_ros/DisplayTaskRule.h> 
 #include <hrc_ros/DisplayScoring.h>  
 #include <hrc_ros/TaskStateIE.h>
+#include <object_tracking/PublishTrayUpdateMsg.h>
 
 // generic service includes 
 #include <std_srvs/Trigger.h>
@@ -38,6 +39,7 @@ ros::ServiceServer display_scoring_server;
 ros::ServiceServer distract_participants_server; 
 
 ros::Subscriber taskStatus_subs;
+ros::Subscriber tray_update_subs; 
 
 // define colours for coloured prints 
 const std::string red("\033[1;31m");
@@ -101,6 +103,10 @@ double Global_percentage_successful_tasks		= 0.0;
 string Global_immediate_reward					= " "; 
 //double Global_total_disc_reward					= 0.0; 
 
+// TRAY detection node 
+int TRAY_update_current_tray	=0; 
+int TRAY_update_current_object   =0; 
+bool TRAY_update_received = false; 
 
 
 
@@ -111,6 +117,7 @@ void clear_screen(void);
 std::string mapintToEnumeration(int number);
 void update_statistics_display(void); 
 void receive_task_status(const hrc_ros::TaskStateIE &msg);
+void receive_tray_update(const object_tracking::PublishTrayUpdateMsg &msg); 
 
 // ########## Function implementations ##########################
 
@@ -494,6 +501,19 @@ void receive_task_status(const hrc_ros::TaskStateIE &msg){
 	update_statistics_display(); 
 }
 
+void receive_tray_update(const object_tracking::PublishTrayUpdateMsg &msg){
+	
+		TRAY_update_current_object = msg.current_object; 
+		TRAY_update_current_tray   = msg.current_tray;
+		TRAY_update_received = true; 
+
+		update_statistics_display(); 
+		ros::Duration(2).sleep(); 
+		TRAY_update_received = false; 
+		update_statistics_display(); 
+}
+
+
 void update_statistics_display(void){
 	clear_screen(); 
 
@@ -508,7 +528,18 @@ void update_statistics_display(void){
 	cout << normal << "Successful subtasks: " << green << SENSOR_successful_subtasks << " = " << Global_percentage_successful_subtasks << " % " << normal << "  failed_subtasks: " << green << SENSOR_failed_subtasks << endl; 
 	cout << normal << "Discounted_reward: " << green << ROBOT_total_dics_reward << normal << "  scored by: " << green << SENSOR_who_succeeded << endl ; 
 	cout << normal << "Duration: " << green << SENSOR_subtask_duration << normal << " seconds " << endl;  
-	cout << normal << "Subtask_status: " << green << SENSOR_subtask_status << endl << endl; 
+	cout << normal << "Subtask_status: " << green << SENSOR_subtask_status << endl; 
+	
+	cout << endl << normal << "## TrayObserver ##" << endl; 
+	if (TRAY_update_received == true){
+		cout << blue << "XX Update_received XX" << endl; 
+		cout << blue << "XX					XX" << endl;  
+		cout << "    object:  " << TRAY_update_current_object << "   tray: " << TRAY_update_current_tray << endl;  
+		cout << red << "XX					XX" << endl;
+		cout << red << "XX					XX" << endl << endl << endl; 
+	} else {
+		cout << endl << endl << endl << endl << endl << endl << endl; 
+	}
 	// ## optional 	
 	//string SENSOR_subtask_status							= " ";
 	//string SENSOR_who_succeeded						= " ";
@@ -565,6 +596,8 @@ int main(int argc, char **argv) {
  	// rosparameters 
 
 	taskStatus_subs = nh.subscribe("/task_manager/task_status", 1 , receive_task_status);
+	tray_update_subs = nh.subscribe("/object_tracking/publish_tray_update",1, receive_tray_update);
+	//<object_tracking::PublishTrayUpdateMsg>
 
 	/*"SENSOR" when tray_update received 
 	"MANAGER-TASK-DONE" after a task is done 
