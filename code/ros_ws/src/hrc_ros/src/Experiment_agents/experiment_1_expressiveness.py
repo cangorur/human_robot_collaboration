@@ -39,7 +39,14 @@ def listener():
 #	ros::Subscriber dobot_gohome_sub = nh.subscribe("/robot_motion_agent/dobot_gohome",1, returnHomeCallback); 
 #	ros::Subscriber dobot_calibration_sub = nh.subscribe("/robot_motion_agent/dobot_calibration",1, gotoCallibrationCallback); 
    
-    pup_grasping = rospy.Publisher("/robot_motion_agent/dobot_grasp", std_msgs.msg.Bool , queue_size=1)
+    pub_grasping = rospy.Publisher("/robot_motion_agent/dobot_grasp", std_msgs.msg.Bool , queue_size=1)
+    pub_planning = rospy.Publisher("/robot_motion_agent/dobot_plan", std_msgs.msg.Bool , queue_size=1)
+    pub_cancel   = rospy.Publisher("/robot_motion_agent/dobot_cancel", std_msgs.msg.Bool , queue_size=1)
+    pub_pointing = rospy.Publisher("/robot_motion_agent/dobot_point", std_msgs.msg.Bool , queue_size=1)
+    pub_go_home  = rospy.Publisher("/robot_motion_agent/dobot_gohome", std_msgs.msg.Bool , queue_size=1)
+    pub_idle     = rospy.Publisher("/robot_motion_agent/dobot_idle", std_msgs.msg.Bool , queue_size=1)
+
+
 
     # publisher to publish grasp colour - this is needed because otherwise the conveyor is recognized as empty and no grasp will be done 
     # object is set to red for now 
@@ -62,18 +69,58 @@ def listener():
         if (gesture_cnt < 2):
             pub_object_to_grasp_colour.publish(object_grasp_msg)
 
-        if (gesture < int(20)):
-            # set parameter to version 1 
-            
-            if gesture == int(11):
-                print("publish grasping")
-                pup_grasping.publish(True)
+        # ######  Publish the actions to DobotWorker agent 
+        
 
-        elif(gesture >= int(20) ):
-            print("in bigger")
-            pup_grasping.publish(False)
-            # set parameter to version 2
+        print( " # Sequence:")
+        print( "  0 - go home ")  
+        print( " # 1 - grasping         ")       
+        print( " # 2 - Planning V1      ")    
+        print( " # 3 - Cancel Planning  ") 
+        print( " # 4 - Pointing V1      ")
+        print( " # 5 - Pointing V2      ")
+        print( " # 6 - IDLE             ")
+        print( " # 7 - Planning V2      ")
+        if (gesture < int(5)):   # expression version 1 
+            # set parameter to version 1 
+            rospy.param_set("/dobot_expression_version", 1)
             
+            if gesture == int(0): # go to home location 
+                print("go to home location")
+                pub_go_home.publish(True)
+
+            if gesture == int(1):  # grasping 
+                print("publish grasping")
+                pub_grasping.publish(True)
+            
+            if gesture == int(2):  # planning V1  
+                print("publish planning - V1")
+                pub_planning.publish(True)
+
+            if gesture == int(3):  # cancel  
+                print("publish cancelling ")
+                pub_cancel.publish(True)
+
+            if gesture == int(4):  # pointing V1  
+                print("publish pointing - V1 ")
+                pub_pointing.publish(True)
+
+
+        elif(gesture >= int(5) ): 
+            # set parameter to version 2 
+            rospy.param_set("/dobot_expression_version", 2)
+            
+            if gesture == int(5): # pointing V2 
+                print("publish pointing - V2")
+                pub_pointing.publish(True)
+
+            if gesture == int(6): # idle 
+                print("publish idle")
+                pub_idle.publish(True)
+
+            if gesutre == int(7): # planning V2
+                print("publish planning - V2")
+                pub_planning.publish(True)
 
         rate.sleep()
 

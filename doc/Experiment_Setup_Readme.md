@@ -140,23 +140,23 @@ All relevant information is also available in a combined topic:
 * run the experiment node that is used to trigger the dobot expressions '''rosrun hrc_ros experiment_1_expressiveness.py'''
 	* you can specify numbers from 11 to 27. The numbers are compiled like this [experiment_part 1/2, expresspin from 1-7]
 
-|Number for experiment1 node |Experiment part				|Expression	| 
-|---			     |---									|---		|	 
-|11			     	 | 1 - guess expression					|			|			
-|12			     	 |  1 - guess expression				|			|
-|13			     	 | 1 - guess expression					|			|
-|14			         | 1 - guess expression					|			|
-|15 			     | 1 - guess expression					|			|
-|16			         | 1 - guess expression					|			|
-|17			         | 1 - guess expression					|			|
-| 			         |										|			|
-|21			         | 2 - select from given expressions	|			|
-|22			         | 2 - select from given expressions	|			|
-|23 			     | 2 - select from given expressions	|			|
-|24			     	 | 2 - select from given expressions	|			|
-|25			     	 | 2 - select from given expressions	|			|
-|26 			     | 2 - select from given expressions	|			|
-|27			     	 | 2 - select from given expressions	|			|
+|Number for experiment1 node |Experiment part				|Expression				| 
+|---			     |---									|---					|		 
+|1			     	 | 1 - guess expression					| grasping				|				
+|2			     	 | 1 - guess expression					| planning V1			|
+|3			     	 | 1 - guess expression					| Cancel planning		|
+|4			         | 1 - guess expression					| pointing V1			|
+|5	 			     | 1 - guess expression					| pointing V2			|
+|6			         | 1 - guess expression					| IDLE					|
+|7			         | 1 - guess expression					| planning V2			|
+|--------------------|--------------------------------------|-----------------------|
+|1			         | 2 - select from given expressions	| "same order as above" |
+|2			         | 2 - select from given expressions	| 		"				|
+|3 				     | 2 - select from given expressions	| 		"				|
+|4			     	 | 2 - select from given expressions	| 		"				|
+|5			     	 | 2 - select from given expressions	| 		"				|
+|6	 			     | 2 - select from given expressions	| 		"				|
+|7			     	 | 2 - select from given expressions	| 		"				|
 	
 	
 ------------------------------------------------------------------------------------
