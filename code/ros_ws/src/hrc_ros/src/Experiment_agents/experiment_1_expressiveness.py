@@ -56,7 +56,16 @@ def listener():
     pub_object_to_grasp_colour.publish(object_grasp_msg)
 
     rate = rospy.Rate(10) # 10 Hz
-    print("Specify gesture to be displayed [11 - 27] ")
+    print("Specify gesture to be displayed [1 - 7] ")
+    print( " # Sequence:")
+    print( "  0 - go home ")  
+    print( " # 1 - grasping         ")       
+    print( " # 2 - Planning V1      ")    
+    print( " # 3 - Cancel Planning  ") 
+    print( " # 4 - Pointing V1      ")
+    print( " # 5 - Pointing V2      ")
+    print( " # 6 - IDLE             ")
+    print( " # 7 - Planning V2      ")
     gesture_cnt = 0 
 
     while not rospy.is_shutdown():
@@ -83,7 +92,8 @@ def listener():
         print( " # 7 - Planning V2      ")
         if (gesture < int(5)):   # expression version 1 
             # set parameter to version 1 
-            rospy.param_set("/dobot_expression_version", 1)
+            rospy.set_param("/dobot_expression_version", 1)
+
             
             if gesture == int(0): # go to home location 
                 print("go to home location")
@@ -108,7 +118,7 @@ def listener():
 
         elif(gesture >= int(5) ): 
             # set parameter to version 2 
-            rospy.param_set("/dobot_expression_version", 2)
+            rospy.set_param("/dobot_expression_version", 2)
             
             if gesture == int(5): # pointing V2 
                 print("publish pointing - V2")
@@ -118,7 +128,7 @@ def listener():
                 print("publish idle")
                 pub_idle.publish(True)
 
-            if gesutre == int(7): # planning V2
+            if gesture == int(7): # planning V2
                 print("publish planning - V2")
                 pub_planning.publish(True)
 
