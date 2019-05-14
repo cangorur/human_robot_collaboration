@@ -58,6 +58,7 @@ add_message_files(
   TaskStateIE.msg
   ObjectGraspColourMsg.msg
   PublishActionRecognisedMsg.msg
+  PublishTrayUpdateMsg.msg
 )
 
 ## Generate services in the 'srv' folder

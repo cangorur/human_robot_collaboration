@@ -17,7 +17,7 @@
 #include <hrc_ros/DisplayTaskRule.h> 
 #include <hrc_ros/DisplayScoring.h>  
 #include <hrc_ros/TaskStateIE.h>
-#include <object_tracking/PublishTrayUpdateMsg.h>
+#include <hrc_ros/PublishTrayUpdateMsg.h>
 
 // generic service includes 
 #include <std_srvs/Trigger.h>
@@ -117,7 +117,7 @@ void clear_screen(void);
 std::string mapintToEnumeration(int number);
 void update_statistics_display(void); 
 void receive_task_status(const hrc_ros::TaskStateIE &msg);
-void receive_tray_update(const object_tracking::PublishTrayUpdateMsg &msg); 
+void receive_tray_update(const hrc_ros::PublishTrayUpdateMsg &msg); 
 
 // ########## Function implementations ##########################
 
@@ -501,7 +501,7 @@ void receive_task_status(const hrc_ros::TaskStateIE &msg){
 	update_statistics_display(); 
 }
 
-void receive_tray_update(const object_tracking::PublishTrayUpdateMsg &msg){
+void receive_tray_update(const hrc_ros::PublishTrayUpdateMsg &msg){
 	
 		TRAY_update_current_object = msg.current_object; 
 		TRAY_update_current_tray   = msg.current_tray;
