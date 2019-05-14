@@ -6,7 +6,7 @@
 
 <!-- #################### hrc_ros package nodes ################################## --> 
 
-<node pkg="hrc_ros" type="observation_agent_IE" name="observation_agent_IE" output="screen" respawn="true" />
+<!-- <node pkg="hrc_ros" type="observation_agent_IE" name="observation_agent_IE" output="screen" respawn="true" /> -->
 
 <!-- <node pkg="hrc_ros" type="task_manager_IE" name="task_manager_IE" output="screen" respawn="true" /> -->
 
