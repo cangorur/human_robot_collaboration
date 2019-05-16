@@ -20,6 +20,10 @@
 <!-- Start HeadTracking node --> 
 <node pkg="hrc_ros" type="HeadTracking_agent" name="HeadTracking_agent" args="-d=4 -l=0.05 --refine=2 --ci=1 --imgshow=0 --printdebug=0" />
 
+<!-- Start Tray notifier node --> 
+<node pkg="hrc_ros" type="NotifyTrayUpdate_Sound" name="NotifyTrayUpdate_Sound" respawn="true" /> 
+<node pkg="sound_play" type="soundplay_node.py" name="soundplay_node" respawn="true" /> 	
+
 <!-- Drive Dobot to calibration position && start the conveyor belt -->
 <node pkg="rosservice" type="rosservice" name="calibrate_dobot" args="call --wait /dobot_worker/calibrate "/>
 
@@ -46,7 +50,11 @@
 <!-- ################### optionally: start the experiment and record video data ############# --> 
 
 <!-- Record the task_status message --> 
-<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/>
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/task_status /task_manager/task_status"/>
+
+<!-- Record /observation_agent/observation_update message --> 
+<node pkg="rosbag" type="record" name="rosbag_record_observation_pomdp" args="-o $(find hrc_ros)/../../../results/observations /observation_agent/observation_update"/>
+
 
 <!-- start the experiment -->  
 <!-- <node pkg="rosservice" type="rosservice" name="start_experiment" args="call wait /task_manager_IE/new_scenario_request"/> -->

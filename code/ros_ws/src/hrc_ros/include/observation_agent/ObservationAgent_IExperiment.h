@@ -264,12 +264,12 @@ private:
 	ros::Subscriber headGesture_subs;
 	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask
 	ros::Publisher 	traySensor_success_pub;
+	//// Ros publisher - is published after the tray status has bee received | used to inform human about the tray update, e.g. by sound ...
+	ros::Publisher 	traySensor_notifyToHuman_pub;
 
 	/// publishes the observation update -> this info is used for logging and analysis on system level
 	ros::Publisher ObsUpdaterPub;
 
-	/// publishes an updated tray status -> this info is used for logging and analysis on system level
-	ros:: Publisher TrayUpdatePub;
 
 	/// Ros time instance to record the time when the tray sensor message has been changed.
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario

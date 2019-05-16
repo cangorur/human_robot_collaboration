@@ -202,12 +202,17 @@ add_executable(HeadTracking_agent
 add_dependencies(HeadTracking_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(HeadTracking_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
-#add_executable(HeadTracking_agent_play_sound
-#  src/observation_agent/head_gesture_tracker/HeadTrackingAgentwithSound.cpp)
+add_executable(HeadTracking_agent_play_sound
+  src/observation_agent/head_gesture_tracker/HeadTrackingAgentwithSound.cpp)
 #  #src/observation_agent/head_gesture_tracker/HeadTrackingAgentNode.cpp)
-#add_dependencies(HeadTracking_agent_play_sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
-#target_link_libraries(HeadTracking_agent_play_sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
+add_dependencies(HeadTracking_agent_play_sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(HeadTracking_agent_play_sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
+add_executable(NotifyTrayUpdate_Sound
+  src/experiment_monitor/NotifyTrayUpdateSound.cpp
+  src/experiment_monitor/NotifyTrayUpdateSoundNode.cpp)
+add_dependencies(NotifyTrayUpdate_Sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
+target_link_libraries(NotifyTrayUpdate_Sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
 add_executable(test_decision_trigger
   src/test_agents_IE/test_decision_trigger.cpp)

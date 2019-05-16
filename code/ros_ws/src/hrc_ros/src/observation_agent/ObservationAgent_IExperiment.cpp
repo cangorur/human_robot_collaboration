@@ -37,6 +37,7 @@ void ObservationAgent::initialize(){
 	 *
 	 */
 	traySensor_success_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/observedsuccess_status", 1);
+	traySensor_notifyToHuman_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/tray_status_NotifyToHuman",1);
 	//subscriber for the headGesture
 	headGesture_subs = nh.subscribe("/headTrackingAgent/head_gesture_pub/", 1 , &ObservationAgent::ReceiveHeadGesture,this);
 	ObsUpdaterPub = nh.advertise<hrc_ros::ObsUpdateMsgIE>("/observation_agent/observation_update",1);
@@ -639,6 +640,9 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
 		success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
 
+		// ## Notify Human about the successful detection of a tray update, e.g. by sound 
+		traySensor_notifyToHuman_pub.publish(success_status_msg);
+
 		// ## Trigger a decision
 		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 		int_subtask_status = 0; // reset to ongoing
@@ -653,8 +657,12 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			IE_humanSt_to_robotSt_Map("GlobalFail");
 		}
 
+		// ########################  Before the tray status was published here -> after decision making ########
 		// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 		traySensor_success_pub.publish(success_status_msg);
+		
+		// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long 
+		//traySensor_notifyToHuman_pub.publish(success_status_msg);
 
 		// ## increment subtask counter
 		subtask_counter += 1;
