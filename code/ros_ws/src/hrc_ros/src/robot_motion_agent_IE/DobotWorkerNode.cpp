@@ -235,7 +235,7 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 								Dobot_gotoPoint.call(gotoStart_req,gotoStart_resp);
 
 							}
-						}else { //cout << " grasp in progress -> pointing skipped " << endl; }
+						} //else { //cout << " grasp in progress -> pointing skipped " << endl; }
 						// ############ End of point version 1 #######################################
 			} else if (dobot_expression_version ==2){      //****************** execute pointing action V2 
 								
@@ -302,7 +302,7 @@ void pointCallback(const std_msgs::Bool::ConstPtr& msg) {
 								} 
 								ros::Duration(0.2).sleep();
 								
-							}else { //cout << " grasp in progress -> pointing skipped " << endl; }
+							}//else { //cout << " grasp in progress -> pointing skipped " << endl; }
 						// ############ End of point version 2 #######################################			
 			}
 
@@ -348,7 +348,8 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				//set grasping state parameter before grasping => always 0
 				ros::param::set("/robot_grasping_state", grasping_state);
 
-				while(point_in_progress == true ) { //cout << "point in grogress = " << point_in_progress << endl;  } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
+				while(point_in_progress == true ) { //cout << "point in grogress = " << point_in_progress << endl;  
+				 } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
 
 				// conveyor empty flag that will skip grasping and planning 
 				if (object_to_grasp_colour == 4){
@@ -392,7 +393,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 					
 				} else { // default is 1=red 
 					success_req.current_object = 1; 
-				}
+				  }
 				//cout << "Grasping now -> will use object colour " << success_req.current_object << endl; 
 
 				
@@ -538,7 +539,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 					stop_grasp_time = ros::Time::now();
 					grasp_duration = stop_grasp_time - start_grasp_time;
 					drop_duration = drop_time - start_grasp_time;   
-				} else { //cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
+				} //else { //cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
 
 				// 6. set grasping_state via parameter
 				//cout << "-----" << endl << "grasp_state:   " << endl; 
@@ -556,7 +557,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 					
 					grasping_state = 4; 
 					//cout << "Grasp_not_successfull - is dobot running?   grasp_state=  " << grasping_state << endl; 
-				}
+				  }
 
 				
 				
@@ -586,14 +587,14 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 		} else { // only wait - do not call dobot services 
 		  //cout << " ~ sleeping " << endl;
 		  ros::Duration(wait_time).sleep();
-		}
+		  }
 		
 		// 7. reset grasp_planned_flag -> when the next planning is triggered it will actually be executed (as log as it is true planning is always skipped)
 		grasp_is_planned_flag = false; 
 		grasp_in_progress = false; 
 		ros::param::get("/noDobot", no_Dobot_flag);	
 		//cout << " <= finished grasping thread" << endl;
-	} else { //cout << " skip grasping now - already in progress ";}
+	} //else { //cout << " skip grasping now - already in progress ";}
 }
 
 void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
@@ -775,11 +776,11 @@ void planCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  //cout << " <= finished planning thread" << endl; 
 	  
 
-	} else if (conveyor_empty == true) {
+	} //else if (conveyor_empty == true) {
 		//cout << " conveyor is empty or warning received -> planning skipped " << endl; 
-	} else { 
+	//} else { 
 		//cout << " planning finished or currently in progress " << endl; 
-	}
+	//}
 }
 
 
@@ -788,7 +789,8 @@ void idleCallback(const std_msgs::Bool::ConstPtr& msg) {
 	  //cout << " In IDLE thread" << endl;
 	  grasp_is_planned_flag = false; 
 	   
-	  while(point_in_progress == true){ //cout << " point_in_progress " << point_in_progress; } // wait until pointing is done 
+	  while(point_in_progress == true){ //cout << " point_in_progress " << point_in_progress; 
+	  } // wait until pointing is done 
 	  
 	  //cout << endl << " grasp_in_progress flag " << grasp_in_progress << endl; 
 	  if ((grasp_in_progress==false) )  { // skip if grasp is in progress 

@@ -218,7 +218,7 @@ void RobotMotionAgent::update() {
 		server.send(connection, send_stream, [](const SimpleWeb::error_code& ec){
 			if(ec) {
 				//cout << "[ROBOT AGENT] Server: Error sending message. " <<
-						"Error: " << ec << ", error message: " << ec.message() << endl;
+					//	"Error: " << ec << ", error message: " << ec.message() << endl;
 			}
 		});
 			////cout << "Server: Sending message \"" << message_send <<  "\" to MDP"<< endl;
@@ -301,7 +301,8 @@ void RobotMotionAgent::update() {
 					ros::ServiceClient informHuman = nh.serviceClient<std_srvs::SetBool>("/human_mc_sampler/robot_is_warned");
 					informHuman.call(is_warned);
 					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot canceling all actions...");
-				} else { //cout << "skipping cancel, already issued " << endl; }
+				} else { //cout << "skipping cancel, already issued " << endl; 
+				}
 
 			}
 			else if (robot_action == "3") {	// point to object
@@ -427,7 +428,7 @@ void RobotMotionAgent::update() {
 	echo.on_error=[](shared_ptr<WsServer::Connection> connection, const SimpleWeb::error_code& ec) {
 		ros::spinOnce(); // TODO: intended to catch the reset service call
 		//cout << "[ROBOT AGENT] Server: Error in connection " << (size_t)connection.get() << ". " <<
-				"Error: " << ec << ", error message: " << ec.message() << endl;
+				//"Error: " << ec << ", error message: " << ec.message() << endl;
 	};
 server.start();
 

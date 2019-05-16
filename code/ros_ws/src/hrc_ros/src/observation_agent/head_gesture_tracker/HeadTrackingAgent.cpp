@@ -225,7 +225,7 @@ void detectMarkers(int argc, char *argv[]){
 		//override cornerRefinementMethod read from config file
 		detectorParams->cornerRefinementMethod = parser.get<int>("refine");
 	}
-	std:://cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
+	//std:://cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
 
 	int camId = parser.get<int>("ci");
 
@@ -363,8 +363,7 @@ void detectMarkers(int argc, char *argv[]){
 				headGesture_pub.publish(hg_msg);
 
 				// publisch global_former_id !!! 
-			} else { ////cout << "same ID as before"; 
-			}
+			} //else { ////cout << "same ID as before"; }
 
 		} /*else { // if no ID is detected, set it to notLookingAround  
 			hg_msg.humanLookingAround = false; 
