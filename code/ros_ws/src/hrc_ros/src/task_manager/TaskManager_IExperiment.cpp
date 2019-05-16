@@ -125,7 +125,7 @@ bool TaskManager::setTaskNumber(hrc_ros::SetTaskNumberRequest &req, hrc_ros::Set
     task_number = req.task_number -1; 
     ros::param::set("/task_count", task_number);
 
-    cout << "task_number " << task_number << "  ( is -1 since it will be increased when scenario is started" << endl; 
+    //cout << "task_number " << task_number << "  ( is -1 since it will be increased when scenario is started" << endl; 
 
     //hrc_ros::InitiateScenario::Request req_init;
     //hrc_ros::InitiateScenario::Response res_init;
@@ -158,7 +158,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
                 return false;
             }
 
-        cout << "# task_counter: " << task_number << endl << endl;
+        //cout << "# task_counter: " << task_number << endl << endl;
 
     subtask_counter = 1;
     //task_counter += 1;
@@ -268,8 +268,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 
     mdp_human_shell = mdp_human_shell + human_type + "\"'";
     const char * c_mdp_human_shell = mdp_human_shell.c_str();
-    //cout << "pid of the processes" << getpid();
-    cout << "MDP Human shell script path: " << mdp_human_shell << endl;
+    ////cout << "pid of the processes" << getpid();
+    //cout << "MDP Human shell script path: " << mdp_human_shell << endl;
     system(c_mdp_human_shell);
 
     //NOTE: human mood and expertise is used under mc_sampler and observation agent (transition_function)
@@ -397,7 +397,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
     system(c_robot_shell);
-    cout << "Robot shell script path: " << robot_shell << endl;
+    //cout << "Robot shell script path: " << robot_shell << endl;
 
     // Setting robot infor and new scenario information parameters
     ros::param::set("/robot_initial_state", true);
@@ -642,7 +642,7 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
 
 
     // TODO remove after debugging
-    cout << "#RobotStatusUpdater:   Robot_real_state =  " <<  req.robot_update.robot_real_state  << " Robot_belief_state: " << req.robot_update.robot_belief_state << endl;
+    //cout << "#RobotStatusUpdater:   Robot_real_state =  " <<  req.robot_update.robot_real_state  << " Robot_belief_state: " << req.robot_update.robot_belief_state << endl;
     if (req.robot_update.robot_belief_state == req.robot_update.robot_real_state)
         taskState_msg.isEstimationCorrect = true;
     else
@@ -736,13 +736,13 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
         //subtask_success_statistics = msg.successful_subtasks;
         //final_state_statistics = "GlobalSuccess";
         // TODO remove
-        cout << endl << endl << " Global success received " << endl;
+        //cout << endl << endl << " Global success received " << endl;
     } else if ( (msg.task_success_status.compare("fail") == 0) ) {
         task_has_finished = true;
         task_fail_statisctics += 1;
         //subtask_fail_statistics = msg.failed_subtasks;
         //final_state_statistics = "GlobalFail";
-        cout << endl << endl << " Global fail received " << endl;
+        //cout << endl << endl << " Global fail received " << endl;
     }
 
 
@@ -869,15 +869,15 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
 // TODO get task_has_finished from ovservation agent => Test this!!
 void TaskManager::CheckToStartNewTask(void){
 
-    cout << "#CheckToStartNewTask:   task_has_finished: " << task_has_finished << "   robot_has_informed:   " << robot_has_informed << endl;
-    cout << "#CheckToStartNewTask:   task_counter: " << task_number << "   subtask_counter:  " << subtask_counter << endl;
+    //cout << "#CheckToStartNewTask:   task_has_finished: " << task_has_finished << "   robot_has_informed:   " << robot_has_informed << endl;
+    //cout << "#CheckToStartNewTask:   task_counter: " << task_number << "   subtask_counter:  " << subtask_counter << endl;
     // TODO: check if task_has_finished && robot_hs_informed is stil relevant
     if ( (task_has_finished && robot_has_informed ) || task_stuck_flag || (subtask_counter > subtask_number_current_task)){
 
 
         // TODO remove printout
-        cout << endl << " -> -> Initiation will be triggered (in if) " << endl << " Task_stuck_flag : " << task_stuck_flag << "subtask_counter : " << subtask_counter << " subtask_number_current_task : " << subtask_number_current_task << endl;
-        cout << " task_has_finished = " << task_has_finished << " robot_has_informed : = " << robot_has_informed << endl << endl << endl;
+        //cout << endl << " -> -> Initiation will be triggered (in if) " << endl << " Task_stuck_flag : " << task_stuck_flag << "subtask_counter : " << subtask_counter << " subtask_number_current_task : " << subtask_number_current_task << endl;
+        //cout << " task_has_finished = " << task_has_finished << " robot_has_informed : = " << robot_has_informed << endl << endl << endl;
         // Task status informers reset
         task_has_finished = false;
         human_has_informed = false;
@@ -973,11 +973,11 @@ void TaskManager::CheckToStartNewTask(void){
 
 
         if (task_number + 1 > (current_global_task_config.task_max) ){
-            cout << endl << endl << " All tests are done - :-) " << endl << endl;
+            //cout << endl << endl << " All tests are done - :-) " << endl << endl;
 
 
         } else {
-            cout << "#CheckToStartNewTask:   task_counter:   " << task_number << "     => call initiateScenario" << endl;
+            //cout << "#CheckToStartNewTask:   task_counter:   " << task_number << "     => call initiateScenario" << endl;
 
             // TODO remove if manual staring of scenario is ok
             hrc_ros::InitiateScenario::Request req_init;

@@ -21,7 +21,7 @@ RobotMotionAgent::RobotMotionAgent() {
 }
 
 RobotMotionAgent::~RobotMotionAgent() {
-	cout << " In destructor " << endl;
+	//cout << " In destructor " << endl;
 }
 
 ros::Time cancel_now_time; 
@@ -66,7 +66,7 @@ void RobotMotionAgent::initialize() {
 	// Testing the most important services TODO remove after integration
 
 
-	cout << "Robot agent created" << endl;
+	//cout << "Robot agent created" << endl;
 	ROS_INFO("[ROBOT AGENT] created !");
 	update();
 }
@@ -90,9 +90,9 @@ bool RobotMotionAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
 bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res){
 
 
-  cout << "Starting with a test now " << endl;
+  //cout << "Starting with a test now " << endl;
 
-  cout << "goto clibration position " << endl;
+  //cout << "goto clibration position " << endl;
 	// goto calibration position:
 	hrc_ros::SetPTPCmdRequest goto_request;
 	hrc_ros::SetPTPCmdResponse goto_resp;
@@ -101,7 +101,7 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	goto_request.z = -45;
 	Dobot_gotoPoint.call(goto_request,goto_resp);
 
-  cout << "goto IDLE position" << endl;
+  //cout << "goto IDLE position" << endl;
 	// goto IDLE position:
 	goto_request.x = 215;
 	goto_request.y = 45;
@@ -109,10 +109,10 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	Dobot_gotoPoint.call(goto_request,goto_resp);
 
 
-	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
+	//cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;
+	//cout << endl << " => starting the pick & place now !  " << endl;
 
 	hrc_ros::SimplePickAndPlaceRequest spp_request;
 	hrc_ros::SimplePickAndPlaceResponse spp_resp;
@@ -126,10 +126,10 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 
 
 
-	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
+	//cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;
+	//cout << endl << " => starting the pick & place now !  " << endl;
 
 	spp_request.pickX = 278;
 	spp_request.pickY = 50;
@@ -140,10 +140,10 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
-	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
+	//cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;
+	//cout << endl << " => starting the pick & place now !  " << endl;
 
 	spp_request.pickX = 278;
 	spp_request.pickY = 50;
@@ -154,10 +154,10 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 	Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
 
-	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
+	//cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;
+	//cout << endl << " => starting the pick & place now !  " << endl;
 
 	spp_request.pickX = 278;
 	spp_request.pickY = 50;
@@ -169,10 +169,10 @@ bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_
 
 
 
-	cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
+	//cout << " Wait for 10 seconds, then a pickAndPlace will be issued!!! => prepare an object" << endl;
 	sleep(10);
 
-	cout << endl << " => starting the pick & place now !  " << endl;
+	//cout << endl << " => starting the pick & place now !  " << endl;
 
 	spp_request.pickX = 278;
 	spp_request.pickY = 50;
@@ -200,7 +200,7 @@ void RobotMotionAgent::update() {
         auto& echo=server.endpoint["^/?$"];
 
 	echo.on_open=[](shared_ptr<WsServer::Connection> connection) {
-	//cout << "Server: Opened connection " << (size_t)connection.get() << endl;
+	////cout << "Server: Opened connection " << (size_t)connection.get() << endl;
 		ros::spinOnce(); // TODO: intended to catch the reset service call
 	};
 
@@ -217,11 +217,11 @@ void RobotMotionAgent::update() {
 		*send_stream << message_send;
 		server.send(connection, send_stream, [](const SimpleWeb::error_code& ec){
 			if(ec) {
-				cout << "[ROBOT AGENT] Server: Error sending message. " <<
+				//cout << "[ROBOT AGENT] Server: Error sending message. " <<
 						"Error: " << ec << ", error message: " << ec.message() << endl;
 			}
 		});
-			//cout << "Server: Sending message \"" << message_send <<  "\" to MDP"<< endl;
+			////cout << "Server: Sending message \"" << message_send <<  "\" to MDP"<< endl;
 
 		// interprete action and state
 		std::size_t index = message_received.find(",");
@@ -274,11 +274,11 @@ void RobotMotionAgent::update() {
 				dobot_grasp_pub.publish(msg);
 
 				//std::thread grasping_thread(dobot_grasping_thWorker);
-				//cout << "after thread call   - in else " << endl;
+				////cout << "after thread call   - in else " << endl;
 				// TODO check if it is possible to preemt this thread with the real robot.
 				//ros::spinOnce();
 			  //	grasping_thread.join();
-				//cout << "after thread.join " << endl;
+				////cout << "after thread.join " << endl;
 				//ros::spinOnce();
 				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
 			}
@@ -301,7 +301,7 @@ void RobotMotionAgent::update() {
 					ros::ServiceClient informHuman = nh.serviceClient<std_srvs::SetBool>("/human_mc_sampler/robot_is_warned");
 					informHuman.call(is_warned);
 					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot canceling all actions...");
-				} else { cout << "skipping cancel, already issued " << endl; }
+				} else { //cout << "skipping cancel, already issued " << endl; }
 
 			}
 			else if (robot_action == "3") {	// point to object
@@ -426,7 +426,7 @@ void RobotMotionAgent::update() {
 	//See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
 	echo.on_error=[](shared_ptr<WsServer::Connection> connection, const SimpleWeb::error_code& ec) {
 		ros::spinOnce(); // TODO: intended to catch the reset service call
-		cout << "[ROBOT AGENT] Server: Error in connection " << (size_t)connection.get() << ". " <<
+		//cout << "[ROBOT AGENT] Server: Error in connection " << (size_t)connection.get() << ". " <<
 				"Error: " << ec << ", error message: " << ec.message() << endl;
 	};
 server.start();

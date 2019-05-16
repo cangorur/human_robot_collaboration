@@ -225,7 +225,7 @@ void detectMarkers(int argc, char *argv[]){
 		//override cornerRefinementMethod read from config file
 		detectorParams->cornerRefinementMethod = parser.get<int>("refine");
 	}
-	std::cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
+	std:://cout << "Corner refinement method (0: None, 1: Subpixel, 2:contour, 3: AprilTag 2): " << detectorParams->cornerRefinementMethod << std::endl;
 
 	int camId = parser.get<int>("ci");
 
@@ -295,7 +295,7 @@ void detectMarkers(int argc, char *argv[]){
 		totalTime += currentTime;
 		totalIterations++;
 		if(totalIterations % 30 == 0) {
-			//cout << "Detection Time = " << currentTime * 1000 << " ms "
+			////cout << "Detection Time = " << currentTime * 1000 << " ms "
 				// << "(Mean = " << 1000 * totalTime / double(totalIterations) << " ms)" << endl;
 		}
 
@@ -345,16 +345,16 @@ void detectMarkers(int argc, char *argv[]){
 						int ms = 5000;
 						int freq = 440;
 						int fd = 1; 
-						cout << "Human looking around" << endl;
+						//cout << "Human looking around" << endl;
 						
 						//sc.play(1);  // depends on sound_play package
-						cout << '\a' << endl; 
+						//cout << '\a' << endl; 
 					} 
 				} else { 
 					hg_msg.humanLookingAround = false; 
 					hg_msg.headGestureDetails = string("center");
 					if(debug_print_flag == 1){
-						cout << "NOT looking around" << endl;
+						//cout << "NOT looking around" << endl;
 						//sc.play(2);  // depends on sound_play package 
 					} 
 				 } 
@@ -363,14 +363,14 @@ void detectMarkers(int argc, char *argv[]){
 				headGesture_pub.publish(hg_msg);
 
 				// publisch global_former_id !!! 
-			} else { //cout << "same ID as before"; 
+			} else { ////cout << "same ID as before"; 
 			}
 
 		} /*else { // if no ID is detected, set it to notLookingAround  
 			hg_msg.humanLookingAround = false; 
 			hg_msg.headGestureDetails = string("center");
 			if(debug_print_flag == 1){
-				cout << "Default --- NOT looking around" << endl;
+				//cout << "Default --- NOT looking around" << endl;
 				sc.play(3);
 				hg_msg.stamp = ros::Time::now(); 
 				headGesture_pub.publish(hg_msg);
