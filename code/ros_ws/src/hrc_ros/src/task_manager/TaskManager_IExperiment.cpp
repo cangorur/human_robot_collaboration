@@ -306,7 +306,12 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // === ROBOT: Setting up the selected robot policy ===
     robot_model = "";
     // Start the robot shell with the given type (either from config file as default or rosparam: manual set or set by policy retrieve)
-    string robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/POMDP_robot_general.sh " + pkg_path + " ";
+   
+    //## use this, if the POMDP should show up in own terminal 
+    //string robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/POMDP_robot_general.sh " + pkg_path + " ";
+   
+    string robot_shell =  pkg_path + "/model_scripts/POMDP_robot_general.sh " + pkg_path + " ";
+
 
     if(useEvaluator){ // robot_model is selected by the policy_evaluator node
         if(ros::param::has("/robot_model")){
@@ -359,14 +364,18 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
         robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
         if (robot_AItype == "proactive"){
-            robot_shell = robot_shell + robot_model + "\"'";
+	    // ## if POMDP should show up in own terminal 
+	    //robot_shell = robot_shell + robot_model + "\"'";	
+            robot_shell = robot_shell + robot_model + " &";
         }else if (robot_AItype == "reactive"){
             robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
             robot_shell = robot_shell + robot_model + "\"'";
         }else{
             //if nothing specified call the default pomdp robot model
             robot_model = "proactive.pomdpx";
-            robot_shell = robot_shell + robot_model + "\"'";
+	   // ## if robot_shell should show up in own terminal 	   
+	   //robot_shell = robot_shell + robot_model + "\"'";          
+	   robot_shell = robot_shell + robot_model   + " &";
         }
     }else{
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
