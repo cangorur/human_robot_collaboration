@@ -182,7 +182,8 @@ add_dependencies(rule_monitor_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(rule_monitor_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
 add_executable(experiment_monitor_agent
-  src/experiment_monitor/experimentMonitor.cpp)
+  src/experiment_monitor/experimentMonitor.cpp
+  src/helper_functions/Json_parser.cpp)
 add_dependencies(experiment_monitor_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(experiment_monitor_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 

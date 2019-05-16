@@ -23,17 +23,18 @@
 #include <std_srvs/Trigger.h>
 
 // includes for Json parsing
-//#include <helper_functions/Json_parser.h>
-//#include <vector>
+#include <helper_functions/Json_parser.h>
+#include <vector>
 
 
 using namespace std;
 
-//namespace pt = boost::property_tree; 
-//using boost::property_tree::ptree;
+namespace pt = boost::property_tree; 
+using boost::property_tree::ptree;
 
 // All of this could go into a header 
 	
+int global_task_count_display = 1; 	
 ros::ServiceServer display_task_rules;
 ros::ServiceServer display_scoring_server; 
 ros::ServiceServer distract_participants_server; 
@@ -48,9 +49,9 @@ const std::string blue("\033[1;34m");
 const std::string normal("\033[1;37m");	
 
 // variables and structs to parse Json 
-//task_set current_task_set;
-//success_combo success_criteria_read;
-//global_task_config global_task_config_read; 
+task_set current_task_set;
+success_combo success_criteria_read;
+global_task_config global_task_config_read; 
 
 // Fixed sequence arrays to display subtask_type 3 - the number indicate the sequence of the objects 
 vector<int> red_subtask_order_vect;   // 1,4,7,10
@@ -154,12 +155,12 @@ std::string mapintToEnumeration(int number){
 	return enum_string; 
 }
 
-/*bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res){
+bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res){
 
 	int task_counter = req.task_counter; 
 
 
-	clear_screen(); 
+	//clear_screen(); 
 
 
 	//### parse task_rule file 
@@ -200,7 +201,7 @@ std::string mapintToEnumeration(int number){
 	
 	if (current_task_set.all_set == true){ // rules are the same for all subtasks 
 		int subtask_counter = 1; 
-		cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
+		cout  << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
 		cout << "For all subtasks : "<< endl << "-----------------"<< endl << endl << endl;  
 		for ( int obj = 1; obj <=3; obj++){
 			// ## get strings for success_criteria request
@@ -232,8 +233,8 @@ std::string mapintToEnumeration(int number){
 		} 
 
 		// wait for certain time, then clear the screen and return true to start the experiment
-		ros::Duration(15).sleep();
-		clear_screen(); 
+		//ros::Duration(15).sleep();
+		//clear_screen(); 
 
 	} else { // different subtask rules - the different types are differentiated with subtask_type read from task_config json
 
@@ -242,7 +243,7 @@ std::string mapintToEnumeration(int number){
 		
 		if (subtask_type.compare("2_same_tray_order") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 3 subtasks 
 
-			cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
+			cout << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
 			cout << "Repeat following sequence : "<< endl << "-----------------"<< endl << endl << endl; 
 
 			
@@ -280,7 +281,7 @@ std::string mapintToEnumeration(int number){
 			
 		} else if (subtask_type.compare("3_mixed_fixed_sequence") == 0 ) { // most complex scenario - for each colour and occurence a single rule is given (4 red, 3green, 3 blue)
 
-			cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
+			cout << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
 			cout << "Execute following sequence : "<< endl << "-----------------"<< endl << endl << endl; 
 
 			// printing rules for red objects - loop trough the occurence index of object and retrieve and print the success criteria for this subtask 
@@ -386,20 +387,20 @@ std::string mapintToEnumeration(int number){
 				}
 			}
 
-			ros::Duration(15).sleep(); 
+			//ros::Duration(15).sleep(); 
 		}
 		
 
 		
-		ros::Duration(15).sleep();
-		clear_screen();
+		//ros::Duration(15).sleep();
+		//clear_screen();
 	}
 
    res.success = true;
    return true;
 }
 
-*/
+
 
 	void clear_screen() {
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
@@ -498,7 +499,8 @@ void receive_task_status(const hrc_ros::TaskStateIE &msg){
 
 	}
 
-	update_statistics_display(); 
+	update_statistics_display();
+
 }
 
 void receive_tray_update(const hrc_ros::PublishTrayUpdateMsg &msg){
@@ -517,7 +519,7 @@ void receive_tray_update(const hrc_ros::PublishTrayUpdateMsg &msg){
 void update_statistics_display(void){
 	clear_screen(); 
 
-	cout << normal << " Gloabal: " << endl << "	Task_cnt: " << red << Global_task_id << normal <<  "	Subatask_cnt: " << red << Global_subtask_id << endl << endl; 
+	cout << normal << " Global: " << endl << "	Task_cnt: " << red << Global_task_id << normal <<  "	Subatask_cnt: " << red << Global_subtask_id << endl << endl; 
 	// OBSERVATION 
 	cout << blue << "############ Observation ################" << endl << endl; 
 	cout << normal << "observation_pomdp: " << blue << OBSERVATION_mapped_observation_pomdp << normal << endl << "real_obs: " << blue << OBSERVATION_real_obs << endl << endl; 
@@ -561,7 +563,7 @@ void update_statistics_display(void){
 	cout << blue << "############ Task Done ####################" << endl << endl; 
 	
 	cout << normal << " Task status: " << blue << DONE_task_status << normal << "  Duration: " << blue << DONE_task_duration << endl; 
-	cout << normal << " Total reward: " << blue << Global_total_disc_reward << normal << "Successful task: " << blue << DONE_successful_tasks << " = " << DONE_percentage_successful_tasks << "% " << endl; 
+	cout << normal << " Total reward: " << blue << Global_total_disc_reward << normal << "  Successful task: " << blue << DONE_successful_tasks << " = " << DONE_percentage_successful_tasks << "% " << endl; 
 	cout << normal << " Warnings received: " << blue << DONE_warnings_count << endl << endl; 
 
 	//// could maybe be used 
@@ -574,6 +576,17 @@ void update_statistics_display(void){
 	//double DONE_percentage_successful_tasks	= 0.0; 
 	//string Global_total_disc_reward 			= ""; 
 
+
+	// ## also display task rule 
+	cout << endl << normal  << "############ Task rule ####################" << endl << endl; 
+	hrc_ros::DisplayTaskRuleRequest task_rule_req;
+	hrc_ros::DisplayTaskRuleResponse task_rule_resp; 
+	if (Global_task_id > 0) {
+		global_task_count_display = Global_task_id;
+	} 
+	task_rule_req.task_counter = global_task_count_display; 
+	display_task_rules_server(task_rule_req,task_rule_resp);
+
 }
 
 
@@ -585,7 +598,7 @@ int main(int argc, char **argv) {
 	// declare object here is class is use 
 	//RobotMotionAgent robot_motion_agent;
 	clear_screen();
-	//cout << "                    ############# Task Rules #############                   " << endl;
+	cout << "                    ############# Experiment Monitor #############                   " << endl;
 		
 	
 	ros::AsyncSpinner spinner(3 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */); 
