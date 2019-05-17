@@ -62,6 +62,7 @@ using namespace std;
 using namespace cv;
 
 int global_former_id = 0; // 5= left | 6= middle | 7= right
+int detection_count = 0;
 
 namespace {
 const char* about = "Basic marker detection";
@@ -327,9 +328,9 @@ void detectMarkers(int argc, char *argv[]){
 		hrc_ros::HeadGestureMsg hg_msg; 
 		if(ids.size() > 0){ // if an ID has been detected 
 			
-			if (ids.at(0) != global_former_id){
+			if (ids.at(0) != global_former_id || detection_count >= 5){
 				global_former_id = ids.at(0); 
-	 
+	 			detection_count = 0; 
 				
 				// assign human looking around 
 				if(ids.at(0)==5 || ids.at(0)==7){ // one of the side markers is detected -> looking around 
@@ -365,6 +366,8 @@ void detectMarkers(int argc, char *argv[]){
 				// publisch global_former_id !!! 
 			} //else { ////cout << "same ID as before"; }
 
+			// increment detection_count
+			detection_count ++; 
 		} /*else { // if no ID is detected, set it to notLookingAround  
 			hg_msg.humanLookingAround = false; 
 			hg_msg.headGestureDetails = string("center");
