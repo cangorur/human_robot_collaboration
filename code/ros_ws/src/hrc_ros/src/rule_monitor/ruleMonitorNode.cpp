@@ -212,7 +212,6 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 					cout << "			Place 2nd object into " << container_colour << container_print_string << normal << " container " << endl << endl; 
 				} else if (rule_i ==3){
 					cout << "			Place 3rd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-					cout << endl << endl << "			REPEAT Sequence  " << endl << endl; 
 				} else if (rule_i ==4){
 					cout << "			Place 4th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
 				} else if (rule_i ==5){
