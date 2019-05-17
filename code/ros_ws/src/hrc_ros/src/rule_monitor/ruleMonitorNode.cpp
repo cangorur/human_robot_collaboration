@@ -186,7 +186,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 
 			
 			// increment trough first 3 subtasks - regardless of colour - the following rules will be repetition of first 3 rules 
-			for (int rule_i =1; rule_i<= 3; rule_i ++) {
+			for (int rule_i =1; rule_i<= 5; rule_i ++) {
 				// static task_str - increment subtask_str - colour/object alwas 1=red 
 				stringstream ss_subtask_counter;
 				ss_subtask_counter << rule_i; 
@@ -213,6 +213,11 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 				} else if (rule_i ==3){
 					cout << "			Place 3rd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
 					cout << endl << endl << "			REPEAT Sequence  " << endl << endl; 
+				} else if (rule_i ==4){
+					cout << "			Place 4th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+				} else if (rule_i ==5){
+					cout << "			Place 5th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					cout << endl << endl << "			REPEAT Sequence  " << endl << endl;
 				}
 			}
 
