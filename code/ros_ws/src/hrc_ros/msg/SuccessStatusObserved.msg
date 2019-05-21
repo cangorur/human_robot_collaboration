@@ -21,6 +21,10 @@ float64 task_combined_subtask_time_seconds
 float64 percentage_successful_subtasks
 string  who_succeeded
 uint32  task_warnings_received
+uint32  subtask_warnings_received
 uint32  successful_tasks_cnt
 uint32  failed_tasks_cnt
 float64 percentage_successful_tasks
+float32 task_finished_immediate_reward
+float32 task_finished_discounted_reward
+

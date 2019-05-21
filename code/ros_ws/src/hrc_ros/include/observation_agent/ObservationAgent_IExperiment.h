@@ -415,6 +415,7 @@ private:
 	int successful_subtasks = 0;
 	int failed_subtasks 	= 0;
 	int warnings_received_task = 0;
+	int warnings_received_subtask = 0;
 	double subtask_time_seconds = 0.0;
 	string who_succeeded = "NOBODY"; // NOBODY, ROBOT, HUMAN
 	int successful_tasks_cnt = 0;

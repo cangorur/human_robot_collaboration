@@ -66,6 +66,7 @@ void ObservationAgent::initialize(){
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
+	warnings_received_subtask =0; 
 	successful_tasks_cnt = 0;
 	failed_tasks_cnt = 0;
 	percentage_successful_tasks = 0.0;
@@ -127,6 +128,7 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
+	warnings_received_subtask = 0; 
 	// other variables
 	o1_ipd = false; //  O_1  task successs (processed product detected)
 	o2_upd = false; // O_2	failure
@@ -256,6 +258,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		// track number of warnings received for statistics
 		if ( o6_a4 == true){
 			warnings_received_task ++;
+			warnings_received_subtask ++;
 		}
 
 		if (robotType == "reactive"){
@@ -625,6 +628,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		success_status_msg.task_counter = task_counter;
 		success_status_msg.subtask_counter = subtask_counter;
 
+
 		// ## fields for statistics
 		success_status_msg.failed_subtasks = failed_subtasks;
 		success_status_msg.successful_subtasks = successful_subtasks;
@@ -635,6 +639,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		success_status_msg.percentage_successful_subtasks = percentage_successful_subtasks;
 		success_status_msg.who_succeeded = "HUMAN";
 		success_status_msg.task_warnings_received = warnings_received_task;
+		success_status_msg.subtask_warnings_received =	warnings_received_subtask;
 		success_status_msg.successful_tasks_cnt = successful_tasks_cnt;
 		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
 			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
@@ -647,16 +652,23 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 		int_subtask_status = 0; // reset to ongoing
 
-
+		float final_immediate_reward_IE = 0; 
+		float final_discounted_reward_IE = 0; 
+		final_immediate_reward_IE = immediate_reward_IE;
+		final_discounted_reward_IE = discounted_reward_IE;
 		// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
 		if (task_success_state.compare("success") ==0 ){
 			//cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl;
 			IE_humanSt_to_robotSt_Map("GlobalSuccess");
+			calculate_reward_IE("12",final_immediate_reward_IE,final_discounted_reward_IE);
 		} else if (task_success_state.compare("fail")==0) {
 			//cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl;
 			IE_humanSt_to_robotSt_Map("GlobalFail");
+			calculate_reward_IE("13",final_immediate_reward_IE,final_discounted_reward_IE);
 		}
 
+		success_status_msg.task_finished_immediate_reward =  final_immediate_reward_IE;
+		success_status_msg.task_finished_discounted_reward = final_discounted_reward_IE;
 		// ########################  Before the tray status was published here -> after decision making ########
 		// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 		traySensor_success_pub.publish(success_status_msg);
@@ -666,6 +678,12 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		// ## increment subtask counter
 		subtask_counter += 1;
+
+
+		// ### Reset variables that are relevant for 1 subtask only 
+
+		warnings_received_subtask = 0; 
+
 
 		ROS_INFO("\n\n");
 		ROS_WARN("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED #### \n\n");
@@ -811,7 +829,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 	return true;
 }
 
-
+// Tray update if robot took over the task
 void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	hrc_ros::SuccessStatusObserved success_status_msg;
 	string task_success_state = "ongoing";
@@ -866,7 +884,7 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		// TODO add task time to success_status_msg and publish by task manager
 		// ## Compose success_status_msg
 		success_status_msg.stamp = ros::Time::now();
-		success_status_msg.subtask_success_status = subtask_success_state;
+		success_status_msg.subtask_success_status = "ROBOT SUCCEEDED";
 		success_status_msg.task_success_status = task_success_state;
 
 		// ## fields for debugging

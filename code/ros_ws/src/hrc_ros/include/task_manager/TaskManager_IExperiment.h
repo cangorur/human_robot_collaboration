@@ -291,6 +291,8 @@ private:
 	int global_stat_successful_tasks_cnt = 0;
 	int global_stat_failed_tasks_cnt = 0;
 	double global_stat_percentage_successful_tasks = 0.0; 
+	float global_stat_task_finished_immediate_reward = 0.0;
+	float global_stat_task_finished_discounted_reward = 0.0;
 // <-End of task_status
 
 };
