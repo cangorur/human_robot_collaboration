@@ -18,6 +18,5 @@ LogFiles/
 
 # temporary
 code/pomdp_evaluation
-code/models/
-*.csv
+#code/models
 code/results/POMDP_IE_tests
