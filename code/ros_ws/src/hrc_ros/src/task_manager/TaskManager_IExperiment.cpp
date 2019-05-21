@@ -399,6 +399,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     
     
         system(c_robot_shell);
+    
     //cout << "Robot shell script path: " << robot_shell << endl;
 
     // Setting robot infor and new scenario information parameters
@@ -662,7 +663,7 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
     taskState_msg.immediate_reward = global_immediate_reward;
         global_total_disc_reward = req.robot_update.total_disc_reward;
     taskState_msg.total_disc_reward = global_total_disc_reward;
-    //taskState_msg.robot_belief  = req.robot_belief;
+    taskState_msg.robot_belief = robot_belief;
 
 
     taskStatusPublisher.publish(taskState_msg);
@@ -771,8 +772,6 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     global_stat_successful_tasks_cnt = msg.successful_tasks_cnt;
     global_stat_failed_tasks_cnt = msg.failed_tasks_cnt;
     global_stat_percentage_successful_tasks = msg.percentage_successful_tasks;
-    global_stat_task_finished_immediate_reward = msg.task_finished_immediate_reward;
-    global_stat_task_finished_discounted_reward = msg.task_finished_discounted_reward;
 
     // TODO remove this publishing part if the success statistics should only be published after a task is done
     hrc_ros::TaskStateIE taskState_msg;
@@ -790,9 +789,7 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     taskState_msg.subtask_duration = global_stat_subtask_time_seconds;
     taskState_msg.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
     taskState_msg.who_succeeded_subtask =  global_stat_who_succeeded;
-    taskState_msg.task_duration = global_stat_task_combined_subtask_time_seconds;
     // taskState_msg.task_warnings_received = global_stat_task_warnings_received;
-    taskState_msg.warnings_count_subtask = msg.subtask_warnings_received;
     taskState_msg.successful_tasks_cnt = global_stat_successful_tasks_cnt;
     taskState_msg.failed_tasks_cnt = global_stat_failed_tasks_cnt;
     taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
@@ -898,8 +895,8 @@ void TaskManager::CheckToStartNewTask(void){
         taskState_msg.who_reports = "MANAGER-TASK-DONE"; // was MANAGER before
 
         // TODO which timestamp and how to get those
-        taskState_msg.update_received_time = ros::Time::now();  
-        /*taskState_msg.action_taken_time = req.robot_update.action_taken_time;
+        /*taskState_msg.update_received_time = req.robot_update.stamp_robot_update;
+        taskState_msg.action_taken_time = req.robot_update.action_taken_time;
         taskState_msg.taken_action = req.robot_update.robot_action_taken;
         taskState_msg.belief_state = req.robot_update.robot_belief_state;
         taskState_msg.real_state = req.robot_update.robot_real_state;
@@ -940,15 +937,7 @@ void TaskManager::CheckToStartNewTask(void){
 
         // add statistics rewards (informed by robot agent)
         // taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
-
-        // Workaround since robot often doe not inform last reward
-        //std::string::size_type sz;
-        //if (std::stof (global_total_disc_reward,&sz) >= global_stat_task_finished_discounted_reward){
-            taskState_msg.total_disc_reward = global_total_disc_reward;
-        //} else {
-        //    taskState_msg.total_disc_reward = to_string(global_stat_task_finished_discounted_reward);
-        //    cout << endl << endl <<  " !!!!! Using reward informed by try update  !!!!!!" << endl << endl; 
-        //} 
+        taskState_msg.total_disc_reward = global_total_disc_reward;
 
 
 
@@ -962,6 +951,7 @@ void TaskManager::CheckToStartNewTask(void){
 
         score_display_req.task_duration = global_stat_task_combined_subtask_time_seconds; 
         score_display_req.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
+        std::string::size_type sz;
         score_display_req.reward_scoring_task = global_total_disc_reward; 
         display_score_client.call(score_display_req,score_display_resp);
         
