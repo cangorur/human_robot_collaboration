@@ -781,6 +781,7 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     taskState_msg.update_received_time = ros::Time::now();
     taskState_msg.who_reports = "SENSOR"; // was Observation-Tray-update before.
 
+    taskState_msg.task_duration = msg.task_combined_subtask_time_seconds;
     taskState_msg.tray_update_received_time = global_stat_tray_update_stamp;
     taskState_msg.subtask_status = global_stat_subtask_success_status;
     taskState_msg.subtask_id = global_stat_subtask_counter;
@@ -790,6 +791,7 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     taskState_msg.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
     taskState_msg.who_succeeded_subtask =  global_stat_who_succeeded;
     // taskState_msg.task_warnings_received = global_stat_task_warnings_received;
+    taskState_msg.warnings_count_subtask = msg.subtask_warnings_received;
     taskState_msg.successful_tasks_cnt = global_stat_successful_tasks_cnt;
     taskState_msg.failed_tasks_cnt = global_stat_failed_tasks_cnt;
     taskState_msg.percentage_successful_tasks = global_stat_percentage_successful_tasks;
@@ -923,6 +925,7 @@ void TaskManager::CheckToStartNewTask(void){
         */
 
         // #######  publish final statistics before starting new task -> those are received by tray_update ###########
+        taskState_msg.update_received_time = ros::Time::now();
         taskState_msg.tray_update_received_time = global_stat_tray_update_stamp;
         taskState_msg.task_status = global_stat_task_success_status;
         taskState_msg.subtask_id = global_stat_subtask_counter;
