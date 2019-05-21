@@ -652,23 +652,23 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 		int_subtask_status = 0; // reset to ongoing
 
-		float final_immediate_reward_IE = 0; 
-		float final_discounted_reward_IE = 0; 
-		final_immediate_reward_IE = immediate_reward_IE;
-		final_discounted_reward_IE = discounted_reward_IE;
+		//float final_immediate_reward_IE = 0; 
+		//float final_discounted_reward_IE = 0; 
+		//final_immediate_reward_IE = immediate_reward_IE;
+		//final_discounted_reward_IE = discounted_reward_IE;
 		// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
 		if (task_success_state.compare("success") ==0 ){
 			//cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl;
 			IE_humanSt_to_robotSt_Map("GlobalSuccess");
-			calculate_reward_IE("12",final_immediate_reward_IE,final_discounted_reward_IE);
+			//calculate_reward_IE("12",final_immediate_reward_IE,final_discounted_reward_IE);
 		} else if (task_success_state.compare("fail")==0) {
 			//cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl;
 			IE_humanSt_to_robotSt_Map("GlobalFail");
-			calculate_reward_IE("13",final_immediate_reward_IE,final_discounted_reward_IE);
+			//calculate_reward_IE("13",final_immediate_reward_IE,final_discounted_reward_IE);
 		}
 
-		success_status_msg.task_finished_immediate_reward =  final_immediate_reward_IE;
-		success_status_msg.task_finished_discounted_reward = final_discounted_reward_IE;
+		//success_status_msg.task_finished_immediate_reward =  final_immediate_reward_IE;
+		//success_status_msg.task_finished_discounted_reward = final_discounted_reward_IE;
 		// ########################  Before the tray status was published here -> after decision making ########
 		// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 		traySensor_success_pub.publish(success_status_msg);

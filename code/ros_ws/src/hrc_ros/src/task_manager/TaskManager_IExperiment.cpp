@@ -397,9 +397,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
     
-    if(task_number !=2){ // skipping second task -> robot will not support 
+    
         system(c_robot_shell);
-    }
     //cout << "Robot shell script path: " << robot_shell << endl;
 
     // Setting robot infor and new scenario information parameters
@@ -943,13 +942,13 @@ void TaskManager::CheckToStartNewTask(void){
         // taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
 
         // Workaround since robot often doe not inform last reward
-        std::string::size_type sz;
-        if (std::stof (global_total_disc_reward,&sz) >= global_stat_task_finished_discounted_reward){
+        //std::string::size_type sz;
+        //if (std::stof (global_total_disc_reward,&sz) >= global_stat_task_finished_discounted_reward){
             taskState_msg.total_disc_reward = global_total_disc_reward;
-        } else {
-            taskState_msg.total_disc_reward = to_string(global_stat_task_finished_discounted_reward);
-            cout << endl << endl <<  " !!!!! Using reward informed by try update  !!!!!!" << endl << endl; 
-        } 
+        //} else {
+        //    taskState_msg.total_disc_reward = to_string(global_stat_task_finished_discounted_reward);
+        //    cout << endl << endl <<  " !!!!! Using reward informed by try update  !!!!!!" << endl << endl; 
+        //} 
 
 
 
