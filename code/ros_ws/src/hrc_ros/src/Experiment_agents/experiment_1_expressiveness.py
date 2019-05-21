@@ -28,7 +28,7 @@ def listener():
 
     rospy.init_node('rosbag_extractor_node', anonymous=True)
 
-    rospy.Subscriber("/observation_agent/observation_update", hrc_ros.msg.ObsUpdateMsgIE  , callback)
+    #rospy.Subscriber("/observation_agent/observation_update", hrc_ros.msg.ObsUpdateMsgIE  , callback)
 
    # ros::Subscriber dobot_grasp_sub = nh.subscribe("/robot_motion_agent/dobot_grasp",1, graspCallback);  
    # ros::Subscriber dobot_cancel_sub = nh.subscribe("/robot_motion_agent/dobot_cancel",1, cancelCallback); 
@@ -131,7 +131,8 @@ def listener():
             if gesture == int(7): # planning V2
                 print("publish planning - V2")
                 pub_planning.publish(True)
-
+        
+        #rospy.spin()
         rate.sleep()
 
 
