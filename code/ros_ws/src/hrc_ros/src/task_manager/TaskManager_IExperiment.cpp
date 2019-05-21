@@ -943,7 +943,8 @@ void TaskManager::CheckToStartNewTask(void){
         // taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
 
         // Workaround since robot often doe not inform last reward
-        if (stof(global_total_disc_reward) >= global_stat_task_finished_discounted_reward){
+        std::string::size_type sz;
+        if (std::stof (global_total_disc_reward,&sz) >= global_stat_task_finished_discounted_reward){
             taskState_msg.total_disc_reward = global_total_disc_reward;
         } else {
             taskState_msg.total_disc_reward = to_string(global_stat_task_finished_discounted_reward);
@@ -962,7 +963,6 @@ void TaskManager::CheckToStartNewTask(void){
 
         score_display_req.task_duration = global_stat_task_combined_subtask_time_seconds; 
         score_display_req.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
-        std::string::size_type sz;
         score_display_req.reward_scoring_task = global_total_disc_reward; 
         display_score_client.call(score_display_req,score_display_resp);
         
