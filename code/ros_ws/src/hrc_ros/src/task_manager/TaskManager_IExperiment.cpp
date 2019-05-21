@@ -397,9 +397,9 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
     
-    if(task_number !=2){ // skipping second task -> robot will not support 
+    
         system(c_robot_shell);
-    }
+    
     //cout << "Robot shell script path: " << robot_shell << endl;
 
     // Setting robot infor and new scenario information parameters
