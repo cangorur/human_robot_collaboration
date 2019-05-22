@@ -171,7 +171,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 		} 
 
 		// wait for certain time, then clear the screen and return true to start the experiment
-		ros::Duration(15).sleep();
+		ros::Duration(8).sleep();
 		clear_screen(); 
 
 	} else { // different subtask rules - the different types are differentiated with subtask_type read from task_config json
@@ -329,7 +329,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 				}
 			}
 
-			ros::Duration(15).sleep(); 
+			//ros::Duration(8).sleep(); 
 
 		} else if (subtask_type.compare("4_difficult_same_tray_order") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 7 subtasks 
 
@@ -436,7 +436,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 		
 		
 		
-		ros::Duration(15).sleep();
+		ros::Duration(7).sleep();
 		clear_screen();
 	}
 
