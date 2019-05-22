@@ -171,7 +171,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 		} 
 
 		// wait for certain time, then clear the screen and return true to start the experiment
-		ros::Duration(15).sleep();
+		ros::Duration(8).sleep();
 		clear_screen(); 
 
 	} else { // different subtask rules - the different types are differentiated with subtask_type read from task_config json
@@ -329,7 +329,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 				}
 			}
 
-			ros::Duration(15).sleep(); 
+			//ros::Duration(8).sleep(); 
 
 		} else if (subtask_type.compare("4_difficult_same_tray_order") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 7 subtasks 
 
@@ -377,11 +377,66 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 			}
 
 			
+		} else if (subtask_type.compare("5_different_colours") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 5 subtasks 
+
+			cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl; 
+			cout << "Repeat following sequence : "<< endl << "-----------------"<< endl << endl << endl; 
+
+			
+			// increment trough first 3 subtasks - regardless of colour - the following rules will be repetition of first 3 rules 
+			for (int rule_i =1; rule_i<= 5; rule_i ++) {
+				// static task_str - increment subtask_str - colour/object alwas 1=red 
+				stringstream ss_subtask_counter;
+				ss_subtask_counter << rule_i; 
+
+				string subtask_str = ss_subtask_counter.str();
+			 	string object_str  = object_int_to_str(1);
+
+				// ## determine subtask success state 
+				try {
+				success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
+				} catch(boost::property_tree::json_parser::json_parser_error &e) {
+					ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+					return false;
+				}
+
+				string container_print_string; 
+
+				// use other colours for display 
+				int different_colour = 1; 
+				if (success_criteria_read.tray == 1){// if red pring in blue
+					different_colour =3;
+				} else if (success_criteria_read.tray ==2){ // if green print in red
+					different_colour = 1;
+				} else if (success_criteria_read.tray ==3){ // if blue print in green 
+					different_colour = 2;
+				}
+
+				string dismiss_string ="";
+				const std::string container_colour = mapintToString_colour(different_colour, dismiss_string );
+
+				mapintToString_colour(success_criteria_read.tray, container_print_string );
+				// ################## Print the rules ##################################################### 
+				if (rule_i == 1) {
+					cout << "			Place 1st object into " << container_colour << container_print_string << normal << " container " << endl << endl; 
+				} else if (rule_i ==2){
+					cout << "			Place 2nd object into " << container_colour << container_print_string << normal << " container " << endl << endl; 
+				} else if (rule_i ==3){
+					cout << "			Place 3rd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+				} else if (rule_i ==4){
+					cout << "			Place 4th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+				} else if (rule_i ==5){
+					cout << "			Place 5th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					cout << endl << endl << "			REPEAT Sequence  " << endl << endl;
+				}
+			}
+
+			
 		}
 		
 		
 		
-		ros::Duration(15).sleep();
+		ros::Duration(7).sleep();
 		clear_screen();
 	}
 
