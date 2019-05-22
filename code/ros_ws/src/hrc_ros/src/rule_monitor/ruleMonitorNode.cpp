@@ -412,9 +412,10 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 					different_colour = 2;
 				}
 
+				string dismiss_string ="";
+				const std::string container_colour = mapintToString_colour(different_colour, dismiss_string );
 
-				const std::string container_colour = mapintToString_colour(different_colour, container_print_string );
-
+				mapintToString_colour(success_criteria_read.tray, container_print_string );
 				// ################## Print the rules ##################################################### 
 				if (rule_i == 1) {
 					cout << "			Place 1st object into " << container_colour << container_print_string << normal << " container " << endl << endl; 
