@@ -200,22 +200,38 @@ def task_status(dir):
 
 # ##########################################################################################################################
 # This function plots the characterstics of the challenging tasks py parsing a number of csv files and averaging over them 
-# Use like this python IntExperiment_update_sensor_data.py ./Participants/Analysis/task_success_files plot_challenging
+# Use like this python IntExperiment_update_sensor_data.py ./Participants/Analysis/task_success_files plot_challenging 1 1 
+# The trailing booleans are    debug  &  show_plots    control variables 
 
-def plot_challenging(dir):
+def plot_challenging(dir,print_debug_sys,show_plots_sys):
+
+    print(print_debug_sys)
+    print(show_plots_sys)
+    if int(print_debug_sys) == 1: 
+        print_debug = True # defines if debug info is printed (e.g. mean arrays ... )
+    else: 
+        print_debug = False 
+    if int(show_plots_sys) == 1:
+        show_plots = True  # defines if plots are shown, if false they are only saved 
+    else: 
+        show_plots = False 
 
     file_list = getFileList(dir)
-    print("\n")
-    print(file_list)
-    print("\n")
+    
+    if(print_debug == True):
+        print("\n")
+        print(file_list)
+        print("\n")
     
     # variables for analysis   ttype = tasktype 
-
     ttype1_rewards = np.array([], dtype=np.float64)
-    ttype2_rewards = np.array([], dtype=np.float64)
+    ttype23_rewards = np.array([], dtype=np.float64)
     ttype24_rewards = np.array([], dtype=np.float64)
     ttype25_rewards = np.array([], dtype=np.float64)
-    ttype3_rewards = np.array([], dtype=np.float64)
+    ttype26_rewards = np.array([], dtype=np.float64)
+    ttype47_rewards = np.array([], dtype=np.float64)
+    ttype49_rewards = np.array([], dtype=np.float64)
+    ttype5_rewards = np.array([], dtype=np.float64)
     ttype1_percentage_correct_subt = np.array([], dtype=np.float64)
     ttype1_robot_tookover = np.array([], dtype=np.float64)
     ttype1_task_duration = np.array([], dtype=np.float64)
@@ -228,74 +244,185 @@ def plot_challenging(dir):
         file_frame = pd.read_csv(result_file, dtype = types_dict)
         #print(file_frame)
 
-        print(result_file)
+        if(print_debug == True):
+            print(result_file)
 
         for row in (file_frame.index):
 
             # turn 2 | task type 1 -> means analysis + SEM for each participant  | additional " in the string need to be trimmed  
-            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == 2 ) ): 
+            task_number = 2
+            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype1_rewards = np.append( ttype1_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
 
             # turn 3 | task type 2 -> means analysis + SEM for each participant 
-            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == 3 ) ): 
-                ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+            task_number = 3
+            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
+                ttype23_rewards = np.append( ttype23_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
 
             # turn 4 | task type 2 -> means analysis + SEM for each participant 
-            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == 4 ) ): 
+            task_number = 4
+            if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype24_rewards = np.append( ttype24_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
 
             # turn 5 | task type 2 -> means analysis + SEM for each participant 
-            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == 5 ): 
+            task_number = 5
+            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype25_rewards = np.append( ttype25_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
 
-            # turn 3 | task type 2 -> means analysis + SEM for each participant 
-            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == 7 ): 
-                ttype3_rewards = np.append( ttype3_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
-    
-    print("ttype1")
+            # turn 6 | task type 2 -> means analysis + SEM for each participant 
+            task_number = 6
+            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
+                ttype26_rewards = np.append( ttype26_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+
+            # turn 7 | task type 4 -> means analysis + SEM for each participant 
+            task_number = 7
+            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
+                ttype47_rewards = np.append( ttype47_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+            
+            # turn 8 | task type 5 -> means analysis + SEM for each participant 
+            task_number = 8
+            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
+                ttype5_rewards = np.append( ttype5_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+
+            # turn 9 | task type 4 -> means analysis + SEM for each participant 
+            task_number = 9
+            if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
+                ttype49_rewards = np.append( ttype49_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+
+
+    # ANALYZE REWARDS:  MEANS AND SEM     
     ttype1_rewards_sem = stats.sem(ttype1_rewards)
-    print(ttype1_rewards.dtype)  
     mean_rewards_ttype1 = np.mean(ttype1_rewards)
-    print(ttype1_rewards)
-    print(mean_rewards_ttype1)
+    if(print_debug == True):
+        print(ttype1_rewards)
+        print("\n")
+        print("ttype1")
+        print(ttype1_rewards)
+        print("mean: " + str(mean_rewards_ttype1))
+        print("SEM: " + str(ttype1_rewards_sem))
 
-    print(ttype1_rewards_sem)
+    mean_rewards_ttype23 = np.mean(ttype23_rewards)
+    ttype23_rewards_sem = stats.sem(ttype23_rewards)
+    if(print_debug == True):
+        print("\n")
+        print("ttype23")
+        print(ttype23_rewards)
+        print("mean: " + str(mean_rewards_ttype23))
+        print("SEM: " + str(ttype23_rewards_sem))
 
-    
-    print("\n")
-    print("ttype2")
-    print(ttype2_rewards)
-    mean_rewards_ttype2 = np.mean(ttype2_rewards)
-    print(mean_rewards_ttype2)
-    ttype2_rewards_sem = stats.sem(ttype2_rewards)
-    print(ttype2_rewards_sem)
-
-    print("\n")
-    print("ttype24")
-    print(ttype24_rewards)
     mean_rewards_ttype24 = np.mean(ttype24_rewards)
-    print(mean_rewards_ttype24)
     ttype24_rewards_sem = stats.sem(ttype24_rewards)
-    print(ttype24_rewards_sem)
+    if(print_debug == True):    
+        print("\n")
+        print("ttype24")
+        print(ttype24_rewards)
+        print("mean: " + str(mean_rewards_ttype24))
+        print("SEM: " + str(ttype24_rewards_sem))
 
-    print("\n")
-    print("ttype25)")
-    print(ttype25_rewards)
     mean_rewards_ttype25 = np.mean(ttype25_rewards)
-    print(mean_rewards_ttype25)
     ttype25_rewards_sem = stats.sem(ttype25_rewards)
-    print(ttype25_rewards_sem)
+    if(print_debug == True):
+        print("\n")
+        print("ttype25)")
+        print(ttype25_rewards)
+        print("mean: " + str(mean_rewards_ttype25))
+        print("SEM: " + str(ttype25_rewards_sem))
 
-    
-    print("\n")
-    print("ttype3)")
-    print(ttype3_rewards)
-    mean_rewards_ttype3 = np.mean(ttype3_rewards)
-    print(mean_rewards_ttype3)
-    ttype3_rewards_sem = stats.sem(ttype3_rewards)
-    print(ttype3_rewards_sem)
+    mean_rewards_ttype26 = np.mean(ttype26_rewards)    
+    ttype26_rewards_sem = stats.sem(ttype26_rewards)
+    if(print_debug == True):
+        print("\n")
+        print("ttype26)")
+        print(ttype26_rewards)
+        print("mean: " + str(mean_rewards_ttype26))
+        print("SEM: " + str(ttype26_rewards_sem))
 
+    ttype2_concat = np.concatenate((ttype23_rewards, ttype24_rewards, ttype25_rewards, ttype26_rewards), axis=None)
+    mean_rewards_ttype2_concat = np.mean(ttype2_concat)
+    ttype2_concat_sem = stats.sem(ttype2_concat)
+    if(print_debug == True):
+        print("\n")
+        print("ttype2 concatenated")
+        print(ttype2_concat)
+        print("mean: " + str(mean_rewards_ttype2_concat))
+        print("SEM: " + str(ttype2_concat_sem))
     
+    mean_rewards_ttype47 = np.mean(ttype47_rewards)
+    ttype47_rewards_std = np.std(ttype47_rewards)
+    ttype47_rewards_sem = stats.sem(ttype47_rewards)
+    if(print_debug == True):
+        print("\n")
+        print("ttype47)")
+        print(ttype47_rewards)
+        print("mean: " + str(mean_rewards_ttype47))
+        print("SEM: " + str(ttype47_rewards_sem))
+        print("std: " + str(ttype47_rewards_std))
+
+    mean_rewards_ttype49 = np.mean(ttype49_rewards)
+    ttype49_rewards_std = np.std(ttype49_rewards)
+    ttype49_rewards_sem = stats.sem(ttype49_rewards)
+    if(print_debug == True):
+        print("\n")
+        print("ttype49)")
+        print(ttype49_rewards)
+        print("mean: " + str(mean_rewards_ttype49))
+        print("SEM: " + str(ttype49_rewards_sem))
+        print("std: " + str(ttype49_rewards_std))
+
+    ttype4_rewards_concat = np.concatenate((ttype47_rewards, ttype49_rewards), axis=None)
+    mean_rewards_ttype4_concat = np.mean(ttype4_rewards_concat)
+    ttype4_rewards_std_concat = np.std(ttype4_rewards_concat)
+    ttype4_rewards_sem_concat = stats.sem(ttype4_rewards_concat)
+    if(print_debug == True):
+        print("\n")
+        print("ttype4_average)")
+        print(ttype4_rewards_concat)
+        print("mean: " + str(mean_rewards_ttype4_concat))
+        print("SEM: " + str(ttype4_rewards_sem_concat))
+        print("std: " + str(ttype4_rewards_std_concat))
+
+    mean_rewards_ttype5 = np.mean(ttype5_rewards)
+    ttype5_rewards_std = np.std(ttype5_rewards)
+    ttype5_rewards_sem = stats.sem(ttype5_rewards)
+    if(print_debug == True):
+        print("\n")
+        print("ttype5)")
+        print(ttype5_rewards)
+        print("mean: " + str(mean_rewards_ttype5))
+        print("SEM: " + str(ttype5_rewards_sem))
+        print("std: " + str(ttype5_rewards_std))
+
+
+    # ########################
+    #
+    #       + Plotting REWARDS + 
+    #  
+    # ########## create lists for plot ############################################################ 
+    x_labels = ['typ1','typ2_first','type2_average', 'type4_first', 'type4_average', 'type_5']
+    x_pos = np.arange(len(x_labels))
+    reward_means = [mean_rewards_ttype1,mean_rewards_ttype23,mean_rewards_ttype2_concat,mean_rewards_ttype47,mean_rewards_ttype4_concat,mean_rewards_ttype5]
+    reward_sem   = [ttype1_rewards_sem,ttype23_rewards_sem,ttype2_concat_sem,ttype47_rewards_sem,ttype4_rewards_sem_concat,ttype5_rewards_sem]
+
+    # ######### plot and save ##################
+    fig, ax = plt.subplots()
+    ax.bar(x_pos, reward_means, yerr=reward_sem, align='center', alpha=0.5, ecolor='black', capsize=10)
+    ax.set_ylabel('Means of rewards scored by human robot team')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(x_labels)
+    ax.set_xlabel('task types')
+    ax.set_title('Rewards scored during 4 different task types')
+    ax.yaxis.grid(True)
+
+    # Save the figure and show
+    plt.tight_layout()
+    plt.savefig(dir + '/../Challenging_task_plots/rewards_mean_sem.png')
+    if(show_plots == True):
+        plt.show()
+
+
+
+# helper functions for analysis 
+
 
 # I have to make sure manually that each task has a sensor reading reporting the success
 def arrange_human_obs(dir):
@@ -387,7 +514,7 @@ if __name__ == '__main__':
     if sys.argv[2] == "task_status":
         task_status(sys.argv[1])
     if sys.argv[2] == "plot_challenging":
-        plot_challenging(sys.argv[1])
+        plot_challenging(sys.argv[1],sys.argv[3],sys.argv[4])
 
 
    # work_book.close()
