@@ -497,6 +497,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         print("SEM: " + str(ttype5_rewards_sem))
         print("std: " + str(ttype5_rewards_std))
 
+
     print("\n  ####### ANOVA results ############## \n \n ")
     print("One way ANOVA  : rewards among different task types ")
     one_way_anova_rewards = stats.f_oneway(ttype1_rewards, ttype23_rewards, ttype47_rewards)
@@ -504,7 +505,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     
 
     # Calculate task duration
-    print(" ANOVA: ")
+    print(" ANOVA task duration: ")
     one_way_anova_duration = stats.f_oneway(ttype1_task_duration, ttype2_task_duration, ttype4_task_duration)
     print(one_way_anova_duration)
 
@@ -531,27 +532,60 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     #       + Plotting REWARDS + 
     #  
     # ########## create lists for plot ############################################################ 
-    x_labels = ['typ1','typ2_first','type2_average', 'type4_first', 'type4_average', 'type_5']
+    x_labels = ['typ1','typ2_first','type2_average', 'type4_first', 'type4_average']
     x_pos = np.arange(len(x_labels))
-    reward_means = [mean_rewards_ttype1,mean_rewards_ttype23,mean_rewards_ttype2_concat,mean_rewards_ttype47,mean_rewards_ttype4_concat,mean_rewards_ttype5]
-    reward_sem   = [ttype1_rewards_sem,ttype23_rewards_sem,ttype2_concat_sem,ttype47_rewards_sem,ttype4_rewards_sem_concat,ttype5_rewards_sem]
+    reward_means_first = [mean_rewards_ttype1,mean_rewards_ttype23,mean_rewards_ttype47]
+    reward_sem_first   = [ttype1_rewards_sem,ttype23_rewards_sem,ttype47_rewards_sem]
+    reward_means_average = [mean_rewards_ttype2_concat,mean_rewards_ttype4_concat]
+    reward_sem_average   = [ttype2_concat_sem,ttype4_rewards_sem_concat]
 
-    # ######### plot and save ##################
+
+    # ######### plot and save ######################
+
+# ###### rewards ###################################  
+# 
+ 
+    #Anova results for legend 
+    p_value = '%1.5f' % float(one_way_anova_rewards[1])
+    F_value = '%4.5f' % float(one_way_anova_rewards[0])
+    plt.plot([], [], ' ', label=('F= ' + str(F_value) + ' p= ' + str(p_value)) )
+
     fig, ax = plt.subplots()
-    ax.bar(x_pos, reward_means, yerr=reward_sem, align='center', alpha=0.5, ecolor='black', capsize=10)
-    ax.set_ylabel('Means of rewards scored by human robot team')
+    first_idx = [0,1,3]
+    bar_plot = ax.bar(x_pos[first_idx], reward_means_first, color='blue', yerr=reward_sem_first, align='center', alpha=0.5, ecolor='black', capsize=10, label='first occurrence + SEM bar' )
+    average_idx = [2,4]
+    bar_plot_average = ax.bar(x_pos[average_idx], reward_means_average, color='dodgerblue', yerr=reward_sem_average, align='center', alpha=0.5, ecolor='black', capsize=10, label='average + SEM bar' )
+    plt.plot([], [], ' ', label=('F= ' + str(F_value) + ' p= ' + str(p_value)) )
+
+
+    ax.set_ylabel('Rewards received by human robot team')
     ax.set_xticks(x_pos)
     ax.set_xticklabels(x_labels)
     ax.set_xlabel('task types')
-    ax.set_title('Rewards scored during 4 different task types')
+    ax.set_title('Rewards received during 3 different task types')
     ax.yaxis.grid(True)
 
+        # label the bar with the value 
+    for rect in bar_plot:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/6.0, 1.005*height,
+                '%8.1f' % float(height),
+                ha='center', va='bottom')
+
+    for rect in bar_plot_average:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/6.0, 1.005*height,
+                '%8.1f' % float(height),
+                ha='center', va='bottom')
+
     # Save the figure and show
+
+    plt.legend(loc='upper left')
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/rewards_mean_sem.png')
     if(show_plots == True):
- 
         plt.show()
+
 # #######################
     # ###################  plotting rewards vs time taken #######################
     
@@ -576,28 +610,34 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     slope, intercept, r_value, p_value, std_err = stats.linregress(ttype47_task_duration,ttype47_rewards)
     line4 = slope*ttype47_task_duration+intercept
 
-    ax.plot(ttype23_task_duration,ttype23_rewards,'o',ttype23_task_duration,line2, c='b', label='type2')
-
-    ax.plot(ttype47_task_duration,ttype47_rewards,'o',ttype47_task_duration,line4, c='r', label='type4')
+    ax.plot(ttype23_task_duration,ttype23_rewards,'o', c='b', label='type2')
+    ax.plot(ttype23_task_duration,line2, c='b', label='regression type2')
+    
+    ax.plot(ttype47_task_duration,ttype47_rewards,'o',c='r', label='type4')
+    ax.plot(ttype47_task_duration,line4, c='r', label='regression type4')
 
     #ax.scatter(ttype23_task_duration, ttype23_rewards, c='b', label='type2')
     #ax.scatter(ttype47_task_duration,ttype47_rewards, c='r', label='type4')
-    ax.set_ylabel('Means of rewards scored by human robot team')
+    ax.set_ylabel('Mean rewards received by human robot team')
     #ax.set_xticks(x_pos)
     #ax.set_xticklabels(x_labels)
-    ax.set_xlabel('task types')
-    ax.set_title('Rewards scored during 4 different task types')
+    ax.set_xlabel('task duration')
+    ax.set_title('Rewards received over task duration for 3 different task types')
     ax.yaxis.grid(True)
     plt.legend(loc='upper left')
 
     # Save the figure and show
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/rewards_vs_time.png')
-    #if(show_plots == True):
-    plt.show()
+    if(show_plots == True):
+        plt.show()
 
 # ###################################
 # Plotting task duration means per task type 
+
+    p_value = '%1.5f' % float(one_way_anova_duration[1])
+    F_value = '%4.5f' % float(one_way_anova_duration[0])
+    
 
     x_labels = ['typ1','typ2','type4']
     x_pos = np.arange(len(x_labels))
@@ -606,22 +646,24 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
 
     # ######### plot and save ##################
     fig, ax = plt.subplots()
-    duration_plot = ax.bar(x_pos, y_data, yerr=y_sem, align='center', alpha=0.5, ecolor='black', capsize=10)
-    ax.set_ylabel('Task duration [seconds]')
+    duration_plot = ax.bar(x_pos, y_data, color='blue', yerr=y_sem, align='center', alpha=0.5, ecolor='black', capsize=10,label='mean + SEM bar')
+    plt.plot([], [], ' ', label=('F= ' + str(F_value) + ' p= ' + str(p_value)) )
+    ax.set_ylabel('Mean task duration [seconds]')
     ax.set_xticks(x_pos)
     ax.set_xticklabels(x_labels)
     ax.set_xlabel('task types')
-    ax.set_title('Task duration of 4 different task types')
+    ax.set_title('Mean task duration of 3 different task types')
     ax.yaxis.grid(True)
 
     # label the bar with the value 
     for rect in duration_plot:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., 0.5*height,
-                '%d' % int(height),
+        ax.text(rect.get_x() + rect.get_width()/3.7, 1.005*height,
+                '%8.1f' % float(height),
                 ha='center', va='bottom')
 
     # Save the figure and show
+    plt.legend(loc='upper left')
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/task_duration_mean_sem.png')
     #if(show_plots == True):
@@ -633,6 +675,10 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
 # ###################################
 # Plotting robot interference per task 
 
+     #Anova results for legend 
+    p_value = '%1.5f' % float(robot_take_anova[1])
+    F_value = '%4.5f' % float(robot_take_anova[0])
+
     x_labels = ['typ1','typ2','type4']
     x_pos = np.arange(len(x_labels))
     y_data = [mean_robot_takeover_ttype1,mean_robot_takeover_ttype2,mean_robot_takeover_ttype4]
@@ -640,24 +686,26 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
 
     # ######### plot and save ##################
     fig, ax = plt.subplots()
-    duration_plot = ax.bar(x_pos, y_data, yerr=y_sem, align='center', alpha=0.5, ecolor='black', capsize=10)
-    ax.set_ylabel('# of robot interferences')
+    duration_plot = ax.bar(x_pos, y_data, color='blue', yerr=y_sem, align='center', alpha=0.5, ecolor='black', capsize=10,label='mean + SEM bar')
+    plt.plot([], [], ' ', label=('F= ' + str(F_value) + ' p= ' + str(p_value)) )
+    ax.set_ylabel('Mean number of robot interventions')
     ax.set_xticks(x_pos)
     ax.set_xticklabels(x_labels)
     ax.set_xlabel('task types')
-    ax.set_title('robot interferences during different task types')
+    ax.set_title('Robot interventions during 3 different task types')
     ax.yaxis.grid(True)
 
     # label the bar with the value 
     for rect in duration_plot:
         height = rect.get_height()
-        ax.text(rect.get_x() + rect.get_width()/2., 0.5*height,
-                '%d' % int(height),
+        ax.text(rect.get_x() + rect.get_width()/3.7, 1.005*height,
+                '%8.1f' % float(height),
                 ha='center', va='bottom')
 
     # Save the figure and show
+    plt.legend(loc='upper left')
     plt.tight_layout()
-    plt.savefig(dir + '/../Challenging_task_plots/robot_interference_mean_sem.png')
+    plt.savefig(dir + '/../Challenging_task_plots/robot_interventions_mean_sem.png')
     #if(show_plots == True):
     plt.show()    
 
