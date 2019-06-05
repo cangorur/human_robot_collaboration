@@ -239,7 +239,9 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         print(file_list)
         print("\n")
     
-    # variables for analysis   ttype = tasktype 
+    # variables for analysis   ttype = tasktype
+    
+    #rewards   
     ttype1_rewards = np.array([], dtype=np.float64)
     ttype23_rewards = np.array([], dtype=np.float64)
     ttype24_rewards = np.array([], dtype=np.float64)
@@ -249,21 +251,34 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     ttype49_rewards = np.array([], dtype=np.float64)
     ttype5_rewards = np.array([], dtype=np.float64)
     ttype2_rewards = np.array([], dtype=np.float64)
-
+    # duration 
     ttype1_task_duration = np.array([], dtype=np.float64)
     ttype2_task_duration = np.array([], dtype=np.float64)
     ttype23_task_duration = np.array([], dtype=np.float64)
     ttype4_task_duration = np.array([], dtype=np.float64)
     ttype47_task_duration = np.array([], dtype=np.float64)
     ttype5_task_duration = np.array([], dtype=np.float64)
-
+    # number of interventions
     ttype1_robot_takeover = np.array([], dtype=np.float64)
     ttype2_robot_takeover = np.array([], dtype=np.float64)
     ttype4_robot_takeover = np.array([], dtype=np.float64)
-
-    ttype1_percentage_correct_subt = np.array([], dtype=np.float64)
-    ttype1_robot_tookover = np.array([], dtype=np.float64)
-    ttype1_task_duration = np.array([], dtype=np.float64)
+    ttype23_robot_takeover = np.array([], dtype=np.float64)
+    ttype24_robot_takeover = np.array([], dtype=np.float64)
+    ttype25_robot_takeover = np.array([], dtype=np.float64)
+    ttype26_robot_takeover = np.array([], dtype=np.float64)
+    ttype47_robot_takeover = np.array([], dtype=np.float64)
+    ttype49_robot_takeover = np.array([], dtype=np.float64)
+    
+    # warnings received 
+    ttype1_warnings = np.array([], dtype=np.float64)
+    ttype2_warnings = np.array([], dtype=np.float64)
+    ttype4_warnings = np.array([], dtype=np.float64)
+    ttype47_warnings = np.array([], dtype=np.float64)
+    ttype49_warnings = np.array([], dtype=np.float64)
+    ttype23_warnings = np.array([], dtype=np.float64)
+    ttype24_warnings = np.array([], dtype=np.float64)
+    ttype25_warnings = np.array([], dtype=np.float64)
+    ttype26_warnings = np.array([], dtype=np.float64)
     
 
     for result_file in file_list: 
@@ -273,7 +288,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         file_frame = pd.read_csv(result_file, dtype = types_dict)
         
         # #### filter csv files 
-        file_frame.drop(['human_model','update_received_time','secs.1',	'nsecs.1', 'action_taken_time', 'secs', 'nsecs','real_state','isEstimationCorrect','obs_with_noise','robot_belief','tray_update_received_time','secs','nsecs','who_succeeded_task'],axis=1,inplace= True)
+        file_frame.drop(['human_model','update_received_time','secs.1',	'nsecs.1', 'action_taken_time', 'secs', 'nsecs','real_state','isEstimationCorrect','obs_with_noise','robot_belief','tray_update_received_time', 'secs', 'nsecs','who_succeeded_task'],axis=1,inplace= True)
         print(result_file)
         
         #rp.summary_cont(file_frame['who_succeeded_subtask'])
@@ -288,9 +303,14 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         turn1_done = 0 
         turn2_done = 0
         turn3_done = 0
+        turn4_done = 0
+        turn5_done = 0 
         turn6_done = 0
         turn7_done = 0
+        turn8_done = 0
+        turn9_done = 0 
 
+        # loop trough frame and get all data that is available in the task done line 
         for row in (file_frame.index):
             
             task_number = 1
@@ -301,7 +321,9 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype1_rewards = np.append( ttype1_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype1_task_duration = np.append( ttype1_task_duration, float((file_frame['task_duration'][row])))
+                ttype1_warnings = np.append( ttype1_warnings, int((file_frame['warnings_count_task'][row])) )
                 turn2_done = row
+                
 
             # turn 3 | task type 2 -> means analysis + SEM for each participant 
             task_number = 3
@@ -310,7 +332,9 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype23_task_duration = np.append( ttype23_task_duration, float((file_frame['task_duration'][row])))
+                ttype2_warnings = np.append( ttype2_warnings, int((file_frame['warnings_count_task'][row])) )
                 turn3_done = row 
+                
 
             # turn 4 | task type 2 -> means analysis + SEM for each participant 
             task_number = 4
@@ -318,6 +342,8 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
                 ttype24_rewards = np.append( ttype24_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype2_warnings = np.append( ttype2_warnings, int((file_frame['warnings_count_task'][row])) )
+                turn4_done = row
 
             # turn 5 | task type 2 -> means analysis + SEM for each participant 
             task_number = 5
@@ -325,6 +351,8 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
                 ttype25_rewards = np.append( ttype25_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype2_warnings = np.append( ttype2_warnings, int((file_frame['warnings_count_task'][row])) )
+                turn5_done = row
 
             # turn 6 | task type 2 -> means analysis + SEM for each participant 
             task_number = 6
@@ -332,13 +360,16 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
                 ttype26_rewards = np.append( ttype26_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
-                turn6_done
+                ttype2_warnings = np.append( ttype2_warnings, int((file_frame['warnings_count_task'][row])) )
+                turn6_done = row
+
             # turn 7 | task type 4 -> means analysis + SEM for each participant 
             task_number = 7
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype47_rewards = np.append( ttype47_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype4_task_duration = np.append( ttype4_task_duration, float((file_frame['task_duration'][row])))
                 ttype47_task_duration = np.append( ttype47_task_duration, float((file_frame['task_duration'][row])))
+                ttype4_warnings = np.append( ttype4_warnings, int((file_frame['warnings_count_task'][row])) )
                 turn7_done = row
             
             # turn 8 | task type 5 -> means analysis + SEM for each participant 
@@ -346,12 +377,15 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype5_rewards = np.append( ttype5_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype5_task_duration = np.append( ttype5_task_duration, float((file_frame['task_duration'][row])))
+                turn8_done = row 
 
             # turn 9 | task type 4 -> means analysis + SEM for each participant 
             task_number = 9
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype49_rewards = np.append( ttype49_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype4_task_duration = np.append( ttype4_task_duration, float((file_frame['task_duration'][row])))
+                ttype4_warnings = np.append( ttype4_warnings, int((file_frame['warnings_count_task'][row])) )
+                turn9_done = row
         
         
         
@@ -364,8 +398,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
                 human_succeeded += 1
         ttype1_robot_takeover  = np.append(ttype1_robot_takeover, robot_succeeded) 
-        mean_robot_takeover_ttype1 = np.mean(ttype1_robot_takeover)
-        sem_robot_takeover_ttype1 = stats.sem(ttype1_robot_takeover)
+        
 
         # calculate robot take over -  task type 2
         robot_succeeded = 0
@@ -376,8 +409,40 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
                 human_succeeded += 1
         ttype2_robot_takeover  = np.append(ttype2_robot_takeover, robot_succeeded)
-        mean_robot_takeover_ttype2 = np.mean(ttype2_robot_takeover) 
-        sem_robot_takeover_ttype2 = stats.sem(ttype2_robot_takeover)
+        ttype23_robot_takeover = np.append(ttype23_robot_takeover, robot_succeeded)
+
+        # calculate robot take over -  task type 2
+        robot_succeeded = 0
+        human_succeeded = 0
+        for idx in range(turn3_done,turn4_done):
+            if file_frame['who_succeeded_subtask'][idx] == '"ROBOT"':
+                robot_succeeded += 1
+            if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
+                human_succeeded += 1
+        #ttype2_robot_takeover  = np.append(ttype2_robot_takeover, robot_succeeded)
+        ttype24_robot_takeover = np.append(ttype24_robot_takeover, robot_succeeded)
+
+        # calculate robot take over -  task type 2
+        robot_succeeded = 0
+        human_succeeded = 0
+        for idx in range(turn3_done,turn4_done):
+            if file_frame['who_succeeded_subtask'][idx] == '"ROBOT"':
+                robot_succeeded += 1
+            if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
+                human_succeeded += 1
+        #ttype2_robot_takeover  = np.append(ttype2_robot_takeover, robot_succeeded)
+        ttype25_robot_takeover = np.append(ttype25_robot_takeover, robot_succeeded)
+
+                # calculate robot take over -  task type 2
+        robot_succeeded = 0
+        human_succeeded = 0
+        for idx in range(turn3_done,turn4_done):
+            if file_frame['who_succeeded_subtask'][idx] == '"ROBOT"':
+                robot_succeeded += 1
+            if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
+                human_succeeded += 1
+        #ttype2_robot_takeover  = np.append(ttype2_robot_takeover, robot_succeeded)
+        ttype26_robot_takeover = np.append(ttype26_robot_takeover, robot_succeeded)
 
         # calculate robot take over -  task type 4
         robot_succeeded = 0
@@ -388,10 +453,52 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
                 human_succeeded += 1
         ttype4_robot_takeover  = np.append(ttype4_robot_takeover, robot_succeeded) 
-        mean_robot_takeover_ttype4 = np.mean(ttype4_robot_takeover)
-        sem_robot_takeover_ttype4 = stats.sem(ttype4_robot_takeover)
+        ttype47_robot_takeover  = np.append(ttype47_robot_takeover, robot_succeeded)
 
+        # calculate robot take over -  task type 4
+        robot_succeeded = 0
+        human_succeeded = 0
+        for idx in range(turn8_done,turn9_done):
+            if file_frame['who_succeeded_subtask'][idx] == '"ROBOT"':
+                robot_succeeded += 1
+            if file_frame['who_succeeded_subtask'][idx] == '"HUMAN"': 
+                human_succeeded += 1
+        #ttype4_robot_takeover  = np.append(ttype4_robot_takeover, robot_succeeded) 
+        ttype49_robot_takeover  = np.append(ttype49_robot_takeover, robot_succeeded) 
         
+
+
+
+
+
+        # ####################  loop trough all task rows row by row ################### 
+        
+        # variables for the analysis 
+
+        # task2 
+        #for idx in range(turn1_done +1 ,turn2_done+1):
+
+        # task3
+        #for idx in range(turn2_done +1 ,turn3_done+1):
+            
+        # task4
+        #for idx in range(turn3_done +1 ,turn4_done+1):
+
+        # task5
+        #for idx in range(turn4_done +1 ,turn5_done+1):
+    
+        # task6
+        #for idx in range(turn5_done +1 ,turn6_done+1):
+
+        # task7
+        #for idx in range(turn6_done +1 ,turn7_done+1):    
+            
+        # task8
+        #for idx in range(turn7_done +1 ,turn8_done+1):
+
+        # task9
+        #for idx in range(turn8_done +1 ,turn9_done+1):
+
 
 
 
@@ -498,6 +605,17 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         print("std: " + str(ttype5_rewards_std))
 
 
+    #robot take over 
+    mean_robot_takeover_ttype1 = np.mean(ttype1_robot_takeover)
+    sem_robot_takeover_ttype1 = stats.sem(ttype1_robot_takeover)
+
+    mean_robot_takeover_ttype2 = np.mean(ttype2_robot_takeover) 
+    sem_robot_takeover_ttype2 = stats.sem(ttype2_robot_takeover)
+
+    mean_robot_takeover_ttype4 = np.mean(ttype4_robot_takeover)
+    sem_robot_takeover_ttype4 = stats.sem(ttype4_robot_takeover)
+
+
     print("\n  ####### ANOVA results ############## \n \n ")
     print("One way ANOVA  : rewards among different task types ")
     one_way_anova_rewards = stats.f_oneway(ttype1_rewards, ttype23_rewards, ttype47_rewards)
@@ -509,11 +627,18 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     one_way_anova_duration = stats.f_oneway(ttype1_task_duration, ttype2_task_duration, ttype4_task_duration)
     print(one_way_anova_duration)
 
+    # Warnings ANOVA 
+    print(" ANOVA warnings: ")
+    warnings_anova = stats.f_oneway(ttype1_warnings, ttype2_warnings, ttype4_warnings)
+    print(warnings_anova)
+
 
     # Calculate number of robot take overs 
     print("\n robot take over anova: ")
     robot_take_anova = stats.f_oneway(ttype1_robot_takeover,ttype2_robot_takeover,ttype4_robot_takeover)
     print(robot_take_anova)
+    print("\n ttype4 takeover")
+    print(ttype4_robot_takeover)
 
     ttype1_mean_task_duration = np.mean(ttype1_task_duration)
     ttype2_mean_task_duration = np.mean(ttype2_task_duration)
@@ -583,8 +708,8 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     plt.legend(loc='upper left')
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/rewards_mean_sem.png')
-    if(show_plots == True):
-        plt.show()
+    #if(show_plots == True):
+    #    plt.show()
 
 # #######################
     # ###################  plotting rewards vs time taken #######################
@@ -629,8 +754,71 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     # Save the figure and show
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/rewards_vs_time.png')
+    #if(show_plots == True):
+    #    plt.show()
+
+
+# #######################
+    # ###################  plotting rewards vs robot interference #######################
+
+    inference = np.array([], dtype=np.float64)
+    #inference = np.append(inference,ttype1_robot_takeover)
+    #inference = np.append(inference,ttype23_robot_takeover)
+    #inference = np.append(inference,ttype24_robot_takeover)
+    #inference = np.append(inference,ttype25_robot_takeover)
+    #inference = np.append(inference,ttype26_robot_takeover)
+    inference = np.append(inference,ttype47_robot_takeover)
+    #inference = np.append(inference,ttype49_robot_takeover)
+
+   
+
+    rewards = np.array([], dtype=np.float64)
+    #rewards = np.append(rewards,ttype1_rewards)
+    #rewards = np.append(rewards,ttype23_rewards)
+    #rewards = np.append(rewards,ttype24_rewards)
+    #rewards = np.append(rewards,ttype25_rewards)
+    #rewards = np.append(rewards,ttype26_rewards)
+    rewards = np.append(rewards,ttype47_rewards)
+    #rewards = np.append(rewards,ttype49_rewards)
+    #rewards = rewards[0:56]
+    print("\n rewards")
+    print(rewards)
+    print("\n inference")
+    print(inference)
+
+    fig, ax = plt.subplots()
+
+    # ######## calculate linear regression 
+
+    # Generated linear fit
+    
+    #slope, intercept, r_value, p_value, std_err = stats.linregress(inference,rewards)
+    #line2 = slope*ttype23_task_duration+intercept
+
+
+    ax.plot(inference,rewards,'o', c='b', label='type4')
+    #ax.plot(inference,line2, c='b', label='regression')
+    
+    #ax.plot(ttype47_task_duration,ttype47_rewards,'o',c='r', label='type4')
+    #ax.plot(ttype47_task_duration,line4, c='r', label='regression type4')
+
+    #ax.scatter(ttype23_task_duration, ttype23_rewards, c='b', label='type2')
+    #ax.scatter(ttype47_task_duration,ttype47_rewards, c='r', label='type4')
+    ax.set_ylabel('Rewards received by human robot team')
+    #ax.set_xticks(x_pos)
+    #ax.set_xticklabels(x_labels)
+    ax.set_xlabel('Number of robot interventions')
+    ax.set_title('Rewards received over robot interventions')
+    ax.yaxis.grid(True)
+    plt.legend(loc='upper left')
+
+    # Save the figure and show
+    plt.tight_layout()
+    plt.savefig(dir + '/../Challenging_task_plots/rewards_vs_interventions.png')
     if(show_plots == True):
         plt.show()
+
+
 
 # ###################################
 # Plotting task duration means per task type 
@@ -667,7 +855,10 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/task_duration_mean_sem.png')
     #if(show_plots == True):
-    plt.show()     
+    #    plt.show()     
+
+
+
 
 
 
@@ -707,9 +898,57 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     plt.tight_layout()
     plt.savefig(dir + '/../Challenging_task_plots/robot_interventions_mean_sem.png')
     #if(show_plots == True):
-    plt.show()    
+    #    plt.show()    
 
 
+# ###################################
+# Plotting warnings per task 
+
+
+    # Things to adopt  
+    fig, ax = plt.subplots()
+    p_value = '%1.5f' % float(warnings_anova[1])
+    F_value = '%4.5f' % float(warnings_anova[0])
+    y_data = [np.mean(ttype1_warnings),np.mean(ttype2_warnings),np.mean(ttype4_warnings)]
+    y_sem  = [stats.sem(ttype1_warnings),stats.sem(ttype2_warnings),stats.sem(ttype4_warnings)]
+
+
+    x_labels = ['typ1','typ2','type4']
+    x_pos = np.arange(len(x_labels))
+
+
+    # ######### plot and save ##################
+    duration_plot = ax.bar(x_pos, y_data, color='blue', yerr=y_sem, align='center', alpha=0.5, ecolor='black', capsize=10,label='mean + SEM bar')
+    plt.plot([], [], ' ', label=('F= ' + str(F_value) + ' p= ' + str(p_value)) )
+    ax.set_ylabel('Mean number of warnings received')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(x_labels)
+    ax.set_xlabel('task types')
+    ax.set_title('Warnings received during 3 different task types')
+    ax.yaxis.grid(True)
+
+    # label the bar with the value 
+    for rect in duration_plot:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/3.7, 1.005*height,
+                '%8.1f' % float(height),
+                ha='center', va='bottom')
+
+    # Save the figure and show
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.savefig(dir + '/../Challenging_task_plots/warnings_mean_sem.png')
+    #if(show_plots == True):
+    #    plt.show()   
+
+
+
+
+
+    # ############### Show plots at the end 
+    #    
+    if(show_plots == True):
+        plt.show()
 
 # helper functions for analysis 
 
