@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="121mm" height="90mm" viewBox="0 0 12100 9000" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+ <path fill="rgb(255,255,255)" stroke="none" d="M 6054,8997 L 0,8997 0,0 12107,0 12107,8997 6054,8997 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 6161,8619 L 2060,8619 2060,1472 10263,1472 10263,8619 6161,8619 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,8618 L 2060,8618"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,7903 L 2060,7903"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,7188 L 2060,7188"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,6473 L 2060,6473"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,5758 L 2060,5758"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,5044 L 2060,5044"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,4330 L 2060,4330"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,3615 L 2060,3615"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,2900 L 2060,2900"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,2185 L 2060,2185"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,1471 L 2060,1471"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 2060,8768 L 2060,8618"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 10263,8768 L 10263,8618"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 2060,8618 L 10263,8618"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,8618 L 2060,8618"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,7903 L 2060,7903"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,7188 L 2060,7188"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,6473 L 2060,6473"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,5758 L 2060,5758"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,5044 L 2060,5044"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,4330 L 2060,4330"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,3615 L 2060,3615"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,2900 L 2060,2900"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,2185 L 2060,2185"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1910,1471 L 2060,1471"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 2060,8618 L 2060,1471"/>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 2992,8618 L 4856,8618 4856,5803 2992,5803 2992,8618 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 5229,8618 L 7093,8618 7093,5624 5229,5624 5229,8618 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 7466,8618 L 9330,8618 9330,4820 7466,4820 7466,8618 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1625" y="8739"><tspan fill="rgb(0,0,0)" stroke="none">0</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="8024"><tspan fill="rgb(0,0,0)" stroke="none">10</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="7309"><tspan fill="rgb(0,0,0)" stroke="none">20</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="6594"><tspan fill="rgb(0,0,0)" stroke="none">30</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="5879"><tspan fill="rgb(0,0,0)" stroke="none">40</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="5165"><tspan fill="rgb(0,0,0)" stroke="none">50</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="4450"><tspan fill="rgb(0,0,0)" stroke="none">60</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="3735"><tspan fill="rgb(0,0,0)" stroke="none">70</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="3020"><tspan fill="rgb(0,0,0)" stroke="none">80</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1440" y="2305"><tspan fill="rgb(0,0,0)" stroke="none">90</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1254" y="1591"><tspan fill="rgb(0,0,0)" stroke="none">100</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="3408" y="5625"><tspan fill="rgb(0,0,0)" stroke="none">39.375</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="5645" y="5446"><tspan fill="rgb(0,0,0)" stroke="none">41.875</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="7883" y="4642"><tspan fill="rgb(0,0,0)" stroke="none">53.125</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Arial" font-size="459px" font-weight="400"><tspan class="TextPosition" x="3117" y="850"><tspan fill="rgb(0,0,0)" stroke="none">NASA-TLX: Temporal demand</tspan></tspan></tspan></text>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 10727,4106 L 10621,4106 10621,3895 10832,3895 10832,4106 10727,4106 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 10727,4603 L 10621,4603 10621,4393 10832,4393 10832,4603 10727,4603 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 10727,5101 L 10621,5101 10621,4890 10832,4890 10832,5101 10727,5101 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="10932" y="4120"><tspan fill="rgb(0,0,0)" stroke="none">type1</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="10932" y="4617"><tspan fill="rgb(0,0,0)" stroke="none">type2</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans" font-size="353px" font-weight="400"><tspan class="TextPosition" x="10932" y="5115"><tspan fill="rgb(0,0,0)" stroke="none">type4</tspan></tspan></tspan></text>
+ <text class="TextShape" transform="translate(837,7532) rotate(-90) translate(-837,-7532)"><tspan class="TextParagraph" font-family="Arial" font-size="318px" font-weight="400"><tspan class="TextPosition" x="837" y="7532"><tspan fill="rgb(0,0,0)" stroke="none">Means x5 of NASA-TLX responses</tspan></tspan></tspan></text>
+</svg>
