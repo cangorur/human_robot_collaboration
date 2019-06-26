@@ -21,6 +21,8 @@
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/HeadGestureMsg.h>
+#include <hrc_ros/ObjectGraspColourMsg.h>
+
 #include <hrc_ros/RequestSuccessCriteria.h>
 #include "std_msgs/String.h"
 
@@ -122,6 +124,9 @@ private:
 
 	// subscriber callback that receives the head gesture
 	void ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg);
+
+	// subscriber callback that receives the color of the object taken by the human
+	void ReceiveObjectTracked(const hrc_ros::ObjectGraspColourMsg &msg);
 
 	/**  // TODO delete once new function works
 	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
@@ -262,6 +267,8 @@ private:
 	ros::Subscriber traySensor_subs;
 	/// Subscribes to the HeadGesture topic, this indicates the observable O4
 	ros::Subscriber headGesture_subs;
+	/// Subscribes to the HeadGesture topic, this indicates the observable O4
+	ros::Subscriber objectTrack_subs;
 	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask
 	ros::Publisher 	traySensor_success_pub;
 	//// Ros publisher - is published after the tray status has bee received | used to inform human about the tray update, e.g. by sound ...
@@ -380,6 +387,7 @@ private:
 		*/
 
 	int current_object = 0; 				// 1 = Red | 2 = Green | 3 = Blue
+	int prev_object = 0;
 
 
 	// global variables to store the scenario data -> will be used to elaborate success and failure

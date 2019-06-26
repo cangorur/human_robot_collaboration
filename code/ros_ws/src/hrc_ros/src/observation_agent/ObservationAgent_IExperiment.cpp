@@ -40,6 +40,7 @@ void ObservationAgent::initialize(){
 	traySensor_notifyToHuman_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/tray_status_NotifyToHuman",1);
 	//subscriber for the headGesture
 	headGesture_subs = nh.subscribe("/headTrackingAgent/head_gesture_pub/", 1 , &ObservationAgent::ReceiveHeadGesture,this);
+	objectTrack_subs = nh.subscribe("/object_tracking/object_tograsp_colour", 1 , &ObservationAgent::ReceiveObjectTracked,this);
 	ObsUpdaterPub = nh.advertise<hrc_ros::ObsUpdateMsgIE>("/observation_agent/observation_update",1);
 
 	/*
@@ -66,7 +67,7 @@ void ObservationAgent::initialize(){
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
-	warnings_received_subtask =0; 
+	warnings_received_subtask =0;
 	successful_tasks_cnt = 0;
 	failed_tasks_cnt = 0;
 	percentage_successful_tasks = 0.0;
@@ -128,7 +129,7 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
-	warnings_received_subtask = 0; 
+	warnings_received_subtask = 0;
 	// other variables
 	o1_ipd = false; //  O_1  task successs (processed product detected)
 	o2_upd = false; // O_2	failure
@@ -390,6 +391,16 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
 
 }
 
+// *** Callback function for the /object_tracking/object_tograsp_colour topic"
+void ObservationAgent::ReceiveObjectTracked(const hrc_ros::ObjectGraspColourMsg &msg){
+		// Object_colour = # 1=red | 2=green | 3=blue | 4= reference point=> no object detected
+		if (msg.object_colour == 4)
+			current_object = prev_object;
+		else
+			current_object = msg.object_colour;
+		////cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl;
+
+}
 
 void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_out, float &discounted_reward_out){
 
@@ -536,7 +547,8 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 
 		// #### mapping tray status to observables ( o1 = success | o2 = failure ) ####
-		current_object = req.current_object;
+		// current_object = req.current_object; //now this is always available
+		//NOTE: /object_tracking/object_tograsp_colour
 		string task_success_state = "ongoing";
 		string subtask_success_state = "ongoing";
 		int_subtask_status = 0; // 0 = ongoing | 1 = success | 3 = fail
@@ -566,7 +578,8 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		int success_tray_read = success_criteria_read.tray;
 		if (req.current_tray == success_tray_read){
-
+			// NOTE: success_tray_read is the correct tray for the current SubTask
+			// NOTE: curent_tray and current_object comes from the camera.
 			o1_ipd = false; //  O_1  task successs (processed product detected)
 			o2_upd = false; // O_2	failure
 
@@ -645,15 +658,15 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
 		success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
 
-		// ## Notify Human about the successful detection of a tray update, e.g. by sound 
+		// ## Notify Human about the successful detection of a tray update, e.g. by sound
 		traySensor_notifyToHuman_pub.publish(success_status_msg);
 
 		// ## Trigger a decision
 		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
 		int_subtask_status = 0; // reset to ongoing
 
-		//float final_immediate_reward_IE = 0; 
-		//float final_discounted_reward_IE = 0; 
+		//float final_immediate_reward_IE = 0;
+		//float final_discounted_reward_IE = 0;
 		//final_immediate_reward_IE = immediate_reward_IE;
 		//final_discounted_reward_IE = discounted_reward_IE;
 		// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
@@ -672,17 +685,17 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 		// ########################  Before the tray status was published here -> after decision making ########
 		// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 		traySensor_success_pub.publish(success_status_msg);
-		
-		// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long 
+
+		// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long
 		//traySensor_notifyToHuman_pub.publish(success_status_msg);
 
 		// ## increment subtask counter
 		subtask_counter += 1;
 
 
-		// ### Reset variables that are relevant for 1 subtask only 
+		// ### Reset variables that are relevant for 1 subtask only
 
-		warnings_received_subtask = 0; 
+		warnings_received_subtask = 0;
 
 
 		ROS_INFO("\n\n");
