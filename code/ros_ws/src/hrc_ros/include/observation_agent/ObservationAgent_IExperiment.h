@@ -387,7 +387,9 @@ private:
 		*/
 
 	int current_object = 0; 				// 1 = Red | 2 = Green | 3 = Blue
-	int prev_object = 0;
+	int robot_current_object = 0;
+	int graspped_object_data = 0;
+	int prev_object = 4;
 
 
 	// global variables to store the scenario data -> will be used to elaborate success and failure
