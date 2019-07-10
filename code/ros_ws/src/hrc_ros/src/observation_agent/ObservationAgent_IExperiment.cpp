@@ -82,7 +82,6 @@ void ObservationAgent::initialize(){
 
 
 	/// A ROS timer for the duration of a task assigned to the human
-	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
 	decision_timer = nh.createTimer(ros::Duration(10.0),&ObservationAgent::DecisionTimer,this);
 	decision_timer.stop();
 
@@ -209,13 +208,6 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 
 	return true;
 }
-
-
-// TODO change this to subtask_time and use it for the calculation of rewards
-void ObservationAgent::HumanTaskTimer(const ros::TimerEvent&){
-	human_task_time += 1; // increase one in every second
-}
-
 
 void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
 
@@ -540,6 +532,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		if (req.sender == "container_node") {
 			// Reset decision timer ( timer only triggers if system is stuck )
+			current_object=1;
 			decision_timer.stop();
 			decision_timer.start();
 			subtask_timer.stop();
@@ -689,7 +682,7 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 			// ########################  Before the tray status was published here -> after decision making ########
 			// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
 			traySensor_success_pub.publish(success_status_msg);
-
+			sc.play(1,1.0);
 			// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long
 			//traySensor_notifyToHuman_pub.publish(success_status_msg);
 
@@ -1370,7 +1363,7 @@ string ObservationAgent::getRealRbtStMDP(string humanState)
 	return currRbtSt;
 }
 
-string ObservationAgent::MapObservationsToMDP(string observation) {
+string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 	/*
 	 * Here are the Reactive robot states:
 	 * TaskHuman
@@ -1381,9 +1374,15 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 	   GlobalFail
 	 */
 
+	if (robot_observation == "3" && robot_observation == "8")
+		human_looking_around_ctr += 1;
+	else
+		human_looking_around_ctr = 0;
+
 	//int_subtask_status
+	// TODO: ipd_sensor and upd_sensor variables need to be changed
 	string robot_state = "";
-	if ((prev_robot_state != "HumanNeedsHelp") && human_task_time >= 15 && (not ipd_sensor && not upd_sensor)){ // if human attempted to grasp in previous action yet still no success
+	if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 3 && (not ipd_sensor && not upd_sensor)){ // if human attempted to grasp in previous action yet still no success
 		ROS_INFO("OBSERVATION ROS: Timeout! Task will be taken over by the ROBOT!");
 		robot_state = "HumanNeedsHelp";
 	} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (not ipd_sensor && not upd_sensor)) {
@@ -1391,54 +1390,44 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 		robot_state = "HumanNeedsHelp";
 		humanfail_counter = 0; // TODO: this is not being used anywhere but still here
 	} else {
-
-	/*if (robot_observation == "0")
-		robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
-	else if (robot_observation == "1")
-		*/
-
-		if (observation == "0") {
-			if (prev_robot_state == "TaskHuman")
-				robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
-			else if (prev_robot_state == "TaskRobot")
-				robot_state = "TaskRobot"; // whoever is assigned for the first state
-			else
+			if (robot_observation == "0")
+				if (prev_robot_state == "TaskHuman")
+					robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
+				else if (prev_robot_state == "TaskRobot")
+					robot_state = "TaskRobot"; // whoever is assigned for the first state
+				else
+					robot_state = "HumanNeedsHelp";
+			else if (robot_observation == "1")
 				robot_state = "HumanNeedsHelp";
-		} else if ((observation == "2" || observation == "3")) {
-			robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
-		} else if (observation == "6" || observation == "7") { // human attempted to grasp
-			humanAttempted = true;
-			robot_state = "TaskHuman";
-			humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions
-		} else if (observation == "8" || observation == "9" || observation == "10" || observation == "11") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "12" || observation == "13" || observation == "14" || observation == "15") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "40" || observation == "41" || observation == "42" || observation == "43") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "44" || observation == "45" || observation == "46" || observation == "47") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "34" || observation == "35") {
-			robot_state = prev_robot_state; // whoever is assigned for the first state
-			humanidle_counter ++; // idle counter is not used anywhere currently
-		} else if (observation == "32" || observation == "33") { // human is not detected
-			robot_state = "HumanNeedsHelp";
-			humanidle_counter = 0;
-		} else if (observation == "16" || observation == "17" || observation == "18" || observation == "19" || observation == "27") {
-			robot_state = "WarningReceived";
-		} else if (observation == "64" || observation == "65" || observation == "66" || observation == "67") {
-			robot_state = "GlobalFail";
-		} else if (observation == "68" || observation == "69" || observation == "70" || observation == "71") {
-			robot_state = "GlobalFail";
-		} else if (observation == "80" || observation == "81" || observation == "82" || observation == "83") {
-			robot_state = "GlobalFail";
-		} else if (observation == "84" || observation == "85" || observation == "86" || observation == "87") {
-			robot_state = "GlobalFail";
-		} else if (observation == "96" || observation == "97" || observation == "98" || observation == "99") {
-			robot_state = "GlobalFail";
-		} else if (observation == "100" || observation == "101" || observation == "102" || observation == "103") {
-			robot_state = "GlobalFail";
-		}
+			else if (robot_observation == "2")
+				robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
+			else if (robot_observation == "3" || robot_observation == "8"){
+				if (human_looking_around_ctr < 2)
+					robot_state = "TaskHuman";
+				else
+					robot_state = "HumanNeedsHelp";
+			}
+			else if (robot_observation == "4"){
+				robot_state = "TaskHuman"; // This is either task assigned to human or task assigned to the robot
+				humanAttempted = true;
+				humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions
+			}
+			else if (robot_observation == "5")
+				robot_state = "GlobalSuccess";
+			else if (robot_observation == "6")
+				robot_state = "WarningReceived"; // human warns the robot
+			else if (robot_observation == "7")
+				robot_state = "HumanNeedsHelp"; // human is not detected
+			else if (robot_observation == "9")
+				robot_state = prev_robot_state; // human idle
+			else if (robot_observation == "10")
+				robot_state = "GlobalSuccess";
+			else if (robot_observation == "11")
+				robot_state = "GlobalFail";
+			else if (robot_observation == "12")
+				robot_state = "TaskHuman"; // human achieved subtask success
+			else if (robot_observation == "13")
+				robot_state = "HumanNeedsHelp"; // human misplaced / did the subtask wrong
 	}
 
 	prev_robot_state = robot_state;

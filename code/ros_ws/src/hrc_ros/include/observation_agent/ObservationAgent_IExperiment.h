@@ -33,6 +33,8 @@
 
 #include <helper_functions/Json_parser.h>
 
+#include <sound_play/sound_play.h>
+
 using namespace std;
 typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
 
@@ -61,11 +63,6 @@ private:
 	 * @return True if initialization was successful
 	 */
 	bool resetScenario(hrc_ros::ResetObsROSRequest &req, hrc_ros::ResetObsROSResponse &res);
-
-	/**
-	 * Timer event created to track the human task duration
-	 */
-	void HumanTaskTimer(const ros::TimerEvent&);
 
 	/**
 	 * Timer event to track the subtask duration. Used to calculate discounted rewards
@@ -276,7 +273,8 @@ private:
 
 	/// publishes the observation update -> this info is used for logging and analysis on system level
 	ros::Publisher ObsUpdaterPub;
-
+	/// Sound play client
+	sound_play::SoundClient sc;
 
 	/// Ros time instance to record the time when the tray sensor message has been changed.
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario
@@ -318,6 +316,8 @@ private:
 	bool humanAttempted = false;
 	/// this counts every second that human spends when the task is assigned to him
 	int human_task_time = 0;
+	/// counter for how many steps human is looking around
+	int human_looking_around_ctr = 0;
 	/// Boolean to hold if human trusts the robot. This is inherently known to observation agent from the human model run by task manager
 	/// In our applications, for now, it is always kept TRUE
 	bool humanTrustsRobot;
