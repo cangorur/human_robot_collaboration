@@ -255,7 +255,8 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 		}
 
 		if (robotType == "reactive"){
-			observation = MapObservationsToMDP(robot_observation_real); // Get correspending state for reactive ROBOT wrt observations to state mapping
+			observation = MapObservationsToPOMDP(robot_observation_real);
+			observation = MapObservationsToMDP(observation); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
 			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
@@ -532,7 +533,6 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 
 		if (req.sender == "container_node") {
 			// Reset decision timer ( timer only triggers if system is stuck )
-			current_object=1;
 			decision_timer.stop();
 			decision_timer.start();
 			subtask_timer.stop();
@@ -848,6 +848,9 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	hrc_ros::SuccessStatusObserved success_status_msg;
 	string task_success_state = "ongoing";
 	string subtask_success_state = "ongoing";
+
+	traySensor_success_pub.publish(success_status_msg);
+	sc.play(1,1.0);
 
 	// calculate time of last subtask and restart/reset timers
 	decision_timer.stop();
