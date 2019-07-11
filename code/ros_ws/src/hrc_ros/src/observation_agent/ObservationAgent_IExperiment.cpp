@@ -849,7 +849,6 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	string task_success_state = "ongoing";
 	string subtask_success_state = "ongoing";
 
-	traySensor_success_pub.publish(success_status_msg);
 	sc.play(1,1.0);
 
 	// calculate time of last subtask and restart/reset timers
@@ -926,9 +925,6 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
 			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
 		success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
-
-
-
 
 
 	// if global state reached send it to despot as well
