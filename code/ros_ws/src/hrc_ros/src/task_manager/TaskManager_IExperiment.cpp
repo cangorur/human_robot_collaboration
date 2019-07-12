@@ -318,7 +318,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
             ros::param::get("/robot_model",robot_model);
             if (robot_model == "reactive.pomdpx"){
                 // Selecting the MDP despote exe
-                robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+                robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
                 robot_AItype = "reactive";
             }
             robot_AItype = "proactive";
@@ -333,7 +333,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_model=res_cmab.robot_model;
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + robot_model + "\"'";
     }else if(useBPR){ // If the use of BPR is enabled for the policy selection, we overwrite the manually selected robot policy
@@ -344,7 +344,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_model = robot_policies[res_bpr.policy_id];
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }else if(useRandom){
@@ -355,22 +355,23 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         }else if (r == 13){
           robot_model = "reactive.pomdpx";
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
           robot_model = "policy" + to_string(r) + ".pomdpx";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
     else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
-        robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
         if (robot_AItype == "proactive"){
-	    // ## if POMDP should show up in own terminal
-	    //robot_shell = robot_shell + robot_model + "\"'";
+      	    // ## if POMDP should show up in own terminal
+      	    //robot_shell = robot_shell + robot_model + "\"'";
+            robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
             robot_shell = robot_shell + robot_model + " &";
         }else if (robot_AItype == "reactive"){
-            robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-            robot_shell = robot_shell + "reactive.pomdpx" + "\"'";
-            ROS_INFO("[TASK MANAGER] Robot Shell: %s", robot_shell.c_str());
+            robot_model = "reactive.pomdpx";
+            robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+            robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
             //if nothing specified call the default pomdp robot model
             robot_model = "proactive.pomdpx";
@@ -381,7 +382,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     }else{
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
-
+    ROS_INFO("[TASK MANAGER] Robot Shell: %s", robot_shell.c_str());
     // kill all open despots before starting a new one
     string kill_pomdpx_str = "killall despot_pomdpx";
     const char * c_kill_pomdpx = kill_pomdpx_str.c_str();

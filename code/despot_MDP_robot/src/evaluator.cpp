@@ -204,6 +204,9 @@ bool Evaluator::RunStep(int step, int round, int real_state, int observed_state)
 	double step_end_t;
 	double reward;
 
+	*out_ << "-----------------------------------Round " << round
+				<< " Step " << step << "-----------------------------------"
+				<< endl;
 	*out_ << "- The real state received: " << real_state << endl;
 	*out_ << "- The observed state: " << observed_state << endl;
 	*out_ << "=== RESULTS ===" << endl;
@@ -251,9 +254,6 @@ bool Evaluator::RunStep(int step, int round, int real_state, int observed_state)
 		//== Setting the next state manually ==//
 
 		//== ==//
-		*out_ << "-----------------------------------Round " << round
-					<< " Step " << step << "-----------------------------------"
-					<< endl;
 
 		start_t = get_time_second();
 		string state_name = "";
