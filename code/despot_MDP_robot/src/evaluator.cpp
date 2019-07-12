@@ -205,7 +205,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int observed_state)
 	double reward;
 
 	*out_ << "-----------------------------------Round " << round
-				<< " Step " << step << "-----------------------------------"
+				<< " Step " << step + 1 << "-----------------------------------"
 				<< endl;
 	*out_ << "- The real state received: " << real_state << endl;
 	*out_ << "- The observed state: " << observed_state << endl;
