@@ -1,4 +1,5 @@
 # this variable holds either "human" or "robot" to state who is assigned with the task
 string assignedTo
+string robotType
 ---
 bool success

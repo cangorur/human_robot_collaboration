@@ -253,15 +253,16 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 			warnings_received_task ++;
 			warnings_received_subtask ++;
 		}
-
 		if (robotType == "reactive"){
+			// ROS_WARN("[OBSERVATION AGENT]: REACTIVE OBSERVATION MAPPING !");
 			observation = MapObservationsToPOMDP(robot_observation_real);
+			// ROS_WARN("[OBSERVATION AGENT] POMDP OBSERVATION: %s", observation.c_str());
 			observation = MapObservationsToMDP(observation); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
 			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
 
-		ROS_INFO("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
+		ROS_WARN("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
 				robot_observation_real.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
@@ -351,14 +352,13 @@ bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observe
 			realRbtSt_code = getRealRbtStPOMDP(real_human_state_observed); //For POMDP model
 		}
 
-
 		string message = "-1," + realRbtSt_code;
 
-		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
+		ROS_WARN("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
 		// TODO remove
-		ROS_INFO("observed state received was  = %s", real_human_state_observed.c_str());
+		ROS_WARN("observed state received was  = %s", real_human_state_observed.c_str());
 
-		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
+		ROS_WARN("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
@@ -905,7 +905,7 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 
 		// ## fields for debugging
 		success_status_msg.current_object = robot_current_object;
-		success_status_msg.current_tray = 0;
+		success_status_msg.current_tray = success_criteria_read.tray;
 		success_status_msg.success_tray = success_criteria_read.tray;
 		success_status_msg.task_counter = task_counter;
 		success_status_msg.subtask_counter = subtask_counter;
@@ -1372,61 +1372,84 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 	   TaskRobot
 	   GlobalFail
 	 */
-
-	if (robot_observation == "3" && robot_observation == "8")
-		human_looking_around_ctr += 1;
-	else
-		human_looking_around_ctr = 0;
-
-	//int_subtask_status
-	// TODO: ipd_sensor and upd_sensor variables need to be changed
 	string robot_state = "";
-	if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 3 && (not ipd_sensor && not upd_sensor)){ // if human attempted to grasp in previous action yet still no success
-		ROS_INFO("OBSERVATION ROS: Timeout! Task will be taken over by the ROBOT!");
-		robot_state = "HumanNeedsHelp";
-	} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (not ipd_sensor && not upd_sensor)) {
-		humanAttempted = false;
-		robot_state = "HumanNeedsHelp";
-		humanfail_counter = 0; // TODO: this is not being used anywhere but still here
+	// if once HumanNeededHelp, then the next iteration will be robot resting and clearing all the flags and counters
+	if (prev_robot_state != "HumanNeedsHelp"){
+		if (robot_observation == "3" && robot_observation == "8")
+			human_looking_around_ctr += 1;
+		else
+			human_looking_around_ctr = 0;
+
+		if (robot_observation == "9")
+			human_idle_ctr += 1;
+		else
+			human_idle_ctr == 0;
+
+		if (robot_observation == "4"){
+			humanfail_counter += 1;
+			humanAttempted = true;
+		}
+		else
+			humanfail_counter == 0;
+
+		//int_subtask_status
+		// TODO: ipd_sensor and upd_sensor variables need to be changed
+
+		if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 5){ // if human attempted to grasp in previous action yet still no success
+			ROS_INFO("[OBSERVATION AGENT]: Timeout! Task will be taken over by the ROBOT!");
+			robot_state = "HumanNeedsHelp";
+		} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (humanfail_counter > 2)) {
+			humanAttempted = false;
+			robot_state = "HumanNeedsHelp";
+			humanfail_counter = 0; // TODO: this is not being used anywhere but still here
+			ROS_INFO("[OBSERVATION AGENT]: Long time no grasp! Robot taking over !");
+		} else {
+				if (robot_observation == "0")
+					if (prev_robot_state == "TaskHuman")
+						robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
+					else if (prev_robot_state == "TaskRobot")
+						robot_state = "TaskRobot"; // whoever is assigned for the first state
+					else
+						robot_state = "HumanNeedsHelp";
+				else if (robot_observation == "1")
+					robot_state = "HumanNeedsHelp";
+				else if (robot_observation == "2")
+					robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
+				else if (robot_observation == "3" || robot_observation == "8"){
+					if (human_looking_around_ctr < 2)
+						robot_state = "TaskHuman";
+					else
+						robot_state = "HumanNeedsHelp";
+				}
+				else if (robot_observation == "4"){
+					robot_state = "TaskHuman"; // This is either task assigned to human or task assigned to the robot
+				}
+				else if (robot_observation == "5")
+					robot_state = "GlobalSuccess";
+				else if (robot_observation == "6")
+					robot_state = "WarningReceived"; // human warns the robot
+				else if (robot_observation == "7")
+					robot_state = "HumanNeedsHelp"; // human is not detected
+				else if (robot_observation == "9"){
+					if (human_idle_ctr  < 5)
+						robot_state = prev_robot_state; // human idle
+					else
+						robot_state = "HumanNeedsHelp";
+					}
+				else if (robot_observation == "10")
+					robot_state = "GlobalSuccess";
+				else if (robot_observation == "11")
+					robot_state = "GlobalFail";
+				else if (robot_observation == "12")
+					robot_state = "TaskHuman"; // human achieved subtask success
+				else if (robot_observation == "13")
+					robot_state = "HumanNeedsHelp"; // human misplaced / did the subtask wrong
+		}
 	} else {
-			if (robot_observation == "0")
-				if (prev_robot_state == "TaskHuman")
-					robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
-				else if (prev_robot_state == "TaskRobot")
-					robot_state = "TaskRobot"; // whoever is assigned for the first state
-				else
-					robot_state = "HumanNeedsHelp";
-			else if (robot_observation == "1")
-				robot_state = "HumanNeedsHelp";
-			else if (robot_observation == "2")
-				robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
-			else if (robot_observation == "3" || robot_observation == "8"){
-				if (human_looking_around_ctr < 2)
-					robot_state = "TaskHuman";
-				else
-					robot_state = "HumanNeedsHelp";
-			}
-			else if (robot_observation == "4"){
-				robot_state = "TaskHuman"; // This is either task assigned to human or task assigned to the robot
-				humanAttempted = true;
-				humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions
-			}
-			else if (robot_observation == "5")
-				robot_state = "GlobalSuccess";
-			else if (robot_observation == "6")
-				robot_state = "WarningReceived"; // human warns the robot
-			else if (robot_observation == "7")
-				robot_state = "HumanNeedsHelp"; // human is not detected
-			else if (robot_observation == "9")
-				robot_state = prev_robot_state; // human idle
-			else if (robot_observation == "10")
-				robot_state = "GlobalSuccess";
-			else if (robot_observation == "11")
-				robot_state = "GlobalFail";
-			else if (robot_observation == "12")
-				robot_state = "TaskHuman"; // human achieved subtask success
-			else if (robot_observation == "13")
-				robot_state = "HumanNeedsHelp"; // human misplaced / did the subtask wrong
+		robot_state = "TaskHuman";
+		human_looking_around_ctr = 0;
+		human_idle_ctr = 0;
+		humanfail_counter = 0;
 	}
 
 	prev_robot_state = robot_state;

@@ -306,7 +306,7 @@ bool Evaluator::RunStep(int step, int round, int real_state, int observed_state)
 		*out_ << "- Belief state with probability: " << belief_distr[index_first].first << " = " << belief_distr[index_first].second << endl;
 		*out_ << "- FINAL: Action taken: " << action << " in the belief state: " << belief_distr[index_first].first << endl;
 		// no rewards yet. The rewarding is done when the new real state received (this action leads to that state)
-		Evaluator::webSocketClient(action, text_of_newState, 0.0, 0.0); // TODO: the text_ofnewState will be replaced by the belief state !!!
+		Evaluator::webSocketClient(action, belief_distr[index_first].first, 0.0, 0.0); // TODO: the text_ofnewState will be replaced by the belief state !!!
 		// ######################################################## //
 	}
 	// ################# BELIEF UPDATE AND ACTION SELECTION ENDS ####################//

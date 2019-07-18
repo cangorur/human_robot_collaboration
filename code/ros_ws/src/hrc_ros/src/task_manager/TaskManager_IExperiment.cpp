@@ -424,6 +424,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //req_obs.humanType = human_type;
     //req_obs.humanMood = human_mood;
     req_robot.assignedTo = task_assigned;
+    req_robot.robotType = robot_AItype;
     req_obs.robotType = robot_AItype;
     req_obs.task_cnt = task_number;
 //    humanROSReset.call(req_human, res_human);

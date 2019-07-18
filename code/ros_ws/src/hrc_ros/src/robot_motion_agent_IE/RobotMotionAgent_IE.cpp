@@ -24,8 +24,8 @@ RobotMotionAgent::~RobotMotionAgent() {
 	//cout << " In destructor " << endl;
 }
 
-ros::Time cancel_now_time; 
-ros::Time cancel_latest_time; 
+ros::Time cancel_now_time;
+ros::Time cancel_latest_time;
 
 void RobotMotionAgent::initialize() {
 	ros::NodeHandle nh("~");
@@ -81,6 +81,7 @@ bool RobotMotionAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
 	initial_state_received = true;
 	newstate_info_received = false;
 	action_info_received = false;
+	robotType = req.robotType;
 
 	ROS_INFO("[ROBOT AGENT] Reset!");
 	res.success = true;
@@ -284,7 +285,7 @@ void RobotMotionAgent::update() {
 			}
 			else if (robot_action == "2") {	// cancel all actions
 				// Global variables are set below to be sent to task manager
-				cancel_now_time = ros::Time::now(); 
+				cancel_now_time = ros::Time::now();
 
 				if(cancel_now_time - cancel_latest_time >= ros::Duration(15)){
 					robot_action_taken = "cancel all actions";
@@ -293,15 +294,15 @@ void RobotMotionAgent::update() {
 					std_msgs::Bool msg;
 					msg.data = bool(true);
 					dobot_cancel_pub.publish(msg);
-					
-					cancel_latest_time = ros::Time::now(); 
-					
+
+					cancel_latest_time = ros::Time::now();
+
 					std_srvs::SetBool is_warned;
 					is_warned.request.data = true;
 					ros::ServiceClient informHuman = nh.serviceClient<std_srvs::SetBool>("/human_mc_sampler/robot_is_warned");
 					informHuman.call(is_warned);
 					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot canceling all actions...");
-				} else { //cout << "skipping cancel, already issued " << endl; 
+				} else { //cout << "skipping cancel, already issued " << endl;
 				}
 
 			}
@@ -370,10 +371,14 @@ void RobotMotionAgent::update() {
 		else{
 			// TODO: TEST HERE! Robot received previous state's reward. But it is from DESPOT agent. In real setup, it should come from obs agent
 			// Here Robot waits for obs agent to inform about the reward (in string)
+			ros::param::get("/robot_initial_state", init_state);
+
 			immediate_reward = "";
 			ros::param::get("/robot_immediate_reward", immediate_reward);
-			while (immediate_reward == ""){
-				ros::param::get("/robot_immediate_reward", immediate_reward);
+			if (!init_state){
+				while (immediate_reward == ""){
+					ros::param::get("/robot_immediate_reward", immediate_reward);
+				}
 			}
 			ros::param::get("/robot_total_disc_reward", total_disc_reward);
 			ROS_INFO("[ROBOT AGENT] Robot received (prev step) reward: %s from the real state: %s | Total Disc.Reward: %s",
@@ -387,9 +392,6 @@ void RobotMotionAgent::update() {
 			ros::param::set("/robot_immediate_reward", "");
 		}
 
-		bool init_state = false;
-		ros::param::get("/robot_initial_state", init_state);
-
 		// First action and belief state is received, then the real state (the real of the belief). After both, inform the task mang.
 		if ((action_info_received && newstate_info_received) || init_state){
 
@@ -400,6 +402,7 @@ void RobotMotionAgent::update() {
 			update_msg.robot_action_taken = robot_action_taken; // took action in the belief state
 			update_msg.robot_belief_state = robot_belief_state; // belief state
 
+			ros::param::get("/robot_initial_state", init_state);
 			// if (initial_state_received){
 			if (init_state){
 				update_msg.robot_real_state = robot_belief_state; // in initial state robot mdp/pomdp sends the init state directly

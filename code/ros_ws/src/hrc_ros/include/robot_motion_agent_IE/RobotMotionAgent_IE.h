@@ -2,7 +2,7 @@
  *  RobotMotionAgent.cpp
  *
  *  Created on: 17.01.2019
- *      Author: Elia Jona Kargruber 
+ *      Author: Elia Jona Kargruber
  *      Email: kargruber@campus.tu-berlin.de
  */
 
@@ -18,23 +18,23 @@
 #include <hrc_ros/ResetRobotROS.h>
 #include <std_msgs/Bool.h>
 
-// dobot specific services 
+// dobot specific services
 #include <hrc_ros/ContPickAndPlace.h>
 #include <hrc_ros/InitDobotArmApp.h>
 #include <hrc_ros/SetQueuedCmdStopExec.h>
 #include <hrc_ros/SetQueuedCmdForceStopExec.h>
 #include <hrc_ros/OneTimePickAndPlace.h>
-#include <hrc_ros/SetPTPCoordinateParams.h>  //service to set speed and velocities of dobot 
+#include <hrc_ros/SetPTPCoordinateParams.h>  //service to set speed and velocities of dobot
 #include <hrc_ros/SetQueuedCmdStartExec.h>
-#include <hrc_ros/SetPTPCmd.h> // for the gotoPointApp service 
+#include <hrc_ros/SetPTPCmd.h> // for the gotoPointApp service
 #include <hrc_ros/SetEndEffectorSuctionCup.h>
 #include <hrc_ros/SetQueuedCmdClear.h>
 #include <hrc_ros/SimplePickAndPlace.h>
 #include <hrc_ros/InOprConveyorControl.h>
 
-// websocket and stream includes 
+// websocket and stream includes
 #include "simple_web_socket/server_ws.hpp"
-#include <iostream> 
+#include <iostream>
 #include <fstream>
 
 using namespace std;
@@ -46,7 +46,7 @@ public:
 	virtual ~RobotMotionAgent();
 
 	// file and filename to store the results from the pomdp evaluation
-	std::ofstream test_result_file; 
+	std::ofstream test_result_file;
 	string filename_robot_pomdp_eval;
 
 private:
@@ -71,30 +71,30 @@ private:
 	void update();
 
 	bool executeDobotMotionTest( std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res);
-	
-	// TODO check if still needed -> remove otherwise 
-	/*static void dobot_pointing_thWorker(); 
+
+	// TODO check if still needed -> remove otherwise
+	/*static void dobot_pointing_thWorker();
 	static void dobot_planning_thWorker() ;
 	static void dobot_warning_thWorker() ;
-	static void dobot_grasping_thWorker() ; 
+	static void dobot_grasping_thWorker() ;
 
-	std::thread pointing_thread; 
+	std::thread pointing_thread;
 	std::thread planninging_thread;
 	std::thread warning_thread;
 	std::thread grasping_thread();
 	*/
-	
+
 
 private:
 
-// **** publishers to publish the DOBOT command to the worker nodes ****	
-	ros::Publisher dobot_grasp_pub; 
-	ros::Publisher dobot_cancel_pub; 
-	ros::Publisher dobot_plan_pub; 
-	ros::Publisher dobot_idle_pub; 
+// **** publishers to publish the DOBOT command to the worker nodes ****
+	ros::Publisher dobot_grasp_pub;
+	ros::Publisher dobot_cancel_pub;
+	ros::Publisher dobot_plan_pub;
+	ros::Publisher dobot_idle_pub;
 	ros::Publisher dobot_point_pub;
 
-// **** publisher to publish the action the robot took -> this is recorded 
+// **** publisher to publish the action the robot took -> this is recorded
 
 	ros::Publisher robot_action_pub;
 	/*
@@ -108,65 +108,65 @@ private:
 // **** services to command the DOBOT API ****
 	/*
 	 * /dobot_arm_app/simplePickAndPlace is a service to command DOBOT to pick an object and put it directly into a tray.
-	 *  No detour for the colour sensor is made. 
+	 *  No detour for the colour sensor is made.
 	 */
-	ros::ServiceClient Dobot_SimplePickAndPlace; 
+	ros::ServiceClient Dobot_SimplePickAndPlace;
 
 	/*
-	 * /dobot_arm_app/setPTPCoordinateParamsApp is a service to set velocities and accelerations of the DOBOT 
+	 * /dobot_arm_app/setPTPCoordinateParamsApp is a service to set velocities and accelerations of the DOBOT
 	 * Note: the include is called SetPTPCoordinateParams.h
 	 */
-	ros::ServiceClient Dobot_SetPTPCoordinateParams; 
+	ros::ServiceClient Dobot_SetPTPCoordinateParams;
 
 	/*
-	 * /dobot_arm_app/init service initiates the Dobot arm app 
+	 * /dobot_arm_app/init service initiates the Dobot arm app
 	 */
-	ros::ServiceClient Dobot_InitDobotArmApp; 
+	ros::ServiceClient Dobot_InitDobotArmApp;
 
 	/*
 	 * /dobot_arm_app/setQueuedCmdForceStopExecApp  forces the Dobot to stop immediately (stop all actions)
 	 */
-	ros::ServiceClient Dobot_SetQueuedCmdForceStopExec; 
+	ros::ServiceClient Dobot_SetQueuedCmdForceStopExec;
 
 	/*
-	 * /dobot_arm_app/setQueuedCmdStopExecApp service initiates stops the execution of the command queue without interrupting the currently executed action 
+	 * /dobot_arm_app/setQueuedCmdStopExecApp service initiates stops the execution of the command queue without interrupting the currently executed action
 	 */
 	ros::ServiceClient Dobot_SetQueuedCmdStopExec;
 
 	/*
-	 * /dobot_arm_app/setQueuedCmdStartExecApp restarts the execution of DOBOT commands. This has to be called after the execution has been stopped in order to continue normal DOBOT operation. 
+	 * /dobot_arm_app/setQueuedCmdStartExecApp restarts the execution of DOBOT commands. This has to be called after the execution has been stopped in order to continue normal DOBOT operation.
 	 */
-	ros::ServiceClient Dobot_SetQueuedCmdStartExec;	
+	ros::ServiceClient Dobot_SetQueuedCmdStartExec;
 
 	/*
-	 * /dobot_arm_app/setQueuedCmdClearApp  clears the command queue and deletes all commands. Afterwards you will have a clean DOBOT command queue. 
+	 * /dobot_arm_app/setQueuedCmdClearApp  clears the command queue and deletes all commands. Afterwards you will have a clean DOBOT command queue.
 	 */
-	ros::ServiceClient Dobot_SetQueuedCmdClear;	
-
-
-	/*
-	 * /dobot_arm_app/setEndEffectorSuctionCupApp   let's you enable or disable DOBOT's suctionCup | set the config flag to 1 in order to be able to modify it.  
-	 */
-	ros::ServiceClient Dobot_SetEndEffectorSuctionCup;	
+	ros::ServiceClient Dobot_SetQueuedCmdClear;
 
 
 	/*
-	 * /dobot_arm_app/gotoPointApp commands DOBOT to go to a specified point 
+	 * /dobot_arm_app/setEndEffectorSuctionCupApp   let's you enable or disable DOBOT's suctionCup | set the config flag to 1 in order to be able to modify it.
+	 */
+	ros::ServiceClient Dobot_SetEndEffectorSuctionCup;
+
+
+	/*
+	 * /dobot_arm_app/gotoPointApp commands DOBOT to go to a specified point
 	 * Note: the include is called SetPTPCmd.h
 	 */
 	ros::ServiceClient Dobot_gotoPoint;
 
 	/*
-	 * /dobot_arm_app/contPickAndPlace  is a service that will command DOBOT to continously pick objects and place them in the containers. 
-	 * The service is mainly used for demonstration purposes. 
-	 * 
+	 * /dobot_arm_app/contPickAndPlace  is a service that will command DOBOT to continously pick objects and place them in the containers.
+	 * The service is mainly used for demonstration purposes.
+	 *
 	 */
-	ros::ServiceClient Dobot_ContPickAndPlace;	
+	ros::ServiceClient Dobot_ContPickAndPlace;
 
 	/*
-	 * /dobot_arm_app/oneTimePickAndPlace   is a service that will command DOBOT grasp an object once and put it in a specified container. 
-	 * A detour to the colour sensor is made. The service is mainly used for demonstration purposes. 
-	 * 
+	 * /dobot_arm_app/oneTimePickAndPlace   is a service that will command DOBOT grasp an object once and put it in a specified container.
+	 * A detour to the colour sensor is made. The service is mainly used for demonstration purposes.
+	 *
 	 */
 	ros::ServiceClient Dobot_oneTimePickAndPlace ;
 
@@ -184,7 +184,7 @@ private:
 
 	/*
 	 * /robot_motion_agent/motionTest is a rosservice by task manager agent to get information on
-	 * 
+	 *
 	 */
 	ros::ServiceServer DoDobotMotionTestService;
 
@@ -221,6 +221,10 @@ private:
 	string robot_immediate_reward = "";
 	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_total_disc_reward = "";
+	/// Robot type variable: reactive or proactive
+	string robotType = "";
+	/// a flag for stating if it is the initial state from DESPOT
+	bool init_state = false;
 
 };
 

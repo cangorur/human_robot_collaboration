@@ -318,6 +318,8 @@ private:
 	int human_task_time = 0;
 	/// counter for how many steps human is looking around
 	int human_looking_around_ctr = 0;
+	/// counter for human idle
+	int human_idle_ctr = 0;
 	/// Boolean to hold if human trusts the robot. This is inherently known to observation agent from the human model run by task manager
 	/// In our applications, for now, it is always kept TRUE
 	bool humanTrustsRobot;
