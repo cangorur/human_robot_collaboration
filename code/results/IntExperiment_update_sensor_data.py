@@ -290,8 +290,17 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
     ttype25_warnings = np.array([], dtype=np.float64)
     ttype26_warnings = np.array([], dtype=np.float64)
     ttype5_warnings = np.array([], dtype=np.float64)
-    
-    
+
+    # success rate 
+    ttype1_success_rate = np.array([], dtype=np.float64)
+    ttype23_success_rate = np.array([], dtype=np.float64)
+    ttype24_success_rate = np.array([], dtype=np.float64)
+    ttype25_success_rate = np.array([], dtype=np.float64)
+    ttype26_success_rate = np.array([], dtype=np.float64)
+    ttype47_success_rate = np.array([], dtype=np.float64)
+    ttype49_success_rate = np.array([], dtype=np.float64)
+
+
 
     for result_file in file_list: 
         types_dict = {'rosbagTimestamp':str, 'task_id':int, 'subtask_id':int,	'step_count':int, 'who_reports':str, 'update_received_time':str,	'secs1':int,	'nsecs1':int, 'human_model':str,	'action_taken_time':str , 'secs':int , 'nsecs':int, 'taken_action':str, 'belief_state':str, 'real_state':str, 'isEstimationCorrect':str,	'warnings_count_subtask':int, 'real_obs_received':str, 'real_obs_received_array':str, 'obs_with_noise':str,'human_observables':str, 'mapped_observation_pomdp':int,	'mapped_observation_raw':int, 'robot_model':str, 'immediate_reward':str, 'total_disc_reward':str,'robot_belief':str,	'tray_update_received_time':str, 'secs':int,	'nsecs':int, 'subtask_status':str,	'who_succeeded_subtask':str,	'subtask_duration':float,	'failed_subtasks':int, 'successful_subtasks':int, 'percentage_successful_subtasks':float,	'task_status':str,	'task_duration':float,	'who_succeeded_task':str,	'warnings_count_task':int,	'successful_tasks_cnt':int,	'failed_tasks_cnt':int,	'percentage_successful_tasks':float}
@@ -300,8 +309,8 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         file_frame = pd.read_csv(result_file, dtype = types_dict)
         
         # #### filter csv files 
-        file_frame.drop(['human_model','update_received_time','secs.1',	'nsecs.1', 'action_taken_time', 'secs', 'nsecs','real_state','isEstimationCorrect','obs_with_noise','robot_belief','tray_update_received_time', 'secs', 'nsecs','who_succeeded_task'],axis=1,inplace= True)
-        print(result_file)
+        #file_frame.drop(['human_model','update_received_time','secs.1',	'nsecs.1', 'action_taken_time', 'secs', 'nsecs','real_state','isEstimationCorrect','obs_with_noise','robot_belief','tray_update_received_time', 'secs', 'nsecs','who_succeeded_task'],axis=1,inplace= True)
+        #print(result_file)
         
         #rp.summary_cont(file_frame['who_succeeded_subtask'])
         # files can now be filtered and saved separately by calling this script with the argument filter_csvs 
@@ -332,15 +341,17 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 2
             if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype1_rewards = np.append( ttype1_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype1_success_rate = np.append( ttype1_success_rate, int((file_frame['percentage_successful_subtasks'][row])))
                 ttype1_task_duration = np.append( ttype1_task_duration, float((file_frame['task_duration'][row])))
                 ttype1_warnings = np.append( ttype1_warnings, int((file_frame['warnings_count_task'][row])) )
                 turn2_done = row
-                
+        
 
             # turn 3 | task type 2 -> means analysis + SEM for each participant 
             task_number = 3
             if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype23_rewards = np.append( ttype23_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype23_success_rate = np.append( ttype23_success_rate, int((file_frame['percentage_successful_subtasks'][row])))
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
                 ttype23_task_duration = np.append( ttype23_task_duration, float((file_frame['task_duration'][row])))
@@ -353,6 +364,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 4
             if ( ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ) ): 
                 ttype24_rewards = np.append( ttype24_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype24_success_rate = np.append( ttype24_success_rate, float((file_frame['percentage_successful_subtasks'][row])))
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype24_task_duration = np.append( ttype24_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
@@ -364,6 +376,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 5
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype25_rewards = np.append( ttype25_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype25_success_rate = np.append( ttype25_success_rate, float((file_frame['percentage_successful_subtasks'][row])))
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype25_task_duration = np.append( ttype25_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
@@ -375,6 +388,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 6
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype26_rewards = np.append( ttype26_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype26_success_rate = np.append( ttype26_success_rate, float((file_frame['percentage_successful_subtasks'][row])))
                 ttype2_task_duration = np.append( ttype2_task_duration, float((file_frame['task_duration'][row])))
                 ttype26_task_duration = np.append( ttype26_task_duration, float((file_frame['task_duration'][row])))
                 ttype2_rewards = np.append( ttype2_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
@@ -386,6 +400,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 7
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype47_rewards = np.append( ttype47_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype47_success_rate = np.append( ttype47_success_rate, float((file_frame['percentage_successful_subtasks'][row])))
                 ttype4_task_duration = np.append( ttype4_task_duration, float((file_frame['task_duration'][row])))
                 ttype47_task_duration = np.append( ttype47_task_duration, float((file_frame['task_duration'][row])))
                 ttype4_warnings = np.append( ttype4_warnings, int((file_frame['warnings_count_task'][row])) )
@@ -404,6 +419,7 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
             task_number = 9
             if ((file_frame['who_reports'][row]) == '"MANAGER-TASK-DONE"') and (file_frame['task_id'][row] == task_number ): 
                 ttype49_rewards = np.append( ttype49_rewards, float((file_frame['total_disc_reward'][row]).replace('"','')) )
+                ttype49_success_rate = np.append( ttype49_success_rate, float((file_frame['percentage_successful_subtasks'][row])))
                 ttype4_task_duration = np.append( ttype4_task_duration, float((file_frame['task_duration'][row])))
                 ttype49_task_duration = np.append( ttype49_task_duration, float((file_frame['task_duration'][row])))
                 ttype4_warnings = np.append( ttype4_warnings, int((file_frame['warnings_count_task'][row])) )
@@ -490,25 +506,39 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         #ttype4_robot_takeover  = np.append(ttype4_robot_takeover, robot_succeeded) 
         ttype49_robot_takeover  = np.append(ttype49_robot_takeover, robot_succeeded) 
         
+        print("success rates")
+        print len(ttype1_success_rate)
+        print len(ttype23_success_rate)
+        print len(ttype24_success_rate)
+        print len(ttype25_success_rate)
+        print len(ttype26_success_rate)
+        print len(ttype47_success_rate)
+        print len(ttype49_success_rate)
 
+        print len(ttype1_rewards)
 
     # ############## write the data to csv again #######################     
         df = pd.DataFrame()
+
+        df2 = pd.DataFrame()
     
         df['ttype1_rewards'] = ttype1_rewards
         df['ttype1_duration'] = ttype1_task_duration
         df['ttype1_warnings'] = ttype1_warnings 
-        df['ttype1_robot_interference'] = ttype1_robot_takeover 
+        #df['ttype1_robot_interference'] = ttype1_robot_takeover
+        df2['ttype1_percentage_successful_subtasks'] = ttype1_success_rate
 
         df['ttype23_rewards'] = ttype23_rewards
         df['ttype23_duration'] = ttype23_task_duration 
         df['ttype23_warnings'] = ttype23_warnings 
-        df['ttype23_robot_interference'] = ttype23_robot_takeover
+        #df['ttype23_robot_interference'] = ttype23_robot_takeover
+        df2['ttype23_percentage_successful_subtasks'] = ttype23_success_rate
 
         df['ttype24_rewards'] = ttype24_rewards
         df['ttype24_duration'] = ttype24_task_duration 
         df['ttype24_warnings'] = ttype24_warnings 
-        df['ttype24_robot_interference'] = ttype24_robot_takeover
+        #df['ttype24_robot_interference'] = ttype24_robot_takeover
+        df2['ttype24_percentage_successful_subtasks'] = ttype24_success_rate
 
 
 
@@ -516,22 +546,26 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
         df['ttype25_rewards'] = ttype25_rewards
         df['ttype25_duration'] = ttype25_task_duration 
         df['ttype25_warnings'] = ttype25_warnings 
-        df['ttype25_robot_interference'] = ttype25_robot_takeover
+        #df['ttype25_robot_interference'] = ttype25_robot_takeover
+        df2['ttype25_percentage_successful_subtasks'] = ttype25_success_rate
 
         df['ttype26_rewards'] = ttype26_rewards
         df['ttype26_duration'] = ttype26_task_duration 
         df['ttype26_warnings'] = ttype26_warnings 
-        df['ttype26_robot_interference'] = ttype26_robot_takeover
+        #df['ttype26_robot_interference'] = ttype26_robot_takeover
+        df2['ttype26_percentage_successful_subtasks'] = ttype26_success_rate
 
         df['ttype47_rewards'] = ttype47_rewards
         df['ttype47_duration'] = ttype47_task_duration 
         df['ttype47_warnings'] = ttype47_warnings 
-        df['ttype47_robot_interference'] = ttype47_robot_takeover
+        #df['ttype47_robot_interference'] = ttype47_robot_takeover
+        df2['ttype47_percentage_successful_subtasks'] = ttype47_success_rate
 
         df['ttype49_rewards'] = ttype49_rewards
         df['ttype49_duration'] = ttype49_task_duration 
         df['ttype49_warnings'] = ttype49_warnings 
-        df['ttype49_robot_interference'] = ttype49_robot_takeover
+        #df['ttype49_robot_interference'] = ttype49_robot_takeover
+        df2['ttype49_percentage_successful_subtasks'] = ttype49_success_rate
 
        # df['ttype2_rewards'] = ttype2_rewards
        # df['ttype2_duration'] = ttype2_task_duration 
@@ -545,8 +579,8 @@ def plot_challenging(dir,print_debug_sys,show_plots_sys):
          
 
 # ################ UNCOMMENT here if you want to save a summary of the input files 
-        # df.to_csv( dir + '/../TaskSummary.csv')
-
+        #df.to_csv( dir + '/../TaskSummary_with_successrate.csv')
+        df2.to_csv( dir + '/../TaskSummary_with_successrate.csv')
 # ####################################################################################
 
 
