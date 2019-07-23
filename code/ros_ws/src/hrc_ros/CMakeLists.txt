@@ -87,6 +87,7 @@ add_service_files(
    DisplayTaskStatus.srv
    SetTaskNumber.srv
    ResetContainer.srv
+   GetInfraredSensor.srv
 )
 
 # Add the dobot specific services found in the srv/dobot_api_services subfolder

@@ -40,13 +40,16 @@ void RobotMotionAgent::initialize() {
 	grasp = nh.serviceClient<std_srvs::Trigger>("/robot/grasp");
 	cancelAction = nh.serviceClient<std_srvs::Trigger>("/robot/cancel_action");
 	planForGrasp = nh.serviceClient<std_srvs::Trigger>("/robot/planning_for_motion");
+	getInfrared = nh.serviceClient<hrc_ros::GetInfraredSensor>("/dobot_server_agent/GetInfraredSensor");
 
-    dobot_grasp_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_grasp", 1);
+  dobot_grasp_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_grasp", 1);
 	dobot_cancel_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_cancel", 1);
 	dobot_plan_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_plan", 1);
 	dobot_idle_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_idle", 1);
 	dobot_point_pub = nh.advertise<std_msgs::Bool>("/robot_motion_agent/dobot_point", 1);
 	robot_action_pub = nh.advertise<hrc_ros::RobotUpdateMsg>("/experiment_monitoring/robot_action_taken_pub", 1);
+
+	//infra_receiver = nh.subscribe("/conveyor_belt_agent_0/infrared_app", 1000, &RobotMotionAgent::infraredCallback, this);
 
 	/// ROS services of the DOBOT
 	Dobot_SimplePickAndPlace          = nh.serviceClient<hrc_ros::SimplePickAndPlace>("/dobot_arm_app/simplePickAndPlace");
@@ -87,6 +90,11 @@ bool RobotMotionAgent::resetScenario(hrc_ros::ResetRobotROSRequest &req,
 	res.success = true;
 	return true;
 }
+
+/*void RobotMotionAgent::infraredCallback(const std_msgs::UInt8::ConstPtr& msg)
+{
+    tempInfrared = msg->data;
+}*/
 
 bool RobotMotionAgent::executeDobotMotionTest(std_srvs::TriggerRequest &req,std_srvs::TriggerResponse &res){
 
@@ -268,12 +276,24 @@ void RobotMotionAgent::update() {
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "grasp";
 				//success = grasp.call(req, resp);
-
-				std_msgs::Bool msg;
-				msg.data = bool(true);
-
-				dobot_grasp_pub.publish(msg);
-
+				hrc_ros::GetInfraredSensorRequest req;
+				hrc_ros::GetInfraredSensorResponse res;
+				req.infraredPort = 1;
+				getInfrared.call(req, res);
+				int pkg_waitCtr = 0;
+				while(!res.value && pkg_waitCtr < 4){
+					getInfrared.call(req, res);
+					ros::Duration(0.5).sleep();
+					pkg_waitCtr += 1;
+				}
+				if(res.value){
+					std_msgs::Bool msg;
+					msg.data = bool(true);
+					dobot_grasp_pub.publish(msg);
+					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
+				}else{
+					ROS_WARN("[ROBOT AGENT] No package detected. Skipping the grasp!");
+				}
 				//std::thread grasping_thread(dobot_grasping_thWorker);
 				////cout << "after thread call   - in else " << endl;
 				// TODO check if it is possible to preemt this thread with the real robot.
@@ -281,7 +301,6 @@ void RobotMotionAgent::update() {
 			  //	grasping_thread.join();
 				////cout << "after thread.join " << endl;
 				//ros::spinOnce();
-				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
 			}
 			else if (robot_action == "2") {	// cancel all actions
 				// Global variables are set below to be sent to task manager

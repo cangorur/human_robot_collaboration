@@ -317,6 +317,10 @@ void SimpleTUI::RunEvaluator(DSPOMDP *model, Evaluator *simulator,
       exit(0);
     };
 
+    echo.on_close = [](shared_ptr<WsServer::Connection> connection, int status, const string & /*reason*/) {
+        cout << "MDP Server: Closed connection " << connection.get() << " with status code " << status << endl;
+    };
+
     server.start();
     //==========================================================
 

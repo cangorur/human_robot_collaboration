@@ -1,0 +1,5 @@
+---- Turn-2,3,4,5 for proactive, Turn-7.8.9 for reactive ----
+Exp-1: Yingwoo, 4 Proactive tasks, skipped reactive
+Exp-2: Hugo, 4 proactive tasks, skipped reactive
+---- Turn-2,3,4 for proactive, Turn-6,7,8 for reactive ----
+Exp-3: Anna, 4 proactive tasks (turn-6 also filled for this), skipped reactive

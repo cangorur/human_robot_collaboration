@@ -17,6 +17,7 @@
 #include <hrc_ros/RobotUpdateMsg.h>
 #include <hrc_ros/ResetRobotROS.h>
 #include <std_msgs/Bool.h>
+#include <std_msgs/UInt8.h>
 
 // dobot specific services
 #include <hrc_ros/ContPickAndPlace.h>
@@ -31,6 +32,7 @@
 #include <hrc_ros/SetQueuedCmdClear.h>
 #include <hrc_ros/SimplePickAndPlace.h>
 #include <hrc_ros/InOprConveyorControl.h>
+#include <hrc_ros/GetInfraredSensor.h>
 
 // websocket and stream includes
 #include "simple_web_socket/server_ws.hpp"
@@ -71,6 +73,11 @@ private:
 	void update();
 
 	bool executeDobotMotionTest( std_srvs::TriggerRequest &req, std_srvs::TriggerResponse &res);
+
+	/*
+	 * Callback function for infrared sensor data
+	 */
+	void infraredCallback(const std_msgs::UInt8::ConstPtr& msg);
 
 	// TODO check if still needed -> remove otherwise
 	/*static void dobot_pointing_thWorker();
@@ -170,7 +177,15 @@ private:
 	 */
 	ros::ServiceClient Dobot_oneTimePickAndPlace ;
 
+	/*
+	 * /dobot_server_agent/GetInfraredSensor service client to get infrared sensor readings before grasping
+   */
+ 	ros::ServiceClient getInfrared;
 
+	/*
+	 * Subscriber object for infrared publisher
+	 */
+	ros::Subscriber infra_receiver;
 
 	/// ROS services opened by MORSE to control human actions
 	ros::ServiceClient pointToObj;
@@ -210,7 +225,8 @@ private:
 	bool newstate_info_received = false;
 	/// Flags to control the information communication to observation and task manager agents
 	bool initial_state_received = true;
-
+	/// Infrared sensor callback variable.
+	int tempInfrared = 0;
 	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
 	string robot_action_taken = "";
 	/// Variables that hold the information of robot action, states, rewards, belief etc. to be sent to the other agents
