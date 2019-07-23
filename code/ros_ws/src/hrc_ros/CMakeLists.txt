@@ -81,29 +81,31 @@ add_service_files(
    PolicySelectorBPR.srv
    InformTrayUpdate.srv
    InformActionRecognized.srv
-   RequestSuccessCriteria.srv 
+   RequestSuccessCriteria.srv
    DisplayTaskRule.srv
-   DisplayScoring.srv 
+   DisplayScoring.srv
+   DisplayTaskStatus.srv
    SetTaskNumber.srv
+   ResetContainer.srv
 )
 
-# Add the dobot specific services found in the srv/dobot_api_services subfolder  
-add_service_files(DIRECTORY srv/dobot_api_services 
-FILES 
+# Add the dobot specific services found in the srv/dobot_api_services subfolder
+add_service_files(DIRECTORY srv/dobot_api_services
+FILES
 ContPickAndPlace.srv
 InitDobotArmApp.srv
 SetPTPCmd.srv
 SetQueuedCmdStopExec.srv
 SetQueuedCmdForceStopExec.srv
 OneTimePickAndPlace.srv
-SetPTPCoordinateParams.srv  # service to set speed and velocities of dobot 
+SetPTPCoordinateParams.srv  # service to set speed and velocities of dobot
 SetQueuedCmdStartExec.srv
-SetPTPCmd.srv # for the gotoPointApp service 
+SetPTPCmd.srv # for the gotoPointApp service
 SetEndEffectorSuctionCup.srv
 SetQueuedCmdClear.srv
 SimplePickAndPlace.srv
 InOprConveyorControl.srv
-GetQueuedCmdCurrentIndex.srv 
+GetQueuedCmdCurrentIndex.srv
 )
 
 
@@ -197,23 +199,23 @@ add_executable(observation_agent_IE
 add_dependencies(observation_agent_IE ${${PROJECT_NAME}_EXPORTED_TARGETS})
 target_link_libraries(observation_agent_IE ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(HeadTracking_agent
-  src/observation_agent/head_gesture_tracker/HeadTrackingAgent.cpp)
-  #src/observation_agent/head_gesture_tracker/HeadTrackingAgentNode.cpp)
-add_dependencies(HeadTracking_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(HeadTracking_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
-
-add_executable(HeadTracking_agent_play_sound
-  src/observation_agent/head_gesture_tracker/HeadTrackingAgentwithSound.cpp)
+#add_executable(HeadTracking_agent
+#  src/observation_agent/head_gesture_tracker/HeadTrackingAgent.cpp)
 #  #src/observation_agent/head_gesture_tracker/HeadTrackingAgentNode.cpp)
-add_dependencies(HeadTracking_agent_play_sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(HeadTracking_agent_play_sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
+#add_dependencies(HeadTracking_agent ${${PROJECT_NAME}_EXPORTED_TARGETS})
+#target_link_libraries(HeadTracking_agent ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
-add_executable(NotifyTrayUpdate_Sound
-  src/experiment_monitor/NotifyTrayUpdateSound.cpp
-  src/experiment_monitor/NotifyTrayUpdateSoundNode.cpp)
-add_dependencies(NotifyTrayUpdate_Sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
-target_link_libraries(NotifyTrayUpdate_Sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
+#add_executable(HeadTracking_agent_play_sound
+#  src/observation_agent/head_gesture_tracker/HeadTrackingAgentwithSound.cpp)
+#  #src/observation_agent/head_gesture_tracker/HeadTrackingAgentNode.cpp)
+#add_dependencies(HeadTracking_agent_play_sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
+#target_link_libraries(HeadTracking_agent_play_sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
+
+#add_executable(NotifyTrayUpdate_Sound
+#  src/experiment_monitor/NotifyTrayUpdateSound.cpp
+#  src/experiment_monitor/NotifyTrayUpdateSoundNode.cpp)
+#add_dependencies(NotifyTrayUpdate_Sound ${${PROJECT_NAME}_EXPORTED_TARGETS})
+#target_link_libraries(NotifyTrayUpdate_Sound ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${OpenCV_LIBRARIES})
 
 add_executable(test_decision_trigger
   src/test_agents_IE/test_decision_trigger.cpp)

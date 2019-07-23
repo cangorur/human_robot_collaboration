@@ -108,24 +108,24 @@ void TaskManager::initialize(){
         robot2_battery = n.subscribe("/robot_2/battery", 1000, &TaskManager::receiveRobot2Battery, this);
         */
 
-    // distracting of human -> not used so far   
-    //std_srvs::Trigger trigger_service; 
-    //distract_human_client.call(trigger_service.request,trigger_service.response); 
+    // distracting of human -> not used so far
+    //std_srvs::Trigger trigger_service;
+    //distract_human_client.call(trigger_service.request,trigger_service.response);
 
     ROS_INFO("Task Manager is created !");
 }
 
 bool TaskManager::setTaskNumber(hrc_ros::SetTaskNumberRequest &req, hrc_ros::SetTaskNumberResponse &res){
-    
-    // kill all open despots 
+
+    // kill all open despots
     string kill_pomdpx_str = "killall despot_pomdpx";
     const char * c_kill_pomdpx = kill_pomdpx_str.c_str();
     system(c_kill_pomdpx);
 
-    task_number = req.task_number -1; 
+    task_number = req.task_number -1;
     ros::param::set("/task_count", task_number);
 
-    //cout << "task_number " << task_number << "  ( is -1 since it will be increased when scenario is started" << endl; 
+    //cout << "task_number " << task_number << "  ( is -1 since it will be increased when scenario is started" << endl;
 
     //hrc_ros::InitiateScenario::Request req_init;
     //hrc_ros::InitiateScenario::Response res_init;
@@ -306,10 +306,10 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     // === ROBOT: Setting up the selected robot policy ===
     robot_model = "";
     // Start the robot shell with the given type (either from config file as default or rosparam: manual set or set by policy retrieve)
-   
-    //## use this, if the POMDP should show up in own terminal 
+
+    //## use this, if the POMDP should show up in own terminal
     //string robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/POMDP_robot_general.sh " + pkg_path + " ";
-   
+
     string robot_shell =  pkg_path + "/model_scripts/POMDP_robot_general.sh " + pkg_path + " ";
 
 
@@ -318,7 +318,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
             ros::param::get("/robot_model",robot_model);
             if (robot_model == "reactive.pomdpx"){
                 // Selecting the MDP despote exe
-                robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+                robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
                 robot_AItype = "reactive";
             }
             robot_AItype = "proactive";
@@ -333,7 +333,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_model=res_cmab.robot_model;
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + robot_model + "\"'";
     }else if(useBPR){ // If the use of BPR is enabled for the policy selection, we overwrite the manually selected robot policy
@@ -344,7 +344,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         robot_model = robot_policies[res_bpr.policy_id];
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }else if(useRandom){
@@ -355,32 +355,34 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         }else if (r == 13){
           robot_model = "reactive.pomdpx";
           robot_AItype = "reactive";
-          robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+          robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
           robot_model = "policy" + to_string(r) + ".pomdpx";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
     else if(!useEvaluator){ // take the robot model specified under scenario_config.json file
-        robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
         if (robot_AItype == "proactive"){
-	    // ## if POMDP should show up in own terminal 
-	    //robot_shell = robot_shell + robot_model + "\"'";	
+      	    // ## if POMDP should show up in own terminal
+      	    //robot_shell = robot_shell + robot_model + "\"'";
+            robot_model = robot_AItype + "_" + robot_forHuman + ".pomdpx";
             robot_shell = robot_shell + robot_model + " &";
         }else if (robot_AItype == "reactive"){
-            robot_shell = "gnome-terminal --geometry=80x24+10+10 -e 'sh -c \"" + pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-            robot_shell = robot_shell + robot_model + "\"'";
+            robot_model = "reactive.pomdpx";
+            robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
+            robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
             //if nothing specified call the default pomdp robot model
             robot_model = "proactive.pomdpx";
-	   // ## if robot_shell should show up in own terminal 	   
-	   //robot_shell = robot_shell + robot_model + "\"'";          
+	   // ## if robot_shell should show up in own terminal
+	   //robot_shell = robot_shell + robot_model + "\"'";
 	   robot_shell = robot_shell + robot_model   + " &";
         }
     }else{
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }
-
+    ROS_INFO("[TASK MANAGER] Robot Shell: %s", robot_shell.c_str());
     // kill all open despots before starting a new one
     string kill_pomdpx_str = "killall despot_pomdpx";
     const char * c_kill_pomdpx = kill_pomdpx_str.c_str();
@@ -396,10 +398,10 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
-    
-    
+
+
         system(c_robot_shell);
-    
+
     //cout << "Robot shell script path: " << robot_shell << endl;
 
     // Setting robot infor and new scenario information parameters
@@ -422,6 +424,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     //req_obs.humanType = human_type;
     //req_obs.humanMood = human_mood;
     req_robot.assignedTo = task_assigned;
+    req_robot.robotType = robot_AItype;
     req_obs.robotType = robot_AItype;
     req_obs.task_cnt = task_number;
 //    humanROSReset.call(req_human, res_human);
@@ -949,15 +952,15 @@ void TaskManager::CheckToStartNewTask(void){
 
 
         // trigger displaying of score
-        hrc_ros::DisplayScoring::Request  score_display_req; 
-        hrc_ros::DisplayScoring::Response score_display_resp; 
+        hrc_ros::DisplayScoring::Request  score_display_req;
+        hrc_ros::DisplayScoring::Response score_display_resp;
 
-        score_display_req.task_duration = global_stat_task_combined_subtask_time_seconds; 
+        score_display_req.task_duration = global_stat_task_combined_subtask_time_seconds;
         score_display_req.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
         std::string::size_type sz;
-        score_display_req.reward_scoring_task = global_total_disc_reward; 
+        score_display_req.reward_scoring_task = global_total_disc_reward;
         display_score_client.call(score_display_req,score_display_resp);
-        
+
 
 
         // ###### Reset all subtask relevant variables

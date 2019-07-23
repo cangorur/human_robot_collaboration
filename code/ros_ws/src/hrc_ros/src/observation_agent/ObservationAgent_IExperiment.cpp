@@ -40,6 +40,7 @@ void ObservationAgent::initialize(){
 	traySensor_notifyToHuman_pub = nh.advertise<hrc_ros::SuccessStatusObserved>("/observation_agent/tray_status_NotifyToHuman",1);
 	//subscriber for the headGesture
 	headGesture_subs = nh.subscribe("/headTrackingAgent/head_gesture_pub/", 1 , &ObservationAgent::ReceiveHeadGesture,this);
+	objectTrack_subs = nh.subscribe("/object_tracking/object_tograsp_colour", 1 , &ObservationAgent::ReceiveObjectTracked,this);
 	ObsUpdaterPub = nh.advertise<hrc_ros::ObsUpdateMsgIE>("/observation_agent/observation_update",1);
 
 	/*
@@ -66,7 +67,7 @@ void ObservationAgent::initialize(){
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
-	warnings_received_subtask =0; 
+	warnings_received_subtask =0;
 	successful_tasks_cnt = 0;
 	failed_tasks_cnt = 0;
 	percentage_successful_tasks = 0.0;
@@ -81,7 +82,6 @@ void ObservationAgent::initialize(){
 
 
 	/// A ROS timer for the duration of a task assigned to the human
-	task_timer = nh.createTimer(ros::Duration(1.0), &ObservationAgent::HumanTaskTimer, this);
 	decision_timer = nh.createTimer(ros::Duration(10.0),&ObservationAgent::DecisionTimer,this);
 	decision_timer.stop();
 
@@ -128,7 +128,7 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	percentage_successful_subtasks = 0.0;
 	who_succeeded = "NOBODY";
 	warnings_received_task = 0;
-	warnings_received_subtask = 0; 
+	warnings_received_subtask = 0;
 	// other variables
 	o1_ipd = false; //  O_1  task successs (processed product detected)
 	o2_upd = false; // O_2	failure
@@ -209,19 +209,12 @@ bool ObservationAgent::resetScenario(hrc_ros::ResetObsROSRequest &req,
 	return true;
 }
 
-
-// TODO change this to subtask_time and use it for the calculation of rewards
-void ObservationAgent::HumanTaskTimer(const ros::TimerEvent&){
-	human_task_time += 1; // increase one in every second
-}
-
-
 void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
 
 	 if (experiment_started) {
 	 // Note the duration printout is wrong for the first time when the timer has been restarted
 	 double seconds_real = ( ((event.current_real - event.last_real).toNSec() ) / double(1000000000.0) );
-	 ROS_WARN("XXXXXX  DecisionTimer Event because Timeout reached after   : %f  seconds \n\n" , seconds_real);
+	 // ROS_WARN("XXXXXX  DecisionTimer Event because Timeout reached after   : %f  seconds \n\n" , seconds_real);
 
 	 // trigger a decision
 	 // bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
@@ -231,7 +224,7 @@ void ObservationAgent::DecisionTimer(const ros::TimerEvent &event){
 	 req.stamp = ros::Time::now();
 	 // req.human_looking_around = true;
 	 ObservationAgent::IE_receive_actionrecognition_update(req, res);
-	 } else { ROS_WARN("\nOBSERVATION ROS:  Decission timer is running but experiment not started yet -> no decision will be taken \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
+	 } else { ROS_WARN("\nOBSERVATION ROS:  Decision timer is running but experiment not started yet -> no decision will be taken \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
 
 }
 void ObservationAgent::SubTaskTimer(const ros::TimerEvent&){
@@ -260,14 +253,16 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 			warnings_received_task ++;
 			warnings_received_subtask ++;
 		}
-
 		if (robotType == "reactive"){
-			observation = MapObservationsToMDP(robot_observation_real); // Get correspending state for reactive ROBOT wrt observations to state mapping
+			// ROS_WARN("[OBSERVATION AGENT]: REACTIVE OBSERVATION MAPPING !");
+			observation = MapObservationsToPOMDP(robot_observation_real);
+			// ROS_WARN("[OBSERVATION AGENT] POMDP OBSERVATION: %s", observation.c_str());
+			observation = MapObservationsToMDP(observation); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
 			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
 
-		ROS_INFO("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
+		ROS_WARN("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
 				robot_observation_real.c_str(), observation.c_str());
 		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
@@ -318,7 +313,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 		// ###########################################################################################
 
-		ROS_WARN("\n\n OBSERVATION Client: TRIGGER -- Sending to the robot planner:: OBSERVATION= %s \n\n", message.c_str());
+		//ROS_WARN("\n\n OBSERVATION Client: TRIGGER -- Sending to the robot planner:: OBSERVATION= %s \n\n", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
@@ -357,14 +352,13 @@ bool ObservationAgent::IE_humanSt_to_robotSt_Map(string real_human_state_observe
 			realRbtSt_code = getRealRbtStPOMDP(real_human_state_observed); //For POMDP model
 		}
 
-
 		string message = "-1," + realRbtSt_code;
 
-		ROS_INFO("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
+		ROS_WARN("OBSERVATION ROS: << robot_Type:  %s",robotType.c_str());
 		// TODO remove
-		ROS_INFO("observed state received was  = %s", real_human_state_observed.c_str());
+		ROS_WARN("observed state received was  = %s", real_human_state_observed.c_str());
 
-		ROS_INFO("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
+		ROS_WARN("OBSERVATION Client: Sending to the robot planner:: REAL STATE WAS = %s", message.c_str());
 		auto send_stream=make_shared<WsClient::SendStream>();
 		*send_stream << message;
 		client.send(send_stream);
@@ -390,6 +384,17 @@ void ObservationAgent::ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg){
 
 }
 
+// *** Callback function for the /object_tracking/object_tograsp_colour topic"
+void ObservationAgent::ReceiveObjectTracked(const hrc_ros::ObjectGraspColourMsg &msg){
+		// Object_colour = # 1=red | 2=green | 3=blue | 4= reference point=> no object detected
+		if (msg.object_colour == 4)
+			graspped_object_data = prev_object;
+		else
+			graspped_object_data = msg.object_colour;
+			prev_object = graspped_object_data;
+		////cout << "\n\n received Head Gesture  | HumanLookingAround =   " << notO4_human_looking_around << endl;
+
+}
 
 void ObservationAgent::calculate_reward_IE(string obs , float &immediate_reward_out, float &discounted_reward_out){
 
@@ -491,7 +496,8 @@ bool ObservationAgent::IE_request_success_criteria(hrc_ros::RequestSuccessCriter
 		ss_task_counter << task_counter;
 		ss_subtask_counter << subtask_counter;
 
-		current_object = req.current_object;
+		robot_current_object = req.current_object;
+
 		string task_str = ss_task_counter.str();
 		string subtask_str = ss_subtask_counter.str();
 		string object_str  = object_int_to_str(current_object);
@@ -517,193 +523,200 @@ bool ObservationAgent::IE_receive_tray_update(hrc_ros::InformTrayUpdate::Request
 	//Observables calculated in this function are:  (other observables are calculated in action_update_received callback)
 	// o1_ipd   O_1  task successs (processed product detected)
   // o2_upd = O_2	failure
+	if (experiment_started){
 
-	if (experiment_started) {
-		// Reset decision timer ( timer only triggers if system is stuck )
-		decision_timer.stop();
-		decision_timer.start();
-		subtask_timer.stop();
-		before_subtask_reset_tick = subtask_timer_tick;
-		subtask_timer_tick = 0;
-		ros::Time subtask_stop_time = ros::Time::now();
-		subtask_duration = subtask_stop_time - subtask_start_time;
-		task_time_sumOfSubtasks_sec +=  subtask_duration.toNSec() * std::pow(10.0, (-9.0) );
-		////cout << " last subtask took "  <<  subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) ) <<  "  Combined task time in sec: " << task_time_sumOfSubtasks_sec << "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl;
+		/*if (req.sender == "camera_agent"){
+			// #### mapping tray status to observables ( o1 = success | o2 = failure ) ###
+			current_object = graspped_object_data; //now this is always available
+			ROS_WARN("[OBSERVATION AGENT]: CAMERA IS CALLING !!!!");
+		}*/
 
-		// start timers and counters for new subtask
-		subtask_start_time = ros::Time::now();
-		subtask_timer.start();
+		if (req.sender == "container_node") {
+			// Reset decision timer ( timer only triggers if system is stuck )
+			decision_timer.stop();
+			decision_timer.start();
+			subtask_timer.stop();
+			before_subtask_reset_tick = subtask_timer_tick;
+			subtask_timer_tick = 0;
+			ros::Time subtask_stop_time = ros::Time::now();
+			subtask_duration = subtask_stop_time - subtask_start_time;
+			task_time_sumOfSubtasks_sec +=  subtask_duration.toNSec() * std::pow(10.0, (-9.0) );
+			////cout << " last subtask took "  <<  subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) ) <<  "  Combined task time in sec: " << task_time_sumOfSubtasks_sec << "     before_subtask_reset_tick     " << before_subtask_reset_tick << endl;
 
+			// start timers and counters for new subtask
+			subtask_start_time = ros::Time::now();
+			subtask_timer.start();
 
-		// #### mapping tray status to observables ( o1 = success | o2 = failure ) ####
-		current_object = req.current_object;
-		string task_success_state = "ongoing";
-		string subtask_success_state = "ongoing";
-		int_subtask_status = 0; // 0 = ongoing | 1 = success | 3 = fail
-		hrc_ros::SuccessStatusObserved success_status_msg;
+			string task_success_state = "ongoing";
+			string subtask_success_state = "ongoing";
+			int_subtask_status = 0; // 0 = ongoing | 1 = success | 3 = fail
+			hrc_ros::SuccessStatusObserved success_status_msg;
 
+			// ## get strings for success_criteria request
+			stringstream ss_task_counter;
+			stringstream ss_subtask_counter;
 
-		// ## get strings for success_criteria request
-		stringstream ss_task_counter;
-		stringstream ss_subtask_counter;
+			ss_task_counter << task_counter;
+			ss_subtask_counter << subtask_counter;
 
-		ss_task_counter << task_counter;
-		ss_subtask_counter << subtask_counter;
+			string task_str = ss_task_counter.str();
+			string subtask_str = ss_subtask_counter.str();
+			string object_str  = object_int_to_str(current_object);
 
-		string task_str = ss_task_counter.str();
-		string subtask_str = ss_subtask_counter.str();
-		string object_str  = object_int_to_str(current_object);
-
-		// ## determine subtask success state
-		try {
-		success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
-		} catch(boost::property_tree::json_parser::json_parser_error &e) {
-				ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
-				res.success = false;
-				return false;
-			}
-
-
-		int success_tray_read = success_criteria_read.tray;
-		if (req.current_tray == success_tray_read){
-
-			o1_ipd = false; //  O_1  task successs (processed product detected)
-			o2_upd = false; // O_2	failure
-
-			subtask_success_state = "success";
-			int_subtask_status = 1;
-			successful_subtasks += 1;
-
-		} else {
-			o1_ipd = false; //  O_1  task successs (processed product detected)
-			o2_upd = false; // O_2	failure
-
-			subtask_success_state = "fail";
-			int_subtask_status = 3;
-			failed_subtasks += 1;
-		}
+			// ## determine subtask success state
+			try {
+			success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
+			} catch(boost::property_tree::json_parser::json_parser_error &e) {
+					ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+					res.success = false;
+					return false;
+				}
 
 
-		// ## determine global success state -> it is only set once all subtasks are finished
-		if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done
-
-			// reset experiment started -> will be set again when new experiment is started
-			experiment_started = false;
-
-			ROS_WARN("Global Success state is calculated");
-			if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
-				task_success_state = "success"; // global success
-				successful_tasks_cnt ++;
-				o1_ipd = true; //  O_1  task successs (processed product detected)
-				o2_upd = false; // O_2	failure
-				decision_timer.stop();
-				subtask_timer.stop();
-				subtask_timer_tick = 0;
-				//TODO remove
-				//cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;
-			} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
-				task_success_state = "fail"; // global fail
-				failed_tasks_cnt ++;
+			int success_tray_read = success_criteria_read.tray;
+			if (req.current_tray == success_tray_read){
+				// NOTE: success_tray_read is the correct tray for the current SubTask
+				// NOTE: curent_tray and current_object comes from the camera.
 				o1_ipd = false; //  O_1  task successs (processed product detected)
-				o2_upd = true; // O_2	failure
-				decision_timer.stop();
-				subtask_timer.stop();
-				subtask_timer_tick = 0;
-				// TODO remove
-				//cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl;
+				o2_upd = false; // O_2	failure
+
+				subtask_success_state = "success";
+				int_subtask_status = 1;
+				successful_subtasks += 1;
+
+			} else {
+				o1_ipd = false; //  O_1  task successs (processed product detected)
+				o2_upd = false; // O_2	failure
+
+				subtask_success_state = "fail";
+				int_subtask_status = 3;
+				failed_subtasks += 1;
 			}
 
+
+			// ## determine global success state -> it is only set once all subtasks are finished
+			if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done
+
+				// reset experiment started -> will be set again when new experiment is started
+				experiment_started = false;
+
+				// ROS_WARN("Global Success state is calculated");
+				if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
+					task_success_state = "success"; // global success
+					successful_tasks_cnt ++;
+					o1_ipd = true; //  O_1  task successs (processed product detected)
+					o2_upd = false; // O_2	failure
+					decision_timer.stop();
+					subtask_timer.stop();
+					subtask_timer_tick = 0;
+					//TODO remove
+					//cout <<  " Global Success | successful_subtasks = " << successful_subtasks << "  global_success_criteria = " << global_task_configuration_read.global_success_assert << endl;
+				} else if ( failed_subtasks >= global_task_configuration_read.global_fail_assert){
+					task_success_state = "fail"; // global fail
+					failed_tasks_cnt ++;
+					o1_ipd = false; //  O_1  task successs (processed product detected)
+					o2_upd = true; // O_2	failure
+					decision_timer.stop();
+					subtask_timer.stop();
+					subtask_timer_tick = 0;
+					// TODO remove
+					//cout <<  " Global Fail | failed_subtasks = " << failed_subtasks << "  global_fail_criteria = " << global_task_configuration_read.global_fail_assert << endl;
+				}
+
+			}
+
+			// TODO add task time to success_status_msg and publish by task manager
+			// ## Compose success_status_msg
+			success_status_msg.stamp = ros::Time::now();
+			success_status_msg.subtask_success_status = subtask_success_state;
+			success_status_msg.task_success_status = task_success_state;
+
+			// ## fields for debugging
+			success_status_msg.current_object = current_object;
+			success_status_msg.current_tray = req.current_tray;
+			success_status_msg.success_tray = success_tray_read;
+			success_status_msg.task_counter = task_counter;
+			success_status_msg.subtask_counter = subtask_counter;
+
+
+			// ## fields for statistics
+			success_status_msg.failed_subtasks = failed_subtasks;
+			success_status_msg.successful_subtasks = successful_subtasks;
+				subtask_time_seconds = subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) );
+			success_status_msg.subtask_time_seconds = subtask_time_seconds;
+			success_status_msg.task_combined_subtask_time_seconds = task_time_sumOfSubtasks_sec;
+				percentage_successful_subtasks = ( double(successful_subtasks) / double(subtask_counter) ) * double(100.0) ;
+			success_status_msg.percentage_successful_subtasks = percentage_successful_subtasks;
+			success_status_msg.who_succeeded = "HUMAN";
+			success_status_msg.task_warnings_received = warnings_received_task;
+			success_status_msg.subtask_warnings_received =	warnings_received_subtask;
+			success_status_msg.successful_tasks_cnt = successful_tasks_cnt;
+			success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
+				percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
+			success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
+
+			// ## Notify Human about the successful detection of a tray update, e.g. by sound
+			traySensor_notifyToHuman_pub.publish(success_status_msg);
+
+			// ## Trigger a decision
+			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
+			int_subtask_status = 0; // reset to ongoing
+
+			//float final_immediate_reward_IE = 0;
+			//float final_discounted_reward_IE = 0;
+			//final_immediate_reward_IE = immediate_reward_IE;
+			//final_discounted_reward_IE = discounted_reward_IE;
+			// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
+			if (task_success_state.compare("success") ==0 ){
+				//cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl;
+				IE_humanSt_to_robotSt_Map("GlobalSuccess");
+				//calculate_reward_IE("12",final_immediate_reward_IE,final_discounted_reward_IE);
+			} else if (task_success_state.compare("fail")==0) {
+				//cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl;
+				IE_humanSt_to_robotSt_Map("GlobalFail");
+				//calculate_reward_IE("13",final_immediate_reward_IE,final_discounted_reward_IE);
+			}
+
+			//success_status_msg.task_finished_immediate_reward =  final_immediate_reward_IE;
+			//success_status_msg.task_finished_discounted_reward = final_discounted_reward_IE;
+			// ########################  Before the tray status was published here -> after decision making ########
+			// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
+			traySensor_success_pub.publish(success_status_msg);
+			sc.play(1,1.0);
+			// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long
+			//traySensor_notifyToHuman_pub.publish(success_status_msg);
+
+			// ## increment subtask counter
+			subtask_counter += 1;
+
+
+			// ### Reset variables that are relevant for 1 subtask only
+
+			warnings_received_subtask = 0;
+
+
+			ROS_INFO("\n\n");
+			ROS_WARN("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED #### \n\n");
+			//ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
+			ROS_INFO(" Current_object %d",current_object);
+			ROS_INFO(" Current_tray %d",req.current_tray);
+			ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
+			ROS_INFO("task_success_state = %s \n ",task_success_state.c_str());
+			ROS_INFO("Failed_subtasks = %d  ",failed_subtasks);
+			ROS_INFO("successful_subtasks = %d  ",successful_subtasks);
+			ROS_INFO("********\n\n\n");
+
+
+			//cout << endl << " ###############  Current task counters and success states ######################## " << endl << endl;
+			//cout << "task_counter = " << task_counter << "  subtask_counter = " << subtask_counter << " subtask_success_state = " << subtask_success_state << endl << endl;
+
+			ROS_INFO("Mapping success: %d \n \n \n" ,mapping_success);
+			res.success = true;
 		}
-
-		// TODO add task time to success_status_msg and publish by task manager
-		// ## Compose success_status_msg
-		success_status_msg.stamp = ros::Time::now();
-		success_status_msg.subtask_success_status = subtask_success_state;
-		success_status_msg.task_success_status = task_success_state;
-
-		// ## fields for debugging
-		success_status_msg.current_object = current_object;
-		success_status_msg.current_tray = req.current_tray;
-		success_status_msg.success_tray = success_tray_read;
-		success_status_msg.task_counter = task_counter;
-		success_status_msg.subtask_counter = subtask_counter;
-
-
-		// ## fields for statistics
-		success_status_msg.failed_subtasks = failed_subtasks;
-		success_status_msg.successful_subtasks = successful_subtasks;
-			subtask_time_seconds = subtask_duration.toNSec() * (std::pow(10.0, (-9.0) ) );
-		success_status_msg.subtask_time_seconds = subtask_time_seconds;
-		success_status_msg.task_combined_subtask_time_seconds = task_time_sumOfSubtasks_sec;
-			percentage_successful_subtasks = ( double(successful_subtasks) / double(subtask_counter) ) * double(100.0) ;
-		success_status_msg.percentage_successful_subtasks = percentage_successful_subtasks;
-		success_status_msg.who_succeeded = "HUMAN";
-		success_status_msg.task_warnings_received = warnings_received_task;
-		success_status_msg.subtask_warnings_received =	warnings_received_subtask;
-		success_status_msg.successful_tasks_cnt = successful_tasks_cnt;
-		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
-			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
-		success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
-
-		// ## Notify Human about the successful detection of a tray update, e.g. by sound 
-		traySensor_notifyToHuman_pub.publish(success_status_msg);
-
-		// ## Trigger a decision
-		bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
-		int_subtask_status = 0; // reset to ongoing
-
-		//float final_immediate_reward_IE = 0; 
-		//float final_discounted_reward_IE = 0; 
-		//final_immediate_reward_IE = immediate_reward_IE;
-		//final_discounted_reward_IE = discounted_reward_IE;
-		// ############ if final state is reached it should also be informed to the POMDP -> the pomdp will terminate afterwards
-		if (task_success_state.compare("success") ==0 ){
-			//cout << endl << endl << "GlobalSuccess will be sent to POMDP -> it will terminate afterwards" << endl;
-			IE_humanSt_to_robotSt_Map("GlobalSuccess");
-			//calculate_reward_IE("12",final_immediate_reward_IE,final_discounted_reward_IE);
-		} else if (task_success_state.compare("fail")==0) {
-			//cout << endl << endl << "GlobalFail will be sent to POMDP -> it will terminate afterwards" << endl;
-			IE_humanSt_to_robotSt_Map("GlobalFail");
-			//calculate_reward_IE("13",final_immediate_reward_IE,final_discounted_reward_IE);
+		else {
+			return true;
 		}
-
-		//success_status_msg.task_finished_immediate_reward =  final_immediate_reward_IE;
-		//success_status_msg.task_finished_discounted_reward = final_discounted_reward_IE;
-		// ########################  Before the tray status was published here -> after decision making ########
-		// ############ Publish success_status_msg (mainly used by task manager to check if a new task should be started)
-		traySensor_success_pub.publish(success_status_msg);
-		
-		// ## Human can also be notified after a decision is taken, in case the decision making blocks for too long 
-		//traySensor_notifyToHuman_pub.publish(success_status_msg);
-
-		// ## increment subtask counter
-		subtask_counter += 1;
-
-
-		// ### Reset variables that are relevant for 1 subtask only 
-
-		warnings_received_subtask = 0; 
-
-
-		ROS_INFO("\n\n");
-		ROS_WARN("OBSERVATION ROS: #### TrayUpdate_Camera  RECEIVED #### \n\n");
-		//ROS_INFO(" Tray object combination is %d",req.tray_obj_combination);
-		ROS_INFO(" Current_object %d",req.current_object);
-		ROS_INFO(" Current_tray %d",req.current_tray);
-		ROS_INFO("subtask_success_state = %s",subtask_success_state.c_str());
-		ROS_INFO("task_success_state = %s \n ",task_success_state.c_str());
-		ROS_INFO("Failed_subtasks = %d  ",failed_subtasks);
-		ROS_INFO("successful_subtasks = %d  ",successful_subtasks);
-		ROS_INFO("********\n\n\n");
-
-
-		//cout << endl << " ###############  Current task counters and success states ######################## " << endl << endl;
-		//cout << "task_counter = " << task_counter << "  subtask_counter = " << subtask_counter << " subtask_success_state = " << subtask_success_state << endl << endl;
-
-		ROS_INFO("Mapping success: %d \n \n \n" ,mapping_success);
-		res.success = true;
-
-	} else { ROS_WARN("\nOBSERVATION ROS:  Tray_update received but experiment not started yet -> tray_update is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }  // if experiment is not running yet
+	} // else { // ROS_WARN("\nOBSERVATION ROS:  Tray_update received but skipping -> tray_update is dismissed \n                to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }  // if experiment is not running yet
 	return true;
 }
 
@@ -736,6 +749,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 		if (req.action == "grasping"){ // O_5  grasping attempt
 			o5_a0 = true;
+			current_object = graspped_object_data;
 		} else {
 			o5_a0 = false;
 		}
@@ -810,10 +824,10 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 			// trigger DESPOT Decision
 			bool mapping_success = ObservationAgent::IEaction_to_obs_Map();
-			ROS_WARN("[OBSERVATION_AGENT] Issuing a despot decision making: %d, time passed since prev action: %f" ,mapping_success, (req.stamp - former_time_stamp).toSec());
+			// ROS_WARN("[OBSERVATION_AGENT] Issuing a despot decision making: %d, time passed since prev action: %f" ,mapping_success, (req.stamp - former_time_stamp).toSec());
 
-		} else
-			ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");
+		} // else
+			// ROS_WARN("[OBSERVATION_AGENT] SKIPPING despot decision making this round");
 
 
 		o6_former = o6_a4; 	// Assign former values -> used to check if update ocurred
@@ -824,7 +838,7 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 
 
 		res.success = true;
-	} else { ROS_WARN("[OBSERVATION AGENT]  Action received but experiment not started yet -> action is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
+	} // else { ROS_WARN("[OBSERVATION AGENT]  Action received but experiment not started yet -> action is dismissed \n                  to start the Experiment, call:	 rosservice call /task_manager_IE/new_scenario_request  \n\n"); }
 
 	return true;
 }
@@ -834,6 +848,8 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	hrc_ros::SuccessStatusObserved success_status_msg;
 	string task_success_state = "ongoing";
 	string subtask_success_state = "ongoing";
+
+	sc.play(1,1.0);
 
 	// calculate time of last subtask and restart/reset timers
 	decision_timer.stop();
@@ -854,7 +870,7 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 	// ## determine global success state -> it is only set once all subtasks are finished
 	if ( subtask_counter >= current_subtask_quantity ) {  // all subtasks done
 
-		ROS_WARN("Global Success state is calculated");
+		// ROS_WARN("Global Success state is calculated");
 		if (successful_subtasks >= global_task_configuration_read.global_success_assert ){
 			task_success_state = "success"; // global success
 			successful_tasks_cnt ++;
@@ -888,8 +904,8 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		success_status_msg.task_success_status = task_success_state;
 
 		// ## fields for debugging
-		success_status_msg.current_object = current_object;
-		success_status_msg.current_tray = 0;
+		success_status_msg.current_object = robot_current_object;
+		success_status_msg.current_tray = success_criteria_read.tray;
 		success_status_msg.success_tray = success_criteria_read.tray;
 		success_status_msg.task_counter = task_counter;
 		success_status_msg.subtask_counter = subtask_counter;
@@ -909,9 +925,6 @@ void ObservationAgent::inform_trayupdate_to_taskmanager(void){
 		success_status_msg.failed_tasks_cnt     = failed_tasks_cnt;
 			percentage_successful_tasks = (double(successful_tasks_cnt) / double(successful_tasks_cnt + failed_tasks_cnt) ) * double(100.0);
 		success_status_msg.percentage_successful_tasks = percentage_successful_tasks;
-
-
-
 
 
 	// if global state reached send it to despot as well
@@ -1349,7 +1362,7 @@ string ObservationAgent::getRealRbtStMDP(string humanState)
 	return currRbtSt;
 }
 
-string ObservationAgent::MapObservationsToMDP(string observation) {
+string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 	/*
 	 * Here are the Reactive robot states:
 	 * TaskHuman
@@ -1360,57 +1373,83 @@ string ObservationAgent::MapObservationsToMDP(string observation) {
 	   GlobalFail
 	 */
 	string robot_state = "";
-	if ((prev_robot_state != "HumanNeedsHelp") && human_task_time >= 15 && (not ipd_sensor && not upd_sensor)){ // if human attempted to grasp in previous action yet still no success
-		ROS_INFO("OBSERVATION ROS: Timeout! Task will be taken over by the ROBOT!");
-		robot_state = "HumanNeedsHelp";
-	} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (not ipd_sensor && not upd_sensor)) {
-		humanAttempted = false;
-		robot_state = "HumanNeedsHelp";
-		humanfail_counter = 0; // TODO: this is not being used anywhere but still here
-	} else {
+	// if once HumanNeededHelp, then the next iteration will be robot resting and clearing all the flags and counters
+	if (prev_robot_state != "HumanNeedsHelp"){
+		if (robot_observation == "3" && robot_observation == "8")
+			human_looking_around_ctr += 1;
+		else
+			human_looking_around_ctr = 0;
 
-		if (observation == "0") {
-			if (prev_robot_state == "TaskHuman")
-				robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
-			else if (prev_robot_state == "TaskRobot")
-				robot_state = "TaskRobot"; // whoever is assigned for the first state
-			else
-				robot_state = "HumanNeedsHelp";
-		} else if ((observation == "2" || observation == "3")) {
-			robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
-		} else if (observation == "6" || observation == "7") { // human attempted to grasp
+		if (robot_observation == "9")
+			human_idle_ctr += 1;
+		else
+			human_idle_ctr == 0;
+
+		if (robot_observation == "4"){
+			humanfail_counter += 1;
 			humanAttempted = true;
-			robot_state = "TaskHuman";
-			humanfail_counter ++; // TODO: i am increasing this but for now has nothing to do about the state decisions
-		} else if (observation == "8" || observation == "9" || observation == "10" || observation == "11") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "12" || observation == "13" || observation == "14" || observation == "15") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "40" || observation == "41" || observation == "42" || observation == "43") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "44" || observation == "45" || observation == "46" || observation == "47") {
-			robot_state = "GlobalSuccess";
-		} else if (observation == "34" || observation == "35") {
-			robot_state = prev_robot_state; // whoever is assigned for the first state
-			humanidle_counter ++; // idle counter is not used anywhere currently
-		} else if (observation == "32" || observation == "33") { // human is not detected
-			robot_state = "HumanNeedsHelp";
-			humanidle_counter = 0;
-		} else if (observation == "16" || observation == "17" || observation == "18" || observation == "19" || observation == "27") {
-			robot_state = "WarningReceived";
-		} else if (observation == "64" || observation == "65" || observation == "66" || observation == "67") {
-			robot_state = "GlobalFail";
-		} else if (observation == "68" || observation == "69" || observation == "70" || observation == "71") {
-			robot_state = "GlobalFail";
-		} else if (observation == "80" || observation == "81" || observation == "82" || observation == "83") {
-			robot_state = "GlobalFail";
-		} else if (observation == "84" || observation == "85" || observation == "86" || observation == "87") {
-			robot_state = "GlobalFail";
-		} else if (observation == "96" || observation == "97" || observation == "98" || observation == "99") {
-			robot_state = "GlobalFail";
-		} else if (observation == "100" || observation == "101" || observation == "102" || observation == "103") {
-			robot_state = "GlobalFail";
 		}
+		else
+			humanfail_counter == 0;
+
+		//int_subtask_status
+		// TODO: ipd_sensor and upd_sensor variables need to be changed
+
+		if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 5){ // if human attempted to grasp in previous action yet still no success
+			ROS_INFO("[OBSERVATION AGENT]: Timeout! Task will be taken over by the ROBOT!");
+			robot_state = "HumanNeedsHelp";
+		} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (humanfail_counter > 2)) {
+			humanAttempted = false;
+			robot_state = "HumanNeedsHelp";
+			humanfail_counter = 0; // TODO: this is not being used anywhere but still here
+			ROS_INFO("[OBSERVATION AGENT]: Long time no grasp! Robot taking over !");
+		} else {
+				if (robot_observation == "0")
+					if (prev_robot_state == "TaskHuman")
+						robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
+					else if (prev_robot_state == "TaskRobot")
+						robot_state = "TaskRobot"; // whoever is assigned for the first state
+					else
+						robot_state = "HumanNeedsHelp";
+				else if (robot_observation == "1")
+					robot_state = "HumanNeedsHelp";
+				else if (robot_observation == "2")
+					robot_state = prev_robot_state; // This is either task assigned to human or task assigned to the robot
+				else if (robot_observation == "3" || robot_observation == "8"){
+					if (human_looking_around_ctr < 2)
+						robot_state = "TaskHuman";
+					else
+						robot_state = "HumanNeedsHelp";
+				}
+				else if (robot_observation == "4"){
+					robot_state = "TaskHuman"; // This is either task assigned to human or task assigned to the robot
+				}
+				else if (robot_observation == "5")
+					robot_state = "GlobalSuccess";
+				else if (robot_observation == "6")
+					robot_state = "WarningReceived"; // human warns the robot
+				else if (robot_observation == "7")
+					robot_state = "HumanNeedsHelp"; // human is not detected
+				else if (robot_observation == "9"){
+					if (human_idle_ctr  < 5)
+						robot_state = prev_robot_state; // human idle
+					else
+						robot_state = "HumanNeedsHelp";
+					}
+				else if (robot_observation == "10")
+					robot_state = "GlobalSuccess";
+				else if (robot_observation == "11")
+					robot_state = "GlobalFail";
+				else if (robot_observation == "12")
+					robot_state = "TaskHuman"; // human achieved subtask success
+				else if (robot_observation == "13")
+					robot_state = "HumanNeedsHelp"; // human misplaced / did the subtask wrong
+		}
+	} else {
+		robot_state = "TaskHuman";
+		human_looking_around_ctr = 0;
+		human_idle_ctr = 0;
+		humanfail_counter = 0;
 	}
 
 	prev_robot_state = robot_state;

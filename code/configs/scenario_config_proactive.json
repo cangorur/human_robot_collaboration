@@ -24,8 +24,8 @@
 	},
 	"robot": {
 		"type":{
-				"AItype": "reactive",
-				"forHumanType": "",
+				"AItype": "proactive",
+				"forHumanType": "average_takeOneReasses_loyal",
 				"forHumanCollab": ""
 		},
 		"position":{

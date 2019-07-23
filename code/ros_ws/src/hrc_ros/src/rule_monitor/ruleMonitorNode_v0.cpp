@@ -15,15 +15,8 @@
 #include<ros/callback_queue.h>
 #include<std_msgs/Bool.h>
 #include <hrc_ros/DisplayTaskRule.h>
+#include <hrc_ros/DisplayTaskStatus.h>
 #include <hrc_ros/DisplayScoring.h>
-
-#include <hrc_ros/InformTrayUpdate.h>
-#include <std_msgs/String.h>
-#include <hrc_ros/SuccessStatusObserved.h>
-//#include <hrc_ros/notifyTrayUpdate.h>
-//#include <task_manager/TaskManager_IExperiment.h>
-#include <hrc_ros/TaskStateIE.h>
-//#include "boost/property_tree/ptree.hpp"
 
 // generic service includes
 #include <std_srvs/Trigger.h>
@@ -43,9 +36,7 @@ using boost::property_tree::ptree;
 ros::ServiceServer display_task_rules;
 ros::ServiceServer display_scoring_server;
 ros::ServiceServer distract_participants_server;
-
 ros::ServiceServer display_task_status;
-
 
 // define colours for coloured prints
 const std::string red("\033[1;31m");
@@ -66,97 +57,7 @@ vector<int> blue_subtask_order_vect;  // 3,5,9
 //#################### function declarations #####################
 std::string mapintToString_colour(int int_value, std::string & print_string);
 bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res);
-
-///////////////////////////////////////////////////////////////////////////////
-
-void display_task_status_server(const hrc_ros::SuccessStatusObserved &msg){
-	//ROS_INFO("I heard: [%s]", msg);
-	string displaySubtaskStatus = "ONGOING";
-	//cout << endl << green << "#############" << red <<" #################" << endl;
-	//task_has_finished = false;
-	string current_object_str;
-	string current_tray_str;
-	string success_tray_str;
-	/*
-	if (msg.current_object == 1){
-		current_object_str = "red";
-	}	else if (msg.current_object == 2){
-		current_object_str = "green";
-	}	else if (msg.current_object == 3){
-		current_object_str = "blue";
-	}
-
-	if (msg.current_tray == 1){
-		current_tray_str = "red";
-	}	else if (msg.current_tray == 2){
-		current_tray_str = "green";
-	}	else if (msg.current_tray == 3){
-		current_tray_str = "blue";
-	}
-
-	if (msg.success_tray == 1){
-		success_tray_str = "red";
-	}	else if (msg.success_tray == 2){
-		success_tray_str = "green";
-	}	else if (msg.success_tray == 3){
-		success_tray_str = "blue";
-	}
-
-	string obj_print_string;
-	string container_print_string;
-	*/
-	const std::string obj_colour = mapintToString_colour(msg.current_object, current_object_str);
-	const std::string container_colour = mapintToString_colour(msg.current_tray, current_tray_str);
-	const std::string success_colour = mapintToString_colour(msg.success_tray, success_tray_str);
-
-	cout << endl << normal << "Task #: " << msg.task_counter << "		Subtask #: " << msg.subtask_counter << endl <<"------------------------------------------------------------------" << endl;
-
-	if (0) { //Option 0: Human is not aware if he did correctly or not, 1: Human is notifyed whether success or fail
-		if( ( msg.subtask_success_status.compare("success") == 0 ) ) {
-				displaySubtaskStatus = "SUCCESS!";
-
-				cout << green << "##################################################################" << endl;
-				//int message_current_object = req.current_object;
-				cout << normal << endl <<  green << displaySubtaskStatus << normal << endl;
-				cout << normal << obj_colour << current_object_str << normal << "was placed " <<  normal <<" into " << container_colour << current_tray_str << normal << " container."<< endl;
-				cout << endl << green << "##################################################################" << normal << endl;
-
-		} else {
-				displaySubtaskStatus = "FAIL!";
-				cout << red << "##################################################################" << endl;
-				cout << normal << endl <<  red << displaySubtaskStatus << normal << endl;
-				cout << normal << obj_colour << current_object_str << normal << "was placed " << normal <<" into " << container_colour << current_tray_str << normal << " container; instead of "<< success_colour << success_tray_str << normal << " container." << endl;
-				cout << endl << red << "##################################################################" << normal << endl;
-
-		}
-	}
-	else {
-		cout << normal <<  obj_colour << current_object_str << "was placed " <<  normal <<" into " << container_colour << current_tray_str << normal << " container."<< endl;
-	}
-
-
-
-
-	/*
-	if( (msg.task_success_status.compare("success") == 0) ) {
-			task_has_finished = true;
-			task_success_statistics += 1;ROS_INFO
-			//subtask_success_statistics = msg.successful_subtasks;
-			//final_state_statistics = "GlobalSuccess";
-			// TODO remove
-			//cout << endl << endl << " Global success received " << endl;
-	} else if ( (msg.task_success_status.compare("fail") == 0) ) {
-			task_has_finished = true;
-			task_fail_statisctics += 1;
-			//subtask_fail_statistics = msg.failed_subtasks;
-			//final_state_statistics = "GlobalFail";
-			//cout << endl << endl << " Global fail received " << endl;
-	}
-	*/
-
-}
-///////////////////////////////////////////////////////////////////////////////
-
+//bool display_task_status_server(hrc_ros::DisplayTaskStatusRequest &req,hrc_ros::DisplayTaskStatusResponse &res);
 void clear_screen(void);
 std::string mapintToEnumeration(int number);
 
@@ -166,7 +67,7 @@ std::string mapintToString_colour(int int_value, std::string & print_string){
 
 	 std::string return_string = normal;
 
-	if (int_value == 1) {// red
+	if (int_value == 1) { // red
 		return_string = red;
 		print_string = " red ";
 	} else if (int_value ==2){ // green
@@ -194,7 +95,6 @@ std::string mapintToEnumeration(int number){
 
 	return enum_string;
 }
-
 
 bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res){
 
@@ -535,48 +435,6 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 			}
 
 
-		} else if (subtask_type.compare("6_tray_order_6rules") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 7 subtasks
-
-			cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl;
-			cout << "Repeat following sequence : "<< endl << "-----------------"<< endl << endl << endl;
-
-
-			// increment trough first 7 subtasks - regardless of colour - the following rules will be repetition of first 3 rules
-			for (int rule_i =1; rule_i<= 6; rule_i ++) {
-				// static task_str - increment subtask_str - colour/object alwas 1=red
-				stringstream ss_subtask_counter;
-				ss_subtask_counter << rule_i;
-
-				string subtask_str = ss_subtask_counter.str();
-			 	string object_str  = object_int_to_str(1);
-
-				// ## determine subtask success state
-				try {
-				success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
-				} catch(boost::property_tree::json_parser::json_parser_error &e) {
-					ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
-					return false;
-				}
-
-				string container_print_string;
-				const std::string container_colour = mapintToString_colour(success_criteria_read.tray, container_print_string );
-
-				// ################## Print the rules #####################################################
-				if (rule_i == 1) {
-					cout << "			Place 1st object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-				} else if (rule_i ==2){
-					cout << "			Place 2nd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-				} else if (rule_i ==3){
-					cout << "			Place 3rd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-				} else if (rule_i ==4){
-					cout << "			Place 4th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-				} else if (rule_i ==5){
-					cout << "			Place 5th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-				} else if (rule_i ==6){
-					cout << "			Place 6th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
-					cout << endl << endl << "			REPEAT Sequence  !!!" << endl << endl;
-				}
-			}
 		}
 
 
@@ -589,12 +447,19 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
    return true;
 }
 
+
+/*bool display_task_status_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res){
+	res.success = true;
+	return res.success;
+}*/
+
 	void clear_screen() {
     // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
     std::cout << "\x1B[2J\x1B[H" << std::flush;
 }
 
-
+// ##################
+// TODO: Status screen: the # of subtask and the success/fail status
 
 // ###################
 
@@ -645,17 +510,12 @@ int main(int argc, char **argv) {
 	cout << "                    ############# Task Rules #############                   " << endl;
 
 
-	ros::AsyncSpinner spinner(4 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */);
-
+	ros::AsyncSpinner spinner(3 /*number of threads*/, &my_queue /* spinner exclusively for my_queue */);
 
 	// bind the queue to the node handle
 	nh.setCallbackQueue( &my_queue );
 
-	ros::Subscriber loadObservation_success_status_subs = nh.subscribe("/observation_agent/observedsuccess_status", 1000, display_task_status_server);
-	//ros::spinOnce();
-	ros::CallbackQueue callAvailable(); //callBack queue trials
-
-	// rosparameters
+ 	// rosparameters
 
 
 
@@ -664,11 +524,9 @@ int main(int argc, char **argv) {
 	display_scoring_server = nh.advertiseService("/rule_monitor/display_scoring", display_scoring);
 	distract_participants_server = nh.advertiseService("/rule_monitor/distract_participants",distract_participants);
 	//display_task_status = nh.advertiseService("/rule_monitor/display_task_status", display_task_status_server);
-	//containerStatus_subs = nh.subscribe("/load_sensor/load_sensor_status", 1 , &ObservationAgent::ReceiveContainerStatus,this);
 
 
 	// starting spinners with multiple threads
 	spinner.start();
-
 	ros::waitForShutdown();
 }

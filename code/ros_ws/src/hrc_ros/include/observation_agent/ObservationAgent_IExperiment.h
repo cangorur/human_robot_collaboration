@@ -21,6 +21,8 @@
 #include <hrc_ros/InformActionRecognized.h>
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/HeadGestureMsg.h>
+#include <hrc_ros/ObjectGraspColourMsg.h>
+
 #include <hrc_ros/RequestSuccessCriteria.h>
 #include "std_msgs/String.h"
 
@@ -30,6 +32,8 @@
 #include "simple_web_socket/client_ws.hpp"
 
 #include <helper_functions/Json_parser.h>
+
+#include <sound_play/sound_play.h>
 
 using namespace std;
 typedef SimpleWeb::SocketClient<SimpleWeb::WS> WsClient;
@@ -59,11 +63,6 @@ private:
 	 * @return True if initialization was successful
 	 */
 	bool resetScenario(hrc_ros::ResetObsROSRequest &req, hrc_ros::ResetObsROSResponse &res);
-
-	/**
-	 * Timer event created to track the human task duration
-	 */
-	void HumanTaskTimer(const ros::TimerEvent&);
 
 	/**
 	 * Timer event to track the subtask duration. Used to calculate discounted rewards
@@ -122,6 +121,9 @@ private:
 
 	// subscriber callback that receives the head gesture
 	void ReceiveHeadGesture(const hrc_ros::HeadGestureMsg &msg);
+
+	// subscriber callback that receives the color of the object taken by the human
+	void ReceiveObjectTracked(const hrc_ros::ObjectGraspColourMsg &msg);
 
 	/**  // TODO delete once new function works
 	 * This advertised rosservice is called "/observation_agent/inform_new_human_state". It is called by human_agent after it receives the human state
@@ -262,6 +264,8 @@ private:
 	ros::Subscriber traySensor_subs;
 	/// Subscribes to the HeadGesture topic, this indicates the observable O4
 	ros::Subscriber headGesture_subs;
+	/// Subscribes to the HeadGesture topic, this indicates the observable O4
+	ros::Subscriber objectTrack_subs;
 	//// Ros publisher - is published after the tray status has bee received | bublishes the successs or fail status or a subtask
 	ros::Publisher 	traySensor_success_pub;
 	//// Ros publisher - is published after the tray status has bee received | used to inform human about the tray update, e.g. by sound ...
@@ -269,7 +273,8 @@ private:
 
 	/// publishes the observation update -> this info is used for logging and analysis on system level
 	ros::Publisher ObsUpdaterPub;
-
+	/// Sound play client
+	sound_play::SoundClient sc;
 
 	/// Ros time instance to record the time when the tray sensor message has been changed.
 	/// This is triggered when a package is put or removed from the tray, means success or failure or a new task in the scenario
@@ -311,6 +316,10 @@ private:
 	bool humanAttempted = false;
 	/// this counts every second that human spends when the task is assigned to him
 	int human_task_time = 0;
+	/// counter for how many steps human is looking around
+	int human_looking_around_ctr = 0;
+	/// counter for human idle
+	int human_idle_ctr = 0;
 	/// Boolean to hold if human trusts the robot. This is inherently known to observation agent from the human model run by task manager
 	/// In our applications, for now, it is always kept TRUE
 	bool humanTrustsRobot;
@@ -380,6 +389,9 @@ private:
 		*/
 
 	int current_object = 0; 				// 1 = Red | 2 = Green | 3 = Blue
+	int robot_current_object = 0;
+	int graspped_object_data = 0;
+	int prev_object = 4;
 
 
 	// global variables to store the scenario data -> will be used to elaborate success and failure
