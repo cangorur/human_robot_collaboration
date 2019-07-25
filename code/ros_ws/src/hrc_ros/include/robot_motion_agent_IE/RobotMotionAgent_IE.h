@@ -68,7 +68,7 @@ private:
 
 	/**
 	 * Opens up the websocket server (despotMDPHuman connects to it and provides human action decision and the current state)
-	 * The socket information is defined under the variables below. Port = 9090
+	 * The socket information is defined under the variables below. Port = 8080
 	 */
 	void update();
 
@@ -216,7 +216,7 @@ private:
 	* Simple Web Socket server variables
 	*/
 	WsServer server;
-	///WebSocket (WS)-server at port 9090 using 1 thread
+	///WebSocket (WS)-server at port 8080 using 1 thread
 	int port = 8080;
 
 	/// Flags to control the information communication to observation and task manager agents

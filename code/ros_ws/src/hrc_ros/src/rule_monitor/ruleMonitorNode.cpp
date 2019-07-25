@@ -118,20 +118,20 @@ void display_task_status_server(const hrc_ros::SuccessStatusObserved &msg){
 				cout << green << "##################################################################" << endl;
 				//int message_current_object = req.current_object;
 				cout << normal << endl <<  green << displaySubtaskStatus << normal << endl;
-				cout << normal << obj_colour << current_object_str << normal << "was placed " <<  normal <<" into " << container_colour << current_tray_str << normal << " container."<< endl;
+				cout << obj_colour << current_object_str << normal << "was placed " <<" into " << container_colour << current_tray_str << normal << " container."<< endl;
 				cout << endl << green << "##################################################################" << normal << endl;
 
 		} else {
 				displaySubtaskStatus = "FAIL!";
 				cout << red << "##################################################################" << endl;
 				cout << normal << endl <<  red << displaySubtaskStatus << normal << endl;
-				cout << normal << obj_colour << current_object_str << normal << "was placed " << normal <<" into " << container_colour << current_tray_str << normal << " container; instead of "<< success_colour << success_tray_str << normal << " container." << endl;
+				cout << obj_colour << current_object_str << normal << "was placed " <<" into " << container_colour << current_tray_str << normal << " container; instead of "<< success_colour << success_tray_str << normal << " container." << endl;
 				cout << endl << red << "##################################################################" << normal << endl;
 
 		}
 	}
 	else {
-		cout << normal <<  obj_colour << current_object_str << "was placed " <<  normal <<" into " << container_colour << current_tray_str << normal << " container."<< endl;
+		cout << normal <<  obj_colour << current_object_str << normal << "was placed " << " into " << container_colour << current_tray_str << normal << " container."<< endl;
 	}
 
 

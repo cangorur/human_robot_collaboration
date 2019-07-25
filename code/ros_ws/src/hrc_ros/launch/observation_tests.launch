@@ -1,0 +1,49 @@
+<launch>
+
+<!-- ###### Dependencies ###### -->
+<!-- depends on timed-roslaunch: can be installed by sudo apt install ros-kinetic-timed-roslaunch -->
+
+
+<!-- #################### hrc_ros package nodes ################################## -->
+
+<node pkg="hrc_ros" type="task_manager_IE" name="task_manager_IE" output="screen" respawn="true" />
+
+<node pkg="hrc_ros" type="robot_motion_agent" name="robot_motion_agent" output="screen" respawn="true" />
+
+<node pkg="sound_play" type="soundplay_node.py" name="soundplay_node" respawn="true" />
+
+<!-- Record the task_status message -->
+<node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/task_status /task_manager/task_status"/>
+
+<!-- Record /observation_agent/observation_update message -->
+<node pkg="rosbag" type="record" name="rosbag_record_observation_pomdp" args="-o $(find hrc_ros)/../../../results/observations /observation_agent/observation_update"/>
+
+
+<!-- <node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" /> -->
+
+<!--Configure lower resolution for RGB video 8=QVGA@30Hz -->
+<!-- <param name="camera/driver/color_mode" value="8" /> -->
+
+
+
+
+
+<!-- ################### optionally: start the experiment and record video data ############# -->
+
+<!-- Record the task_status message -->
+<!-- <node pkg="rosbag" type="record" name="rosbag_record_task" args="-o $(find hrc_ros)/../../../results/tests /task_manager/task_status"/> -->
+
+<!-- start the experiment -->
+<!-- <node pkg="rosservice" type="rosservice" name="start_experiment" args="call wait /task_manager_IE/new_scenario_request"/> -->
+
+<!--  Minimum topics without the video -->
+<!-- <node pkg="rosbag" type="record" name="rosbag_minium_IE_noVideo" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_minimum_noVideo /observation_agent/observation_update /experiment_monitoring/robot_action_taken_pub /task_manager/task_status"/>  -->
+
+<!--  Minimum topics needed to record and replay the whole scenario -->
+<!--  /camera/depth_registered/image_raw /camera/depth_registered/camera_info /camera/rgb/image_raw /camera/rgb/camera_info -->
+<!-- <node pkg="rosbag" type="record" name="rosbag_minium_IE" args="-o $(find hrc_ros)/../../../results/POMDP_IE_tests/bags/POMDP_IE_minimum /camera/depth_registered/image_raw /camera/depth_registered/camera_info /camera/rgb/image_raw /camera/rgb/camera_info /observation_agent/observation_update /experiment_monitoring/robot_action_taken_pub
+/task_manager/task_status"/> -->
+
+
+
+</launch>

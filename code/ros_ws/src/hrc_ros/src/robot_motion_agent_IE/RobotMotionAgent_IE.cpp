@@ -274,7 +274,6 @@ void RobotMotionAgent::update() {
 			}
 			else if (robot_action == "1") {	// grasp
 				// Global variables are set below to be sent to task manager
-				robot_action_taken = "grasp";
 				//success = grasp.call(req, resp);
 				hrc_ros::GetInfraredSensorRequest req;
 				hrc_ros::GetInfraredSensorResponse res;
@@ -287,6 +286,7 @@ void RobotMotionAgent::update() {
 					pkg_waitCtr += 1;
 				}
 				if(res.value){
+					robot_action_taken = "grasp";
 					std_msgs::Bool msg;
 					msg.data = bool(true);
 					dobot_grasp_pub.publish(msg);

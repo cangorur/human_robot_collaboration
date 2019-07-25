@@ -497,10 +497,11 @@ bool ObservationAgent::IE_request_success_criteria(hrc_ros::RequestSuccessCriter
 		ss_subtask_counter << subtask_counter;
 
 		robot_current_object = req.current_object;
+		current_object = robot_current_object;
 
 		string task_str = ss_task_counter.str();
 		string subtask_str = ss_subtask_counter.str();
-		string object_str  = object_int_to_str(current_object);
+		string object_str  = object_int_to_str(robot_current_object);
 
 		// ## determine subtask success state
 		try {
@@ -510,9 +511,8 @@ bool ObservationAgent::IE_request_success_criteria(hrc_ros::RequestSuccessCriter
 				return false;
 			}
 
-  		res.stamp = ros::Time::now();
-		res.tray   = success_criteria_read.tray;
-
+  	res.stamp = ros::Time::now();
+		res.tray  = success_criteria_read.tray;
 
 }
 
