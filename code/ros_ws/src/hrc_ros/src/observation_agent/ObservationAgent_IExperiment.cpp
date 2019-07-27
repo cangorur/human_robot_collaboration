@@ -1391,6 +1391,11 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 		}
 		else
 			humanfail_counter == 0;
+		} else {
+			human_looking_around_ctr = 0;
+			human_idle_ctr = 0;
+			humanfail_counter = 0;
+		}
 
 		//int_subtask_status
 		// TODO: ipd_sensor and upd_sensor variables need to be changed
@@ -1405,12 +1410,7 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 			ROS_INFO("[OBSERVATION AGENT]: Long time no grasp! Robot taking over !");
 		} else {
 				if (robot_observation == "0")
-					if (prev_robot_state == "TaskHuman")
 						robot_state = "HumanNeedsHelp"; // whoever is assigned for the first state
-					else if (prev_robot_state == "TaskRobot")
-						robot_state = "TaskRobot"; // whoever is assigned for the first state
-					else
-						robot_state = "HumanNeedsHelp";
 				else if (robot_observation == "1")
 					robot_state = "HumanNeedsHelp";
 				else if (robot_observation == "2")
@@ -1444,15 +1444,13 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 					robot_state = "TaskHuman"; // human achieved subtask success
 				else if (robot_observation == "13")
 					robot_state = "HumanNeedsHelp"; // human misplaced / did the subtask wrong
-		}
-	} else {
+	}
+	if (prev_robot_state == "HumanNeedsHelp" && robot_state == "HumanNeedsHelp"){
 		robot_state = "TaskHuman";
-		human_looking_around_ctr = 0;
-		human_idle_ctr = 0;
-		humanfail_counter = 0;
 	}
 
 	prev_robot_state = robot_state;
+
 	if (robot_state == "TaskHuman"){
 		robot_state = "0";
 	}

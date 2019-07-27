@@ -1,0 +1,12 @@
+<launch>
+
+<!-- ###### Dependencies ###### -->
+<!-- depends on timed-roslaunch: can be installed by sudo apt install ros-kinetic-timed-roslaunch -->
+
+
+<!-- #################### hrc_ros package nodes ################################## -->
+
+<node pkg="hrc_ros" type="reactive_robot_DM_agent.py" name="reactive_robot_DM_agent" respawn="true" />
+
+
+</launch>

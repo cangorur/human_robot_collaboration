@@ -47,7 +47,7 @@ class EchoWebSocket(websocket.WebSocketHandler):
             action = "-1"
             #TODO: this is state message
 
-        time.sleep(2)
+        #time.sleep(2)
         message = action + "," + state + "," + "0,0"
         self.client.send(message)
         ## RECEIVE

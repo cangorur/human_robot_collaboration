@@ -319,7 +319,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
             if (robot_model == "reactive.pomdpx"){
                 // Selecting the MDP despote exe
                 //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-                robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/model_scripts";
+                robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
                 robot_AItype = "reactive";
             }
             robot_AItype = "proactive";
@@ -335,7 +335,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
           //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/model_scripts";
+          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
         }
         robot_shell = robot_shell + robot_model + "\"'";
     }else if(useBPR){ // If the use of BPR is enabled for the policy selection, we overwrite the manually selected robot policy
@@ -347,7 +347,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         if (robot_model == "reactive.pomdpx"){
           robot_AItype = "reactive";
           //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/model_scripts";
+          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
         }
         robot_shell = robot_shell + "/Evaluate/" + robot_model + "\"'";
     }else if(useRandom){
@@ -358,7 +358,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         }else if (r == 13){
           robot_model = "reactive.pomdpx";
           robot_AItype = "reactive";
-          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/model_scripts";
+          robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
           //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
           //robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
@@ -374,7 +374,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
             robot_shell = robot_shell + robot_model + " &";
         }else if (robot_AItype == "reactive"){
             robot_model = "reactive.pomdpx";
-            robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/model_scripts";
+            robot_shell = "rosrun hrc_ros reactive_robot_DM_agent.py";
+            //robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
             //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
             //robot_shell = robot_shell + "reactive.pomdpx" + " &";
         }else{
@@ -403,8 +404,9 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
-
-        system(c_robot_shell);
+    // for the reactive robot, run the websocket node separately as its blocking the process 
+    if (robot_AItype == "proactive")
+      system(c_robot_shell);
 
     //cout << "Robot shell script path: " << robot_shell << endl;
 
