@@ -14,7 +14,6 @@ import signal
 import sys
 from websocket import create_connection
 
-
 class EchoWebSocket(websocket.WebSocketHandler):
     def open(self):
         print "Websocket Opened"
@@ -42,12 +41,12 @@ class EchoWebSocket(websocket.WebSocketHandler):
 
         if observation != "-1": # observation information is provided.
             action = self.state_to_action(observation)
+            #time.sleep(1.5)
             #state = "-1"
         else: # state information is provided
             action = "-1"
             #TODO: this is state message
 
-        #time.sleep(2)
         message = action + "," + state + "," + "0,0"
         self.client.send(message)
         ## RECEIVE

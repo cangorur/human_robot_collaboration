@@ -1400,7 +1400,7 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 		//int_subtask_status
 		// TODO: ipd_sensor and upd_sensor variables need to be changed
 
-		if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 5){ // if human attempted to grasp in previous action yet still no success
+		if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 4){ // if human attempted to grasp in previous action yet still no success
 			ROS_INFO("[OBSERVATION AGENT]: Timeout! Task will be taken over by the ROBOT!");
 			robot_state = "HumanNeedsHelp";
 		} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (humanfail_counter > 2)) {
@@ -1431,7 +1431,7 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 				else if (robot_observation == "7")
 					robot_state = "HumanNeedsHelp"; // human is not detected
 				else if (robot_observation == "9"){
-					if (human_idle_ctr  < 5)
+					if (human_idle_ctr  < 2)
 						robot_state = prev_robot_state; // human idle
 					else
 						robot_state = "HumanNeedsHelp";
