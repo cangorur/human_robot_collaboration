@@ -1403,7 +1403,7 @@ string ObservationAgent::MapObservationsToMDP(string robot_observation) {
 		if ((prev_robot_state != "HumanNeedsHelp") && subtask_timer_tick >= 4){ // if human attempted to grasp in previous action yet still no success
 			ROS_INFO("[OBSERVATION AGENT]: Timeout! Task will be taken over by the ROBOT!");
 			robot_state = "HumanNeedsHelp";
-		} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (humanfail_counter > 2)) {
+		} else if ((prev_robot_state != "HumanNeedsHelp") && humanAttempted && (humanfail_counter > 1)) {
 			humanAttempted = false;
 			robot_state = "HumanNeedsHelp";
 			humanfail_counter = 0; // TODO: this is not being used anywhere but still here
