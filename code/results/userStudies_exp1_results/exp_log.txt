@@ -3,3 +3,9 @@ Exp-1: Yingwoo, 4 Proactive tasks, skipped reactive
 Exp-2: Hugo, 4 proactive tasks, skipped reactive
 ---- Turn-2,3,4 for proactive, Turn-6,7,8 for reactive ----
 Exp-3: Anna, 4 proactive tasks (turn-6 also filled for this), skipped reactive
+Exp-4: Nese, both are finalized. Didnt understand what reactive means. She wanted to them all
+Exp-5: Ana, both are finalized. Understood everything well. She collaborated nicely
+Exp-6: Sara, both are finalized. Understood everything expect what is reactive ! She didnt want the robot to take at all but all do it by herself
+Exp-7: Eduardo, both are finalized. Didnt understand what reactive means. He thought the second one is smarter due to the timing. Couldnt catch the pattern.
+Exp-8: Francesca, both are finalized. She struggled with the tasks. Poor success rates. Increased with the robot. She liked the proactive one and understood what is reactive/repetitive. The video for the turn-3 is good: includes robot leaving the decision to her, she left it to robot. Robot encouraged by not moving and she did it right, cause she was on a good track with the last two and robot respected that.
+Exp-9: Kamila,
