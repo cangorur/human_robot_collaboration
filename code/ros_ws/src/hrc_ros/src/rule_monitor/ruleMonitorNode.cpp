@@ -199,7 +199,8 @@ std::string mapintToEnumeration(int number){
 bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::DisplayTaskRuleResponse &res){
 
 	int task_counter = req.task_counter;
-
+	int rule_display_length;
+	ros::param::get("/rule_display_time", rule_display_length);
 
 	clear_screen();
 
@@ -274,7 +275,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 		}
 
 		// wait for certain time, then clear the screen and return true to start the experiment
-		ros::Duration(8).sleep();
+		ros::Duration(rule_display_length).sleep();
 		clear_screen();
 
 	} else { // different subtask rules - the different types are differentiated with subtask_type read from task_config json
@@ -581,7 +582,7 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 
 
 
-		ros::Duration(7).sleep();
+		ros::Duration(rule_display_length).sleep();
 		clear_screen();
 	}
 
@@ -665,7 +666,7 @@ int main(int argc, char **argv) {
 	distract_participants_server = nh.advertiseService("/rule_monitor/distract_participants",distract_participants);
 	//display_task_status = nh.advertiseService("/rule_monitor/display_task_status", display_task_status_server);
 	//containerStatus_subs = nh.subscribe("/load_sensor/load_sensor_status", 1 , &ObservationAgent::ReceiveContainerStatus,this);
-
+	ros::param::set("/rule_display_time", 8);
 
 	// starting spinners with multiple threads
 	spinner.start();
