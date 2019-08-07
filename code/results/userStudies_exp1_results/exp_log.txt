@@ -22,4 +22,6 @@ Exp-10: Fabrizio, both are finalized. Generally let the robot do everything. He 
 Exp-11: Jakoppo, both are finalized. Generally warned the robot a lot. First reactive (turn-6-7-8), then proactive (turn-2,3,4)!
 
 Exp-12: Yusuf, both are finalized. Understood the robots very well. Generally rememberred the rules. First reactive (turn-6-7-8), then proactive (turn-2,3,4)!
+
+Exp-13: Arda, both are finalized. Might be outlier. Didnt understand the robot well. Warned always eventhough didnt want to take. Encouraged by the robot (turn-7 or turn-8?). First reactive (turn-6,7,8), then proactive (turn-2,3,4).
  
