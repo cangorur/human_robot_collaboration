@@ -24,4 +24,10 @@ Exp-11: Jakoppo, both are finalized. Generally warned the robot a lot. First rea
 Exp-12: Yusuf, both are finalized. Understood the robots very well. Generally rememberred the rules. First reactive (turn-6-7-8), then proactive (turn-2,3,4)!
 
 Exp-13: Arda, both are finalized. Might be outlier. Didnt understand the robot well. Warned always eventhough didnt want to take. Encouraged by the robot (turn-7 or turn-8?). First reactive (turn-6,7,8), then proactive (turn-2,3,4).
+
+Exp-14: Burak Can, both are finalized. Skipped turn-5 (2nd alone task). Understood the robots really well. What is an adaptation and how it works and etc. First proactive (turn-2,3,4), then reactive (turn-6,7,8)
+
+Exp-15: Andrea, both are finalized. Very good at memorizing all. put really high scores.First proactive (turn-2,3,4), then reactive (turn-6,7,8)
+
+Exp-16: 
  
