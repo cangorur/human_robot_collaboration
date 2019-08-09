@@ -30,8 +30,8 @@
 #include <hrc_ros/SuccessStatusObserved.h>
 #include <hrc_ros/TaskStateIE.h>
 #include <hrc_ros/DisplayTaskRule.h>
-#include <hrc_ros/DisplayScoring.h> 
-#include <hrc_ros/SetTaskNumber.h> 
+#include <hrc_ros/DisplayScoring.h>
+#include <hrc_ros/SetTaskNumber.h>
 
 #include <hrc_ros/TraySensor.h>
 
@@ -76,8 +76,8 @@ private:
 
 	/**
 	 * Rosservice is called /task_manager_IE/setTaskNumber
-	 * This service is called to set the tasknumber that should be executed next. 
-	 * This will kill the current running despot. 
+	 * This service is called to set the tasknumber that should be executed next.
+	 * This will kill the current running despot.
 	 * The experiment needs to be initiated manually by callin the service /task_manager_IE/new_scenario_request
 	 */
 	bool setTaskNumber(hrc_ros::SetTaskNumberRequest &req, hrc_ros::SetTaskNumberResponse &res);
@@ -164,10 +164,10 @@ private:
 	ros::ServiceClient bpr_call;
 	/// Client to issue a displaying of task rules
 	ros::ServiceClient display_task_rule_client;
-	/// Client to issue a displaying of the score reached by human 
-	ros::ServiceClient display_score_client; 
-	/// Client that can be used to distract the human 
-	ros::ServiceClient distract_human_client; 
+	/// Client to issue a displaying of the score reached by human
+	ros::ServiceClient display_score_client;
+	/// Client that can be used to distract the human
+	ros::ServiceClient distract_human_client;
 
 
 
@@ -182,7 +182,7 @@ private:
 	/// Below are the service objects for the advertised services. See "ResetTask" above for the functionality
   	ros::ServiceServer resetTaskService;
 	/// Below are the service objects for the advertised services. See "SetTaskNumber" above for the functionality
-	ros::ServiceServer setTaskNumberService; 
+	ros::ServiceServer setTaskNumberService;
 	/*
 	 * Task status update timer
 	 */
@@ -290,9 +290,10 @@ private:
 	int global_stat_task_warnings_received = 0;
 	int global_stat_successful_tasks_cnt = 0;
 	int global_stat_failed_tasks_cnt = 0;
-	double global_stat_percentage_successful_tasks = 0.0; 
+	double global_stat_percentage_successful_tasks = 0.0;
 	float global_stat_task_finished_immediate_reward = 0.0;
 	float global_stat_task_finished_discounted_reward = 0.0;
+	float task_score = 0.0;
 // <-End of task_status
 
 };

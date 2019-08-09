@@ -78,6 +78,7 @@ void TaskManager::initialize(){
     ros::param::set("/robot_immediate_reward", "");
     ros::param::set("/robot_total_disc_reward", "");
     ros::param::set("/robot_grasping_state", -2);
+    ros::param::set("/task_score", task_score);
     /*
          * Initializing advertised ros services
          */
@@ -404,7 +405,7 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
 
     //############  Launching new DESPOT #####################################
     const char * c_robot_shell = robot_shell.c_str();
-    // for the reactive robot, run the websocket node separately as its blocking the process 
+    // for the reactive robot, run the websocket node separately as its blocking the process
     if (robot_AItype == "proactive")
       system(c_robot_shell);
 
@@ -757,7 +758,19 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
         //cout << endl << endl << " Global fail received " << endl;
     }
 
-
+    // Calculate the score (score to show to the humans):
+    if (msg.failed_subtasks != global_stat_failed_subtasks) {
+      //means a subtask is failed
+      task_score -= 6;
+    } else if (msg.successful_subtasks != global_stat_successful_subtasks){
+        if (msg.who_succeeded == "HUMAN")
+          task_score += 6;
+        else if(msg.who_succeeded == "ROBOT")
+          task_score += 4;
+        else
+          task_score += 3;
+    }
+    ros::param::set("/task_score",task_score);
 
     global_stat_tray_update_stamp = msg.stamp;
     global_stat_subtask_success_status = msg.subtask_success_status;
@@ -808,7 +821,6 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
     // add statistics rewards (informed by robot agent)
     // taskState_msg.immediate_reward  = global_immediate_reward;
     taskState_msg.total_disc_reward = global_total_disc_reward;
-
 
     taskStatusPublisher.publish(taskState_msg);
 
@@ -951,11 +963,8 @@ void TaskManager::CheckToStartNewTask(void){
         // taskState_msg.immediate_reward  = global_immediate_reward; //TODO: dont think we need this
         taskState_msg.total_disc_reward = global_total_disc_reward;
 
-
-
         // Publish
         taskStatusPublisher.publish(taskState_msg);
-
 
         // trigger displaying of score
         hrc_ros::DisplayScoring::Request  score_display_req;
@@ -965,9 +974,11 @@ void TaskManager::CheckToStartNewTask(void){
         score_display_req.percentage_successful_subtasks = global_stat_percentage_successful_subtasks;
         std::string::size_type sz;
         score_display_req.reward_scoring_task = global_total_disc_reward;
+        //score_display_req.reward_scoring_task = task_score;
         display_score_client.call(score_display_req,score_display_resp);
 
-
+        task_score = 0.0;
+        ros::param::set("/task_score",task_score);
 
         // ###### Reset all subtask relevant variables
         // TODO : save all relevant statistics to file -> afterwards savely reset all variables

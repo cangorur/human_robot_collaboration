@@ -110,7 +110,7 @@ void display_task_status_server(const hrc_ros::SuccessStatusObserved &msg){
 	const std::string success_colour = mapintToString_colour(msg.success_tray, success_tray_str);
 
 	cout << endl << normal << "Task #: " << msg.task_counter << "		Subtask #: " << msg.subtask_counter << endl <<"------------------------------------------------------------------" << endl;
-
+  //cout << endl << normal << "Task #: " << msg.task_counter << "		Subtask #: " << msg.subtask_counter << "		SCORE #: " << task_score << endl <<"------------------------------------------------------------------" << endl;
 	if (0) { //Option 0: Human is not aware if he did correctly or not, 1: Human is notifyed whether success or fail
 		if( ( msg.subtask_success_status.compare("success") == 0 ) ) {
 				displaySubtaskStatus = "SUCCESS!";
@@ -602,10 +602,12 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 bool display_scoring(hrc_ros::DisplayScoring::Request &req, hrc_ros::DisplayScoring::Response &res ){
 
 	clear_screen();
+	float task_score;
+	ros::param::get("/task_score",task_score);
 
 	cout << blue << "############################################" << endl;
 
-	cout << normal << endl << endl << "     You scored "  << red << req.reward_scoring_task  << normal << "  points" << endl << endl;
+	cout << normal << endl << endl << "     You scored "  << red << task_score  << normal << "  points" << endl << endl;
 
 	cout << normal << "     Task duration: " << blue << req.task_duration << normal << " seconds" << endl << endl;
 
