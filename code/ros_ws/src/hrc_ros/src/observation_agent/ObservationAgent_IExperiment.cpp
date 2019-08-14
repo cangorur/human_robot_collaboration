@@ -245,7 +245,7 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 
 	client.on_open=[&]() {
 
-		string robot_observation_real = "", observation = "", robot_observation_noisy = "";
+		string robot_observation_real = "", observation = "", observation_mdp = "", robot_observation_noisy = "";
 		robot_observation_real = MapObservablesToObservations(o4_ov,o3_oir,o5_a0,o1_ipd,o6_a4,o7_a2,o2_upd,int_subtask_status);
 
 		// track number of warnings received for statistics
@@ -257,14 +257,19 @@ bool ObservationAgent::IEaction_to_obs_Map(void) {
 			// ROS_WARN("[OBSERVATION AGENT]: REACTIVE OBSERVATION MAPPING !");
 			observation = MapObservationsToPOMDP(robot_observation_real);
 			// ROS_WARN("[OBSERVATION AGENT] POMDP OBSERVATION: %s", observation.c_str());
-			observation = MapObservationsToMDP(observation); // Get correspending state for reactive ROBOT wrt observations to state mapping
+			observation_mdp = MapObservationsToMDP(observation); // Get correspending state for reactive ROBOT wrt observations to state mapping
 		} else if (robotType == "proactive"){
 			observation = MapObservationsToPOMDP(robot_observation_real); // Get correspending observation for proactive ROBOT wrt observables received
 		}
 
 		ROS_WARN("[OBSERVATION AGENT]: Sending to DESPOT: real_observable: %s, mapped observation: %s",
 				robot_observation_real.c_str(), observation.c_str());
-		string message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
+
+		string message = "";
+		if (robotType == "reactive")
+				message = observation_mdp + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
+		else
+				message = observation + ",-1"; // It is only sending observed_state, real state is send in another iteration (when it is provided)
 
 		// ############ Calculating reward for interaction experiment ###################
 	  calculate_reward_IE(observation, immediate_reward_IE, discounted_reward_IE);

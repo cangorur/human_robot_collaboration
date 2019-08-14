@@ -571,6 +571,7 @@ bool TaskManager::ObsUpdater(hrc_ros::InformObsToTaskMangIERequest &req, hrc_ros
     taskState_msg.mapped_observation_raw   = global_obs_mapped_observation_raw;
 
     taskState_msg.task_id = task_number;
+    taskState_msg.subtask_id = subtask_counter;
     taskState_msg.step_count = step_counter;
     taskState_msg.who_reports = "OBSERVATION";
 
@@ -652,6 +653,7 @@ bool TaskManager::RobotStatusUpdater(hrc_ros::InformRobotToTaskMangRequest &req,
     taskState_msg.taken_action = req.robot_update.robot_action_taken;
     taskState_msg.belief_state = req.robot_update.robot_belief_state;
     taskState_msg.real_state = req.robot_update.robot_real_state;
+    taskState_msg.subtask_id = subtask_counter;
 
 
     // TODO remove after debugging
