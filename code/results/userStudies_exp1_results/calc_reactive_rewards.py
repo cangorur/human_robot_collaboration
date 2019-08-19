@@ -23,21 +23,59 @@ def calc_rewards(dir, raw):
             col_subStatus = col_index
         if raw[0][col_index] == "subtask_duration":
             col_subDuration = col_index
+        if raw[0][col_index] == "immediate_reward":
+            col_immReward = col_index
+        if raw[0][col_index] == "total_disc_reward":
+            col_totReward = col_index
 
-    with open(dir + '/rewards.csv', 'a') as file:
+    with open(dir + '/robot_updates_new.csv', 'a') as file:
         wr = csv.writer(file, dialect='excel')
-        first_row = ["task_id", "step_count", "sec", "immediate_reward", "total_disc_reward"]
+        first_row = raw[0]
         wr.writerow(first_row)
-        new_row = [None] * 5  # initiate a row
         total_disc_reward = 0.0
+        immediate_reward = 0.0
+        immediate_reward_robot = 0.0
         discount_factor = 0.98
         task_id = 0
         subtask_id = -1
         subtask_init = True
         init_time = 0
+        sensors_informed = False
+        prev_step_count = 0
+        robot_should_inform = False
+        prev_robot_row = [None] * len(raw[0])
+
         for row_index in range(len(raw)):
+
             if row_index == 0:
                 continue
+
+            step_count = int(raw[row_index][col_stepCount])
+
+            if (step_count > prev_step_count or row_index == len(raw)-1) and (sensors_informed):
+                # the robot hasnt informed on the prev step, so we should let the robot inform first for previous
+                robot_should_inform = True
+
+            if raw[row_index][col_reporter] == '"ROBOT"' or robot_should_inform:
+
+                new_row = raw[row_index]
+
+                if robot_should_inform:
+                    new_row = prev_robot_row
+                    new_row[col_stepCount] = prev_step_count
+                    new_row[col_immReward] = immediate_reward
+                    new_row[col_totReward] = total_disc_reward
+
+                elif (int(raw[row_index][col_stepCount]) == step_count) and (int(raw[row_index][col_task_id]) == task_id):
+                    immediate_reward_robot = raw[row_index][col_immReward]
+                    last_robot_step = int(raw[row_index][col_stepCount])
+                    new_row[col_immReward] = immediate_reward
+                    new_row[col_totReward] = total_disc_reward
+
+                sensors_informed = False # robot informed after the sensors, so lower the flag
+                robot_should_inform = False
+                prev_robot_row = new_row
+                wr.writerow(new_row)
 
             task_id_new = int(raw[row_index][col_task_id])
             if task_id_new != task_id:
@@ -56,19 +94,16 @@ def calc_rewards(dir, raw):
                 elif raw[row_index][col_subStatus] == '"fail"':
                     immediate_reward = -6
                 else:
-                    print "Sth Wrong with immediate reward!"
+                    print "Sth wrong with immediate reward!"
                     immediate_reward = 0
 
                 subtask_tick = math.floor(float(raw[row_index][col_subDuration]))
 
                 total_disc_reward = total_disc_reward + (discount_factor**subtask_tick)*immediate_reward
-                new_row[0] = task_id
-                new_row[1] = int(raw[row_index][col_stepCount])
-                new_row[2] = subtask_tick
-                new_row[3] = immediate_reward
-                new_row[4] = total_disc_reward
-                #raw[row_index][col_subtask_id]
-                wr.writerow(new_row)
+                step_count = int(raw[row_index][col_stepCount])
+                if (last_robot_step == step_count) and (immediate_reward_robot != immediate_reward):
+                    sensors_informed = True
+                    robot_should_inform = True
 
             if raw[row_index][col_reporter] == '"OBSERVATION"':
 
@@ -87,13 +122,10 @@ def calc_rewards(dir, raw):
                     immediate_reward = 0.0
 
                 total_disc_reward = total_disc_reward + (discount_factor**subtask_tick)*immediate_reward
-                new_row[0] = task_id
-                new_row[1] = int(raw[row_index][col_stepCount])
-                new_row[2] = subtask_tick
-                new_row[3] = immediate_reward
-                new_row[4] = total_disc_reward
-                #raw[row_index][col_subtask_id]
-                wr.writerow(new_row)
+                sensors_informed = True
+
+            prev_step_count = step_count # to keep the last step informed
+
 
     file.close()
     print 'INFO: reward values are calculated and added to the reactive robot'

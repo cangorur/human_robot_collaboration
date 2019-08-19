@@ -17,8 +17,9 @@ def save_sensor_data(dir, raw):
         for row_index in range(len(raw)):
             if raw[row_index][col_reporter] == '"MANAGER"':
                 wr.writerow(raw[row_index])
-            elif raw[row_index][col_reporter] == '"SENSORS"' and \
-                            raw[row_index][col_taskSt] != '"ONGOING"':
+            elif raw[row_index][col_reporter] == '"MANAGER-TASK-DONE"': #and raw[row_index][col_taskSt] != '"ONGOING"':
+                wr.writerow(raw[row_index])
+            elif raw[row_index][col_reporter] == '"SENSOR"': #and raw[row_index][col_taskSt] != '"ONGOING"':
                 wr.writerow(raw[row_index])
     file.close()
     print 'INFO: sensor information is saved separately under the folder provided'
@@ -111,7 +112,7 @@ def task_status(dir):
                 col_update_time = col_index
             elif sensor_updates[0][col_index] == "task_status":
                 col_taskSt = col_index
-            elif sensor_updates[0][col_index] == "who_succeeded":
+            elif sensor_updates[0][col_index] == "who_succeeded_subtask":
                 col_whoSuc = col_index
 
         with open(dir + '/task_status.csv', 'a') as new_file:
@@ -134,7 +135,7 @@ def task_status(dir):
                     new_row[1] = sensor_updates[row_index][col_update_time + 1]
                     new_row[2] = sensor_updates[row_index][col_update_time + 2]
                     manager_flag = True
-                if sensor_updates[row_index][col_whoRep] == '"SENSORS"' and \
+                if sensor_updates[row_index][col_whoRep] == '"MANAGER-TASK-DONE"' and \
                                 new_row[0] == sensor_updates[row_index][
                             col_taskID]:  # if the same task with manager report
                     new_row[3] = sensor_updates[row_index][col_update_time + 1]
@@ -144,9 +145,9 @@ def task_status(dir):
                     new_row[5] = float(fin_time) - float(init_time)
                     cumulative_timeTook = cumulative_timeTook + float(fin_time) - float(init_time)
                     new_row[6] = float(cumulative_timeTook / int(sensor_updates[row_index][col_taskID])) # moving avg time
-                    if sensor_updates[row_index][col_taskSt] == '"SUCCESS"':
+                    if sensor_updates[row_index][col_taskSt] == '"success"':
                         new_row[7] = 1
-                    if sensor_updates[row_index][col_taskSt] == '"FAIL"':
+                    if sensor_updates[row_index][col_taskSt] == '"fail"':
                         new_row[7] = 0
                     cumulative_success = cumulative_success + new_row[7]
                     new_row[8] = float(cumulative_success / int(sensor_updates[row_index][col_taskID]))
