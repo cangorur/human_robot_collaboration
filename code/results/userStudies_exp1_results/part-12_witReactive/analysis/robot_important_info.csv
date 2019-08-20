@@ -166,6 +166,7 @@ task_id,task_init_secs,task_init_nsecs,acted_secs,acted_nsecs,taken_action,belie
 4,1565017905,133592360,1565017991,76468619,"""idle""","""GlobalSuccess""","""GlobalSuccess""","""proactive_average_takeOneReasses_loyal.pomdpx""",0.0,45.73678144783514
 4,1565017905,133592360,1565017991,76468619,"""idle""","""GlobalSuccess""","""GlobalSuccess""","""proactive_average_takeOneReasses_loyal.pomdpx""",6,51.16030622863514
 5,1565017039,988795785,0,0,'','','',"""reactive.pomdpx""",6,0.0
+5,1565017039,988795785,0,0,'','','',"""reactive.pomdpx""",6,5.20875319948032
 6,1565015544,732219476,0,0,'','','',"""reactive.pomdpx""",6,0.0
 6,1565015544,732219476,1565015546,307484886,"""idle""","""-1""","""0""","""reactive.pomdpx""",0.0,0.0
 6,1565015544,732219476,1565015547,818749043,"""grasp""","""-1""","""0""","""reactive.pomdpx""",0.0,0.0
