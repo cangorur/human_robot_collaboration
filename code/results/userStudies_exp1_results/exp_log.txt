@@ -35,6 +35,8 @@ Exp-16: Baris, both are finalized. Experience increased. Good memory. First reac
 
 Subjective (survey) results are under analysis_subjective. Each question is examined on its own
 Objective measures are under each recorded bag folders. To extract the data:
-* First add each raw_data from each turn to one raw_data.csv file.
+* First bag_to_csv on each bag data. 
+* Then, renumber the tasks: python rename_tasks.py <folder name> <ID as integer>
+* Add each raw_renumbered.csv from each turn to one raw_data.csv file.
 * Run update_sensor_data.py save_all and update_robot_data.py save_all functions are used to construct the analysis.
 * You only need robot_final_results.csv, human_observables.csv
