@@ -279,19 +279,27 @@ def get_results(dir):
                 col_duration = col_index
             elif sensor_updates[0][col_index] == "percentage_successful_subtasks":
                 col_success = col_index
+            elif sensor_updates[0][col_index] == "subtask_status":
+                col_subtaskState = col_index
+            elif sensor_updates[0][col_index] == "who_succeeded_subtask":
+                col_whoSucceeded = col_index
 
         with open(dir + '/robot_final_results.csv', 'a') as new_file:
             wr = csv.writer(new_file, dialect='excel')
             first_row = ["robot_model_ID", "task_id", "warnings_received", "cumulative_warnings", "moving_avg_warnings",
                 "task_duration", "cumulative_time", "moving_avg_time", "total_disc_reward", "cumulative_reward", "moving_avg_reward",
-                        "success_rate", "cumulative_success", "moving_avg_success"]
+                        "success_rate", "cumulative_success", "moving_avg_success", "humans_contribution", "human_success_rate"]
             wr.writerow(first_row)
-            new_row = [None] * 14  # initiate a row
+            new_row = [None] * 16  # initiate a row
             task_id = int(robot_updates[1][col_taskID])
             task_count = 1
             tot_warnings = 0
             task_duration = 0.0
             success_rate = 0.0
+            human_success_ctr = 0
+            human_failure_ctr = 0
+            robot_success_ctr = 0
+            robot_failure_ctr = 0
             est_true_ct = 0
             cumulated_reward = 0.0
             cumulated_warnings = 0.0
@@ -308,7 +316,26 @@ def get_results(dir):
 
                 task_id = int(robot_updates[row_index][col_taskID])
                 if row_index+1 == len(robot_updates) or int(robot_updates[row_index+1][col_taskID]) != task_id:
+                    human_success_ctr = 0
+                    human_failure_ctr = 0
+                    robot_success_ctr = 0
+                    robot_failure_ctr = 0
                     for row_ in range(len(sensor_updates)):
+                        if sensor_updates[row_][col_whoReports] == '"SENSOR"' and int(sensor_updates[row_][col_taskID_sensor]) == task_id:
+                            if sensor_updates[row_][col_subtaskState] == '"success"' and \
+                                sensor_updates[row_][col_whoSucceeded] == '"HUMAN"':
+                                human_success_ctr += 1
+                            elif sensor_updates[row_][col_subtaskState] == '"fail"' and \
+                                sensor_updates[row_][col_whoSucceeded] == '"HUMAN"':
+                                human_failure_ctr += 1
+                            elif (sensor_updates[row_][col_subtaskState] == '"success"' or sensor_updates[row_][col_subtaskState] == '"ROBOT SUCCEEDED"') and \
+                                sensor_updates[row_][col_whoSucceeded] == '"ROBOT"':
+                                robot_success_ctr += 1
+                            elif sensor_updates[row_][col_subtaskState] == '"fail"' and \
+                                sensor_updates[row_][col_whoSucceeded] == '"ROBOT"':
+                                robot_failure_ctr += 1
+                            else:
+                                print "Missing information for task_id:", task_id
                         if sensor_updates[row_][col_whoReports] == '"MANAGER-TASK-DONE"' and int(sensor_updates[row_][col_taskID_sensor]) == task_id:
                             tot_warnings = int(sensor_updates[row_][col_warnings])
                             task_duration = float(sensor_updates[row_][col_duration])
@@ -352,12 +379,15 @@ def get_results(dir):
                     new_row[12] = cumulated_successRate # cumulative success rate
                     new_row[13] = float(cumulated_successRate / task_count) # moving avg
 
+                    new_row[14] = float(human_success_ctr / (success_rate / 10)) * 100.0
+                    new_row[15] = float(human_success_ctr / float(human_success_ctr + human_failure_ctr)) * 100.0
+
                     task_count += 1
 
                     tot_warnings = 0
 
                     wr.writerow(new_row)  # finished a row for a task
-                    new_row = [None] * 14  # initiate a row
+                    new_row = [None] * 16  # initiate a row
 
         new_file.close()
     robot_file.close()

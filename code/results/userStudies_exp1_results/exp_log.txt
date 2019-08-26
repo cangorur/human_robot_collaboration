@@ -31,6 +31,8 @@ Exp-15: Andrea, both are finalized. Very good at memorizing all. put really high
 
 Exp-16: Baris, both are finalized. Experience increased. Good memory. First reactive (turn-6,7,8), then proactive (turn-2,3,4).
 
+Exp-17: Göksu,  both are finalized. Experience and the success rate dropped due to the reactive robot's interferences. First proactive (turn-2,3,4), then reactive (turn-6,7,8)
+
 ---- Result analysis ----
 
 Subjective (survey) results are under analysis_subjective. Each question is examined on its own
