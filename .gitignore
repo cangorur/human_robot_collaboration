@@ -20,3 +20,4 @@ LogFiles/
 code/pomdp_evaluation
 #code/models
 code/results/POMDP_IE_tests
+camera*.bag
