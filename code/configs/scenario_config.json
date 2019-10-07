@@ -24,8 +24,8 @@
 	},
 	"robot": {
 		"type":{
-				"AItype": "reactive",
-				"forHumanType": "",
+				"AItype": "proactive",
+				"forHumanType": "average_takeOneReasses_loyal_exp1",
 				"forHumanCollab": ""
 		},
 		"position":{
@@ -48,34 +48,36 @@
 		}
 	},
   "operation_modes": {
+		"continousInteraction": false,
+		"newHuman": true,
 		"useEvaluator":{
 			 "active": false,
 			 "interactionNumber": 50,
-			 "trainingSetName": "training_sets/exp3_7000t.mat"
+			 "trainingSetName": "training_sets/userStudies/userStudies_final.mat"
 			},
 		"useCMAB": false,
-		"useBPR": false,
+		"useBPR": true,
 		"useRandom": false,
-		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/exp3_7000t.mat",
+		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry_userStudies/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/userStudies/userStudies_final.mat",
 		"useTransitionFunction": false
 	},
 	"evaluation_models":{
-		"humans": ["distracted_collaborative.POMDPx",
-					 "distracted_noncollaborative.POMDPx",
-					 "expert_nontired_collaborative.POMDPx",
+		"humans": ["beginner_tired_noncollaborative.POMDPx",
 					 "expert_nontired_noncollaborative.POMDPx",
-					 "expert_tired_collaborative.POMDPx",
-					 "expert_tired_noncollaborative.POMDPx",
-					 "beginner_nontired_collaborative.POMDPx",
 					 "beginner_nontired_noncollaborative.POMDPx",
 					 "beginner_tired_collaborative.POMDPx",
-					 "beginner_tired_noncollaborative.POMDPx"],
-					 "policies": ["base.pomdpx", "policy1.pomdpx",
-				 				 "policy2.pomdpx", "policy3.pomdpx",
-				 				 "policy4.pomdpx", "policy5.pomdpx",
-				 				 "policy6.pomdpx", "policy7.pomdpx",
-				 				 "policy8.pomdpx", "policy9.pomdpx",
-				 				 "policy10.pomdpx", "policy11.pomdpx",
-				 				 "policy12.pomdpx", "reactive.pomdpx"]
+					 "expert_tired_collaborative.POMDPx",
+					 "expert_nontired_collaborative.POMDPx",
+					 "beginner_nontired_collaborative.POMDPx",
+					 "expert_tired_noncollaborative.POMDPx"],
+		"policies": ["average_justRemind_loyal.pomdpx", "average_justRemind_reckless.pomdpx",
+					 "average_takeOneReasses_loyal.pomdpx", "average_takeOneReasses_reckless.pomdpx",
+					 "average_takeOver_loyal.pomdpx", "average_takeOver_reckless.pomdpx",
+					 "quick_justRemind_loyal.pomdpx", "quick_justRemind_reckless.pomdpx",
+					 "quick_takeOneReasses_loyal.pomdpx", "quick_takeOneReasses_reckless.pomdpx",
+					 "quick_takeOver_loyal.pomdpx", "quick_takeOver_reckless.pomdpx",
+					 "slow_justRemind_loyal.pomdpx", "slow_justRemind_reckless.pomdpx",
+					 "slow_takeOneReasses_loyal.pomdpx", "slow_takeOneReasses_reckless.pomdpx",
+					 "slow_takeOver_loyal.pomdpx", "slow_takeOver_reckless.pomdpx"]
 	}
 }

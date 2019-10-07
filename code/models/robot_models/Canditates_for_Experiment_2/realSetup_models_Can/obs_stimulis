@@ -1,0 +1,21 @@
+# Human idling
+9 9 9 3 9 9 9 3 9 9 9
+
+# Human idling short and grasping
+9 9 4 4 12
+
+# Grasping after long idling and subtask success
+9 9 9 9 9 4 4 4 12 9 9 9 9
+
+# Following above, grasping after long idling and failing. Then, succeeding
+9 9 9 9 4 4 4 13 9 9 9 9 4 4 12
+
+# Failing twice
+9 9 4 13 9 9 9 4 13
+
+# Long idling and failing twice
+9 9 9 9 9 9 9 9 4 4 13 9 9 9 9 9 9 9 9 4 13
+
+# Idling, succeeding then failing, if robot grasps, receives Warning
+9 9 4 12 9 9 9 4 13 -- 6
+---

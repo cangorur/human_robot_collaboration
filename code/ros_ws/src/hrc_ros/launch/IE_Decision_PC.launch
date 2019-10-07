@@ -21,6 +21,10 @@
 
 <node pkg="rosbag" type="record" name="rosbag_record_camera" args="-o $(find hrc_ros)/../../../results/camera /camera/rgb/image_raw/compressed"/>
 
+<node pkg="hrc_ros" type="policy_evaluator.py" name="policy_evaluator" output="screen" cwd="node"/>
+
+<node pkg="hrc_ros" type="policy_selector_bpr.py" name="policy_selector_bpr" output="screen" cwd="node"/>
+
 <!-- <node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" /> -->
 
 <!--Configure lower resolution for RGB video 8=QVGA@30Hz -->

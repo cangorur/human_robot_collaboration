@@ -22,23 +22,36 @@ class PolicySelector:
     def __init__(self, data):
         self.file = data
 
+        isNewHuman = rospy.get_param('/is_new_human')
+
+        if isNewHuman:
+            abps_savings_file= dirr + "./abps_savings_new.json" # variables are all zeros, newly initialized
+        else:
+            abps_savings_file= dirr + "./abps_savings.json" # use previously saved belief and observables for the same human interacted
+
+        abps_savings= open(abps_savings_file).read()
+        abps_data = json.loads(abps_savings)
+
         self.humtypes=np.array([])
         self.policies=np.array([])
         self.policy_list_json=np.array([])
 
-        self.observation_vector=np.array([])# observations
+        # TODO: all these variables below need to be taken from json file
+        self.observation_vector=np.array([]) # observations
         self.observation_signal=[]
         self.reward=np.array([])# utility
         self.last_reward_signal=np.array([])
-
         self.current_policy = -1
         self.used_policy = -1
-
-        self.observation_model= np.array([]) # (types, policies)
-
+        # TODO: all these variables below need to be taken from json file 
         self.current_belief = np.array([]) # probability distribution over (types)
+        self.prev_belief = abps_data["current_belief"]
         self.beliefSet= np.array([]) # just to observe past
         self.taken_policies_set=np.array([]) # just to observe past
+
+
+        # self.contInteraction = pref # by default in user studies there is no continous interaction due to the experiments
+        self.observation_model= np.array([]) # (types, policies)
 
         self.selected_policy=np.array([])# important output
 
@@ -55,7 +68,12 @@ class PolicySelector:
         '''
         self.performance_model_constructor(self.file)
         self.observation_model_constructor(self.file)
-        self.current_belief=np.ones((self.humtypes.size))/(self.humtypes.size)
+        # if running for a new user  ! ! !
+        isNewHuman = rospy.get_param('/is_new_human')
+        if isNewHuman:
+            self.current_belief = np.ones((self.humtypes.size))/(self.humtypes.size)
+        else:
+            self.current_belief = self.prev_belief
 
     def run_policy_selector(self, req):
         '''
@@ -64,6 +82,7 @@ class PolicySelector:
                 @param request
                 @return self.selected_policy
         '''
+
         self.belief_updater()
         self.policy_selector()
         rospy.logwarn("[BPR_POLICY_SELECTOR] Selected Policy: %d", self.selected_policy)
@@ -151,9 +170,15 @@ class PolicySelector:
             rospy.loginfo("[BPR_POLICY_SELECTOR]-----Task is finished-----")
             rospy.loginfo("[BPR_POLICY_SELECTOR] task id: %d,reward: %s, used policy: %d", data.task_id-1, self.reward, self.used_policy)
             rospy.loginfo("[BPR_POLICY_SELECTOR]---------------------------------")
+
+            with open("abps_results.txt","a") as file:
+                wr = csv.writer(file, dialect='excel')
+                wr.writerow(self.observation_vector)
+                wr.writerow(self.used_policy)
+                wr.writerow(self.reward)
+
             # To find out which policy is used during this task;
             # This is an important information for belief update
-
 
     def policy_selector(self):
         '''
@@ -302,6 +327,7 @@ if __name__=='__main__':
         json_data= open(json_file).read()
         data = json.loads(json_data)
         file = data["operation_modes"]["trainingSetForPolicySelect"]
+        pref = data["operation_modes"]["continousInteraction"] #not used for now
         policy_selector_class = PolicySelector(file)
         policy_selector_class.policy_list_json=np.array(list(data["evaluation_models"]["policies"]))
         rospy.loginfo("[BPR_POLICY_SELECTOR] BPR Policy Selector agent is ready!")

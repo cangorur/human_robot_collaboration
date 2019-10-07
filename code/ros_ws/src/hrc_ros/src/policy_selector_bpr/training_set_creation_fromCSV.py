@@ -24,7 +24,7 @@ Make sure that all of the human and robot policies covered under the training se
 
 
 # json_file="/home/cangorur/Workspace/app-ras-course/hrc_industry_ss18/code/configs/scenario_config_training.json"
-json_file="../../../../../configs/scenario_config_training.json"
+json_file="../../../../../configs/scenario_config_tests.json"
 
 json_data= open(json_file).read()
 
@@ -257,9 +257,17 @@ def observation_update(data):
                         else:
                             observation_model[page][row][col] -= dec
                             total_dec += 1
-#                
-#            
-#                        
+            
+#            mu_model[8][2] = 4.527
+#            # mu_model[0][2] = 4.132
+#            mu_model[2][2] = 5.542
+#            mu_model[2][9] = 5.842
+#            # mu_model[8][2] = 4.427
+#            mu_model[3][1] = 5.627
+#            mu_model[3][1] = 5.458  
+#            mu_model[3][0] = 4.251
+#            mu_model[6][0] = 4.478  
+#            mu_model[4][2] = 4.387
             
             print("===================== Saving into .mat file ========================")
             observation_model=np.array(observation_model)
@@ -278,7 +286,7 @@ def observation_update(data):
 if __name__ == "__main__":
     #raw_file = open(sys.argv[1], "r")
         # Set up CSV reader and process the header
-    raw_file = open('./training_sets/exp3_7000t.csv', "r")
+    raw_file = open('./training_sets/userStudies/exp2_3rdRun_raw.csv', "r")
     csvReader = csv.reader(raw_file)#, quotechar='"', delimiter=',')
     for row in csvReader:
         header=row

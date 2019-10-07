@@ -211,6 +211,9 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     robot_AItype = config_pt.get<string>("robot.type.AItype"); // global
     robot_forHuman = config_pt.get<string>("robot.type.forHumanType"); // global
 
+    bool contInteraction = config_pt.get<bool>("operation_modes.continousInteraction");
+    bool isNewHuman = config_pt.get<bool>("operation_modes.newHuman");
+
     bool useCMAB = config_pt.get<bool>("operation_modes.useCMAB");
     bool useBPR = config_pt.get<bool>("operation_modes.useBPR");
     bool useEvaluator = config_pt.get<bool>("operation_modes.useEvaluator.active");
@@ -227,6 +230,8 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
     ros::param::set("/evaluator_flag", useEvaluator);
     ros::param::set("/dynamic_transition_flag", useTransitionFunction);
     ros::param::set("/interaction_sample_amount", interactionSampleNumber);
+    ros::param::set("/is_new_human", isNewHuman); // parameter to check if this is a new experiment (new human participant)
+    ros::param::set("/is_continous_interaction", contInteraction);
 
     // ========================================================
 

@@ -1,3 +1,5 @@
+== Old robot models that are used in ABPS tests in simulation ==
+
 proactive.pomdpx --> base.pomdpx
 proactive_beginner.pomdpx --> policy1.pomdpx  (model from students, bad rewarding)
 proactive_distracted.pomdpx --> policy2.pomdpx  (model from students, bad rewarding)
@@ -12,3 +14,10 @@ proactive_noncollaborative.pomdpx --> policy9.pomdpx  (model from students, fair
 proactive_tired.pomdpx --> policy10.pomdpx  (model from students, fair rewarding)
 proactive_beginner_v2.pomdpx --> policy11.pomdpx  (model from me, fair rewarding)
 proactive_noncollaborative_v2.pomdpx --> policy12.pomdpx  (model from me, fair rewarding)
+
+== Robot Models for the User Studies ==
+In Experiments-1, Reactive vs Proactive Robots the robot models used are below:
+- reactive.pomdpx
+- proactive_average_takeOneReassess_loyal_exp1.pomdpx
+
+In Experiments-2, robot models used are under /models/robot_models/user_study_exp2/
