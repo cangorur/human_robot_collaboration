@@ -1,0 +1,11 @@
+{
+  "observation_vector":[],
+  "observation_signal": [],
+  "reward": [],
+  "last_reward_signal": [],
+  "current_policy": -1,
+  "used_policy": -1,
+  "current_belief": [],
+  "beliefSet": [],
+  "taken_policies_set": []
+}

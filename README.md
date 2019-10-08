@@ -122,6 +122,11 @@ rosrun hrc_ros human_sim_noMorse.py
 Here, make sure `human_sim_noMorse.py` is executable and `roscore` is running.
 
 ### Running ROS Project
+#### FOR REAL EXPERIMENTS
+Run below if you are not running the simulation environment, and would like to run the DOBOT conveyor belt setup.
+#TODO: Write these ...
+
+#### WITH SIMULATION
 After MORSE project is running, open a new terminal and
 ```
 source ros_ws/devel/setup.bash

@@ -23,7 +23,7 @@ class PolicySelector:
         self.file = data
 
         isNewHuman = rospy.get_param('/is_new_human')
-
+        dirr = os.path.dirname(os.path.realpath(__file__))
         if isNewHuman:
             abps_savings_file= dirr + "./abps_savings_new.json" # variables are all zeros, newly initialized
         else:
@@ -37,18 +37,17 @@ class PolicySelector:
         self.policy_list_json=np.array([])
 
         # TODO: all these variables below need to be taken from json file
-        self.observation_vector=np.array([]) # observations
-        self.observation_signal=[]
-        self.reward=np.array([])# utility
-        self.last_reward_signal=np.array([])
-        self.current_policy = -1
-        self.used_policy = -1
-        # TODO: all these variables below need to be taken from json file 
+        self.observation_vector=np.array(abps_data["observation_vector"]) # observations
+        self.observation_signal= abps_data["observation_signal"] #[]
+        self.reward= np.array(abps_data["reward"]) # np.array([]) # utility
+        self.last_reward_signal= np.array(abps_data["last_reward_signal"]) #np.array([])
+        self.current_policy = abps_data["current_policy"]#-1
+        self.used_policy = abps_data["used_policy"]#-1
+        # TODO: all these variables below need to be taken from json file
         self.current_belief = np.array([]) # probability distribution over (types)
-        self.prev_belief = abps_data["current_belief"]
-        self.beliefSet= np.array([]) # just to observe past
-        self.taken_policies_set=np.array([]) # just to observe past
-
+        self.prev_belief = np.array(abps_data["current_belief"])
+        self.beliefSet= np.array(abps_data["beliefSet"]) # just to observe past
+        self.taken_policies_set= np.array(abps_data["taken_policies_set"]) # just to observe past
 
         # self.contInteraction = pref # by default in user studies there is no continous interaction due to the experiments
         self.observation_model= np.array([]) # (types, policies)
@@ -70,7 +69,7 @@ class PolicySelector:
         self.observation_model_constructor(self.file)
         # if running for a new user  ! ! !
         isNewHuman = rospy.get_param('/is_new_human')
-        if isNewHuman:
+        if isNewHuman or self.prev_belief == []:
             self.current_belief = np.ones((self.humtypes.size))/(self.humtypes.size)
         else:
             self.current_belief = self.prev_belief
@@ -171,11 +170,18 @@ class PolicySelector:
             rospy.loginfo("[BPR_POLICY_SELECTOR] task id: %d,reward: %s, used policy: %d", data.task_id-1, self.reward, self.used_policy)
             rospy.loginfo("[BPR_POLICY_SELECTOR]---------------------------------")
 
-            with open("abps_results.txt","a") as file:
-                wr = csv.writer(file, dialect='excel')
-                wr.writerow(self.observation_vector)
-                wr.writerow(self.used_policy)
-                wr.writerow(self.reward)
+            dirr = os.path.dirname(os.path.realpath(__file__))
+            abps_savings_file= dirr + "./abps_savings.json" # use previously saved belief and observables for the same human interacted
+            abps_savings= open(abps_savings_file).read()
+            abps_data = json.loads(abps_savings)
+
+            abps_data["observation_vector"] = self.observation_vector
+            abps_data["current_policy"] = self.current_policy
+            abps_data["used_policy"] = self.used_policy
+            abps_data["reward"] = self.reward
+
+            with open(dirr + "./abps_savings.json", 'w') as f:
+                f.dump(abps_data, f)
 
             # To find out which policy is used during this task;
             # This is an important information for belief update
@@ -307,6 +313,15 @@ class PolicySelector:
         rospy.logwarn("[BPR_POLICY_SELECTOR] Most likely human type: %d", np.argmax(beta))
         rospy.logwarn("-----------------------------")
         self.current_belief=np.array(beta)
+
+        dirr = os.path.dirname(os.path.realpath(__file__))
+        abps_savings_file= dirr + "./abps_savings.json" # use previously saved belief and observables for the same human interacted
+        abps_savings= open(abps_savings_file).read()
+        abps_data = json.loads(abps_savings)
+        abps_data["current_belief"] = self.current_belief
+
+        with open(dirr + "./abps_savings.json", 'w') as f:
+            f.dump(abps_data, f)
 
     def observation_to_featureVec(obs_digit):
         # TODO manual mapping of 64 bit digit to the feature vectors
