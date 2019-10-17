@@ -239,6 +239,8 @@ private:
 	string robot_total_disc_reward = "";
 	/// Robot type variable: reactive or proactive
 	string robotType = "";
+	/// Previous robot action
+	string prev_robot_action = "";
 	/// a flag for stating if it is the initial state from DESPOT
 	bool init_state = false;
 

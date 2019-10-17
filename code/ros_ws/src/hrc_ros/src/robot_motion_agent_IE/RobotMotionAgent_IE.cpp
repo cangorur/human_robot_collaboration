@@ -329,14 +329,12 @@ void RobotMotionAgent::update() {
 				// Global variables are set below to be sent to task manager
 				robot_action_taken = "point to remind";
 				//success = pointToObj.call(req, resp);
-
-
-				std_msgs::Bool msg;
-				msg.data = true;
-				dobot_point_pub.publish(msg);
-
-
-				ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot pointing to object...");
+				if (prev_robot_action != robot_action){
+					std_msgs::Bool msg;
+					msg.data = true;
+					dobot_point_pub.publish(msg);
+					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot pointing to object...");
+				}
 			}
 			else if (robot_action == "4"){ // planning for grasping
 				// Global variables are set below to be sent to task manager
@@ -386,6 +384,7 @@ void RobotMotionAgent::update() {
 			// Global variables are set below to be sent to task manager
 			robot_belief_state = robot_state;
 			action_info_received = true; // raise the action received flag
+			prev_robot_action = robot_action;
 		}
 		else{
 			// TODO: TEST HERE! Robot received previous state's reward. But it is from DESPOT agent. In real setup, it should come from obs agent
