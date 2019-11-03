@@ -6,17 +6,12 @@ Created on Sat Oct 26 17:20:57 2019
 @author: cangorur
 """
 
-#!/usr/bin/env python2.7
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 15 14:36:19 2018
-
-@author: dell
-"""
 from scipy.io import loadmat, savemat
 import numpy as np
-import matplotlib.pyplot as plt   
-
+import matplotlib.pyplot as plt
+import pandas as pd
+import csv
+import os
 
 
 """
@@ -107,6 +102,111 @@ plt.annotate('fail', xy=(9, 0.20), xytext=(10, 0.24),
 plt.title("proactive_distracted.pomdpx")
 """
 
+def bayesian_estimation(obs_f, num_obs, humtypes):
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    json_file= dir_path + "/../../../../../../../configs/scenario_config.json"
+    json_data= open(json_file).read()
+    '''
+    with open(dir_path + '/../../../../../../../results/userStudies_exp1_results/human_observables.csv', 'rb') as file:
+        reader = csv.reader(file, delimiter=',')
+        real_obs = list(reader)
+        print real_obs[2][7]
+    '''
+    # reading the obs as arrays for each participant data
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp1_results/analysis_objective.xlsx', sheet_name='human_observables')
+    part_id = 4
+    user_obs = []
+    taskID_arr = []
+    for i in range(14):
+        part_temp_obs = df['Obs_' + str(part_id)].values.tolist()
+        part_temp_obs = [x for x in part_temp_obs if str(x) != 'nan']
+        user_obs.append(part_temp_obs)
+        part_tasks = df['task_id_' + str(part_id)].values.tolist()
+        part_tasks = [x for x in part_tasks if str(x) != 'nan']
+        taskID_arr.append(part_tasks)
+        part_id += 1
+    
+    # initializing the variables
+    observation_model=obs_f
+    beliefSet = np.array([])
+    user_type_est = []
+    used_policy=2 # average_takeOneReassess_loyal #int(self.used_policy)
+    #observation_signal=self.observation_vector
+    # signal = [O1,O2,O3,O4,O5,O6]
+    #num_of_observables=int(num_obs)
+    # new signal to update belief
+    tCount =humtypes.size
+    
+    # for each human participant. Dont forget to reset beta and the other variables
+    for user_id in range(len(user_obs)):
+        current_belief = np.array([]) # probability distribution over (types)
+        current_belief = np.ones((humtypes.size))/(humtypes.size)
+        beta=current_belief # temp current belief
+        belief_list = []
+        part_list = []
+        task_id = 0
+        for i in range(8): # in total each participant did 8 tasks
+            task_id += 1
+            if task_id != 1 and task_id != 5: # those are the tasks human did the task alone (no robot)
+                # collect the obs emitted within a certain task from the participant
+                temp_obs_arr = []
+                for j in range(len(user_obs[user_id])):
+                    if (task_id == taskID_arr[user_id][j]):
+                        temp_obs_arr.append(user_obs[user_id][j])
+                P=np.array([]) # temporary belief
+                for humtype in range(0,tCount):
+                    p = 1.0
+                    # for each episode
+                    for episode in range(0,len(temp_obs_arr)):
+                        #observation_number=0
+                        # From the observation signal at each episode, a number is generated and probabilities are kept under that number,
+                        # [ 1 * 64 ] rows are generated and saved into observation_model.
+                        # Now, it is time to use that information.
+                        # Calculating the observation number for each episode:
+                        #for i in range(observation_signal[0,:].size):
+                        #    observation_number = observation_number + (2**i)*observation_signal[episode,i]
+                        observation_number=int(temp_obs_arr[episode])
+                        # observation_number = observation_to_featureVec(observation_number)
+                        # Take the observation row for corresponding (policy, human type) pair.
+                        observation_row=observation_model[used_policy,humtype]
+                        observation_row=np.array(observation_row)
+                        # Calculating the probability (with respect to each observation number) for each episode
+                        p = p * (observation_row[observation_number]+1e-4) # 1e-5
+                        #print observation_row[observation_number]+1e-4, p       
+                    # New belief for this human type
+                    # TODO: add an epsilon value below to beta.items. Currently after a time belief never changes
+                    P=np.append(P, p*beta.item(humtype))
+                # update and normalise belief
+                beta=P/(P.sum())
+                print "Part_id:", user_id+4, "Task_id:", task_id, "HUMAN_TYPE:", np.argmax(beta)
+                # record beliefs just to observe
+                np.append(beliefSet,beta)
+                belief_list.append(np.argmax(beta))
+        part_list.append(user_id+4)
+        part_list.append(belief_list)
+        user_type_est.append(part_list)
+    
+    print user_type_est
+            
+    '''
+    dirr = os.path.dirname(os.path.realpath(__file__))
+    with open(dirr + "/abps_savings.json") as file:
+        # abps_savings_file= dirr + "/abps_savings.json" # use previously saved belief and observables for the same human interacted
+        # abps_savings= open(abps_savings_file).read()
+        abps_data = json.load(file)
+        abps_data["current_belief"] = self.current_belief.tolist()
+        abps_data["beliefSet"] = self.beliefSet.tolist()
+    file.close()
+    
+    with open(dirr + "/abps_savings.json", 'w') as f:
+        json.dump(abps_data, f)
+    f.close()
+    '''
+    #each belief array should be recorded, write it to a different file?
+    
+    #plot the distribution of each participant over each human type
+
 def set_comparisons(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f):
     
     plot_0 = []
@@ -161,6 +261,8 @@ if __name__== "__main__":
     obs2=dataset2['observation_model']
     obs3=dataset3['observation_model']
     obs_f=dataset_f['observation_model']
+    num_obs=dataset_f['num_of_observables']
+    hum_types=dataset_f['humtypes']
     
     mu1=dataset1['mu_model']
     mu2=dataset2['mu_model']
@@ -172,8 +274,8 @@ if __name__== "__main__":
     std3=dataset3['std_model']
     std_f=dataset_f['std_model']
     
-    remove_reminder_models(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f)
-    
+   # remove_reminder_models(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f)
+    bayesian_estimation(obs_f, num_obs, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
         
     # obs1_2 = (obs1 + obs2) / 2
