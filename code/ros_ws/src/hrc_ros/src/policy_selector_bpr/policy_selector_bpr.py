@@ -312,6 +312,11 @@ class PolicySelector:
                 for i in range(observation_signal[0,:].size):
                     observation_number = observation_number + (2**i)*observation_signal[episode,i]
                 observation_number=int(observation_number)
+                # below observation number updates is for real setup. Mapping some obs to the obs obtained from simulation
+                if (observation_number==40 or observation_number==41 or observation_number==43):
+                    observation_number = 9
+                elif (observation_number == 25):
+                    observation_number = 17
                 # observation_number = observation_to_featureVec(observation_number)
                 # Take the observation row for corresponding (policy, human type) pair.
                 observation_row=observation_model[used_policy,humtype]

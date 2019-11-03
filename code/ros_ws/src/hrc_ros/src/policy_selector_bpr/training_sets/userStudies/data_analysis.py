@@ -154,6 +154,8 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                 for j in range(len(user_obs[user_id])):
                     if (task_id == taskID_arr[user_id][j]):
                         temp_obs_arr.append(user_obs[user_id][j])
+                P_list=np.array([])
+                #for used_policy in range(len(observation_model)):
                 P=np.array([]) # temporary belief
                 for humtype in range(0,tCount):
                     p = 1.0
@@ -167,6 +169,14 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                         #for i in range(observation_signal[0,:].size):
                         #    observation_number = observation_number + (2**i)*observation_signal[episode,i]
                         observation_number=int(temp_obs_arr[episode])
+                        if (observation_number == 41 or observation_number == 43 or observation_number == 40):
+                            observation_number = 9
+                        elif (observation_number == 25):
+                            observation_number = 17
+                        #elif (observation_number==5):
+                        #    continue
+                        #elif (observation_number == 33):
+                        #    continue
                         # observation_number = observation_to_featureVec(observation_number)
                         # Take the observation row for corresponding (policy, human type) pair.
                         observation_row=observation_model[used_policy,humtype]
@@ -177,9 +187,19 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                     # New belief for this human type
                     # TODO: add an epsilon value below to beta.items. Currently after a time belief never changes
                     P=np.append(P, p*beta.item(humtype))
+                #P_list=np.concatenate((P_list, P/(P.sum())), axis=0)
                 # update and normalise belief
+                #print P_list
+
+               # temp_bel = np.array([])
+        
+                #for lin in range(tCount):
+                #    np.append(temp_bel, np.mean(P_list[:][lin]))
+                #    print temp_bel
+                #beta = temp_bel
+                #print beta
                 beta=P/(P.sum())
-                print "Part_id:", user_id+4, "Task_id:", task_id, "HUMAN_TYPE:", np.argmax(beta)
+                print "Part_id:", user_id+4, "Task_id:", task_id, "Used_policy", used_policy, "HUMAN_TYPE:", np.argmax(beta)
                 # record beliefs just to observe
                 np.append(beliefSet,beta)
                 belief_list.append(np.argmax(beta))
