@@ -10,6 +10,7 @@ from scipy.io import loadmat, savemat
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import json
 import csv
 import os
 
@@ -104,9 +105,8 @@ plt.title("proactive_distracted.pomdpx")
 
 def bayesian_estimation(obs_f, num_obs, humtypes):
     
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    json_file= dir_path + "/../../../../../../../configs/scenario_config.json"
-    json_data= open(json_file).read()
+    # In case it is used. obs_f is averaged over all the policies (also excluding reminder models)
+    
     '''
     with open(dir_path + '/../../../../../../../results/userStudies_exp1_results/human_observables.csv', 'rb') as file:
         reader = csv.reader(file, delimiter=',')
@@ -241,13 +241,28 @@ def set_comparisons(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f):
 
 # def plot_sets(mean1, mean2, mean3, mu_f, std1, std2, std3, std_f):
 
-def remove_reminder_models(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f):
+def remove_reminder_models(mu_f, std_f, obs_f):
     
+    # this below decreases the effect of the reminder models
     for i in range(len(mu1)):
         for j in range(len(mu1[0])):
             if (i!=1 and i!=7) and (j==0 or j==1 or j==6 or j==7 or j==12 or j==13):
                 mu_f[i][j] = mu_f[i][j] - 20
-
+    # this below directly removes the reminder models, overwriting above
+    mu_f = np.delete(mu_f, [0, 1, 6, 7, 12, 13], 1)
+    std_f = np.delete(std_f, [0, 1, 6, 7, 12, 13], 1)
+    
+    # obs_f 18, 8, 64
+    '''
+    obs_f_new = []
+    for j in range(len(obs_f)):
+        if (j!=0 and j!=1 and j!=6 and j!=7 and j!=12 and j!=13):
+            obs_f_new.append(obs_f[j])
+    '''
+    obs_f = np.delete(obs_f, [0, 1, 6, 7, 12, 13], 0)
+    
+    return mu_f, std_f, obs_f          
+    
 
 # combinedMean and variance calculation
 def combine_mean_variance(mean1, mean2, std1, std2):
@@ -270,6 +285,11 @@ def combine_mean_variance(mean1, mean2, std1, std2):
 
 
 if __name__== "__main__":
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    json_file= dir_path + "/../../../../../../../configs/scenario_config.json"
+    json_data= open(json_file).read()
+    data = json.loads(json_data)
     
     dataset1=loadmat("userStudies_1stRun.mat")
     dataset2=loadmat("userStudies_2ndRun.mat")
@@ -294,8 +314,14 @@ if __name__== "__main__":
     std3=dataset3['std_model']
     std_f=dataset_f['std_model']
     
-   # remove_reminder_models(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f)
-    bayesian_estimation(obs_f, num_obs, hum_types)
+    policies_new=list(data["evaluation_models"]["policies"])
+    
+    [mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
+    savemat("userStudies_final_v2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
+                                        'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
+                                        'num_of_observables':num_obs})
+
+    # bayesian_estimation(obs_f, num_obs, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
         
     # obs1_2 = (obs1 + obs2) / 2
