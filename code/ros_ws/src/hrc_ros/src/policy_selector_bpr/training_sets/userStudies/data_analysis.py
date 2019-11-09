@@ -179,7 +179,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                         #    continue
                         # observation_number = observation_to_featureVec(observation_number)
                         # Take the observation row for corresponding (policy, human type) pair.
-                        observation_row=observation_model[used_policy,humtype]
+                        observation_row=observation_model[humtype]
                         observation_row=np.array(observation_row)
                         # Calculating the probability (with respect to each observation number) for each episode
                         p = p * (observation_row[observation_number]+1e-4) # 1e-5
@@ -261,7 +261,29 @@ def remove_reminder_models(mu_f, std_f, obs_f):
     '''
     obs_f = np.delete(obs_f, [0, 1, 6, 7, 12, 13], 0)
     
-    return mu_f, std_f, obs_f          
+    return mu_f, std_f, obs_f
+
+def averaging_observations(obs):
+    
+    # this function is to average the observations over the policies to have one single human type estimation
+    # That is, policy agnostic human type values
+    temp = []
+    avg_obs = np.array([])
+    for typ in range(len(obs[0])):
+        temp = []
+        avg_typ = []
+        for pol in range(len(obs)):
+            temp.append(obs[pol][typ])
+        for obs_id in range(len(obs[0][0])):
+            counter = 0.0
+            for pol in range(len(obs)):
+                counter += float(temp[pol][obs_id])
+            avg_typ.append(float(counter/len(obs)))
+        if typ == 0:
+            avg_obs = np.append(avg_obs, np.array(avg_typ))
+        else:
+            avg_obs = np.vstack((avg_obs, np.array(avg_typ)))
+    return avg_obs
     
 
 # combinedMean and variance calculation
@@ -295,12 +317,13 @@ if __name__== "__main__":
     dataset2=loadmat("userStudies_2ndRun.mat")
     dataset3=loadmat("userStudies_3rdRun.mat")
     dataset_f = loadmat("userStudies_final.mat")
-    #dataset1_2 = loadmat("exp1-2_1400t.mat")
+    dataset_fv2 = loadmat("userStudies_final_v2.mat")
     
     obs1=dataset1['observation_model']
     obs2=dataset2['observation_model']
     obs3=dataset3['observation_model']
     obs_f=dataset_f['observation_model']
+    obs_fv2=dataset_fv2['observation_model']
     num_obs=dataset_f['num_of_observables']
     hum_types=dataset_f['humtypes']
     
@@ -308,20 +331,23 @@ if __name__== "__main__":
     mu2=dataset2['mu_model']
     mu3=dataset3['mu_model']
     mu_f=dataset_f['mu_model']
+    mu_fv2=dataset_fv2['mu_model']
 
     std1=dataset1['std_model']
     std2=dataset2['std_model']
     std3=dataset3['std_model']
     std_f=dataset_f['std_model']
+    std_fv2=dataset_fv2['std_model']
     
     policies_new=list(data["evaluation_models"]["policies"])
     
-    [mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
-    savemat("userStudies_final_v2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
-                                        'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
-                                        'num_of_observables':num_obs})
-
-    # bayesian_estimation(obs_f, num_obs, hum_types)
+    #[mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
+    
+    #avg_obs = averaging_observations(obs_f_new)
+    #savemat("userStudies_final_v2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
+    #                                    'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':avg_obs,
+    #                                    'num_of_observables':num_obs})
+    bayesian_estimation(obs_fv2, num_obs, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
         
     # obs1_2 = (obs1 + obs2) / 2
