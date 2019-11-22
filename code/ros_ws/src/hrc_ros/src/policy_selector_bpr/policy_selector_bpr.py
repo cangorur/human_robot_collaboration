@@ -319,7 +319,8 @@ class PolicySelector:
                     observation_number = 17
                 # observation_number = observation_to_featureVec(observation_number)
                 # Take the observation row for corresponding (policy, human type) pair.
-                observation_row=observation_model[used_policy,humtype]
+                #observation_row=observation_model[used_policy,humtype]
+                observation_row=observation_model[humtype]
                 observation_row=np.array(observation_row)
                 # Calculating the probability (with respect to each observation number) for each episode
                 p = p * (observation_row[observation_number]+1e-4) # 1e-5

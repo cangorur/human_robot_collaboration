@@ -199,7 +199,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                 #beta = temp_bel
                 #print beta
                 beta=P/(P.sum())
-                print "Part_id:", user_id+4, "Task_id:", task_id, "Used_policy", used_policy, "HUMAN_TYPE:", np.argmax(beta)
+                #print "Part_id:", user_id+4, "Task_id:", task_id, "Used_policy", used_policy, "HUMAN_TYPE:", np.argmax(beta)
                 # record beliefs just to observe
                 np.append(beliefSet,beta)
                 belief_list.append(np.argmax(beta))
@@ -207,7 +207,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         part_list.append(belief_list)
         user_type_est.append(part_list)
     
-    print user_type_est
+    #print user_type_est
             
     '''
     dirr = os.path.dirname(os.path.realpath(__file__))
@@ -341,13 +341,13 @@ if __name__== "__main__":
     
     policies_new=list(data["evaluation_models"]["policies"])
     
-    #[mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
+    [mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
     
-    #avg_obs = averaging_observations(obs_f_new)
-    #savemat("userStudies_final_v2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
-    #                                    'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':avg_obs,
-    #                                    'num_of_observables':num_obs})
-    bayesian_estimation(obs_fv2, num_obs, hum_types)
+    #obs_f_new = averaging_observations(obs_f_new)
+    savemat("userStudies_final_v3.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
+                                        'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
+                                        'num_of_observables':num_obs})
+    #bayesian_estimation(obs_fv2, num_obs, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
         
     # obs1_2 = (obs1 + obs2) / 2
