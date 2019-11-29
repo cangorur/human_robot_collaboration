@@ -82,9 +82,3 @@ task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,hum
 2,41,"""OBSERVATION""",,1574437137,904401221,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
 2,42,"""OBSERVATION""",,1574437141,788592414,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
 2,43,"""OBSERVATION""",,1574437148,331122043,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
-3,1,"""OBSERVATION""",,1574437190,882294213,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
-3,2,"""OBSERVATION""",,1574437193,897781044,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
-3,3,"""OBSERVATION""",,1574437207,514410652,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
-3,4,"""OBSERVATION""",,1574437224,320178830,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
-3,5,"""OBSERVATION""",,1574437241,118447865,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
-3,6,"""OBSERVATION""",,1574437258,305377190,'',"[False, False, False, False, False, True]",0,0,0,0,0,1

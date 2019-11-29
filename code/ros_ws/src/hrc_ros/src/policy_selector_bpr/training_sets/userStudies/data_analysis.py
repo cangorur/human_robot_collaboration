@@ -114,8 +114,8 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         print real_obs[2][7]
     '''
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp1_results/analysis_objective.xlsx', sheet_name='human_observables')
-    part_id = 4
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables')
+    part_id = 1
     user_obs = []
     taskID_arr = []
     for i in range(14):
@@ -341,13 +341,13 @@ if __name__== "__main__":
     
     policies_new=list(data["evaluation_models"]["policies"])
     
-    [mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
+    #[mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
     
     #obs_f_new = averaging_observations(obs_f_new)
-    savemat("userStudies_final_v3.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
-                                        'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
-                                        'num_of_observables':num_obs})
-    #bayesian_estimation(obs_fv2, num_obs, hum_types)
+    #savemat("userStudies_final_v3.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
+    #                                    'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
+     #                                   'num_of_observables':num_obs})
+    bayesian_estimation(obs_fv2, num_obs, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
         
     # obs1_2 = (obs1 + obs2) / 2

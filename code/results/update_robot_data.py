@@ -346,6 +346,8 @@ def get_results(dir):
                     model_id, bullshit = model.split(".")
                     new_row[0] = model_id
 
+                    '''
+                    # Here is only for Experiment-1 where we compare different models
                     if prev_model_id != model_id or task_id == 2 or task_id == 6: # TODO: change here for ABPS experiments
                         # each model statistics are separate from each other, and task id 1 and 5 are human interacting alone
                         task_count = 1
@@ -354,7 +356,7 @@ def get_results(dir):
                         cumulated_duration = 0.0
                         cumulated_successRate = 0.0
                         prev_model_id = model_id
-
+                    '''
                     new_row[1] = task_id
 
                     new_row[2] = tot_warnings
