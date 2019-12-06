@@ -114,7 +114,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         print real_obs[2][7]
     '''
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 1
     user_obs = []
     taskID_arr = []
