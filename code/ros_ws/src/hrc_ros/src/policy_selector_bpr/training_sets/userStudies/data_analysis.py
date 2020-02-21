@@ -114,11 +114,12 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         print real_obs[2][7]
     '''
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables', sep='\s*,\s*')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='testRuns_exp2', sep='\s*,\s*')
     part_id = 1
+    total_subjects = 4
     user_obs = []
     taskID_arr = []
-    for i in range(14):
+    for i in range(total_subjects):
         part_temp_obs = df['Obs_' + str(part_id)].values.tolist()
         part_temp_obs = [x for x in part_temp_obs if str(x) != 'nan']
         user_obs.append(part_temp_obs)
@@ -148,7 +149,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         task_id = 0
         for i in range(8): # in total each participant did 8 tasks
             task_id += 1
-            if task_id != 1 and task_id != 5: # those are the tasks human did the task alone (no robot)
+            if task_id != 0 and task_id != 0: # those are the tasks human did the task alone (no robot)
                 # collect the obs emitted within a certain task from the participant
                 temp_obs_arr = []
                 for j in range(len(user_obs[user_id])):
@@ -203,11 +204,11 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                 # record beliefs just to observe
                 np.append(beliefSet,beta)
                 belief_list.append(np.argmax(beta))
-        part_list.append(user_id+4)
+        part_list.append(user_id)
         part_list.append(belief_list)
         user_type_est.append(part_list)
     
-    #print user_type_est
+    print(user_type_est)
             
     '''
     dirr = os.path.dirname(os.path.realpath(__file__))

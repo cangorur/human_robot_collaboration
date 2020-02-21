@@ -350,14 +350,17 @@ bool TaskManager::initiateScenario(hrc_ros::InitiateScenarioRequest &req,
         hrc_ros::PolicySelectorBPR::Response res_bpr;
         bpr_call.call(req_bpr, res_bpr);
         robot_belief = res_bpr.belief;
-        robot_model = robot_policies[res_bpr.policy_id];
-        if (robot_model == "reactive.pomdpx"){
-          robot_AItype = "reactive";
-          //robot_shell = pkg_path + "/model_scripts/MDP_robot_reactive.sh " + pkg_path + " ";
-          //robot_shell = pkg_path + "/model_scripts/python_robot_reactive.sh " + pkg_path + "/src/robot_motion_agent_IE";
-          robot_shell = "rosrun hrc_ros reactive_robot_DM_agent.py";
+        if (res_bpr.policy_id == -1){
+          if(robot_AItype == "proactive"){
+            robot_model = robot_forHuman + ".pomdpx";
+            robot_shell = robot_shell + "/user_study_exp2/" + robot_model + " &";
+          }else if (robot_AItype == "reactive"){
+            robot_shell = "rosrun hrc_ros reactive_robot_DM_agent.py";
+          }
+        }else{
+          robot_model = robot_policies[res_bpr.policy_id];
+          robot_shell = robot_shell + "/user_study_exp2/" + robot_model + " &";
         }
-        robot_shell = robot_shell + "/user_study_exp2/" + robot_model + " &";
     }else if(useRandom){
         int r = (rand() % 14); // from 0 to 13
         robot_AItype = "proactive";

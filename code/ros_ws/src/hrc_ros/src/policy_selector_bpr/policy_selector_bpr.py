@@ -28,6 +28,7 @@ class PolicySelector:
         self.policy_list_json=np.array([])
 
         self.isNewHuman = rospy.get_param('/is_new_human')
+        self.isFirstRun = True
 
         self.observation_vector=np.array([]) # observations
         self.observation_signal= np.array([])
@@ -94,6 +95,7 @@ class PolicySelector:
         if self.isNewHuman or self.prev_belief == []:
             self.current_belief = np.ones((self.humtypes.size))/(self.humtypes.size)
             self.isNewHuman = False
+
         else:
             self.current_belief = self.prev_belief
 
@@ -233,6 +235,9 @@ class PolicySelector:
         maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5)
         # return to selected policy
         self.selected_policy=maxPiEI
+        if self.isFirstRun:
+            self.selected_policy = -1
+            self.isFirstRun = False
         # record taken policies just to observe
         self.taken_policies_set=np.append(self.taken_policies_set,self.selected_policy)
 

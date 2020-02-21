@@ -19,7 +19,7 @@
 <!-- Record /observation_agent/observation_update message -->
 <node pkg="rosbag" type="record" name="rosbag_record_observation_pomdp" args="-o $(find hrc_ros)/../../../results/observations /observation_agent/observation_update"/>
 
-<node pkg="rosbag" type="record" name="rosbag_record_camera" args="-o $(find hrc_ros)/../../../results/camera /camera/rgb/image_raw/compressed"/>
+<!--<node pkg="rosbag" type="record" name="rosbag_record_camera" args="-o $(find hrc_ros)/../../../results/camera /camera/rgb/image_raw/compressed"/>-->
 
 <node pkg="hrc_ros" type="policy_evaluator.py" name="policy_evaluator" output="screen" cwd="node"/>
 
