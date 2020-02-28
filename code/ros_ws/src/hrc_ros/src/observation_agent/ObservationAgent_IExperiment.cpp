@@ -785,10 +785,12 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		////cout << "grasp_state: " << dobot_grasp_state << endl;
 		// TODO: WARNING WONT BE RECEIVED AT ALL AS LONG AS WE WONT LET DECISION-MAKING DECIDE.
 		// see the warning_received_flag set in DobotWorkerNode which is set after cancellCallback. That is why I added o6_a4 check as well
+		ros::param::set("/warning_issued_decision", false); 
 		if (dobot_grasp_state == 3 || o6_a4) { // warning received during grasp
 			//subtask_counter += 1; // TODO: should we assume this as a subtask failure?
 			//cout << "warning received during grasp" << endl;
 			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
+			ros::param::set("/warning_issued_decision", true);
 			allowDecisionMaking = true;
 		}/*else if (dobot_grasp_state == -1){ // grasp planning is ongoing
 			//cout << "robot is planning for grasp, core is busy ..." << endl;

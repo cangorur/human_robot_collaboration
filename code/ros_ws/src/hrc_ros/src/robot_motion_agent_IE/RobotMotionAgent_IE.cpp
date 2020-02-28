@@ -289,7 +289,7 @@ void RobotMotionAgent::update() {
 					robot_action_taken = "grasp";
 					std_msgs::Bool msg;
 					msg.data = bool(true);
-					dobot_grasp_pub.publish(msg);
+					dobot_grasp_pub.publish(msg); //TODO: this is continously called
 					ROS_INFO_STREAM("[ROBOT AGENT] Current action is robot grasping...");
 				}else{
 					ROS_WARN("[ROBOT AGENT] No package detected. Skipping the grasp!");

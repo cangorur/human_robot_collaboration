@@ -79,6 +79,7 @@ void TaskManager::initialize(){
     ros::param::set("/robot_total_disc_reward", "");
     ros::param::set("/robot_grasping_state", -2);
     ros::param::set("/task_score", task_score);
+    ros::param::set("/warning_issued_decision", false);
     /*
          * Initializing advertised ros services
          */
