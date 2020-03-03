@@ -785,12 +785,10 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		////cout << "grasp_state: " << dobot_grasp_state << endl;
 		// TODO: WARNING WONT BE RECEIVED AT ALL AS LONG AS WE WONT LET DECISION-MAKING DECIDE.
 		// see the warning_received_flag set in DobotWorkerNode which is set after cancellCallback. That is why I added o6_a4 check as well
-		ros::param::set("/warning_issued_decision", false); 
 		if (dobot_grasp_state == 3 || o6_a4) { // warning received during grasp
 			//subtask_counter += 1; // TODO: should we assume this as a subtask failure?
 			//cout << "warning received during grasp" << endl;
 			ros::param::set("/robot_grasping_state",-2); // reset to -2 if grasp final state received
-			ros::param::set("/warning_issued_decision", true);
 			allowDecisionMaking = true;
 		}/*else if (dobot_grasp_state == -1){ // grasp planning is ongoing
 			//cout << "robot is planning for grasp, core is busy ..." << endl;
@@ -824,6 +822,9 @@ bool ObservationAgent::IE_receive_actionrecognition_update(hrc_ros::InformAction
 		// TODO -> check if each warning leads to a negative reward in real setup. If not the allowDecisionMaking && might be changed to ||
 		// THIS CHECK OF RECEIVED THE SAME OBS IS TO PREVENT DECISION UPDATE WITH HAR AGENT UPDATE
 		if ( allowDecisionMaking && ( (o3_former != o3_oir) || (o4_former != o4_ov) || (o5_former != o5_a0) || (o6_former != o6_a4) || (o7_former != o7_a2)  || ((req.stamp - former_time_stamp) >= ros::Duration(global_task_configuration_read.sameaction_timeout)) ) ) {
+
+			if (o6_a4)
+				ros::param::set("/warning_issued_decision", true);
 
 			former_time_stamp = req.stamp;
 			// send real_state to DESPOT -> this is not used anymore but remains for synchronisation purposes

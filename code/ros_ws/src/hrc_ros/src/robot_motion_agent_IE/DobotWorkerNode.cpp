@@ -77,7 +77,9 @@ bool grasp_is_planned_flag = false; // set true after a grasp has been planned  
 bool planning_in_progress  = false; // set true during a planning of a path and set false when planning is done -> subsequent calls of planCallback will skip planning while another planning is in progress
 bool dobot_dropped_package = false;
 bool warning_issued_decision = false; // checking during grasping if after a grasp a warning received and a new decision is issued.
-
+bool grasp_issued = false;
+int grasp_timeout_ctr = 0;
+bool grasp_timeout_reached = true;
 // Struct to hold the package drop place
 struct package_drop_loc {
   double x;
@@ -336,8 +338,11 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 	//cout << " grasp_is_planned = " << grasp_is_planned_flag << endl;
 
 	ros::param::get("/warning_issued_decision",warning_issued_decision); // reset to -2 if warning is received. This is to protect reckless models to infinitely issue a grasp. Since warning creates an exception, if a reckless decides grasp during a grasp it issues again creates a loop of grasp actions.
+	ros::param::set("/warning_issued_decision", false);
+
 	if (grasp_in_progress == false && warning_issued_decision == false){
 		//cout << endl <<" => In grasping thread " << endl;
+
 		int grasping_state = 0; // 0=ongoing | 1= grasping finished successfully 3=warning received | 4=timeout or other error | 5=empty conveyor
 		bool grasp_done_in_time = false;
 		bool conveyor_empty_flag = false;
@@ -510,39 +515,41 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 				ros::Duration drop_duration;
 				ros::Time start_grasp_time;
 				ros::Time drop_time;
-				if (warning_received_flag == false && (conveyor_empty_flag == false) ){ // skip grasping if warning has been received or conveyor is empty
+				if (warning_received_flag == false && (conveyor_empty_flag == false) && grasp_timeout_reached == true){ // skip grasping if warning has been received or conveyor is empty
+					grasp_issued = true;
+					grasp_timeout_reached = false;
 					Dobot_SimplePickAndPlace.call(spp_request,spp_resp);
 
-				//set grasping state parameter before grasping => always 0
-				ros::param::set("/robot_grasping_state", grasping_state);
+					//set grasping state parameter before grasping => always 0
+					ros::param::set("/robot_grasping_state", grasping_state);
 
-				// 5. check if grasping is done in time and without interruption of warning
-				int grasp_time = 0;
-				start_grasp_time = ros::Time::now();
-				drop_time =ros::Time::now();
+					// 5. check if grasping is done in time and without interruption of warning
+					int grasp_time = 0;
+					start_grasp_time = ros::Time::now();
+					drop_time =ros::Time::now();
 
 
-				while(grasp_time < 30 ){ // the time is only accurate if services are not available
-					grasp_done_in_time = false;
-					Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);
-					int current_queue_index = cmd_index_resp.queuedCmdIndex;
-					//cout << "current_queue_index: " << current_queue_index << "   grasp_time(1/100sec): " << grasp_time << endl;
-					if (current_queue_index >= after_grasp_index){
-						grasp_done_in_time = true;
-						dobot_dropped_package = true;
-						break;
-					}
-					// TODO might be removed - used to measure timing behaviour of robot
-					if (current_queue_index >= before_grasp_index +4){
-						drop_time = ros::Time::now();
-					}
+					while(grasp_time < 30 ){ // the time is only accurate if services are not available
+						grasp_done_in_time = false;
+						Dobot_getQueueIndex.call(cmd_index_req,cmd_index_resp);
+						int current_queue_index = cmd_index_resp.queuedCmdIndex;
+						//cout << "current_queue_index: " << current_queue_index << "   grasp_time(1/100sec): " << grasp_time << endl;
+						if (current_queue_index >= after_grasp_index){
+							grasp_done_in_time = true;
+							dobot_dropped_package = true;
+							break;
+						}
+						// TODO might be removed - used to measure timing behaviour of robot
+						if (current_queue_index >= before_grasp_index +4){
+							drop_time = ros::Time::now();
+						}
 
-						ros::Duration(0.01).sleep();
-						grasp_time ++;
-					}
-					stop_grasp_time = ros::Time::now();
-					grasp_duration = stop_grasp_time - start_grasp_time;
-					drop_duration = drop_time - start_grasp_time;
+							ros::Duration(0.01).sleep();
+							grasp_time ++;
+						}
+						stop_grasp_time = ros::Time::now();
+						grasp_duration = stop_grasp_time - start_grasp_time;
+						drop_duration = drop_time - start_grasp_time;
 				} //else { //cout << "warning received or empty conveyor belt  ->   skipping grasp" << endl; }
 
 				// 6. set grasping_state via parameter
@@ -877,6 +884,18 @@ void returnHomeCallback(const std_msgs::Bool::ConstPtr&msg)
 		ros::param::get("/noDobot", no_Dobot_flag);
 }
 
+//================rostopic callbacks========================
+void graspFinishTimer(const ros::TimerEvent&){ //since the dobot services do not return feedback
+    if (grasp_timeout_ctr == 11){ // after 11 seconds the limit has been reached
+        grasp_timeout_reached = true;
+				grasp_issued = false;
+				grasp_timeout_ctr = 0;
+    }
+		if(grasp_issued){
+			grasp_timeout_ctr += 1; // increase one in every second
+		}
+}
+
 void receiveObjectToGraspCallback(const hrc_ros::ObjectGraspColourMsg &msg ){
 
 			object_to_grasp_colour = msg.object_colour;
@@ -1092,6 +1111,7 @@ int main(int argc, char **argv) {
 	enableConveyor							= nh.serviceClient<hrc_ros::InOprConveyorControl>("/conveyor_control_app/inOprConveyorControl");
 	Dobot_getQueueIndex						= nh.serviceClient<hrc_ros::GetQueuedCmdCurrentIndex>("/dobot_arm_app/getQueuedCmdCurrentIndexApp");
 
+	ros::Timer taskFinishTimer = nh.createTimer(ros::Duration(1.0), graspFinishTimer);
 
 	// starting spinners with multiple threads
 	spinner.start();
