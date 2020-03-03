@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="../../../Workspace/app-ras/hrc_industry_dev_v2.1/code/models/human_models/Evaluate/beginner_nontired_collaborative.POMDPx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="1" numObsValue="12" numVectors="12">
+<Vector action="2" obsValue="0">134.472 </Vector>
+<Vector action="0" obsValue="1">200 </Vector>
+<Vector action="1" obsValue="2">0 </Vector>
+<Vector action="2" obsValue="3">135.139 </Vector>
+<Vector action="3" obsValue="4">123.068 </Vector>
+<Vector action="0" obsValue="5">136.715 </Vector>
+<Vector action="2" obsValue="6">136.278 </Vector>
+<Vector action="3" obsValue="7">138.624 </Vector>
+<Vector action="2" obsValue="8">151.514 </Vector>
+<Vector action="4" obsValue="9">134.656 </Vector>
+<Vector action="2" obsValue="10">134.649 </Vector>
+<Vector action="2" obsValue="11">148.148 </Vector>
+</AlphaVector> </Policy>

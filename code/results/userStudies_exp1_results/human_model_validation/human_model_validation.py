@@ -10,14 +10,45 @@ import sklearn.metrics as mtr
 import pandas as pd
 import os
 import numpy as np
+from mdptoolbox import *
+import xml.etree.ElementTree as ET
 
 user_obs = []
 simu_obs = []
 user_taskID_arr = []
 simu_taskID_arr = []
+list_of_models = []
+action_list = ['graspAttempt', 'lookAround', 'idle', 'walkAway', 'warnRobot']
+state_list = ['TaskHuman',
+              'GlobalSuccess',
+              'GlobalFail',
+              'FailedToGrasp',
+              'NoAttention',
+              'Evaluating',
+              'Tired',
+              'Recovery',
+              'RobotInterfered',
+              'WarningTheRobot',
+              'RobotIsWarned',
+              'TaskRobot']
+actionname_to_id = {"unknown":-1, "graspAttempt":0,"lookAround":1,"idle":2,"walkAway":3,"warnRobot":4}
+statename_to_id = {        "TaskHuman" 		:0,
+					"GlobalSuccess"		:1,
+					"GlobalFail"		:2,
+					"FailedToGrasp"		:3,
+					"NoAttention"		:4,
+					"Evaluating"		:5,
+					"Tired"			:6,
+					"Recovery"			:7,
+					"RobotInterfered"	:8,
+					"WarningTheRobot"	:9,
+					"RobotIsWarned"		:10,
+					"TaskRobot"		:11}
 
 def readObs():
     # Reading real human data collected from the participants
+    global user_obs, simu_obs, user_taskID_arr, simu_taskID_arr
+    
     dir_path = os.path.dirname(os.path.realpath(__file__))
     df = pd.read_excel(dir_path + '/../../userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 4
@@ -80,7 +111,6 @@ def removeRepeatingObs(old_obs):
         new_obs.append(new_obs_arr)
     return new_obs
                 
-   
     
 def KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr):
     
@@ -111,17 +141,113 @@ def KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr):
         final_scores.append(all_score_perSimu)
     return final_scores, final_scores_max
     
+def MDPpolicyGeneration():
+    
+    global list_of_models
+    
+    readHumanModel()
+    model_tree = list_of_models[0]
+    P, R, discount = readProbTables(model_tree)
+    
+    mdptoolbox.util.check(P, R)
+    vi = mdptoolbox.mdp.ValueIteration(P, R, discount)
+    vi.run()
+    print(vi.policy)
+    print(vi.V)
+    
+    #P, R = mdptoolbox.example.forest()
+    #fh = mdptoolbox.mdp.FiniteHorizon(P, R, 0.9, 3)
+    #fh.run()
+    #print(fh.V)
+    #print(fh.policy)
+    #print(P)
+
+def readHumanModel():
+    """
+    	Read human model and apply changes on the Transition functions to create dynamic human behaviours
+    	Returns:
+    		If task count is 0 OR use of dynamic transition disabled OR in evaluation mode:
+    			Return unmodified human POMDPx model based on human type
+           Otherwise, modified human POMDPx model
+   """
+    global list_of_models
+    
+    path = '../../../models/human_models/Evaluate/'
+    expertise = ["beginner", "expert"]
+    stamina = ["tired", "nontired"]
+    col = ["collaborative", "noncollaborative"]    
+    filename = expertise[0] + "_" + stamina[1] + "_" + col[0] + ".POMDPx"    
+    pomdpx_file = path + filename
+    #print('loading... %s' %pomdpx_file)
+    tree = ET.parse(pomdpx_file)
+    list_of_models.append(tree)
+    
+def readProbTables(tree):
+    """
+    This function parses and reads probability tables
+    Args:
+        tree:	top element of the POMDPx model
+        action:	action of the human
+    Returns:
+        Transition and reward prob matrices in numpy array formats: T=(A,S,S) , R=(S, A)
+    """
+    global action_list, state_list
+    
+    root = tree.getroot()
+    transition_fct = root.find('StateTransitionFunction')
+    index = 0
+    trans_probs = []
+    
+    reward_array = np.zeros((len(state_list), len(action_list)))
+    
+    for action in action_list:
+        for probtable in transition_fct.iter('ProbTable'):
+            if(index == actionname_to_id[action]):
+                table = np.fromstring(str(probtable.text), sep = ' ')
+                table = table.reshape(int(table.shape[0]**0.5), int(table.shape[0]**0.5))
+                trans_probs.append(table)
+                #print("reshaped:  ", table)
+                break
+            index += 1
+        index = 0
+    
+    reward_entries = root.find('RewardFunction')
+    index=0
+    for entry in reward_entries.iter('Entry'):
+        reward_vector = entry.find('Instance').text
+        action, state = reward_vector.split(' ')
+        value = float(entry.find('ValueTable').text)
+        if action == '*':
+            action = []
+            for a in action_list:
+                action.append(actionname_to_id[a])
+        else:
+            action = actionname_to_id[action]
+        if state == '*':
+            state = []
+            for s in state_list:
+                state.append(statename_to_id[s])
+        else:
+            state = statename_to_id[state]
+
+        reward_array[state, action] = value
+        
+    discount = float(root.find('Discount').text)
+
+        
+    return trans_probs, reward_array, discount
 
 if __name__=='__main__':
     
     final_kl_array_max = []
     final_kl_array = []
-    user_obs, user_taskID_arr, simu_obs, simu_taskID_arr = readObs()
-    user_obs = removeRepeatingObs(user_obs)
-    simu_obs = removeRepeatingObs(simu_obs)    
-    final_kl_array, final_kl_array_max = KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr)
+    #user_obs, user_taskID_arr, simu_obs, simu_taskID_arr = readObs()
+    #user_obs = removeRepeatingObs(user_obs)
+    #simu_obs = removeRepeatingObs(simu_obs)    
+    #final_kl_array, final_kl_array_max = KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr)
     
-    final_kl_array_max = np.array(final_kl_array_max)
-    print(final_kl_array_max)
+    #final_kl_array_max = np.array(final_kl_array_max)
+    #print(final_kl_array_max)
+    MDPpolicyGeneration()
     #print(score)
     
