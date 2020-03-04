@@ -25,7 +25,7 @@
 
 <node pkg="hrc_ros" type="policy_selector_bpr.py" name="policy_selector_bpr" output="screen" cwd="node"/>
 
-<!-- <node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" /> -->
+<node pkg="hrc_ros" type="dobot_worker_agent" name="dobot_worker_agent" output="screen" respawn="true" />
 
 <!--Configure lower resolution for RGB video 8=QVGA@30Hz -->
 <!-- <param name="camera/driver/color_mode" value="8" /> -->
