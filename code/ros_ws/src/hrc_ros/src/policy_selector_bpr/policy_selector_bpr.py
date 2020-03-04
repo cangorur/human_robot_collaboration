@@ -72,6 +72,7 @@ class PolicySelector:
         if self.isNewHuman:
             abps_savings_file= dirr + "/abps_savings_new.json" # variables are all zeros, newly initialized
         else:
+            rospy.logwarn("[BPR_POLICY_SELECTOR] SAME HUMAN TAKEN")
             abps_savings_file= dirr + "/abps_savings.json" # use previously saved belief and observables for the same human interacted
 
         abps_savings= open(abps_savings_file).read()
@@ -236,7 +237,7 @@ class PolicySelector:
         # return to selected policy
         self.selected_policy=maxPiEI
         if self.isFirstRun:
-            self.selected_policy = -1
+            #self.selected_policy = -1
             self.isFirstRun = False
         # record taken policies just to observe
         self.taken_policies_set=np.append(self.taken_policies_set,self.selected_policy)
@@ -365,6 +366,8 @@ class PolicySelector:
 if __name__=='__main__':
 
     while not rospy.has_param('/bpr_flag'):
+        continue
+    while not rospy.get_param('/bpr_flag'):
         continue
     useBPR = rospy.get_param('/bpr_flag')
     if useBPR:
