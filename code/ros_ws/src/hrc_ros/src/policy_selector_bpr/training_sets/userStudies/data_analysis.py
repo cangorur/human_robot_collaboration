@@ -13,6 +13,7 @@ import pandas as pd
 import json
 import csv
 import os
+import math
 
 
 """
@@ -113,10 +114,12 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         real_obs = list(reader)
         print real_obs[2][7]
     '''
+    
+    global current_belief
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='testRuns_exp2', sep='\s*,\s*')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_coll_v2/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 1
-    total_subjects = 4
+    total_subjects = 1
     user_obs = []
     taskID_arr = []
     for i in range(total_subjects):
@@ -143,6 +146,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
     for user_id in range(len(user_obs)):
         current_belief = np.array([]) # probability distribution over (types)
         current_belief = np.ones((humtypes.size))/(humtypes.size)
+        
         beta=current_belief # temp current belief
         belief_list = []
         part_list = []
@@ -204,11 +208,13 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                 # record beliefs just to observe
                 np.append(beliefSet,beta)
                 belief_list.append(np.argmax(beta))
+                current_belief = np.array(beta)
         part_list.append(user_id)
         part_list.append(belief_list)
         user_type_est.append(part_list)
     
     print(user_type_est)
+    return current_belief
             
     '''
     dirr = os.path.dirname(os.path.realpath(__file__))
@@ -227,6 +233,56 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
     #each belief array should be recorded, write it to a different file?
     
     #plot the distribution of each participant over each human type
+    
+def policySelector(current_belief, mu_model, std_model, policies, humtypes):
+    
+    vEI=np.array(computeEI(current_belief, mu_model,std_model, policies, humtypes) )
+    # choose best policy
+    maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5)
+    # return to selected policy
+    selected_policy=maxPiEI
+    # record taken policies just to observe
+    print("selected Policy: ", selected_policy)    
+    
+def computeEI(beta, mus, sigs, policies, humtypes):
+    '''
+    This function computes EI and builds vEI.
+    @TODO: Double check the math !
+    '''
+    beta=current_belief
+    theta_pi_t = np.zeros(policies.size)
+    vEI = np.zeros(policies.size)
+    # for each policy
+    for pol in range(0,policies.size):
+        # expected reward of policy on all types
+        expctdS = (mus[:,pol]).transpose()
+        # expected reward of policy on belief
+        theta_pi_t[pol] = np.matmul(beta,expctdS)
+    Ubeta = np.max(theta_pi_t) # max expected utility from all policies
+    linspace=np.array(range(0,600,6))
+    Uplus = Ubeta + linspace*(np.max(mus)+np.max(sigs)-Ubeta)/600
+    # compute online PI
+    for pol in range(0,policies.size):
+        [temp] = evaluateFSample(mus[:,pol], sigs[:,pol]+2, Uplus, humtypes)
+        #dilsad: I do not understand the actual reason behind "+2"
+        beta=np.array(beta)
+        vEI[pol] = np.sum(np.matmul(temp,beta))
+    return[vEI]
+    
+# evaluate Gaussian F at positions s
+def evaluateFSample(mu,sig,s, humtypes):
+    sig = np.tile(sig, (len(s),1))
+    mu = np.tile(mu, (len(s),1))
+    #print(np.shape(mu))
+    if not(np.size(s) == np.size(mu)):
+        s = np.tile(s, (humtypes.size,1))
+    #error
+    #print(np.shape(sig),np.shape(mu),np.shape(s))
+    d = s.transpose() - mu
+    #print(d.shape)
+    # Gaussian modelling of f
+    F = 1/(math.sqrt(2*math.pi)*sig)*np.exp(-0.5*np.power(d,2)/(np.power(sig,2)))
+    return[F]
 
 def set_comparisons(mu1, mu2, mu3, mu_f, std1, std2, std3, std_f):
     
@@ -326,7 +382,7 @@ if __name__== "__main__":
     obs_f=dataset_f['observation_model']
     obs_fv2=dataset_fv2['observation_model']
     num_obs=dataset_f['num_of_observables']
-    hum_types=dataset_f['humtypes']
+    hum_types=dataset_fv2['humtypes']
     
     mu1=dataset1['mu_model']
     mu2=dataset2['mu_model']
@@ -340,7 +396,7 @@ if __name__== "__main__":
     std_f=dataset_f['std_model']
     std_fv2=dataset_fv2['std_model']
     
-    policies_new=list(data["evaluation_models"]["policies"])
+    policies_new=dataset_fv2['policies']
     
     #[mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
     
@@ -348,9 +404,10 @@ if __name__== "__main__":
     #savemat("userStudies_final_v3.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
     #                                    'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
      #                                   'num_of_observables':num_obs})
-    bayesian_estimation(obs_fv2, num_obs, hum_types)
+    belief = bayesian_estimation(obs_fv2, num_obs, hum_types)
+    policySelector(belief, mu_fv2, std_fv2, policies_new, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
-        
+
     # obs1_2 = (obs1 + obs2) / 2
 #    
 #    dataset = dataset1

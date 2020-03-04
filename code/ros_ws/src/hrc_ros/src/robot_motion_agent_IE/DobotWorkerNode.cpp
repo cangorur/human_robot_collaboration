@@ -356,7 +356,7 @@ void graspCallback(const std_msgs::Bool::ConstPtr& msg) {
 
 				//set grasping state parameter before grasping => always 0
 				ros::param::set("/robot_grasping_state", grasping_state); //TODO: How this is set? Need to check and use this to not enable any grasp call in a row.
-				ROS_WARN("Grasp is issued !");
+				//ROS_WARN("Grasp is issued !");
 				while(point_in_progress == true ) { //cout << "point in grogress = " << point_in_progress << endl;
 				 } // wait until pointing action is preemted -> triggering grasp will cancel pointing action
 
@@ -617,7 +617,6 @@ void cancelCallback(const std_msgs::Bool::ConstPtr& msg) {
 		grasp_is_planned_flag = false;
 		planning_in_progress  = false;
 		point_in_progress = false;
-		grasp_in_progress = false;
 
 		if (no_Dobot_flag == false){ // call dobot api service
 			//cout << " - calling services" << endl;
