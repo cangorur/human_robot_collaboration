@@ -69,6 +69,9 @@ class PolicySelector:
                 @return self.selected_policy
         '''
         dirr = os.path.dirname(os.path.realpath(__file__))
+        if self.isFirstRun:
+            self.isNewHuman = rospy.get_param('/is_new_human')
+            self.isFirstRun = False
         if self.isNewHuman:
             abps_savings_file= dirr + "/abps_savings_new.json" # variables are all zeros, newly initialized
         else:
@@ -236,9 +239,8 @@ class PolicySelector:
         maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5)
         # return to selected policy
         self.selected_policy=maxPiEI
-        if self.isFirstRun:
-            #self.selected_policy = -1
-            self.isFirstRun = False
+        if self.isNewHuman:
+            self.selected_policy = -1
         # record taken policies just to observe
         self.taken_policies_set=np.append(self.taken_policies_set,self.selected_policy)
 
@@ -329,7 +331,7 @@ class PolicySelector:
                 observation_row=observation_model[humtype]
                 observation_row=np.array(observation_row)
                 # Calculating the probability (with respect to each observation number) for each episode
-                p = p * (observation_row[observation_number]+1e-4) # 1e-5
+                p = p * (observation_row[observation_number]+1e-5) # 1e-5
             # New belief for this human type
             # TODO: add an epsilon value below to beta.items. Currently after a time belief never changes
             P=np.append(P, p*beta.item(humtype))

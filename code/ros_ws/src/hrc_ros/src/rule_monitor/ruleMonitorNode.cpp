@@ -6,8 +6,9 @@
  */
 
 #include <ros/ros.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <ros/package.h>
+#include <time.h>
 
 #include <string>
 
@@ -175,6 +176,22 @@ std::string mapintToString_colour(int int_value, std::string & print_string){
 	} else if (int_value == 3){
 		return_string = blue;
 		print_string = " blue ";
+	}
+
+	return return_string;
+}
+
+std::string randomColour(){
+
+  std::string return_string = "";
+	int int_value = (std::rand() % 3) + 1;
+
+	if (int_value == 1) {// red
+		return_string = red;
+	} else if (int_value ==2){ // green
+		return_string = green;
+	} else if (int_value == 3){
+		return_string = blue;
 	}
 
 	return return_string;
@@ -480,7 +497,55 @@ bool display_task_rules_server(hrc_ros::DisplayTaskRuleRequest &req,hrc_ros::Dis
 				}
 			}
 
+			}else if (subtask_type.compare("4_difficult_same_tray_order_color") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 7 subtasks
 
+				cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl;
+				cout << "Repeat following sequence, pay attention to the texts (not to color): "<< endl << "-----------------"<< endl << endl << endl;
+				std::srand(time(0));
+
+				// increment trough first 7 subtasks - regardless of colour - the following rules will be repetition of first 3 rules
+				for (int rule_i =1; rule_i<= 7; rule_i ++) {
+					// static task_str - increment subtask_str - colour/object alwas 1=red
+					stringstream ss_subtask_counter;
+					ss_subtask_counter << rule_i;
+
+					string subtask_str = ss_subtask_counter.str();
+				 	string object_str  = object_int_to_str(1);
+
+					// ## determine subtask success state
+					try {
+					success_criteria_read = get_success_criteria(task_str,subtask_str,object_str,testscenario_pt);
+					} catch(boost::property_tree::json_parser::json_parser_error &e) {
+						ROS_FATAL("Cannot parse the message to Json. Error: %s", e.what());
+						return false;
+					}
+
+					string container_print_string;
+
+					int tray_id = success_criteria_read.tray;
+					if(tray_id == 1) container_print_string = " red ";
+					else if(tray_id == 2) container_print_string = " green ";
+					else if(tray_id == 3) container_print_string = " blue ";
+					//const std::string container_colour = mapintToString_colour(success_criteria_read.tray, container_print_string );
+					const std::string container_colour = randomColour();
+					// ################## Print the rules #####################################################
+					if (rule_i == 1) {
+						cout << "			Place 1st object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==2){
+						cout << "			Place 2nd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==3){
+						cout << "			Place 3rd object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==4){
+						cout << "			Place 4th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==5){
+						cout << "			Place 5th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==6){
+						cout << "			Place 6th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+					} else if (rule_i ==7){
+						cout << "			Place 7th object into " << container_colour << container_print_string << normal << " container " << endl << endl;
+						cout << endl << endl << "			REPEAT Sequence  " << endl << endl;
+					}
+				}
 		} else if (subtask_type.compare("5_different_colours") ==0) { // regardless of colour the object always goes to same tray - sequence is reapeated after 5 subtasks
 
 			cout << endl << endl << endl << normal << "Task #: " << task_counter << "		Subtasks: " << current_task_set.subtask_quantity << endl <<"------------------------------------------------------------------" << endl << endl << endl << endl;
