@@ -117,7 +117,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
     
     global current_belief
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_coll_v2/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_noncoll/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 1
     total_subjects = 1
     user_obs = []
@@ -375,12 +375,15 @@ if __name__== "__main__":
     dataset3=loadmat("userStudies_3rdRun.mat")
     dataset_f = loadmat("userStudies_final.mat")
     dataset_fv2 = loadmat("userStudies_final_v2.mat")
+    dataset_fv2_2 = loadmat("userStudies_final_v2_2.mat")
     
     obs1=dataset1['observation_model']
     obs2=dataset2['observation_model']
     obs3=dataset3['observation_model']
     obs_f=dataset_f['observation_model']
     obs_fv2=dataset_fv2['observation_model']
+    obs_fv2_2=dataset_fv2_2['observation_model']
+
     num_obs=dataset_f['num_of_observables']
     hum_types=dataset_fv2['humtypes']
     
@@ -389,26 +392,31 @@ if __name__== "__main__":
     mu3=dataset3['mu_model']
     mu_f=dataset_f['mu_model']
     mu_fv2=dataset_fv2['mu_model']
+    mu_fv2_2=dataset_fv2_2['mu_model']
+
 
     std1=dataset1['std_model']
     std2=dataset2['std_model']
     std3=dataset3['std_model']
     std_f=dataset_f['std_model']
     std_fv2=dataset_fv2['std_model']
+    std_fv2_2=dataset_fv2_2['std_model']
     
-    policies_new=dataset_fv2['policies']
+    policies_new=dataset_fv2_2['policies']
     
     #[mu_f_new, std_f_new, obs_f_new]= remove_reminder_models(mu_f, std_f, obs_f)
     
     #obs_f_new = averaging_observations(obs_f_new)
-    #savemat("userStudies_final_v3.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
-    #                                    'mu_model':mu_f_new,'std_model':std_f_new, 'observation_model':obs_f_new,
-     #                                   'num_of_observables':num_obs})
-    belief = bayesian_estimation(obs_fv2, num_obs, hum_types)
-    policySelector(belief, mu_fv2, std_fv2, policies_new, hum_types)
+
+    #savemat("userStudies_final_v2_2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
+    #                                   'mu_model':mu_model,'std_model':std_fv2, 'observation_model':obs_fv2,
+    #                                  'num_of_observables':num_obs})
+    belief = bayesian_estimation(obs_fv2_2, num_obs, hum_types)
+    policySelector(belief, mu_fv2_2, std_fv2_2, policies_new, hum_types)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
 
     # obs1_2 = (obs1 + obs2) / 2
+
 #    
 #    dataset = dataset1
 #    dataset['mu_model'] = mu1_2

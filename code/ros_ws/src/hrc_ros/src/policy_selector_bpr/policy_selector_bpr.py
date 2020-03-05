@@ -239,8 +239,8 @@ class PolicySelector:
         maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5)
         # return to selected policy
         self.selected_policy=maxPiEI
-        if self.isNewHuman:
-            self.selected_policy = -1
+        #if self.isNewHuman:
+        #    self.selected_policy = -1
         # record taken policies just to observe
         self.taken_policies_set=np.append(self.taken_policies_set,self.selected_policy)
 
