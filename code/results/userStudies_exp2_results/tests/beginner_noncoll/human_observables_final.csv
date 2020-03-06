@@ -1,1 +1,2 @@
 task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+task_id_1,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle,Obs_1

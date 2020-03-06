@@ -7,10 +7,11 @@ Created on Mon Feb 24 23:45:29 2020
 """
 
 import sklearn.metrics as mtr
+from scipy.io import loadmat, savemat
 import pandas as pd
 import os
 import numpy as np
-from mdptoolbox import *
+import mdptoolbox
 import xml.etree.ElementTree as ET
 
 user_obs = []
@@ -66,11 +67,18 @@ def readObs():
         
      # The mappings are necessary for real observations as a stood idle observable always high after a failure or success in grasp is issued. In simulation it is not the case but they reflect the same scenario    
     for user_id in range(len(user_obs)):
-        for obs in range(len(user_obs[user_id])):    
-            if (user_obs[user_id][obs] == 41 or user_obs[user_id][obs] == 43 or user_obs[user_id][obs] == 40):
-                user_obs[user_id][obs] = 9
-            elif (user_obs[user_id][obs] == 25):
-                user_obs[user_id][obs] = 17
+        for obs in range(len(user_obs[user_id])):
+            observation_number = user_obs[user_id][obs]
+            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
+                observation_number = 9
+            elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
+                observation_number = 17
+            elif (observation_number == 7 or observation_number == 37):
+                observation_number = 5
+            elif (observation_number == 32 or observation_number == 1):
+                observation_number = 33
+            user_obs[user_id][obs] = observation_number
+    
     
     # Reading simulated human data collected from the simulation runs.
     df = pd.read_excel(dir_path + '/human_observables_simulation.xlsx', sheet_name='Sheet1', sep='\s*,\s*')
@@ -86,6 +94,20 @@ def readObs():
         [int(i) for i in simu_tasks]
         simu_taskID_arr.append(simu_tasks)
         simu_id += 1
+        
+     # The mappings are necessary for real observations as a stood idle observable always high after a failure or success in grasp is issued. In simulation it is not the case but they reflect the same scenario    
+    for simu_id in range(len(simu_obs)):
+        for obs in range(len(simu_obs[simu_id])):
+            observation_number = simu_obs[simu_id][obs]
+            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
+                observation_number = 9
+            elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
+                observation_number = 17
+            elif (observation_number == 7 or observation_number == 37):
+                observation_number = 5
+            elif (observation_number == 32 or observation_number == 1): # 2, 34, 35, 3 are all look around 
+                observation_number = 33
+            simu_obs[simu_id][obs] = observation_number
     
     return user_obs, user_taskID_arr, simu_obs, simu_taskID_arr
     
@@ -147,7 +169,7 @@ def MDPpolicyGeneration():
     
     readHumanModel()
     model_tree = list_of_models[0]
-    P, R, discount = readProbTables(model_tree)
+    P, R, discount, init_belief = readProbTables(model_tree)
     
     mdptoolbox.util.check(P, R)
     vi = mdptoolbox.mdp.ValueIteration(P, R, discount)
@@ -233,9 +255,13 @@ def readProbTables(tree):
         reward_array[state, action] = value
         
     discount = float(root.find('Discount').text)
-
-        
-    return trans_probs, reward_array, discount
+    
+    initial_belief = root.find('InitialStateBelief')
+    for entr in initial_belief.iter('Entry'):
+        txt = str(entr.find('ProbTable').text)
+    init_belief = np.fromstring(txt, sep = ' ')
+    
+    return trans_probs, reward_array, discount, init_belief
 
 if __name__=='__main__':
     
@@ -250,4 +276,11 @@ if __name__=='__main__':
     #print(final_kl_array_max)
     MDPpolicyGeneration()
     #print(score)
+    
+    
+    #dataset1=loadmat("kl_convergence_slidingWindow_fullData_v2.mat")
+    #arr = dataset1['final_kl_array_max']
+    #dataset1['final_kl_array_max'] = np.array(dataset1)
+    #savemat("kl_convergence_slidingWindow_fullData_v2.mat",dataset1)
+
     

@@ -321,17 +321,21 @@ class PolicySelector:
                     observation_number = observation_number + (2**i)*observation_signal[episode,i]
                 observation_number=int(observation_number)
                 # below observation number updates is for real setup. Mapping some obs to the obs obtained from simulation
-                if (observation_number==40 or observation_number==41 or observation_number==43):
+                if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
                     observation_number = 9
-                elif (observation_number == 25):
+                elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
                     observation_number = 17
+                elif (observation_number == 7 or observation_number == 37):
+                    observation_number = 5
+                elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 1 or observation_number == 2):
+                    observation_number = 33
                 # observation_number = observation_to_featureVec(observation_number)
                 # Take the observation row for corresponding (policy, human type) pair.
                 #observation_row=observation_model[used_policy,humtype]
                 observation_row=observation_model[humtype]
                 observation_row=np.array(observation_row)
                 # Calculating the probability (with respect to each observation number) for each episode
-                p = p * (observation_row[observation_number]+1e-5) # 1e-5
+                p = p * (observation_row[observation_number]+1e-4) # 1e-5
             # New belief for this human type
             # TODO: add an epsilon value below to beta.items. Currently after a time belief never changes
             P=np.append(P, p*beta.item(humtype))

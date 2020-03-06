@@ -104,7 +104,7 @@ plt.annotate('fail', xy=(9, 0.20), xytext=(10, 0.24),
 plt.title("proactive_distracted.pomdpx")
 """
 
-def bayesian_estimation(obs_f, num_obs, humtypes):
+def bayesian_estimation_policy_selection(obs_f, mu_fv2_2, std_fv2_2, num_obs, humtypes, policies_new):
     
     # In case it is used. obs_f is averaged over all the policies (also excluding reminder models)
     
@@ -117,7 +117,7 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
     
     global current_belief
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_noncoll/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_coll_expert_noncol/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 1
     total_subjects = 1
     user_obs = []
@@ -150,10 +150,10 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
         beta=current_belief # temp current belief
         belief_list = []
         part_list = []
-        task_id = 0
-        for i in range(8): # in total each participant did 8 tasks
+        task_id = 8
+        for i in range(15): # in total each participant did 8 tasks
             task_id += 1
-            if task_id != 0 and task_id != 0: # those are the tasks human did the task alone (no robot)
+            if task_id != 0: # those are the tasks human did the task alone (no robot)
                 # collect the obs emitted within a certain task from the participant
                 temp_obs_arr = []
                 for j in range(len(user_obs[user_id])):
@@ -174,10 +174,14 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                         #for i in range(observation_signal[0,:].size):
                         #    observation_number = observation_number + (2**i)*observation_signal[episode,i]
                         observation_number=int(temp_obs_arr[episode])
-                        if (observation_number == 41 or observation_number == 43 or observation_number == 40):
+                        if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
                             observation_number = 9
-                        elif (observation_number == 25):
+                        if (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
                             observation_number = 17
+                        elif (observation_number == 7 or observation_number == 37):
+                            observation_number = 5
+                        elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 1 or observation_number == 2):
+                            observation_number = 33
                         #elif (observation_number==5):
                         #    continue
                         #elif (observation_number == 33):
@@ -209,6 +213,8 @@ def bayesian_estimation(obs_f, num_obs, humtypes):
                 np.append(beliefSet,beta)
                 belief_list.append(np.argmax(beta))
                 current_belief = np.array(beta)
+                policySelector(current_belief, mu_fv2_2, std_fv2_2, policies_new, hum_types)
+
         part_list.append(user_id)
         part_list.append(belief_list)
         user_type_est.append(part_list)
@@ -242,7 +248,7 @@ def policySelector(current_belief, mu_model, std_model, policies, humtypes):
     # return to selected policy
     selected_policy=maxPiEI
     # record taken policies just to observe
-    print("selected Policy: ", selected_policy)    
+    print("selected Policy: ", selected_policy, " For belief: ", current_belief)    
     
 def computeEI(beta, mus, sigs, policies, humtypes):
     '''
@@ -411,8 +417,7 @@ if __name__== "__main__":
     #savemat("userStudies_final_v2_2.mat",{'policies':policies_new, 'humtypes':dataset_f["humtypes"],
     #                                   'mu_model':mu_model,'std_model':std_fv2, 'observation_model':obs_fv2,
     #                                  'num_of_observables':num_obs})
-    belief = bayesian_estimation(obs_fv2_2, num_obs, hum_types)
-    policySelector(belief, mu_fv2_2, std_fv2_2, policies_new, hum_types)
+    belief = bayesian_estimation_policy_selection(obs_fv2_2, mu_fv2_2, std_fv2_2, num_obs, hum_types, policies_new)
     # mu1_2, std1_2 = combine_mean_variance(mu1, mu2, std1, std2)
 
     # obs1_2 = (obs1 + obs2) / 2
