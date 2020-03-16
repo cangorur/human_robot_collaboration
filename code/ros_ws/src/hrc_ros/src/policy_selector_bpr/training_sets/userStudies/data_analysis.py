@@ -117,7 +117,7 @@ def bayesian_estimation_policy_selection(obs_f, mu_fv2_2, std_fv2_2, num_obs, hu
     
     global current_belief
     # reading the obs as arrays for each participant data
-    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/beginner_coll_expert_noncol/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
+    df = pd.read_excel(dir_path + '/../../../../../../../results/userStudies_exp2_results/tests/expert_noncoll_v2/human_observables.xlsx', sheet_name='human_observables', sep='\s*,\s*')
     part_id = 1
     total_subjects = 1
     user_obs = []
@@ -150,7 +150,7 @@ def bayesian_estimation_policy_selection(obs_f, mu_fv2_2, std_fv2_2, num_obs, hu
         beta=current_belief # temp current belief
         belief_list = []
         part_list = []
-        task_id = 8
+        task_id = 0
         for i in range(15): # in total each participant did 8 tasks
             task_id += 1
             if task_id != 0: # those are the tasks human did the task alone (no robot)

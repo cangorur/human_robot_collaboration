@@ -236,7 +236,7 @@ class PolicySelector:
         vEI=np.array(self.computeEI(beta,self.mu_model,self.std_model) )
         self.vEI=vEI
         # choose best policy
-        maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5)
+        maxPiEI = np.argmax(vEI + np.random.rand(1,vEI.size)*1e-5) #1e-5
         # return to selected policy
         self.selected_policy=maxPiEI
         #if self.isNewHuman:
