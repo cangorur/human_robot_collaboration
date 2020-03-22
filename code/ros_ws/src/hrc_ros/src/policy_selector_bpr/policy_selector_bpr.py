@@ -321,7 +321,7 @@ class PolicySelector:
                     observation_number = observation_number + (2**i)*observation_signal[episode,i]
                 observation_number=int(observation_number)
                 # below observation number updates is for real setup. Mapping some obs to the obs obtained from simulation
-                if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
+                if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 24 or observation_number == 11):
                     observation_number = 9
                 elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
                     observation_number = 17

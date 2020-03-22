@@ -19,6 +19,7 @@ simu_obs = []
 user_taskID_arr = []
 simu_taskID_arr = []
 list_of_models = []
+model_ids = []
 action_list = ['graspAttempt', 'lookAround', 'idle', 'walkAway', 'warnRobot']
 state_list = ['TaskHuman',
               'GlobalSuccess',
@@ -48,7 +49,7 @@ statename_to_id = {        "TaskHuman" 		:0,
 
 def readObs():
     # Reading real human data collected from the participants
-    global user_obs, simu_obs, user_taskID_arr, simu_taskID_arr
+    global user_obs, user_taskID_arr, simu_obs, simu_taskID_arr
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     df = pd.read_excel(dir_path + '/../../userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables', sep='\s*,\s*')
@@ -67,19 +68,36 @@ def readObs():
         
      # The mappings are necessary for real observations as a stood idle observable always high after a failure or success in grasp is issued. In simulation it is not the case but they reflect the same scenario    
     for user_id in range(len(user_obs)):
-        for obs in range(len(user_obs[user_id])):
-            observation_number = user_obs[user_id][obs]
-            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
-                observation_number = 9
-            elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
-                observation_number = 17
-            elif (observation_number == 7 or observation_number == 37):
-                observation_number = 5
-            elif (observation_number == 32 or observation_number == 1):
-                observation_number = 33
-            user_obs[user_id][obs] = observation_number
-    
-    
+        obs = 0        
+        while(1):
+            real_length = len(user_obs[user_id])
+            if obs == real_length - 1: # we reach the end, terminate
+                break
+            for obs in range(len(user_obs[user_id])):
+                observation_number = user_obs[user_id][obs]
+                if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 24 or observation_number == 11):
+                    observation_number = 9
+                elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
+                    observation_number = 17
+                elif (observation_number == 7 or observation_number == 37):
+                    observation_number = 5
+                elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 1 or observation_number == 2):
+                    observation_number = 33
+                # if a new subtask starts with a grasp (success or failure) or a warning, i.e., other than 33, add a 33 (idle) OR if a new task starts with 9 or 5 add a 33 (idle) before regardless!
+                if ((obs != 0 and obs != (len(user_obs[user_id])-1)) and (observation_number != 33) and ((user_obs[user_id][obs-1] != 33) or (user_taskID_arr[user_id][obs] != user_taskID_arr[user_id][obs-1]))): 
+                    if (observation_number == 5 or observation_number == 9):                    
+                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+                        user_obs[user_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
+                    if (observation_number == 17):
+                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+                        user_obs[user_id][obs+2] = observation_number # add the real value as the next observation as the index has changed now
+                else:
+                    user_obs[user_id][obs] = observation_number
+                
     # Reading simulated human data collected from the simulation runs.
     df = pd.read_excel(dir_path + '/human_observables_simulation.xlsx', sheet_name='Sheet1', sep='\s*,\s*')
     simu_id = 1
@@ -99,15 +117,29 @@ def readObs():
     for simu_id in range(len(simu_obs)):
         for obs in range(len(simu_obs[simu_id])):
             observation_number = simu_obs[simu_id][obs]
-            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 11):
+            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 24 or observation_number == 11):
                 observation_number = 9
             elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18):
                 observation_number = 17
             elif (observation_number == 7 or observation_number == 37):
                 observation_number = 5
-            elif (observation_number == 32 or observation_number == 1): # 2, 34, 35, 3 are all look around 
+            elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 1 or observation_number == 2):
                 observation_number = 33
-            simu_obs[simu_id][obs] = observation_number
+            # if a new subtask starts with a grasp (success or failure) or a warning, i.e., other than 33, add a 33 (idle) OR if a new task starts with 9 or 5 add a 33 (idle) before regardless!
+            if ((obs != 0 and obs != (len(simu_obs[simu_id])-1)) and (observation_number != 33) and ((simu_obs[simu_id][obs-1] != 33) or (simu_taskID_arr[simu_id][obs] != simu_taskID_arr[simu_id][obs-1]))): 
+                if (observation_number == 5 or observation_number == 9):                    
+                    simu_obs[simu_id] = np.insert(simu_obs[simu_id], obs, 33)
+                    simu_taskID_arr[simu_id] = np.insert(simu_taskID_arr[simu_id], obs, simu_taskID_arr[simu_id][obs])
+                    simu_obs[simu_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
+                if (observation_number == 17):
+                    simu_obs[simu_id] = np.insert(simu_obs[simu_id], obs, 33)
+                    simu_obs[simu_id] = np.insert(simu_obs[simu_id], obs, 33)
+                    simu_taskID_arr[simu_id] = np.insert(simu_taskID_arr[simu_id], obs, simu_taskID_arr[simu_id][obs])
+                    simu_taskID_arr[simu_id] = np.insert(simu_taskID_arr[simu_id], obs, simu_taskID_arr[simu_id][obs])
+                    simu_obs[simu_id][obs+2] = observation_number # add the real value as the next observation as the index has changed now
+            else:
+                simu_obs[simu_id][obs] = observation_number
+
     
     return user_obs, user_taskID_arr, simu_obs, simu_taskID_arr
     
@@ -163,20 +195,34 @@ def KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr):
         final_scores.append(all_score_perSimu)
     return final_scores, final_scores_max
     
-def MDPpolicyGeneration():
+def MDPTupleGeneration():
     
     global list_of_models
     
-    readHumanModel()
-    model_tree = list_of_models[0]
-    P, R, discount, init_belief = readProbTables(model_tree)
+    P_arr = []
+    R_arr = []
+    dis_arr = []
+    init_belief_arr = []
+    policy_arr = []
     
-    mdptoolbox.util.check(P, R)
-    vi = mdptoolbox.mdp.ValueIteration(P, R, discount)
-    vi.run()
-    print(vi.policy)
-    print(vi.V)
+    readHumanModel() # reads human models and save the prob trees in "list_of_models"
     
+    for model in list_of_models:
+        
+        P, R, discount, init_belief = readProbTables(model)
+        mdptoolbox.util.check(P, R) 
+        vi = mdptoolbox.mdp.ValueIteration(P, R, discount)
+        vi.run()
+        policy = np.array(vi.policy)
+        
+        P_arr.append(P)
+        R_arr.append(R)
+        dis_arr.append(discount)
+        init_belief_arr.append(init_belief)
+        policy_arr.append(policy)
+    #print(policy)
+    #print(vi.V)
+    return P_arr, R_arr, dis_arr, init_belief_arr, policy_arr
     #P, R = mdptoolbox.example.forest()
     #fh = mdptoolbox.mdp.FiniteHorizon(P, R, 0.9, 3)
     #fh.run()
@@ -192,17 +238,22 @@ def readHumanModel():
     			Return unmodified human POMDPx model based on human type
            Otherwise, modified human POMDPx model
    """
-    global list_of_models
+    global list_of_models, model_ids
     
     path = '../../../models/human_models/Evaluate/'
-    expertise = ["beginner", "expert"]
-    stamina = ["tired", "nontired"]
-    col = ["collaborative", "noncollaborative"]    
-    filename = expertise[0] + "_" + stamina[1] + "_" + col[0] + ".POMDPx"    
-    pomdpx_file = path + filename
-    #print('loading... %s' %pomdpx_file)
-    tree = ET.parse(pomdpx_file)
-    list_of_models.append(tree)
+    expertise = ["expert", "beginner"]
+    stamina = ["nontired", "tired"]
+    col = ["collaborative", "noncollaborative"]
+    for expert in expertise:
+        for energy in stamina:
+            for pref in col:
+                filename = expert + "_" + energy + "_" + pref + ".POMDPx"    
+                pomdpx_file = path + filename
+                #print('loading... %s' %pomdpx_file)
+                tree = ET.parse(pomdpx_file)
+                list_of_models.append(tree)
+                model_ids.append(filename)
+    
     
 def readProbTables(tree):
     """
@@ -262,25 +313,155 @@ def readProbTables(tree):
     init_belief = np.fromstring(txt, sep = ' ')
     
     return trans_probs, reward_array, discount, init_belief
-
-if __name__=='__main__':
     
-    final_kl_array_max = []
-    final_kl_array = []
-    #user_obs, user_taskID_arr, simu_obs, simu_taskID_arr = readObs()
-    #user_obs = removeRepeatingObs(user_obs)
-    #simu_obs = removeRepeatingObs(simu_obs)    
-    #final_kl_array, final_kl_array_max = KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr)
+def MDPmodelLikelihood(simu_flag):
     
-    #final_kl_array_max = np.array(final_kl_array_max)
-    #print(final_kl_array_max)
-    MDPpolicyGeneration()
-    #print(score)
+    global model_ids, user_obs, user_taskID_arr, simu_obs, simu_taskID_arr
     
+    # KL Convergence Analysis    
     
     #dataset1=loadmat("kl_convergence_slidingWindow_fullData_v2.mat")
     #arr = dataset1['final_kl_array_max']
     #dataset1['final_kl_array_max'] = np.array(dataset1)
     #savemat("kl_convergence_slidingWindow_fullData_v2.mat",dataset1)
+    
+    #final_kl_array_max = []
+    #final_kl_array = []
+    #user_obs = removeRepeatingObs(user_obs)
+    #simu_obs = removeRepeatingObs(simu_obs)
+    #final_kl_array, final_kl_array_max = KLConvergenceAnalysis(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr)
+    #final_kl_array_max = np.array(final_kl_array_max)
+    #print(final_kl_array_max)
+    
+    # When this flag is true, we check the likelihood of simulated human observations generated by the simulated human models
+    if (simu_flag):
+        human_obs = simu_obs
+        human_taskID_arr = simu_taskID_arr
+    else:
+        human_obs = user_obs
+        human_taskID_arr = user_taskID_arr
+    
+    T_arr, R_arr, discount_arr, init_belief_arr, policy_arr = MDPTupleGeneration()
+    
+    likelihood_arrParticipants = []   
+    
+    for user_id in range(len(human_obs)):
+        curr_human_obs = np.array(human_obs[user_id])
+        curr_taskID_arr = np.array(human_taskID_arr[user_id])
+        if not (simu_flag):
+            total_task_amount = 6
+            likelihood_arrUser = np.zeros((len(model_ids), total_task_amount))
+        else:
+            likelihood_arrUser = 0.0 # in simulation, as the data are generated from the models directly, we do not need to separate the tasks. We average them all.
+
+        # For every simulated human model, we calculate the likelihood of a participant's observations generated.
+        for model_id in range(len(model_ids)):
+            
+            print("=== Calculating the likelihood of user:", user_id, " with the model: ", model_ids[model_id], "===")
+            T = T_arr[model_id]
+            init_belief = init_belief_arr[model_id]
+            policy = policy_arr[model_id]
+            #print("POLICY: ", policy)
+            curr_belief = init_belief
+            temp_likelihood = 1.0
+            likelihood_arrTasks = np.array([])
+            likelihood_arrSubTasks = np.array([])
+            # Calculate the likelihood of the user observations in the current model
+            for ind in range(len(curr_human_obs)):
+                # Mapping observable IDs to action IDs.
+                action = -1
+                obs = curr_human_obs[ind]
+                grasp_status = -1 # 1 for success, 0 for failure
+                if obs == 33: action = 2
+                elif obs == 17: action = 4
+                elif obs == 5:
+                    action = 0
+                    grasp_status = 1
+                elif obs == 9:
+                    action = 0
+                    grasp_status = 0
+                
+                # Extracting in which states that action might be selected according to the policy
+                index = np.array([])
+                
+                if action == 2 or action == 1 or action == 3: # mapping look around and walkaway into idle action
+                    #action = np.array([1,2,3]) 
+                    index1 = np.where(policy == 1) # looking around
+                    index2 = np.where(policy == 2) # idle
+                    index3 = np.where(policy == 3) # walking away
+                    index = np.append(np.array(index1[0]), np.array(index2[0]))
+                    index = np.append(index, np.array(index3[0]))
+                else:
+                    index = np.append(index, np.where(policy == action))
+                curr_act_prob = np.zeros(12)
+                for i in index:
+                    curr_act_prob[int(i)] = 1
+                #print(curr_act_prob)
+                
+                # LIKELIHOOD CALCULATION
+                curr_likelihood = 0.0
+                for state in range(len(curr_belief)):
+                    curr_likelihood += curr_belief[state] * curr_act_prob[state]
+                temp_likelihood *= curr_likelihood
+                #if (curr_likelihood == 0.0): # That means there is an uncovered (unknown) observation
+                    #print("INDEX:", ind)
+                    #print(temp_likelihood, curr_likelihood, curr_belief, curr_act_prob)
+                
+                # BELIEF UPDATE: current_belief * T(a,s)
+                temp_belief = np.zeros(12)
+                trans_action = T[action]
+                for state in range(len(curr_belief)):
+                    temp_belief[state] = np.matmul(curr_belief, np.transpose(trans_action[:,state]))
+                curr_belief = temp_belief
+                
+                # if a subtask is a failure or a success, a new likelihood should be calculated. Then it terminates a subtask
+                if action == 0:
+                    if grasp_status == 1:
+                        curr_act_prob = [0,1,0,0,0,0,0,0,0,0,0,0] # global success should be the new likelihood
+                    elif grasp_status == 0:
+                        curr_act_prob = [0,0,1,0,0,0,0,0,0,0,0,0] # global success should be the new likelihood
+                    curr_likelihood = 0.0
+                    for state in range(len(curr_belief)):
+                        curr_likelihood += curr_belief[state] * curr_act_prob[state]
+                    temp_likelihood *= curr_likelihood
+                    # saving the likelihood of a subtask, then restarting the belief and calculations            
+                    likelihood_arrSubTasks = np.append(likelihood_arrSubTasks, temp_likelihood)
+                    curr_belief = init_belief
+                    temp_likelihood = 1.0 
+        
+                # If a task has ended, reset the current belief and save the average task likelihood
+                if (((ind != len(curr_taskID_arr) - 1) and curr_taskID_arr[ind] != curr_taskID_arr[ind + 1]) or (ind == len(curr_taskID_arr) - 1)): # task has ended, saving the average subtask likelihoods as the task likelihood and restarting
+                    curr_belief = init_belief
+                    #print("Task/subtask update!, Task:", ind, "Likelihood:", likelihood)
+                    average_task_likelihood = np.average(likelihood_arrSubTasks)
+                    # Do not save the task IDs "1" or "5" as they are tasks with participants working alone. No robot. So wont be considered
+                    if (not simu_flag) and (curr_taskID_arr[ind] != 1 and curr_taskID_arr[ind] != 5): 
+                        likelihood_arrTasks = np.append(likelihood_arrTasks, average_task_likelihood)
+                    
+                    likelihood_arrSubTasks = np.array([])
+                    temp_likelihood = 1.0
+            
+            # Append the user's likelihood array for each tasks for the current model. The array below will be 8 x 6 (# of models X # of tasks)
+            #likelihood_arrUser = np.concatenate((likelihood_arrUser, likelihood_arrTasks), axis=0)
+            if (simu_flag):
+                likelihood_arrUser = np.average(likelihood_arrTasks)
+                print(likelihood_arrTasks)
+            else:
+                likelihood_arrUser[model_id] = likelihood_arrTasks
+            
+        #print(likelihood_arrUser)
+    
+        # Append the participant array holding all the participant's likelihood w.r.t to each human model for each task
+        likelihood_arrParticipants.append(likelihood_arrUser)
+    # print(likelihood_arrParticipants)
+    return likelihood_arrParticipants
+if __name__=='__main__':
+      
+    user_obs, user_taskID_arr, simu_obs, simu_taskID_arr = readObs()
+    #participants_likelihood = MDPmodelLikelihood(False)
+    simulation_likelihood = MDPmodelLikelihood(True)
+    
+    #print(score)
+    
 
     
