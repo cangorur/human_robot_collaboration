@@ -13,6 +13,8 @@ import os
 import numpy as np
 import mdptoolbox
 import xml.etree.ElementTree as ET
+import csv
+import sys
 
 user_obs = []
 simu_obs = []
@@ -48,9 +50,9 @@ statename_to_id = {        "TaskHuman" 		:0,
 					"RobotIsWarned"		:10,
 					"TaskRobot"		:11}
 
-def readObs():
+def readObs_user():
     # Reading real human data collected from the participants
-    global user_obs, user_taskID_arr, simu_obs, simu_taskID_arr, simu_subtaskID_arr
+    global user_obs, user_taskID_arr
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     df = pd.read_excel(dir_path + '/../../userStudies_exp2_results/tests/analysis_objective.xlsx', sheet_name='human_observables', sep='\s*,\s*')
@@ -69,7 +71,7 @@ def readObs():
         
      # The mappings are necessary for real observations as a stood idle observable always high after a failure or success in grasp is issued. In simulation it is not the case but they reflect the same scenario    
     for user_id in range(len(user_obs)):
-        obs = 0        
+        obs = 0   
         while(1):
             real_length = len(user_obs[user_id])
             if obs == real_length - 1: # we reach the end, terminate
@@ -92,13 +94,29 @@ def readObs():
                         user_obs[user_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
                     if (observation_number == 17):
                         user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
-                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+                        #user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
                         user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
-                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
-                        user_obs[user_id][obs+2] = observation_number # add the real value as the next observation as the index has changed now
+                        #user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+                        user_obs[user_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
                 else:
                     user_obs[user_id][obs] = observation_number
                 
+                
+                    
+    my_shelf = shelve.open("user_simu_obs.out") # 'n' for new    
+    my_shelf["user_obs"] = user_obs
+    my_shelf["user_taskID_arr"] = user_taskID_arr
+    my_shelf.close()         
+    
+    return user_obs, user_taskID_arr
+
+
+def readObs_simu():
+    
+    global simu_obs, simu_taskID_arr, simu_subtaskID_arr
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
     # Reading simulated human data collected from the simulation runs.
     df = pd.read_excel(dir_path + '/human_observables_simulation.xlsx', sheet_name='Sheet1', sep='\s*,\s*')
     simu_id = 1
@@ -121,94 +139,115 @@ def readObs():
      # The mappings are necessary for real observations as a stood idle observable always high after a failure or success in grasp is issued. In simulation it is not the case but they reflect the same scenario    
     for simu_id in range(len(simu_obs)):
         obs = 0
-        while(1):
-            real_length = len(simu_obs[simu_id])
-            if obs == real_length - 1: # we reach the end, terminate
-                break
-            temp_obs = np.array([])
-            temp_task = np.array([])
-            temp_subtask = np.array([])
-            grasp_complete = False
-            grasp_state = ""
-            idle_ctr = 0
-            for obs in range(len(simu_obs[simu_id])):
-                observation_number = simu_obs[simu_id][obs]
-                if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 24 or observation_number == 11 or observation_number == 8 or observation_number == 10):
-                    observation_number = 9
-                elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18 or observation_number == 51):
-                    observation_number = 17
-                elif (observation_number == 7 or observation_number == 37):
-                    observation_number = 5
-                elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 0 or observation_number == 1 or observation_number == 2 or observation_number == 3):
-                    observation_number = 33
-               
-                if grasp_complete: # grasp_complete states a grasp has already been issued in this subtask. 
-                    if observation_number == 5:
-                        grasp_state = "success"
-                        observation_number = 33
-                    elif observation_number == 9:
-                        grasp_state = "failure"
-                        observation_number = 33
-                    idle_ctr += 1
-                elif grasp_complete == False and (simu_subtaskID_arr[simu_id][obs] == simu_subtaskID_arr[simu_id][obs-1]) and (observation_number == 5 or observation_number == 9):
-                    grasp_complete = True
-                    idle_ctr += 1
-                    if observation_number == 5:
-                        grasp_state = "success"
-                    elif observation_number == 9:
-                        grasp_state = "failure"
-                    #observation_number = 33
-                
-                 # Once a grasp is detected, there cannot be a new one coming in a subtask. We remove all of them but keep the latest one by setting this flag if they are in the same subtask.
-                if obs!=0 and simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs-1]:
-                    grasp_complete = False
-                    grasp_state = ""
-                    idle_ctr = 0
-                elif (obs != len(simu_obs[simu_id]) -1) and (simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs+1]):
-#                    if grasp_state == "success":
-#                        observation_number = 5
-#                    if grasp_state == "failure":
-#                        observation_number = 9
-                    grasp_complete = False
-                
-                # if a new subtask starts with a grasp (success or failure) or a warning, i.e., other than 33, add a 33 (idle) OR if a new task starts with 9 or 5 add a 33 (idle) before regardless!
-                if (obs != 0 and (observation_number != 33) and ((simu_taskID_arr[simu_id][obs] != simu_taskID_arr[simu_id][obs-1]) 
-                    or (simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs-1]))): 
-                    if (observation_number == 5 or observation_number == 9):                    
-                        temp_obs = np.append(temp_obs, 33)                        
-                        temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
-                        temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
-
-                    if (observation_number == 17): # add 33 two times until a warning
-                        temp_obs = np.append(temp_obs, 33)                        
-                        temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
-                        temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
-                        temp_obs = np.append(temp_obs, 33)                        
-                        temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
-                        temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])                       
-                    
-                if grasp_complete and idle_ctr > 1:
-                    continue 
-                
-                temp_obs = np.append(temp_obs, observation_number)
-                temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
-                temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+        temp_obs = np.array([])
+        temp_task = np.array([])
+        temp_subtask = np.array([])
+        grasp_complete = False
+        grasp_ctr = 0
+        grasp_state = ""
+        idle_ctr = 0
+        warn_ctr = 0
+        prev_obs = 33
+        for obs in range(len(simu_obs[simu_id])):
+            observation_number = simu_obs[simu_id][obs]
+            if (observation_number == 41 or observation_number == 43 or observation_number == 40 or observation_number == 24 or observation_number == 11 or observation_number == 8 or observation_number == 10):
+                observation_number = 9
+            elif (observation_number == 25 or observation_number == 49 or observation_number == 21 or observation_number == 57 or observation_number == 16 or observation_number == 19 or observation_number == 18 or observation_number == 51):
+                observation_number = 17
+            elif (observation_number == 7 or observation_number == 37):
+                observation_number = 5
+            elif (observation_number == 34 or observation_number == 35 or observation_number == 32 or observation_number == 0 or observation_number == 1 or observation_number == 2 or observation_number == 3):
+                observation_number = 33
+           
             
-            simu_obs[simu_id] = temp_obs
-            simu_taskID_arr[simu_id] = temp_task
-            simu_subtaskID_arr[simu_id] = temp_subtask
+             # Once a grasp is detected, there cannot be a new one coming in a subtask. We remove all of them but keep the latest one by setting this flag if they are in the same subtask.
+            if obs!=0 and simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs-1]:
+                grasp_complete = False
+                grasp_ctr = 0
+                idle_ctr = 0
+                warn_ctr = 0
+            elif (obs != len(simu_obs[simu_id]) -1) and (simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs+1]):
+                if grasp_state == "success":
+                    observation_number = 5
+                if grasp_state == "failure":
+                    observation_number = 9
+                    temp_obs = np.append(temp_obs, 33)                        
+                    temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+                    temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+                    temp_obs = np.append(temp_obs, 9)                        
+                    temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+                    temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+#                temp_obs = np.append(temp_obs, 33)                        
+#                temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+#                temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+#                temp_obs = np.append(temp_obs, observation_number)                        
+#                temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+#                temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+            
+            if grasp_complete: # grasp_complete states a grasp has already been issued in this subtask. 
+                if observation_number == 5:
+                    observation_number = 33
+                    grasp_state = "success"
+                if observation_number == 9:
+                    observation_number = 33
+                    grasp_state = "failure"
 
-    my_shelf = shelve.open("user_simu_obs.out",'n') # 'n' for new    
-    my_shelf["user_obs"] = user_obs
+                grasp_ctr += 1
+
+            elif grasp_complete == False and (observation_number == 5 or observation_number == 9):
+                grasp_complete = True
+                grasp_ctr += 1
+            
+                #observation_number = 33
+#                temp_obs = np.append(temp_obs, 33)                        
+#                temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+#                temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+            
+            if observation_number == 17 and prev_obs == 17:
+                #observation_number = 33
+                warn_ctr += 1
+            elif observation_number == 33 and prev_obs == 33:
+                idle_ctr += 1
+#                temp_obs = np.append(temp_obs, 33)                        
+#                temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+#                temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+                
+            # if a new subtask starts with a grasp (success or failure) or a warning, i.e., other than 33, add a 33 (idle) OR if a new task starts with 9 or 5 add a 33 (idle) before regardless!
+            if (obs != 0 and (observation_number != 33) and ((simu_taskID_arr[simu_id][obs] != simu_taskID_arr[simu_id][obs-1]) 
+                or (simu_subtaskID_arr[simu_id][obs] != simu_subtaskID_arr[simu_id][obs-1]))): 
+                if (observation_number == 5 or observation_number == 9):                    
+                    temp_obs = np.append(temp_obs, 33)                        
+                    temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+                    temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+
+                if (observation_number == 17): # add 33 two times until a warning
+                    temp_obs = np.append(temp_obs, 33)                        
+                    temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+                    temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+                    temp_obs = np.append(temp_obs, 33)                        
+                    temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+                    temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])                       
+            
+            prev_obs = observation_number
+            if (grasp_complete and grasp_ctr > 1) or idle_ctr > 2 or warn_ctr > 2:
+                continue 
+            temp_obs = np.append(temp_obs, observation_number)
+            temp_task = np.append(temp_task, simu_taskID_arr[simu_id][obs])
+            temp_subtask = np.append(temp_subtask, simu_subtaskID_arr[simu_id][obs])
+            
+        simu_obs[simu_id] = temp_obs
+        simu_taskID_arr[simu_id] = temp_task
+        simu_subtaskID_arr[simu_id] = temp_subtask
+
+    my_shelf = shelve.open("user_simu_obs.out") # 'n' for new    
     my_shelf["simu_obs"] = simu_obs
-    my_shelf["user_taskID_arr"] = user_taskID_arr
     my_shelf["simu_taskID_arr"] = simu_taskID_arr
     my_shelf["simu_subtaskID_arr"] = simu_subtaskID_arr
     my_shelf.close()
     #savemat("updated_user_simu_obs.mat",{'user_obs':np.array(user_obs), 'simu_obs':np.array(simu_obs),
      #                                  'user_taskID_arr':np.array(user_taskID_arr),'simu_taskID_arr':np.array(simu_taskID_arr)})
     
-    return user_obs, user_taskID_arr, simu_obs, simu_taskID_arr, simu_subtaskID_arr
+    return simu_obs, simu_taskID_arr, simu_subtaskID_arr
     
 #def KLConvergenceAnalysis_perTask(user_obs, user_taskID_arr, simu_obs, simu_taskID_arr):
     
@@ -307,6 +346,7 @@ def readHumanModel():
    """
     global list_of_models, model_ids
     
+    model_ids = []
     path = '../../../models/human_models/Evaluate/'
     expertise = ["expert", "beginner"]
     stamina = ["nontired", "tired"]
@@ -401,6 +441,8 @@ def MDPmodelLikelihood(simu_flag):
     #print(final_kl_array_max)
     
     # When this flag is true, we check the likelihood of simulated human observations generated by the simulated human models
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
     if (simu_flag):
         human_obs = simu_obs
         human_taskID_arr = simu_taskID_arr
@@ -427,129 +469,158 @@ def MDPmodelLikelihood(simu_flag):
             likelihood_arrUser = np.zeros((len(model_ids), total_task_amount))
         else:
             likelihood_arrUser = 0.0 # in simulation, as the data are generated from the models directly, we do not need to separate the tasks. We average them all.
-
-        # For every simulated human model, we calculate the likelihood of a participant's observations generated.
-        for model_id in range(len(model_ids)): # range(len(model_ids))
-            #model_id = 6
-            print("=== Calculating the likelihood of user:", user_id, " with the model: ", model_ids[model_id], "===")
-            T = T_arr[model_id]
-            init_belief = init_belief_arr[model_id]
-            policy = policy_arr[model_id]
+        
+        with open(dir_path + '/participant_likelihoods_' + str(user_id) + '.csv', 'a') as file:
+            wr = csv.writer(file, dialect='excel')
             
-            print("POLICY: ", policy)
-            curr_belief = init_belief
-            temp_likelihood = 1.0
-            likelihood_arrTasks = np.array([])
-            likelihood_arrSubTasks = np.array([])
-            # Calculate the likelihood of the user observations in the current model
-            for ind in range(len(curr_human_obs)):
-                # Mapping observable IDs to action IDs.
-                action = -1
-                subtaskEnded = False
-                obs = curr_human_obs[ind]
-                if obs == 33: action = 2
-                elif obs == 17: action = 4
-                elif obs == 5:
-                    action = 0
-                    grasp_status = 1
-                elif obs == 9:
-                    action = 0
-                    grasp_status = 0
+            # For every simulated human model, we calculate the likelihood of a participant's observations generated.
+            for model_id in range(len(model_ids)): # range(len(model_ids))
+                #model_id = 6
+                print("=== Calculating the likelihood of user:", user_id, " with the model: ", model_ids[model_id], "===")
+                T = T_arr[model_id]
+                init_belief = init_belief_arr[model_id]
+                policy = policy_arr[model_id]
                 
-                # Extracting in which states that action might be selected according to the policy
-                index = np.array([])
-                if action == 2 or action == 1 or action == 3: # mapping look around and walkaway into idle action
-                    #action = np.array([1,2,3]) 
-                    index1 = np.where(policy == 1) # looking around
-                    index2 = np.where(policy == 2) # idle
-                    index3 = np.where(policy == 3) # walking away
-                    index = np.append(np.array(index1[0]), np.array(index2[0]))
-                    index = np.append(index, np.array(index3[0]))
-                else:
-                    index = np.append(index, np.where(policy == action))
-                curr_act_prob = np.zeros(12)
+                print("POLICY: ", policy)
+                curr_belief = init_belief
+                temp_likelihood = 1.0
+                likelihood_arrTasks = np.array([])
+                likelihood_arrSubTasks = np.array([])
+                grasp_status = -1
+                
+                new_row = []
+                # Calculate the likelihood of the user observations in the current model
+                for ind in range(len(curr_human_obs)):
+                    # Mapping observable IDs to action IDs.
+                    action = -1
+                    subtaskEnded = False
+                    obs = curr_human_obs[ind]
+                    if obs == 33: action = 2
+                    elif obs == 17: action = 4
+                    elif obs == 5:
+                        action = 0
+                        grasp_status = 1
+                    elif obs == 9:
+                        action = 0
+                        grasp_status = 0
                     
-                for i in index:
-                    curr_act_prob[int(i)] = 1
-                if (not 0 in policy) and (not 1 in curr_act_prob):
-                    curr_act_prob[5] = 1 # evaluating state might lead to grasping
-                    curr_act_prob[3] = 1 # failed to grasp state might lead to grasping
-                #print(curr_act_prob)
-                
-                # Checking if a subtask has ended. will be used later as the model should be reset.
-                if not simu_flag: # in data from real humans, we dont have markers that indicates when a subtask has started                
-                    if action == 0: # at least from the human side, we know that if human has graspped a subtask ends. But robot side is unknown
-                        subtaskEnded = True
-                else:
-                    if ((ind != len(curr_subtaskID_arr) - 1) and (curr_subtaskID_arr[ind] != curr_subtaskID_arr[ind + 1])): # subtask has ended, saving the average subtask likelihoods as the task likelihood and restarting
-                        subtaskEnded = True
-                
-                # LIKELIHOOD CALCULATION
-                curr_likelihood = 0.0
-                for state in range(len(curr_belief)):
-                    curr_likelihood += curr_belief[state] * curr_act_prob[state]
-                temp_likelihood *= curr_likelihood
-                if (curr_likelihood == 0.0): # That means there is an uncovered (unknown) observation
-                    print("index:", ind, "action:", action, "act_prob:", curr_act_prob)
-                
-                # BELIEF UPDATE: current_belief * T(a,s)
-                temp_belief = np.zeros(12)
-                trans_action = T[action]
-                for state in range(len(curr_belief)):
-                    temp_belief[state] = np.matmul(curr_belief, np.transpose(trans_action[:,state]))
-                curr_belief = temp_belief
-                
-                # if a subtask is a failure or a success, a new likelihood should be calculated. Then it terminates a subtask
-                if subtaskEnded:
-                    if grasp_status == 1:
-                        curr_act_prob = [0,1,0,0,0,0,0,0,0,0,0,0] # global success should be the new likelihood
-                    elif grasp_status == 0:
-                        curr_act_prob = [0,0,1,0,0,0,0,0,0,0,0,0] # global fail and failed to grasp should be the new likelihood
+                    # Extracting in which states that action might be selected according to the policy
+                    index = np.array([])
+                    if action == 2 or action == 1 or action == 3: # mapping look around and walkaway into idle action
+                        #action = np.array([1,2,3]) 
+                        index1 = np.where(policy == 1) # looking around
+                        index2 = np.where(policy == 2) # idle
+                        index3 = np.where(policy == 3) # walking away
+                        index = np.append(np.array(index1[0]), np.array(index2[0]))
+                        index = np.append(index, np.array(index3[0]))
+                    else:
+                        index = np.append(index, np.where(policy == action))
+                    curr_act_prob = np.zeros(12)
+                        
+                    for i in index:
+                        curr_act_prob[int(i)] = 1
+                    if (not 0 in policy) and (not 1 in curr_act_prob):
+                        curr_act_prob[5] = 1 # evaluating state might lead to grasping
+                        curr_act_prob[3] = 1 # failed to grasp state might lead to grasping
+                    #print(curr_act_prob)
+                    
+                    # Checking if a subtask has ended. will be used later as the model should be reset.
+                    if not simu_flag: # in data from real humans, we dont have markers that indicates when a subtask has started                
+                        if action == 0: # at least from the human side, we know that if human has graspped a subtask ends. But robot side is unknown
+                            subtaskEnded = True
+                    else:
+                        if ((ind != len(curr_subtaskID_arr) - 1) and (curr_subtaskID_arr[ind] != curr_subtaskID_arr[ind + 1])): # subtask has ended, saving the average subtask likelihoods as the task likelihood and restarting
+                            subtaskEnded = True
+                    
+                    # LIKELIHOOD CALCULATION
                     curr_likelihood = 0.0
                     for state in range(len(curr_belief)):
                         curr_likelihood += curr_belief[state] * curr_act_prob[state]
                     temp_likelihood *= curr_likelihood
-                    # saving the likelihood of a subtask, then restarting the belief and calculations
-                    # reset variables
-                    likelihood_arrSubTasks = np.append(likelihood_arrSubTasks, temp_likelihood)
-                    curr_belief = init_belief
-                    temp_likelihood = 1.0
-                    grasp_status = -1 
-
-                #else: # if subtask hasn't ended but the person has graspped and failed, the next state will definitely be Failed To Grasp
-        
-                # If a task has ended, reset the current belief and save the average task likelihood
-                if (((ind != len(curr_taskID_arr) - 1) and curr_taskID_arr[ind] != curr_taskID_arr[ind + 1]) or (ind == len(curr_taskID_arr) - 1)): # task has ended, saving the average subtask likelihoods as the task likelihood and restarting
-                    curr_belief = init_belief
-                    #print("Task/subtask update!, Task:", ind, "Likelihood:", likelihood)
-                    average_task_likelihood = np.average(likelihood_arrSubTasks)
-                    # Do not save the task IDs "1" or "5" as they are tasks with participants working alone. No robot. So wont be considered
-                    if (not simu_flag) and (curr_taskID_arr[ind] != 1 and curr_taskID_arr[ind] != 5): 
-                        likelihood_arrTasks = np.append(likelihood_arrTasks, average_task_likelihood)
-                    elif simu_flag:
-                        likelihood_arrTasks = np.append(likelihood_arrTasks, average_task_likelihood)
+                    if (curr_likelihood == 0.0): # That means there is an uncovered (unknown) observation
+                        print("index:", ind, "action:", action, "act_prob:", curr_act_prob)
                     
-                    likelihood_arrSubTasks = np.array([])
-                    temp_likelihood = 1.0
-                            
-            # Append the user's likelihood array for each tasks for the current model. The array below will be 8 x 6 (# of models X # of tasks)
-            #likelihood_arrUser = np.concatenate((likelihood_arrUser, likelihood_arrTasks), axis=0)
-            if (simu_flag):
-                likelihood_arrParticipants[model_id][user_id] = np.average(likelihood_arrTasks)
-            else:
-                likelihood_arrUser[model_id] = likelihood_arrTasks  
-        #print(likelihood_arrUser)
-        # Append the participant array holding all the participant's likelihood w.r.t to each human model for each task
-        if not simu_flag:
-            likelihood_arrParticipants.append(likelihood_arrUser)
+                    # BELIEF UPDATE: current_belief * T(a,s)
+                    temp_belief = np.zeros(12)
+                    trans_action = T[action]
+                    for state in range(len(curr_belief)):
+                        temp_belief[state] = np.matmul(curr_belief, np.transpose(trans_action[:,state]))
+                    curr_belief = temp_belief
+                    
+                    # if a subtask is a failure or a success, a new likelihood should be calculated. Then it terminates a subtask
+                    if subtaskEnded:
+                        if grasp_status == 1:
+                            curr_act_prob = [0,1,0,0,0,0,0,0,0,0,0,0] # global success should be the new likelihood
+                        elif grasp_status == 0:
+                            curr_act_prob = [0,0,1,0,0,0,0,0,0,0,0,0] # global fail and failed to grasp should be the new likelihood
+                        curr_likelihood = 0.0
+                        for state in range(len(curr_belief)):
+                            curr_likelihood += curr_belief[state] * curr_act_prob[state]
+                        temp_likelihood *= curr_likelihood
+                        # saving the likelihood of a subtask, then restarting the belief and calculations
+                        # reset variables
+                        likelihood_arrSubTasks = np.append(likelihood_arrSubTasks, temp_likelihood)
+                        curr_belief = init_belief
+                        temp_likelihood = 1.0
+                        grasp_status = -1 
+    
+                    #else: # if subtask hasn't ended but the person has graspped and failed, the next state will definitely be Failed To Grasp
+            
+                    # If a task has ended, reset the current belief and save the average task likelihood
+                    if (((ind != len(curr_taskID_arr) - 1) and curr_taskID_arr[ind] != curr_taskID_arr[ind + 1]) or (ind == len(curr_taskID_arr) - 1)): # task has ended, saving the average subtask likelihoods as the task likelihood and restarting
+                        curr_belief = init_belief
+                        #print("Task/subtask update!, Task:", ind, "Likelihood:", likelihood)
+                        average_task_likelihood = np.average(likelihood_arrSubTasks)
+                        # Do not save the task IDs "1" or "5" as they are tasks with participants working alone. No robot. So wont be considered
+                        if (not simu_flag) and (curr_taskID_arr[ind] != 1 and curr_taskID_arr[ind] != 5): 
+                            likelihood_arrTasks = np.append(likelihood_arrTasks, average_task_likelihood)
+                        elif simu_flag:
+                            likelihood_arrTasks = np.append(likelihood_arrTasks, average_task_likelihood)
+                        
+                        likelihood_arrSubTasks = np.array([])
+                        temp_likelihood = 1.0
+                                
+                # Append the user's likelihood array for each tasks for the current model. The array below will be 8 x 6 (# of models X # of tasks)
+                #likelihood_arrUser = np.concatenate((likelihood_arrUser, likelihood_arrTasks), axis=0)
+                
+                if (simu_flag):
+                    likelihood_arrParticipants[model_id][user_id] = np.average(likelihood_arrTasks)
+                else:
+                    likelihood_arrUser[model_id] = likelihood_arrTasks
+                
+                wr.writerow(likelihood_arrTasks)
+            #print(likelihood_arrUser)
+            # Append the participant array holding all the participant's likelihood w.r.t to each human model for each task
+            if not simu_flag:
+                likelihood_arrParticipants.append(likelihood_arrUser)
+            
+            file.close()
     
     print(likelihood_arrParticipants)
     print(policy)
     return likelihood_arrParticipants
     
+def likelihood_analysis(participants_likelihood):
+#    
+#    li_shelf = shelve.open("likelihoods.out")
+#    simulation_likelihood = my_shelf['simulation_likelihood']
+#    participants_likelihood = my_shelf['participants_likelihood']
+    
+    dataset=loadmat("mdp_likelihood_fullData_v2.mat")
+    sim_like=dataset['simulation_likelihood']
+    part_like=dataset['participants_likelihood']
+    part_like = participants_likelihood
+    avg_part_like = np.zeros((14, 8))
+    for user in range(len(part_like)):
+        for model in range(len(part_like[user])):
+            avg_part_like[user][model] = np.average(part_like[user][model])
+    
+    return avg_part_like
+
 if __name__=='__main__':
     
-    #user_obs, user_taskID_arr, simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs()
+    #user_obs, user_taskID_arr = readObs_user()
+    #simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs_simu()
     
     my_shelf = shelve.open("user_simu_obs.out")
     user_obs = my_shelf['user_obs']
@@ -557,9 +628,17 @@ if __name__=='__main__':
     user_taskID_arr = my_shelf['user_taskID_arr']
     simu_taskID_arr = my_shelf['simu_taskID_arr']
     simu_subtaskID_arr = my_shelf['simu_subtaskID_arr']
+    my_shelf.close()
+#    
+    participants_likelihood = MDPmodelLikelihood(False)
+    #simulation_likelihood = MDPmodelLikelihood(True)
     
-    #participants_likelihood = MDPmodelLikelihood(False)
-    simulation_likelihood = MDPmodelLikelihood(True)
+#    li_shelf = shelve.open("likelihoods.out",'n') # 'n' for new    
+#    li_shelf["simulation_likelihood"] = simulation_likelihood
+#    li_shelf["participants_likelihood"] = participants_likelihood
+#    li_shelf.close()
+
+    #avg_participants_likelihood = likelihood_analysis(participants_likelihood)    
     
     # Converting Participant likelihood array for each task to maximum scores
     # TODO:    
