@@ -1,0 +1,13 @@
+task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+12,1,"""OBSERVATION""",,1583416611,52132719,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,2,"""OBSERVATION""",,1583416612,444606293,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,3,"""OBSERVATION""",,1583416616,284139466,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,4,"""OBSERVATION""",,1583416634,636677479,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,5,"""OBSERVATION""",,1583416637,378295493,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,6,"""OBSERVATION""",,1583416639,577171878,'',"[False, False, False, False, True, False]",0,0,0,0,1,0
+12,7,"""OBSERVATION""",,1583416641,89036790,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
+12,8,"""OBSERVATION""",,1583416652,7431885,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
+12,9,"""OBSERVATION""",,1583416658,287318409,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,10,"""OBSERVATION""",,1583416668,99493147,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,11,"""OBSERVATION""",,1583416675,926475659,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,12,"""OBSERVATION""",,1583416682,249295625,'',"[True, False, False, True, False, True]",1,0,0,1,0,1

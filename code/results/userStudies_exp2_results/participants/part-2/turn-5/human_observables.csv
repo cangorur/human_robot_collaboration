@@ -1,0 +1,22 @@
+task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+12,1,"""OBSERVATION""",,1584374300,988279611,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,2,"""OBSERVATION""",,1584374304,278628242,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+12,3,"""OBSERVATION""",,1584374305,722919324,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,4,"""OBSERVATION""",,1584374307,140454408,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,5,"""OBSERVATION""",,1584374322,462047920,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,6,"""OBSERVATION""",,1584374323,829731517,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,7,"""OBSERVATION""",,1584374325,333642607,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,8,"""OBSERVATION""",,1584374339,247600906,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,9,"""OBSERVATION""",,1584374340,793269394,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,10,"""OBSERVATION""",,1584374355,631502326,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,11,"""OBSERVATION""",,1584374357,32647330,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,12,"""OBSERVATION""",,1584374372,411789013,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,13,"""OBSERVATION""",,1584374375,109076089,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+12,14,"""OBSERVATION""",,1584374376,584291572,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+12,15,"""OBSERVATION""",,1584374378,15866598,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,16,"""OBSERVATION""",,1584374379,621670872,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,17,"""OBSERVATION""",,1584374382,912363919,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,18,"""OBSERVATION""",,1584374386,6332002,'',"[True, False, False, False, True, False]",1,0,0,0,1,0
+12,19,"""OBSERVATION""",,1584374389,956773568,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+12,20,"""OBSERVATION""",,1584374394,42796542,'',"[True, False, False, True, False, False]",1,0,0,1,0,0
+12,21,"""OBSERVATION""",,1584374404,868969131,'',"[True, False, False, True, False, True]",1,0,0,1,0,1

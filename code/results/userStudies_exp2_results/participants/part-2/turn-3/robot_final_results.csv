@@ -1,0 +1,2 @@
+robot_model_ID,task_id,warnings_received,cumulative_warnings,moving_avg_warnings,task_duration,cumulative_time,moving_avg_time,total_disc_reward,cumulative_reward,moving_avg_reward,success_rate,cumulative_success,moving_avg_success,humans_contribution,human_success_rate
+slow_takeOneReasses_reckless,11,11,11.0,11.0,193.135607071,193.135607071,193.135607071,5.725742411326785,5.725742411326785,5.725742411326785,90.0,90.0,90.0,77.77777777777779,87.5

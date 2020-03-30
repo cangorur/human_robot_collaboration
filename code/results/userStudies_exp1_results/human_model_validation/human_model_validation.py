@@ -94,11 +94,18 @@ def readObs_user():
                         user_obs[user_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
                     if (observation_number == 17):
                         user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
-                        #user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
                         user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
-                        #user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
-                        user_obs[user_id][obs+1] = observation_number # add the real value as the next observation as the index has changed now
+                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+                        user_obs[user_id][obs+2] = observation_number # add the real value as the next observation as the index has changed now
                 else:
+#                    if observation_number == 17:
+#                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 17)
+#                        user_obs[user_id] = np.insert(user_obs[user_id], obs, 33)
+#                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+#                        user_taskID_arr[user_id] = np.insert(user_taskID_arr[user_id], obs, user_taskID_arr[user_id][obs])
+#                        user_obs[user_id][obs+2] = observation_number
+#                        obs += 3                     
                     user_obs[user_id][obs] = observation_number
                 
                 
@@ -488,7 +495,7 @@ def MDPmodelLikelihood(simu_flag):
                 likelihood_arrSubTasks = np.array([])
                 grasp_status = -1
                 
-                new_row = []
+                instance_ctr = 0
                 # Calculate the likelihood of the user observations in the current model
                 for ind in range(len(curr_human_obs)):
                     # Mapping observable IDs to action IDs.
@@ -503,7 +510,7 @@ def MDPmodelLikelihood(simu_flag):
                     elif obs == 9:
                         action = 0
                         grasp_status = 0
-                    
+                    instance_ctr += 1
                     # Extracting in which states that action might be selected according to the policy
                     index = np.array([])
                     if action == 2 or action == 1 or action == 3: # mapping look around and walkaway into idle action
@@ -526,7 +533,7 @@ def MDPmodelLikelihood(simu_flag):
                     
                     # Checking if a subtask has ended. will be used later as the model should be reset.
                     if not simu_flag: # in data from real humans, we dont have markers that indicates when a subtask has started                
-                        if action == 0: # at least from the human side, we know that if human has graspped a subtask ends. But robot side is unknown
+                        if action == 0 or (instance_ctr > 3 and ind+1 != len(curr_human_obs) and curr_human_obs[ind+1] == 33): # at least from the human side, we know that if human has graspped a subtask ends. But robot side is unknown
                             subtaskEnded = True
                     else:
                         if ((ind != len(curr_subtaskID_arr) - 1) and (curr_subtaskID_arr[ind] != curr_subtaskID_arr[ind + 1])): # subtask has ended, saving the average subtask likelihoods as the task likelihood and restarting
@@ -562,7 +569,8 @@ def MDPmodelLikelihood(simu_flag):
                         likelihood_arrSubTasks = np.append(likelihood_arrSubTasks, temp_likelihood)
                         curr_belief = init_belief
                         temp_likelihood = 1.0
-                        grasp_status = -1 
+                        grasp_status = -1
+                        instance_ctr = 0
     
                     #else: # if subtask hasn't ended but the person has graspped and failed, the next state will definitely be Failed To Grasp
             
@@ -620,7 +628,7 @@ def likelihood_analysis(participants_likelihood):
 if __name__=='__main__':
     
     #user_obs, user_taskID_arr = readObs_user()
-    #simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs_simu()
+    simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs_simu()
     
     my_shelf = shelve.open("user_simu_obs.out")
     user_obs = my_shelf['user_obs']
@@ -630,15 +638,15 @@ if __name__=='__main__':
     simu_subtaskID_arr = my_shelf['simu_subtaskID_arr']
     my_shelf.close()
 #    
-    participants_likelihood = MDPmodelLikelihood(False)
-    #simulation_likelihood = MDPmodelLikelihood(True)
+    #participants_likelihood = MDPmodelLikelihood(False)
+    simulation_likelihood = MDPmodelLikelihood(True)
     
 #    li_shelf = shelve.open("likelihoods.out",'n') # 'n' for new    
 #    li_shelf["simulation_likelihood"] = simulation_likelihood
 #    li_shelf["participants_likelihood"] = participants_likelihood
 #    li_shelf.close()
 
-    #avg_participants_likelihood = likelihood_analysis(participants_likelihood)    
+    avg_participants_likelihood = likelihood_analysis(participants_likelihood)    
     
     # Converting Participant likelihood array for each task to maximum scores
     # TODO:    
