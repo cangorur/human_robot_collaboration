@@ -124,7 +124,9 @@ Here, make sure `human_sim_noMorse.py` is executable and `roscore` is running.
 ### Running ROS Project
 #### FOR REAL EXPERIMENTS
 Run below if you are not running the simulation environment, and would like to run the DOBOT conveyor belt setup.
-#TODO: Write these ...
+1. Make sure scenario_config.json is correctly configured
+- `operation_modes` features are the ones to be updated.
+- asds
 
 #### WITH SIMULATION
 After MORSE project is running, open a new terminal and

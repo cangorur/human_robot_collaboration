@@ -25,7 +25,7 @@
 	"robot": {
 		"type":{
 				"AItype": "proactive",
-				"forHumanType": "quick_takeOneReasses_loyal",
+				"forHumanType": "average_takeOneReasses_loyal_exp1",
 				"forHumanCollab": ""
 		},
 		"position":{
@@ -53,12 +53,12 @@
 		"useEvaluator":{
 			 "active": false,
 			 "interactionNumber": 50,
-			 "trainingSetName": "training_sets/userStudies/userStudies_final_v2.mat"
+			 "trainingSetName": "training_sets/userStudies/userStudies_final_v2_2.mat"
 			},
 		"useCMAB": false,
 		"useBPR": true,
 		"useRandom": false,
-		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry_userStudies/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/userStudies/userStudies_final_v2.mat",
+		"trainingSetForPolicySelect": "/home/cangorur/Workspace/app-ras/hrc_industry_userStudies/code/ros_ws/src/hrc_ros/src/policy_selector_bpr/training_sets/userStudies/userStudies_final_v2_2.mat",
 		"useTransitionFunction": false
 	},
 	"evaluation_models":{

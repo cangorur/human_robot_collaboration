@@ -477,7 +477,7 @@ def MDPmodelLikelihood(simu_flag):
         else:
             likelihood_arrUser = 0.0 # in simulation, as the data are generated from the models directly, we do not need to separate the tasks. We average them all.
         
-        with open(dir_path + '/participant_likelihoods_' + str(user_id) + '.csv', 'a') as file:
+        with open(dir_path + '/simulation_likelihoods_' + str(user_id) + '.csv', 'a') as file:
             wr = csv.writer(file, dialect='excel')
             
             # For every simulated human model, we calculate the likelihood of a participant's observations generated.
@@ -628,7 +628,7 @@ def likelihood_analysis(participants_likelihood):
 if __name__=='__main__':
     
     #user_obs, user_taskID_arr = readObs_user()
-    simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs_simu()
+    #simu_obs, simu_taskID_arr, simu_subtaskID_arr = readObs_simu()
     
     my_shelf = shelve.open("user_simu_obs.out")
     user_obs = my_shelf['user_obs']
@@ -639,15 +639,24 @@ if __name__=='__main__':
     my_shelf.close()
 #    
     #participants_likelihood = MDPmodelLikelihood(False)
-    simulation_likelihood = MDPmodelLikelihood(True)
+    #simulation_likelihood = MDPmodelLikelihood(True)
     
 #    li_shelf = shelve.open("likelihoods.out",'n') # 'n' for new    
 #    li_shelf["simulation_likelihood"] = simulation_likelihood
 #    li_shelf["participants_likelihood"] = participants_likelihood
 #    li_shelf.close()
 
-    avg_participants_likelihood = likelihood_analysis(participants_likelihood)    
-    
+    #avg_participants_likelihood = likelihood_analysis(participants_likelihood)    
+    avg_simu_likelihoods = np.array([[0.2268696682, 0.226, 0.1777611125, 0.1264305124,0.052634886, 0.0553250766,0.0493724096,0.047642683],
+    [0.205,	0.223,	0.1545213063,0.1125685778,0.0512893127,0.0549212468,0.044792838,0.0458228771],
+    [0.1870026504,0.1794263463,0.215,0.0906976491,0.04735648,0.0390272992,0.0596455864,0.0443862323],
+    [0.1761746375,0.1709018503,0.1079432919,0.212,0.0422650048,0.036249426,0.0480043587,0.0388828557],
+    [0.1282663103,0.1291115353,0.0882418617,0.07800314,0.185,0.0696268856,	0.0435897361,	0.058018806],
+    [0.1323877723,	0.1331554949,	0.0896511713,	0.0787243066,	0.0658237581,	0.175,	0.0433316746,	0.0575937871],
+    [0.2126987958,	0.189992599,	0.1864392941,	0.1440196239,	0.0828012341,	0.0516418829,	0.228,	0.0818530789],
+    [0.106786256,	0.1012134949,	0.0829620657,	0.0675724011,	0.0408817896,	0.0328882159,	0.0492111886,	0.117]    
+    ])
+
     # Converting Participant likelihood array for each task to maximum scores
     # TODO:    
     

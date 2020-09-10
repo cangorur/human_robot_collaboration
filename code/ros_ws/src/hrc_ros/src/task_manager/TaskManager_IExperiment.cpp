@@ -777,11 +777,11 @@ void TaskManager::ReceiveTraySuccessStatus(const hrc_ros::SuccessStatusObserved 
       task_score -= 6;
     } else if (msg.successful_subtasks != global_stat_successful_subtasks){
         if (msg.who_succeeded == "HUMAN")
-          task_score += 6;
+          task_score += 10;
         else if(msg.who_succeeded == "ROBOT")
           task_score += 4;
         else
-          task_score += 3;
+          task_score += 4;
     }
     ros::param::set("/task_score",task_score);
 

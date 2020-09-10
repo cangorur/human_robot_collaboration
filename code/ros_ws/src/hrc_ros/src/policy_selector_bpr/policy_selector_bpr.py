@@ -103,7 +103,7 @@ class PolicySelector:
         else:
             self.current_belief = self.prev_belief
 
-        self.belief_updater()
+        #self.belief_updater()
         self.policy_selector()
         rospy.logwarn("[BPR_POLICY_SELECTOR] Selected Policy: %d", self.selected_policy)
         return(PolicySelectorBPRResponse(self.selected_policy, self.current_belief))
@@ -205,6 +205,8 @@ class PolicySelector:
             with open(dirr + "/abps_savings.json", 'w') as f:
                 json.dump(abps_data, f)
             f.close()
+
+            self.belief_updater()
 
             # To find out which policy is used during this task;
             # This is an important information for belief update
