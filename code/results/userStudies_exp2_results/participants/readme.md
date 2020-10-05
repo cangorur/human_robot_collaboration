@@ -7,3 +7,4 @@ Part-6: Martin, 8 tasks in total with v2_2 model. Martin got expertise and learn
 Part-7: Mathias. Couldnt follow the tasks at all. But always stubbornly taking the cubes. A lot of fluctuations between the tasks (in terms of what he wants, success rates etc.) Eventually didnt like the robot's adaptation.
 Part-8: Tobias. Very nice collaboration. Robot estimated the type very well after the 4th task and fixated on a policy which kept the success rate and the collaboraiton smooth. Tobi was happy with it.
 Part-9: Nils. Very nice collaboration also. He built expertise homogenously in time. The robot picked the right policy towards the end (to wait and observe).
+Part-10: Felix, high school student. Smooth and very stable collaboration (always the same success rate and so)
