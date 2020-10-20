@@ -1,0 +1,27 @@
+task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+16,1,"""OBSERVATION""",,1601899672,517951300,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,2,"""OBSERVATION""",,1601899675,577199440,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,3,"""OBSERVATION""",,1601899678,711114657,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,4,"""OBSERVATION""",,1601899681,703698054,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,5,"""OBSERVATION""",,1601899684,747892496,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,6,"""OBSERVATION""",,1601899687,732507904,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,7,"""OBSERVATION""",,1601899690,772365641,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,8,"""OBSERVATION""",,1601899704,900879540,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,9,"""OBSERVATION""",,1601899706,332163665,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,10,"""OBSERVATION""",,1601899721,718619965,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,11,"""OBSERVATION""",,1601899723,256096473,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,12,"""OBSERVATION""",,1601899738,717072957,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,13,"""OBSERVATION""",,1601899740,269007513,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,14,"""OBSERVATION""",,1601899755,539588248,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,15,"""OBSERVATION""",,1601899757,58210259,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+16,16,"""OBSERVATION""",,1601899759,617895388,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,17,"""OBSERVATION""",,1601899761,607941691,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+16,18,"""OBSERVATION""",,1601899774,919729169,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,19,"""OBSERVATION""",,1601899776,422258657,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,20,"""OBSERVATION""",,1601899780,298215467,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,21,"""OBSERVATION""",,1601899784,680640243,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+16,22,"""OBSERVATION""",,1601899799,981866903,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,23,"""OBSERVATION""",,1601899821,601074350,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,24,"""OBSERVATION""",,1601899823,76968486,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,25,"""OBSERVATION""",,1601899826,92157964,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+16,26,"""OBSERVATION""",,1601899835,546984781,'',"[True, False, False, False, False, True]",1,0,0,0,0,1

@@ -1,0 +1,52 @@
+task_id,task_init_secs,task_init_nsecs,acted_secs,acted_nsecs,taken_action,belief_state,real_state,robot_model,immediate_reward,total_disc_reward
+9,1599816284,147648063,1599816288,718578716,"""planning for grasping""","""MayBeTired""","""HumanDoingOk""","""slow_takeOneReasses_reckless.pomdpx""",0.0,0.0
+9,1599816284,147648063,1599816291,671618151,"""idle""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,0.0
+9,1599816284,147648063,1599816293,534548663,"""idle""","""HumanDoingOk""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,0.0
+9,1599816284,147648063,1599816295,39681587,"""planning for grasping""","""MayBeTired""","""HumanDoingOk""","""slow_takeOneReasses_reckless.pomdpx""",0.0,0.0
+9,1599816284,147648063,1599816296,457773644,"""grasp""","""MayNotBeCapable""","""MayNotBeCapable""","""slow_takeOneReasses_reckless.pomdpx""",6,-0.09804873682650506
+9,1599816284,147648063,1599816311,950991753,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,-0.09804873682650506
+9,1599816284,147648063,1599816313,477183498,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,-0.09804873682650506
+9,1599816284,147648063,1599816316,454930113,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,-0.09804873682650506
+9,1599816284,147648063,1599816319,723872420,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,-0.09804873682650506
+9,1599816284,147648063,1599816322,684733834,"""grasp""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",6,3.672034956086219
+9,1599816284,147648063,1599816335,739358175,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,3.672034956086219
+9,1599816284,147648063,1599816337,260708149,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,3.672034956086219
+9,1599816284,147648063,1599816340,220238935,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,3.672034956086219
+9,1599816284,147648063,1599816343,257574412,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,3.672034956086219
+9,1599816284,147648063,1599816346,280875963,"""planning for grasping""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",0.0,3.672034956086219
+9,1599816284,147648063,1599816349,320789170,"""grasp""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",6,7.220407567186132
+9,1599816284,147648063,1599816362,698570108,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,7.220407567186132
+9,1599816284,147648063,1599816364,180437527,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,7.220407567186132
+9,1599816284,147648063,1599816367,130485258,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,7.220407567186132
+9,1599816284,147648063,1599816370,174064663,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,7.220407567186132
+9,1599816284,147648063,1599816373,152077325,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,7.220407567186132
+9,1599816284,147648063,1599816376,182892908,"""grasp""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",6,10.84119594585951
+9,1599816284,147648063,1599816388,564367848,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816390,280519390,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816393,279044940,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816396,336020782,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816399,394344946,"""point to remind""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816402,380399300,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816405,370525144,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816408,693021309,"""planning for grasping""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",0.0,10.84119594585951
+9,1599816284,147648063,1599816411,687560452,"""grasp""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",6,13.740474715093809
+9,1599816284,147648063,1599816425,347613639,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,13.740474715093809
+9,1599816284,147648063,1599816426,837273274,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,13.740474715093809
+9,1599816284,147648063,1599816429,800505539,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,13.740474715093809
+9,1599816284,147648063,1599816437,617235049,"""grasp""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",6,17.36126309376719
+9,1599816284,147648063,1599816451,120168660,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,17.36126309376719
+9,1599816284,147648063,1599816452,655278937,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,17.36126309376719
+9,1599816284,147648063,1599816455,600702730,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,17.36126309376719
+9,1599816284,147648063,1599816458,600206790,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,17.36126309376719
+9,1599816284,147648063,1599816461,625982732,"""grasp""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",6,21.131346786679913
+9,1599816284,147648063,1599816475,119381259,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,21.131346786679913
+9,1599816284,147648063,1599816476,643242104,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,21.131346786679913
+9,1599816284,147648063,1599816479,630841841,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,21.131346786679913
+9,1599816284,147648063,1599816488,655558828,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,21.131346786679913
+9,1599816284,147648063,1599816490,170104433,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,21.131346786679913
+9,1599816284,147648063,1599816493,240702406,"""grasp""","""NeedsHelp""","""NeedsHelp""","""slow_takeOneReasses_reckless.pomdpx""",6,24.338794584648642
+9,1599816284,147648063,1599816506,774304808,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,24.338794584648642
+9,1599816284,147648063,1599816508,273423625,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,24.338794584648642
+9,1599816284,147648063,1599816511,221975786,"""planning for grasping""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,24.338794584648642
+9,1599816284,147648063,1599816514,349708114,"""grasp""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",0.0,24.338794584648642
+9,1599816284,147648063,1599816514,349708114,"""grasp""","""MayBeTired""","""MayBeTired""","""slow_takeOneReasses_reckless.pomdpx""",6,28.34444241517921

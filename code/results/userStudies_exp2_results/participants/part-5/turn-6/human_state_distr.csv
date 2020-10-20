@@ -1,0 +1,1 @@
+task_id,type,TaskHuman,GlobalSuccess,GlobalFail,FailedToGrasp,NoAttention,Evaluating,Tired,Recovery,RobotIntefered,WarningTheRobot,RobotIsWarned,TaskRobot,TaskHuman_avg,TaskHuman_avg,GlobalSuccess_avg,GlobalFail_avg,FailedToGrasp_avg,NoAttention_avg,Evaluating_avg,Tired_avg,Recovery_avg,RobotIntefered_avg,WarningTheRobot_avg,RobotIsWarned_avg,TaskRobot_avg

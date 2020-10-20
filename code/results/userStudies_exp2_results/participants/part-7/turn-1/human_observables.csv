@@ -1,0 +1,22 @@
+task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+9,1,"""OBSERVATION""",,1600776114,716124868,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,2,"""OBSERVATION""",,1600776116,690396691,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+9,3,"""OBSERVATION""",,1600776118,764996774,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,4,"""OBSERVATION""",,1600776120,293030987,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+9,5,"""OBSERVATION""",,1600776121,794627665,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,6,"""OBSERVATION""",,1600776123,249921009,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+9,7,"""OBSERVATION""",,1600776124,902652309,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,8,"""OBSERVATION""",,1600776126,768643418,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+9,9,"""OBSERVATION""",,1600776131,633354786,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+9,10,"""OBSERVATION""",,1600776141,635358725,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,11,"""OBSERVATION""",,1600776154,77371917,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,12,"""OBSERVATION""",,1600776161,789907605,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+9,13,"""OBSERVATION""",,1600776163,147976915,'',"[True, False, False, True, False, False]",1,0,0,1,0,0
+9,14,"""OBSERVATION""",,1600776164,558844521,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,15,"""OBSERVATION""",,1600776170,664062362,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+9,16,"""OBSERVATION""",,1600776179,899497257,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,17,"""OBSERVATION""",,1600776181,420948429,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,18,"""OBSERVATION""",,1600776196,883372967,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,19,"""OBSERVATION""",,1600776198,365210791,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+9,20,"""OBSERVATION""",,1600776199,815279269,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+9,21,"""OBSERVATION""",,1600776201,199792921,'',"[True, False, False, True, False, True]",1,0,0,1,0,1

@@ -1,0 +1,2 @@
+robot_model_ID,task_id,warnings_received,cumulative_warnings,moving_avg_warnings,task_duration,cumulative_time,moving_avg_time,total_disc_reward,cumulative_reward,moving_avg_reward,success_rate,cumulative_success,moving_avg_success,humans_contribution,human_success_rate
+average_takeOneReasses_loyal,13,0,0.0,0.0,90.040342012,90.040342012,90.040342012,-1.9645466936234932,-1.9645466936234932,-1.9645466936234932,50.0,50.0,50.0,20.0,16.666666666666664

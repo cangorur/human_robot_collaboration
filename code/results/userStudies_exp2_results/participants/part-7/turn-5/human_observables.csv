@@ -1,0 +1,19 @@
+task_id,step_count,who_reports,update_received_time,update_secs,update_nsecs,human_model,human_observables,Human Detected,Looked Around,Succesfull Grasp,Failed Grasp,Warned Robot,Stood Idle
+13,1,"""OBSERVATION""",,1600777855,541883699,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,2,"""OBSERVATION""",,1600777857,612533600,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+13,3,"""OBSERVATION""",,1600777859,924548159,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,4,"""OBSERVATION""",,1600777861,325058226,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+13,5,"""OBSERVATION""",,1600777862,999723995,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,6,"""OBSERVATION""",,1600777864,459367846,'',"[True, False, True, False, False, False]",1,0,1,0,0,0
+13,7,"""OBSERVATION""",,1600777865,966962361,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,8,"""OBSERVATION""",,1600777867,361515393,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+13,9,"""OBSERVATION""",,1600777869,57295480,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,10,"""OBSERVATION""",,1600777872,159354266,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+13,11,"""OBSERVATION""",,1600777884,747964930,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,12,"""OBSERVATION""",,1600777902,570037951,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,13,"""OBSERVATION""",,1600777906,412474867,'',"[True, False, False, True, False, True]",1,0,0,1,0,1
+13,14,"""OBSERVATION""",,1600777921,587062484,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,15,"""OBSERVATION""",,1600777934,279572401,'',"[False, False, False, False, False, True]",0,0,0,0,0,1
+13,16,"""OBSERVATION""",,1600777938,94467462,'',"[False, False, False, True, False, True]",0,0,0,1,0,1
+13,17,"""OBSERVATION""",,1600777940,868922229,'',"[True, False, False, False, False, True]",1,0,0,0,0,1
+13,18,"""OBSERVATION""",,1600777942,571689655,'',"[True, False, False, True, False, True]",1,0,0,1,0,1

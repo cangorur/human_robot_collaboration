@@ -1,0 +1,2 @@
+task_id,init_secs,init_nsecs,fin_secs,fin_nsecs,time_took,moving_avg_time,task_status,moving_avg_status,who_succeeded
+10,1600776578,610963115,1600776693,928550693,115.31758761405945,11.531758761405944,1,0.1,''
