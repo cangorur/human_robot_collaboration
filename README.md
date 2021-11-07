@@ -1,11 +1,13 @@
 Human-Robot Collaboration on an Assembly Line (Industrial Scenario)
 ============
 
-by Orhan Can Görür (orhan-can.goeruer@dai-labor.de)
+by Orhan Can Görür (cangorur88@gmail.com, goeruer@tu-berlin.de)
 
-Below are the instructions to succesfully install the current HRC simulation on a conveyor belt (also referring to the other notes) for pick up and place/store scenario. The code also involves autonomous decision-making and actuator models for both human and the robot (pr2). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably.
+This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published as a preprint: https://arxiv.org/abs/2104.01976.
 
-For the students, the architecture drawing at the bottom of the page shows the possible improvement points and how they can interfere with the process. For more questions, please contact the mail given above.
+Below are the instructions to install a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see under [results]((https://github.com/cangorur/human_robot_collaboration/tree/master/code/results)) folder). 
+
+For more questions, please contact the mail given above.
 
 ---
 
@@ -34,7 +36,7 @@ For the ROS interface of MORSE, follow the instructions here [link](http://www.o
 ### ROS
 
 The code is tested with ROS Kinetic on Ubuntu 16.04 machines.
-No special ROS packages are needed apart from those which come with a standard installation of ROS.
+No special ROS packages are needed apart from those which come with a standard installation of ROS. Hence, it should be possible to run it on another ROS versions. However, the compatibility of MORSE env. might be an issue. Please see MORSE env. instructions above.
 
 The only dependency for the installation is the *Boost libraries* (usually cpreinstalled with OS)
 For running the python nodes, we have extra dependencies:
@@ -51,7 +53,7 @@ catkin_make install
 ```
 NOTE: If it gives an error (probably not able to find msg adn srv headers), this is a bug. Reinvoke catkin_make install. If still an error, navigate to build folder generated already by catkin_make, and invoke "make" inside it to force the compile.
 
-Now we will compile the DESPOT packages each tailored for different model executions in real-time: MDP for human and robot, POMDP for robot decision-making (autonomous):
+Now we will compile the DESPOT packages (an updated version of the online POMDP solver DESPOT project: https://github.com/AdaCompNUS/despot. Our version has real-time execution capability of the policies generated [here](https://github.com/cangorur/online-pomdp-executor)) each tailored for different model executions in real-time: MDP for human and robot, POMDP for robot decision-making (autonomous):
 ```
 cd code/despot_MDP_human
 mkdir build
@@ -196,9 +198,6 @@ human:
 robot:
 - "proactive / reactive" # This will run either POMDP or MDP model respectively.
 
-For more model creation, refer to this shared excel sheet for easily adjust state transition, observation and reward matrices and create your own .pomdpx models:
-- https://docs.google.com/spreadsheets/d/1gJoA5ltNewCgFDSOcUGdoqZcWzdyu6Id3xDJE6V_nDg/edit?usp=sharing
-
 ### Controlling Human and Robot Models
 After you successfully run the scenario, you will notice that two terminal will open automatically. Those are opened by despot_human and despot_robot packages. They simply execute the human and robot policies generated.
 In this version, the robot model runs automatically, the terminal is for you to visualize what reward the robot got, which state (or belief state in POMDP) the robot is in and which action it took. Also you can call the task_status topic for these information. Please see the robot_model designs for MDP and POMDP visaulized below. Taking this connection scheme and the observations mentioned as the base there can be different robot models created by tweaking around with the state transition, observation and reward probabilities.
@@ -206,9 +205,9 @@ In this version, the robot model runs automatically, the terminal is for you to 
 The terminal opened by despot_human allows you to control the human actions. This is left as it is for easy testing of the expected robot behaviors. Simply follow the human_model drawing given below to input the next state the human is in (an integer from 0 to 9 each referring to a state as given in the drawing).
 The functionality is basically then, you input the next state, the human model selects one action in that state (according to the model design), then the robot observes the action and responds, then you will decide on the next state (in response to the robot action). Although here we have the control over the human, the action selection of the human is still unknown to us, selected by the MDP model. Please ask the author for any further questions.
 - Robot Models:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/robot_models.png)
+![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/robot_models.png)
 - Human Models:
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/human_model_v2.png)
+![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/human_model_v2.png)
 
 In order to test your own human and robot models, below are some tips and commands;
 
@@ -235,8 +234,10 @@ The terminal running the python script will ask for the states and observations 
 ## Brief overview of the system
 
 System Architecture drawing of the new version of the project, also showing the nodes to be updated for the student developments.
-![ngrok](https://gitlab.tubit.tu-berlin.de/app-ras/hrc_industry/raw/dev_v2/doc/system_architecture_v2.png)
+![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/system_architecture_v2.png)
 
 ## References
 In any use of this code, please let the author know and please cite the articles below:
-* O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In Proceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (HRI '18). ACM, New York, NY, USA, 398-406. DOI: https://doi.org/10.1145/3171221.3171256
+1. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2021. FABRIC: A Framework for the Design and Evaluation of Collaborative Robots with Extended Human Adaptation. *Preprint in arxiv*: https://arxiv.org/abs/2104.01976
+2. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In Proceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (HRI '18). ACM, New York, NY, USA, 398-406. DOI: https://doi.org/10.1145/3171221.3171256
+3. O. Can Görür, Benjamin Rosman, and Sahin Albayrak. 2019. Anticipatory Bayesian Policy Selection for Online Adaptation of Collaborative Robots to Unknown Human Types. In Proceedings of the 18th International Conference on Autonomous Agents and MultiAgent Systems (AAMAS '19). International Foundation for Autonomous Agents and Multiagent Systems, Richland, SC, 77–85.
