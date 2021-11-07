@@ -5,7 +5,7 @@ by Orhan Can Görür (cangorur88@gmail.com, goeruer@tu-berlin.de)
 
 This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published as a preprint: https://arxiv.org/abs/2104.01976.
 
-Below are the instructions to install a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see under [results]((https://github.com/cangorur/human_robot_collaboration/tree/master/code/results)) folder). 
+Below are the instructions to install a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see the Readme under [results](https://github.com/cangorur/human_robot_collaboration/tree/master/code/results) folder). 
 
 For more questions, please contact the mail given above.
 
@@ -151,14 +151,12 @@ Most important features to update are, `human`, `robot`, `operation_modes` and `
 - `operation_modes` is to define if the scenario run is for training (data collection), a run with some policy selectors and to use dynamic transitions on human models for better performance test of the policy selector.
 - `useEvaluator`: if this is active, then the `TaskManager.cpp` calls the `policy_evaluator` node to retrieve one human and one robot model to interact several times (defined under `interactionNumber`). The purpose is to run every single human model with robot models to collect performance information (which policy is the best for which human) and to collect human observation data for type estimation algorithms of the robot. The models to be tested under this mode are provided under `evaluation_models` for human and the robot (currently all existing models are put there).
 - `useCMAB` and `useBPR`: These are two implemented policy selection algorithms (Contextual Multi-Arm Bandit and Bayesian Policy Reuse) to select the best policy for a robot interacting with a certain (unknown) human type. This is for the real time test run of the robot and the algorithms use the trained models after `useEvaluator` mode. The model file locations are given under `trainingSetForPolicySelect`.
-- For the student version of the code, `useCMAB` and `useBPR` modes are not implemented to promote students to develop their own policy generation (RL) / policy selection approaches. These may be replaced by the students' own solutions.
 - *The procedure for Training Model creation*: After the evaluation mode has terminated (all combinations are tested), please ctrl+c (terminate) the ros window and you should see a `.bag` file created under the `Results` folder. This bag file holds the recorded task status topic: `/task_manager/task_status`. Examine the `README` file under the results folder for further possible analysis.
   - First step should be to convert bag to a csv file. run
 ```
 python bag_to_csv.py <your_bag_file_here>
 ```
   - `raw_data.csv` excel sheet holds all the information.
-  - In the original version, we have training set creations for BPR implementation. However, for the student version the students should come up with their own training strategies according to their RL / human type estimation implementations (e.g. any classification algorithm, RL algos etc).
   - `raw_data.csv` has the informed status of each of the agents. `human` agent outputs his current action, state etc, `observation` agent informs about the human and task state observables to be used under robot models, `robot` agent informs about the momentary action selected, belief state and the immediate and accumulated discounted rewards gathered.
 - `useTransitionFunction` is the last configuration feature that is not stable and under improvement. The intention is to have human models change their state transitions on the fly, in response to the time, task and the robot actions. E.g. a human getting more annoyed with the robot is reflected by warning the robot more frequently. Such a dynamic transition function is to be implemented under `human_mc_sampler` agent. The function is left there for improvement, named `modifyPOMDPx`. This agent is responsible for sampling a human model's next state using Monte Carlo Markov Chain sampling at every step.
 
@@ -233,7 +231,7 @@ The terminal running the python script will ask for the states and observations 
 
 ## Brief overview of the system
 
-System Architecture drawing of the new version of the project, also showing the nodes to be updated for the student developments.
+System Architecture drawing of the project running in simulation:
 ![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/system_architecture_v2.png)
 
 ## References
