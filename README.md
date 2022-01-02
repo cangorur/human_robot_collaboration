@@ -3,12 +3,13 @@ Human-Robot Collaboration on an Assembly Line (Industrial Scenario)
 
 by Orhan Can Görür (cangorur88@gmail.com, goeruer@tu-berlin.de)
 
-This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published as a preprint: https://arxiv.org/abs/2104.01976.
+This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published as a preprint: https://arxiv.org/abs/2104.01976. For any use of the code and the project in general, please refer to the [credits](#Credits) section.
 
-Below are the instructions to install a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see the Readme under [results](https://github.com/cangorur/human_robot_collaboration/tree/master/code/results) folder). 
+This project presents a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see the Readme under [results](https://github.com/cangorur/human_robot_collaboration/tree/master/code/results) folder). 
 
-For more questions, please contact the mail given above.
+For more questions, please contact the emails given above.
 
+![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/ScreenShots/Screenshot%20from%202017-09-19%2023-35-56.png)
 ---
 
 ## Prerequisites
@@ -185,7 +186,7 @@ rosservice call /robot/reset # replace reset with grasp OR point_to_obj OR cance
 
 All the predesigned human and robot models can be found under code/models.
 The models are read by the despot packages to generate policies and run them.
-You can create your own POMDP models by adjusting the existing .pomdpx files under /models folder. For more information on POMDPs and the .pomdpx file please refer to here: http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl/index.php?n=Main.PomdpXDocumentation.
+You can create your own POMDP models by adjusting the existing .pomdpx files under [models](https://github.com/cangorur/human_robot_collaboration/tree/master/code/models) folder. For more information on POMDPs and the .pomdpx file please refer to here: http://bigbird.comp.nus.edu.sg/pmwiki/farm/appl/index.php?n=Main.PomdpXDocumentation.
 
 ### Selecting Models
 Which model (human and robot types) to run initially can be selected under `code/configs/scenario_config.json`
@@ -234,8 +235,11 @@ The terminal running the python script will ask for the states and observations 
 System Architecture drawing of the project running in simulation:
 ![ngrok](https://github.com/cangorur/human_robot_collaboration/blob/master/doc/system_architecture_v2.png)
 
-## References
-In any use of this code, please let the author know and please cite the articles below:
+## Credits
+
+Copyright (c) is held by Orhan Can Görür and Technische Universität Berlin (TUB).
+
+In any use of this code, please let the author know and please cite the relevant articles below:
 1. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2021. FABRIC: A Framework for the Design and Evaluation of Collaborative Robots with Extended Human Adaptation. *Preprint in arxiv*: https://arxiv.org/abs/2104.01976
 2. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In Proceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (HRI '18). ACM, New York, NY, USA, 398-406. DOI: https://doi.org/10.1145/3171221.3171256
 3. O. Can Görür, Benjamin Rosman, and Sahin Albayrak. 2019. Anticipatory Bayesian Policy Selection for Online Adaptation of Collaborative Robots to Unknown Human Types. In Proceedings of the 18th International Conference on Autonomous Agents and MultiAgent Systems (AAMAS '19). International Foundation for Autonomous Agents and Multiagent Systems, Richland, SC, 77–85.
