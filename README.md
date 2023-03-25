@@ -240,6 +240,6 @@ System Architecture drawing of the project running in simulation:
 Copyright (c) is held by Orhan Can Görür and Technische Universität Berlin (TUB).
 
 In any use of this code, please let the author know and please cite the relevant articles below:
-1. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2021. FABRIC: A Framework for the Design and Evaluation of Collaborative Robots with Extended Human Adaptation. *Preprint in arxiv*: https://arxiv.org/abs/2104.01976
+1. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2023. FABRIC: A Framework for the Design and Evaluation of Collaborative Robots with Extended Human Adaptation. In ACM Transactions on Human-Robot Interaction. DOI: https://doi.org/10.1145/3585276
 2. O. Can Görür, Benjamin Rosman, Fikret Sivrikaya, and Sahin Albayrak. 2018. Social Cobots: Anticipatory Decision-Making for Collaborative Robots Incorporating Unexpected Human Behaviors. In Proceedings of the 2018 ACM/IEEE International Conference on Human-Robot Interaction (HRI '18). ACM, New York, NY, USA, 398-406. DOI: https://doi.org/10.1145/3171221.3171256
 3. O. Can Görür, Benjamin Rosman, and Sahin Albayrak. 2019. Anticipatory Bayesian Policy Selection for Online Adaptation of Collaborative Robots to Unknown Human Types. In Proceedings of the 18th International Conference on Autonomous Agents and MultiAgent Systems (AAMAS '19). International Foundation for Autonomous Agents and Multiagent Systems, Richland, SC, 77–85.
