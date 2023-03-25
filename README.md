@@ -3,7 +3,7 @@ Human-Robot Collaboration on an Assembly Line (Industrial Scenario)
 
 by Orhan Can Görür (cangorur88@gmail.com, goeruer@tu-berlin.de)
 
-This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published as a preprint: https://arxiv.org/abs/2104.01976. For any use of the code and the project in general, please refer to the [credits](#Credits) section.
+This project is part of the PhD thesis work [here](https://doi.org/10.14279/depositonce-10929). A summary of it is published [here](https://dl.acm.org/doi/10.1145/3585276). For any use of the code and the project in general, please refer to the [credits](#Credits) section.
 
 This project presents a human-robot collaboration simulation on a conveyor belt for pick up and place/store scenario. The code involves autonomous decision-making and actuator models for both human and the robot (see [decision models](#mdp-pomdp-models)). The goal is to test these DM algorithms for the robot in response to human behaviors which can resemble a tired, distracted, thinker, stubborn, beginner and expert human worker types. These situations and randomness in human actions constitute difficult cases for the robot to respond properly and reliably. Many test scripts are also provided to record human and robot actions and responses (see the Readme under [results](https://github.com/cangorur/human_robot_collaboration/tree/master/code/results) folder). 
 
